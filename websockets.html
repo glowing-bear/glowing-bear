@@ -1,7 +1,42 @@
-<html>
+<!DOCTYPE html>
+<html ng-app>
   <head>
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <script type="text/javascript" src="js/angular.min.js"></script>
+    <script type="text/javascript" src="js/websockets.js"></script>
   </head>
   <body>
-    <script type="text/javascript" src="websockets.js"></script>
+    <div ng-controller="WeechatCtrl">
+      <div ng-hide="status.connected">
+        <form class="form-horizontal">
+          <legend>Connection</legend>
+          <div class="control-group">
+            <label class="control-label" for="hostport">Hostport</label>
+            <div class="controls">
+              <input type="text" id="hostport" ng-model="hostport" placeholder="Hostport">
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="proto">Proto</label>
+            <div class="controls">
+              <input type="text" id="proto" ng-model="proto" placeholder="proto">
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="password">Password</label>
+            <div class="controls">
+              <input type="text" id="password" ng-model="password" placeholder="Password">
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="controls">
+              <button class="btn btn-primary">Connect!</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div ng-show="status.connected">
+      </div>
+    </div>
   </body>
 </html>
