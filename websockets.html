@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app>
+<html ng-app="weechat">
   <head>
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
     <script type="text/javascript" src="js/angular.min.js"></script>
@@ -7,7 +7,7 @@
   </head>
   <body>
     <div ng-controller="WeechatCtrl">
-      <div ng-hide="status.connected">
+      <div ng-hide="connected">
         <form class="form-horizontal">
           <legend>Connection</legend>
           <div class="control-group">
@@ -30,12 +30,18 @@
           </div>
           <div class="control-group">
             <div class="controls">
-              <button class="btn btn-primary">Connect!</button>
+               <button class="btn btn-primary" ng-click="connect()">Connect!</button>
             </div>
           </div>
         </form>
       </div>
-      <div ng-show="status.connected">
+      <div ng-show="connected">
+        {{ commands }}
+        <div ng-repeat="command in commands">
+          {{ command }}
+        </div>
+              <input type="text" ng-model="command"></input>
+              <button class="btn btn-primary" ng-click="sendMessage()">Send</button>
       </div>
     </div>
   </body>
