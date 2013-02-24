@@ -1,23 +1,24 @@
 var weechat = angular.module('weechat', []);
 
 weechat.factory('connection', ['$rootScope', function($scope) {
-
+        protocol = new Protocol();
         var websocket = null;
+
         var doSend = function(message) {
           msgs = message.replace(/[\r\n]+$/g, "").split("\n");
           for (var i = 0; i < msgs.length; i++) {
-            console.log("sent", "&lArr; " + msgs[i]);
-            $scope.commands.push(msgs[i]);
+            console.log('=' + msgs[i] + '=');
+            $scope.commands.push("SENT: " + msgs[i]);
           }
           websocket.send(message);
         }
         var connect = function (hostport, proto, password) {
             websocket = new WebSocket("ws://" + hostport + "/weechat");
-
+            websocket.binaryType = "arraybuffer"
 
             websocket.onopen = function (evt) {
               if (proto == "weechat") {
-                doSend("init password=" + password + "\ninfo version\ntest\n");
+                //doSend("init compression=off\nversion\n");
               } else {
                 doSend("PASS " + password + "\r\nNICK test\r\nUSER test 0 * :test\r\n");
               }
@@ -30,7 +31,10 @@ weechat.factory('connection', ['$rootScope', function($scope) {
             }
             websocket.onmessage = function (evt) {
               console.log("recv", "&rArr; " + evt.data);
-              $scope.commands.push(evt.data);
+              protocol.setData(evt.data);
+              console.log(protocol.parse());
+              $scope.commands.push("RECV: " + evt.data + " TYPE:" + evt.type) ;
+              data = evt.data;
               $scope.$apply();
             }
             websocket.onerror = function (evt) {
@@ -41,6 +45,7 @@ weechat.factory('connection', ['$rootScope', function($scope) {
         }
 
         var sendMessage = function(message) {
+            message = message + "\n"
             doSend(message);
         }
         return {
