@@ -7,28 +7,50 @@ var Protocol = function() {
             return info;
         };
 
-        var types = {
-            chr: getChar,
-            "int": getInt,
-            "str": getString,
-            "inf": getInfo,
-        };
-//TODO: IMPLEMENT THIS STUFF
-//            chr: this.getChar,
-//            'int': getInt,
-            // hacks
-//            lon: getPointer,
-//            str: getString,
-//            buf: getBuffer,
-//            ptr: getPointer,
-            // hacks
-//            tim: getPointer,
-//            htb: getHashtable,
-//            hda: getHdata,
-//            inf: Protocol.getInfo,
-//            inl: getInfolist,
-//            arr: array
-//        },
+        var getHdata = function() {
+	    var paths;
+	    var count;
+	    var objs = [];
+	    var hpath = getString();
+
+	    
+
+	    keys = getString().split(',');
+	    paths = hpath.split('/');
+	    count = getInt();
+
+	    keys = keys.map(function(key) {
+		return key.split(':');
+	    });
+	    var i;
+	    console.log("Keys: ", keys);
+	    console.log("Paths: ", paths);
+	    console.log("Count: ", count);
+	    for (i = 0; i < count; i++) {
+		var tmp = {};
+
+		tmp.pointers = paths.map(function(path) {
+		    return getPointer();
+		});
+
+		console.log("Pointers: ", tmp.pointers);
+
+		keys.forEach(function(key) {
+		    tmp[key[0]] = runType(key[1]);
+		});
+		objs.push(tmp);
+	    };
+	    return objs;
+	};
+
+        function getPointer() {
+	    var l = getChar();
+	    console.log("Length: ", l);
+	    var pointer = getSlice(l)
+            var parsed_data = new Uint8Array(pointer);
+            return _uiatos(parsed_data);
+
+	};
 
         var _uiatos =function(uia) {
             var _str = [];
@@ -48,7 +70,7 @@ var Protocol = function() {
         var getChar = function() {
             var parsed_data = new Uint8Array(getSlice(1));
             return parsed_data[0];
-        }
+        };
 
         var getString = function() {
             var l = getInt();
@@ -100,6 +122,7 @@ var Protocol = function() {
         }
 
         self.parse = function() {
+            console.log(new Uint8Array(self.data));
             var header = getHeader();
             var id = getId();
             var objects = [];
@@ -108,6 +131,8 @@ var Protocol = function() {
                 objects.push(object);
                 object = getObject();
             }
+	    console.log("Received message");
+	    console.log(header, id, objects);
             return {
                 header: header,
                 id: id,
@@ -118,4 +143,44 @@ var Protocol = function() {
         self.setData = function (data) {
             self.data = data;
         };
+
+        function array() {
+	    var type;
+	    var count;
+	    var values;
+
+	    type = getType();
+	    count = getInt();
+	    values = [];
+	    var i;
+	    for (i = 0; i < count; i++) {
+		values.push(runType(type));
+	    };
+	    return values;
+	}
+
+        var types = {
+            chr: getChar,
+            "int": getInt,
+            str: getString,
+            inf: getInfo,
+	    hda: getHdata,
+	    ptr: getPointer,
+	    lon: getPointer,
+	    tim: getPointer,
+	    buf: getString,
+	    arr: array
+        };
+//TODO: IMPLEMENT THIS STUFF
+//            chr: this.getChar,
+//            'int': getInt,
+            // hacks
+
+            // hacks
+//            htb: getHashtable,
+//            inf: Protocol.getInfo,
+//            inl: getInfolist,
+
+//        },
+
 }

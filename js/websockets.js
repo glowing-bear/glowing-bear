@@ -18,7 +18,7 @@ weechat.factory('connection', ['$rootScope', function($scope) {
 
             websocket.onopen = function (evt) {
               if (proto == "weechat") {
-                //doSend("init compression=off\nversion\n");
+                doSend("init compression=off\nversion\n");
               } else {
                 doSend("PASS " + password + "\r\nNICK test\r\nUSER test 0 * :test\r\n");
               }
