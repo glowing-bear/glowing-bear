@@ -37,8 +37,8 @@
         </form>
       </div>
       <div ng-show="connected">
-        <div ng-repeat="command in commands">
-          {{ command }}
+        <div ng-repeat="bufferline in buffer">
+          {{ bufferline }}
         </div>
               <form ng-submit="sendMessage()">
               <input type="text" ng-model="command"></input>

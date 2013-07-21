@@ -25,18 +25,23 @@ weechat.factory('connection', ['$rootScope', function($scope) {
               $scope.connected = true;
               $scope.$apply();
             }
+
             websocket.onclose = function (evt) {
               console.log("disconnected", "Disconnected");
               $scope.connected = false;
             }
+
             websocket.onmessage = function (evt) {
-              console.log("recv", "&rArr; " + evt.data);
-              protocol.setData(evt.data);
-              console.log(protocol.parse());
+	      protocol.setData(evt.data);
+	      message = protocol.parse()
+              console.log(evt);
               $scope.commands.push("RECV: " + evt.data + " TYPE:" + evt.type) ;
-              data = evt.data;
+              parseMessage(message);
+	      data = evt.data;
               $scope.$apply();
             }
+
+
             websocket.onerror = function (evt) {
               console.log("error", "ERROR: " + evt.data);
             }
@@ -44,10 +49,31 @@ weechat.factory('connection', ['$rootScope', function($scope) {
             this.websocket = websocket;
         }
 
+        var parseMessage = function(message) {
+            console.log(message['id']);
+            if (message['id'] == '_buffer_line_added') {
+                types[message['id']](message);
+            }
+            console.log(message);
+
+        }
+
+
+
+        var handleBufferLineAdded = function(message) {
+            var buffer_line = message['objects'][0]['content'][0]['message'];
+            $scope.buffer.push(buffer_line);
+        }
+
         var sendMessage = function(message) {
             message = message + "\n"
             doSend(message);
         }
+
+        var types = {
+            _buffer_line_added: handleBufferLineAdded
+        }
+
         return {
             connect: connect,
             sendMessage: sendMessage
@@ -56,6 +82,8 @@ weechat.factory('connection', ['$rootScope', function($scope) {
 
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', 'connection', function ($rootScope, $scope, connection) {
     $rootScope.commands = []
+
+    $rootScope.buffer = []
 
     $scope.hostport = "localhost:9001"
     $scope.proto = "weechat"
