@@ -38,7 +38,11 @@
       </div>
       <div ng-show="connected">
         <div ng-repeat="bufferline in buffer">
-          {{ bufferline }}
+          <p>
+            <div ng-repeat="part in bufferline">
+              <span class="text">{{ part.text }}</span>
+            </div>
+          </p>
         </div>
               <form ng-submit="sendMessage()">
               <input type="text" ng-model="command"></input>
