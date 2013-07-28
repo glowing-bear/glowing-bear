@@ -40,9 +40,9 @@
       <div ng-show="connected">
         <div ng-repeat="bufferline in buffer">
           <p>
-            <div ng-repeat="part in bufferline">
-              <span class="text">{{ part.text }}</span>
-            </div>
+            <span ng-repeat="part in bufferline" class="text">
+              {{ part.text }}
+            </span>
           </p>
         </div>
               <form ng-submit="sendMessage()">

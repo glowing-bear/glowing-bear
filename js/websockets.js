@@ -168,8 +168,11 @@ weechat.factory('connection', ['$rootScope', 'colors', function($scope, colors) 
 
 
         var handleBufferLineAdded = function(message) {
-            var buffer_line = colors.parse(message['objects'][0]['content'][0]['message']);
 
+
+            var prefix = colors.parse(message['objects'][0]['content'][0]['prefix']);
+            var message = colors.parse(message['objects'][0]['content'][0]['message']);
+            var buffer_line = _.union(prefix, message);
             $scope.buffer.push(buffer_line);
         }
 
