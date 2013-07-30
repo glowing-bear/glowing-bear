@@ -125,6 +125,7 @@ weechat.factory('connection', ['$rootScope', 'colors', function($scope, colors) 
             websocket.onopen = function (evt) {
               if (proto == "weechat") {
                 doSend("init compression=off\nversion\n");
+                doSend("hdata buffer:gui_buffers(*) full_name\n");
                 doSend("sync\n");
               } else {
                 doSend("PASS " + password + "\r\nNICK test\r\nUSER test 0 * :test\r\n");
@@ -141,7 +142,7 @@ weechat.factory('connection', ['$rootScope', 'colors', function($scope, colors) 
             websocket.onmessage = function (evt) {
 	      protocol.setData(evt.data);
 	      message = protocol.parse()
-              console.log(evt);
+              console.log(message);
               $scope.commands.push("RECV: " + evt.data + " TYPE:" + evt.type) ;
               parseMessage(message);
 	      data = evt.data;
@@ -157,18 +158,43 @@ weechat.factory('connection', ['$rootScope', 'colors', function($scope, colors) 
         }
 
         var parseMessage = function(message) {
-            console.log(message['id']);
+            
             if (message['id'] == '_buffer_line_added') {
                 types[message['id']](message);
             }
-            console.log(message);
 
+            if (!message['id']) {
+                // should only be in case of hda objects
+                parseObjects(message['objects']);
+            }
+        };
+    
+    
+        var parseObjects = function(objects) {
+
+            for (var i = 0; i < objects.length ; i++) {
+                console.log('type', objects[i]['type']);
+                if (objects[i]['type'] == 'hda') {
+                    parseHdaObject(objects[i]);
+                }
+            }
         }
 
+        var parseHdaObject = function(hdaObject) {
+            console.log('parse hda', hdaObject['content'], hdaObject['content'].length);
+            buffers = {};
+            for (var i = 0; i < hdaObject['content'].length; i++) {
+                content = hdaObject['content'][i];
+                console.log('content', content);
+                var pointer = content['pointers'][0];
+                buffers[pointer] = content;
+            }
 
+            $scope.buffers = buffers;
+        }
+    
 
         var handleBufferLineAdded = function(message) {
-
 
             var prefix = colors.parse(message['objects'][0]['content'][0]['prefix']);
             var message = colors.parse(message['objects'][0]['content'][0]['message']);
@@ -195,7 +221,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', 'connection', functio
     $rootScope.commands = []
 
     $rootScope.buffer = []
-
+    $rootScope.buffers = {}
     $scope.hostport = "localhost:9001"
     $scope.proto = "weechat"
     $scope.password = ""
