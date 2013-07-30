@@ -38,10 +38,11 @@
         </form>
       </div>
       <div ng-show="connected">
+
         <div ng-repeat="(key, content) in buffers">
-          {{ content.full_name }}
+          <a ng-click="setActiveBuffer(key)">{{ content.full_name }}</a>
         </div>
-        <div ng-repeat="bufferline in buffer">
+        <div ng-repeat="bufferline in activeBuffer.lines">
           <p>
             <span ng-repeat="part in bufferline" class="text">
               {{ part.text }}

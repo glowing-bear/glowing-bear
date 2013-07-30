@@ -185,6 +185,7 @@ weechat.factory('connection', ['$rootScope', 'colors', function($scope, colors) 
             buffers = {};
             for (var i = 0; i < hdaObject['content'].length; i++) {
                 content = hdaObject['content'][i];
+                content['lines'] = [];
                 console.log('content', content);
                 var pointer = content['pointers'][0];
                 buffers[pointer] = content;
@@ -197,9 +198,11 @@ weechat.factory('connection', ['$rootScope', 'colors', function($scope, colors) 
         var handleBufferLineAdded = function(message) {
 
             var prefix = colors.parse(message['objects'][0]['content'][0]['prefix']);
-            var message = colors.parse(message['objects'][0]['content'][0]['message']);
-            var buffer_line = _.union(prefix, message);
-            $scope.buffer.push(buffer_line);
+            var text = colors.parse(message['objects'][0]['content'][0]['message']);
+            var buffer = message['objects'][0]['content'][0]['buffer'];
+            var buffer_line = _.union(prefix, text);
+            console.log('BUFFER: ', $scope.buffers[buffer]);
+            $scope.buffers[buffer]['lines'].push(buffer_line);
         }
 
         var sendMessage = function(message) {
@@ -222,14 +225,20 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', 'connection', functio
 
     $rootScope.buffer = []
     $rootScope.buffers = {}
+    $rootScope.activeBuffer = null;
     $scope.hostport = "localhost:9001"
     $scope.proto = "weechat"
     $scope.password = ""
 
+    $scope.setActiveBuffer = function(key) {
+        console.log('change buffer');
+        $rootScope.activeBuffer = $rootScope.buffers[key];
+    };
+
     $scope.sendMessage = function() {
         connection.sendMessage($scope.command);
         $scope.command = "";
-    },
+    };
 
     $scope.connect = function() {
         connection.connect($scope.hostport, $scope.proto, $scope.password);
