@@ -206,7 +206,7 @@ weechat.factory('connection', ['$rootScope', 'colors', function($scope, colors) 
         }
 
         var sendMessage = function(message) {
-            message = message + "\n"
+            message = "input " + $scope.activeBuffer['full_name'] + " " + message + "\n"
             doSend(message);
         }
 
