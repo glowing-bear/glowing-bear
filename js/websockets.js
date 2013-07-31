@@ -159,13 +159,14 @@ weechat.factory('connection', ['$rootScope', 'colors', function($scope, colors) 
 
         var parseMessage = function(message) {
             
-            if (message['id'] == '_buffer_line_added') {
-                types[message['id']](message);
-            }
+                
+
 
             if (!message['id']) {
                 // should only be in case of hda objects
                 parseObjects(message['objects']);
+            } else {
+                types[message['id']](message);
             }
         };
     
@@ -205,13 +206,20 @@ weechat.factory('connection', ['$rootScope', 'colors', function($scope, colors) 
             $scope.buffers[buffer]['lines'].push(buffer_line);
         }
 
+        var handleBufferOpened = function(message) {
+            var fullName = message['objects'][0]['content'][0]['full_name']
+            var buffer = message['objects'][0]['content'][0]['pointers'][0]
+            $scope.buffers[buffer] = { 'lines':[], 'full_name':fullName }
+            console.log($scope.buffers);
+        }
         var sendMessage = function(message) {
             message = "input " + $scope.activeBuffer['full_name'] + " " + message + "\n"
             doSend(message);
         }
 
         var types = {
-            _buffer_line_added: handleBufferLineAdded
+            _buffer_line_added: handleBufferLineAdded,
+            _buffer_opened: handleBufferOpened
         }
 
         return {
