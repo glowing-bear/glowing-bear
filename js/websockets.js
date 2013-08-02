@@ -106,126 +106,129 @@ weechat.factory('colors', [function($scope) {
 
 
 weechat.factory('connection', ['$rootScope', 'colors', function($scope, colors) {
-        protocol = new Protocol();
-        var websocket = null;
+    protocol = new Protocol();
+    var websocket = null;
 
-        var doSend = function(message) {
+    var doSend = function(message) {
 
-          msgs = message.replace(/[\r\n]+$/g, "").split("\n");
-          for (var i = 0; i < msgs.length; i++) {
+        msgs = message.replace(/[\r\n]+$/g, "").split("\n");
+        for (var i = 0; i < msgs.length; i++) {
             console.log('=' + msgs[i] + '=');
             $scope.commands.push("SENT: " + msgs[i]);
-          }
-          websocket.send(message);
         }
-        var connect = function (hostport, proto, password) {
-            websocket = new WebSocket("ws://" + hostport + "/weechat");
-            websocket.binaryType = "arraybuffer"
+        websocket.send(message);
+    }
+    var connect = function (hostport, proto, password) {
+        websocket = new WebSocket("ws://" + hostport + "/weechat");
+        websocket.binaryType = "arraybuffer"
 
-            websocket.onopen = function (evt) {
-              if (proto == "weechat") {
+        websocket.onopen = function (evt) {
+            if (proto == "weechat") {
                 doSend("init compression=off\nversion\n");
                 doSend("hdata buffer:gui_buffers(*) full_name\n");
                 doSend("sync\n");
-              } else {
-                doSend("PASS " + password + "\r\nNICK test\r\nUSER test 0 * :test\r\n");
-              }
-              $scope.connected = true;
-              $scope.$apply();
-            }
-
-            websocket.onclose = function (evt) {
-              console.log("disconnected", "Disconnected");
-              $scope.connected = false;
-            }
-
-            websocket.onmessage = function (evt) {
-	      protocol.setData(evt.data);
-	      message = protocol.parse()
-              console.log(message);
-              $scope.commands.push("RECV: " + evt.data + " TYPE:" + evt.type) ;
-              parseMessage(message);
-	      data = evt.data;
-              $scope.$apply();
-            }
-
-
-            websocket.onerror = function (evt) {
-              console.log("error", "ERROR: " + evt.data);
-            }
-
-            this.websocket = websocket;
-        }
-
-        var parseMessage = function(message) {
-            
-                
-
-
-            if (!message['id']) {
-                // should only be in case of hda objects
-                parseObjects(message['objects']);
             } else {
-                types[message['id']](message);
+                doSend("PASS " + password + "\r\nNICK test\r\nUSER test 0 * :test\r\n");
             }
-        };
+            $scope.connected = true;
+            $scope.$apply();
+        }
+
+        websocket.onclose = function (evt) {
+            console.log("disconnected", "Disconnected");
+            $scope.connected = false;
+        }
+
+        websocket.onmessage = function (evt) {
+	    protocol.setData(evt.data);
+	    message = protocol.parse()
+            console.log(message);
+            $scope.commands.push("RECV: " + evt.data + " TYPE:" + evt.type) ;
+            parseMessage(message);
+	    data = evt.data;
+            $scope.$apply();
+        }
+
+
+        websocket.onerror = function (evt) {
+            console.log("error", "ERROR: " + evt.data);
+        }
+
+        this.websocket = websocket;
+    }
+
+    var parseMessage = function(message) {
+        
+        
+
+
+        if (!message['id']) {
+            // should only be in case of hda objects
+            parseObjects(message['objects']);
+        } else {
+            types[message['id']](message);
+        }
+    };
     
     
-        var parseObjects = function(objects) {
+    var parseObjects = function(objects) {
 
-            for (var i = 0; i < objects.length ; i++) {
-                console.log('type', objects[i]['type']);
-                if (objects[i]['type'] == 'hda') {
-                    parseHdaObject(objects[i]);
-                }
+        for (var i = 0; i < objects.length ; i++) {
+            console.log('type', objects[i]['type']);
+            if (objects[i]['type'] == 'hda') {
+                parseHdaObject(objects[i]);
             }
         }
+    }
 
-        var parseHdaObject = function(hdaObject) {
-            console.log('parse hda', hdaObject['content'], hdaObject['content'].length);
-            buffers = {};
-            for (var i = 0; i < hdaObject['content'].length; i++) {
-                content = hdaObject['content'][i];
-                content['lines'] = [];
-                console.log('content', content);
-                var pointer = content['pointers'][0];
-                buffers[pointer] = content;
-            }
-
-            $scope.buffers = buffers;
+    var parseHdaObject = function(hdaObject) {
+        console.log('parse hda', hdaObject['content'], hdaObject['content'].length);
+        buffers = {};
+        for (var i = 0; i < hdaObject['content'].length; i++) {
+            content = hdaObject['content'][i];
+            content['lines'] = [];
+            console.log('content', content);
+            var pointer = content['pointers'][0];
+            buffers[pointer] = content;
         }
+
+        $scope.buffers = buffers;
+    }
     
 
-        var handleBufferLineAdded = function(message) {
+    var handleBufferLineAdded = function(message) {
 
-            var prefix = colors.parse(message['objects'][0]['content'][0]['prefix']);
-            var text = colors.parse(message['objects'][0]['content'][0]['message']);
-            var buffer = message['objects'][0]['content'][0]['buffer'];
-            var buffer_line = _.union(prefix, text);
-            console.log('BUFFER: ', $scope.buffers[buffer]);
-            $scope.buffers[buffer]['lines'].push(buffer_line);
-        }
+        var prefix = colors.parse(message['objects'][0]['content'][0]['prefix']);
+        var text = colors.parse(message['objects'][0]['content'][0]['message']);
+        var buffer = message['objects'][0]['content'][0]['buffer'];
+        var buffer_line = _.union(prefix, text);
+        console.log('BUFFER: ', $scope.buffers[buffer]);
+        $scope.buffers[buffer]['lines'].push(buffer_line);
+    }
 
-        var handleBufferOpened = function(message) {
-            var fullName = message['objects'][0]['content'][0]['full_name']
-            var buffer = message['objects'][0]['content'][0]['pointers'][0]
-            $scope.buffers[buffer] = { 'lines':[], 'full_name':fullName }
-            console.log($scope.buffers);
-        }
-        var sendMessage = function(message) {
-            message = "input " + $scope.activeBuffer['full_name'] + " " + message + "\n"
-            doSend(message);
-        }
+    var handleBufferOpened = function(message) {
+        console.log('buffer opened');
+        var fullName = message['objects'][0]['content'][0]['full_name']
+        var buffer = message['objects'][0]['content'][0]['pointers'][0]
+        $scope.buffers[buffer] = { 'lines':[], 'full_name':fullName }
+        console.log($scope.buffers);
+    }
 
-        var types = {
-            _buffer_line_added: handleBufferLineAdded,
-            _buffer_opened: handleBufferOpened
-        }
+    var sendMessage = function(message) {
+        message = "input " + $scope.activeBuffer['full_name'] + " " + message + "\n"
+        console.log($scope.activeBuffer);
+        doSend(message);
+    }
 
-        return {
-            connect: connect,
-            sendMessage: sendMessage
-        }
+    var types = {
+        _buffer_line_added: handleBufferLineAdded,
+        _buffer_opened: handleBufferOpened
+    }
+
+    return {
+        connect: connect,
+        sendMessage: sendMessage
+    }
 }]);
 
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', 'connection', function ($rootScope, $scope, connection) {
@@ -251,5 +254,5 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', 'connection', functio
     $scope.connect = function() {
         connection.connect($scope.hostport, $scope.proto, $scope.password);
     }
-    }]
-);
+}]
+                  );
