@@ -105,7 +105,7 @@ weechat.factory('colors', [function($scope) {
 }]);
 
 
-weechat.factory('connection', ['$rootScope', 'colors', function($scope, colors) {
+weechat.factory('connection', ['$rootScope', 'colors', function($rootScope, colors) {
     protocol = new Protocol();
     var websocket = null;
 
@@ -114,7 +114,7 @@ weechat.factory('connection', ['$rootScope', 'colors', function($scope, colors) 
         msgs = message.replace(/[\r\n]+$/g, "").split("\n");
         for (var i = 0; i < msgs.length; i++) {
             console.log('=' + msgs[i] + '=');
-            $scope.commands.push("SENT: " + msgs[i]);
+            $rootScope.commands.push("SENT: " + msgs[i]);
         }
         websocket.send(message);
     }
@@ -130,23 +130,23 @@ weechat.factory('connection', ['$rootScope', 'colors', function($scope, colors) 
             } else {
                 doSend("PASS " + password + "\r\nNICK test\r\nUSER test 0 * :test\r\n");
             }
-            $scope.connected = true;
-            $scope.$apply();
+            $rootScope.connected = true;
+            $rootScope.$apply();
         }
 
         websocket.onclose = function (evt) {
             console.log("disconnected", "Disconnected");
-            $scope.connected = false;
+            $rootScope.connected = false;
         }
 
         websocket.onmessage = function (evt) {
 	    protocol.setData(evt.data);
 	    message = protocol.parse()
             console.log(message);
-            $scope.commands.push("RECV: " + evt.data + " TYPE:" + evt.type) ;
+            $rootScope.commands.push("RECV: " + evt.data + " TYPE:" + evt.type) ;
             parseMessage(message);
 	    data = evt.data;
-            $scope.$apply();
+            $rootScope.$apply();
         }
 
 
@@ -192,7 +192,7 @@ weechat.factory('connection', ['$rootScope', 'colors', function($scope, colors) 
             buffers[pointer] = content;
         }
 
-        $scope.buffers = buffers;
+        $rootScope.buffers = buffers;
     }
     
 
@@ -202,21 +202,21 @@ weechat.factory('connection', ['$rootScope', 'colors', function($scope, colors) 
         var text = colors.parse(message['objects'][0]['content'][0]['message']);
         var buffer = message['objects'][0]['content'][0]['buffer'];
         var buffer_line = _.union(prefix, text);
-        console.log('BUFFER: ', $scope.buffers[buffer]);
-        $scope.buffers[buffer]['lines'].push(buffer_line);
+        console.log('BUFFER: ', $rootScope.buffers[buffer]);
+        $rootScope.buffers[buffer]['lines'].push(buffer_line);
     }
 
     var handleBufferOpened = function(message) {
         console.log('buffer opened');
         var fullName = message['objects'][0]['content'][0]['full_name']
         var buffer = message['objects'][0]['content'][0]['pointers'][0]
-        $scope.buffers[buffer] = { 'lines':[], 'full_name':fullName }
-        console.log($scope.buffers);
+        $rootScope.buffers[buffer] = { 'lines':[], 'full_name':fullName }
+        console.log($rootScope.buffers);
     }
 
     var sendMessage = function(message) {
-        message = "input " + $scope.activeBuffer['full_name'] + " " + message + "\n"
-        console.log($scope.activeBuffer);
+        message = "input " + $rootScope.activeBuffer['full_name'] + " " + message + "\n"
+        console.log($rootScope.activeBuffer);
         doSend(message);
     }
 
