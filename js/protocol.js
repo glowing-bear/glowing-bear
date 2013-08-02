@@ -52,7 +52,7 @@ var Protocol = function() {
             for (var c = 0; c < uia.length; c++) {
                 _str[c] = String.fromCharCode(uia[c]);
             }
-            return _str.join("");
+            return decodeURIComponent(escape(_str.join("")));
         };
 
         var getInt = function() {
