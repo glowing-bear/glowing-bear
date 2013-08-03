@@ -43,11 +43,14 @@
           <a ng-click="setActiveBuffer(key)">{{ content.full_name }}</a>
         </div>
         <div ng-repeat="bufferline in activeBuffer.lines">
-          <p>
-            <span ng-repeat="part in bufferline" class="text">
-              {{ part.text }}
-            </span>
-          </p>
+
+          <span ng-repeat="part in bufferline.message" class="text">
+            {{ part.text }}
+          </span>
+          <div ng-bind-html-unsafe="bufferline.metadata"></div>
+
+
+          <br>
         </div>
               <form ng-submit="sendMessage()">
               <input type="text" ng-model="command"></input>

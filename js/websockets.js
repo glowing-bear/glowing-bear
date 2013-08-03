@@ -99,13 +99,10 @@ weechat.factory('colors', [function($scope) {
         parts: ['', 'black', 'dark gray', 'dark red', 'light red', 'dark green', 'light green', 'brown', 'yellow', 'dark blue', 'light blue', 'dark magenta', 'light magenta', 'dark cyan', 'light cyan', 'gray', 'white']
     }
 
-
-
-
 }]);
 
 
-weechat.factory('connection', ['$rootScope', 'colors', function($rootScope, colors) {
+weechat.factory('connection', ['$rootScope', '$http', 'colors', function($rootScope, $http, colors) {
     protocol = new Protocol();
     var websocket = null;
 
@@ -159,9 +156,6 @@ weechat.factory('connection', ['$rootScope', 'colors', function($rootScope, colo
 
     var parseMessage = function(message) {
         
-        
-
-
         if (!message['id']) {
             // should only be in case of hda objects
             parseObjects(message['objects']);
@@ -195,14 +189,27 @@ weechat.factory('connection', ['$rootScope', 'colors', function($rootScope, colo
         $rootScope.buffers = buffers;
     }
     
+    var findMetaData = function(message) {
+        if (message.indexOf('youtube.com') != -1) {
+            var index = message.indexOf("?v=");
+            var token = message.substr(index+3);
+            return '<iframe width="560" height="315" src="http://www.youtube.com/embed/' + token + '" frameborder="0" allowfullscreen></iframe>'
+        }
+        return null;
+
+    }
 
     var handleBufferLineAdded = function(message) {
 
+        var buffer_line = {}
         var prefix = colors.parse(message['objects'][0]['content'][0]['prefix']);
         var text = colors.parse(message['objects'][0]['content'][0]['message']);
         var buffer = message['objects'][0]['content'][0]['buffer'];
-        var buffer_line = _.union(prefix, text);
-        console.log('BUFFER: ', $rootScope.buffers[buffer]);
+        var message = _.union(prefix, text);
+        buffer_line['message'] = message;
+        buffer_line['metadata'] = findMetaData(text[0]['text']);
+
+
         $rootScope.buffers[buffer]['lines'].push(buffer_line);
     }
 
