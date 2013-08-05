@@ -141,10 +141,12 @@ weechat.factory('handlers', ['$rootScope', 'colors', function($rootScope, colors
         }
         $rootScope.buffers = buffers;
     }
+   
+    var handleEvent = function(event) {
+        if (_.has(eventHandlers, event['id'])) {
+            eventHandlers[event['id']](event);
+        }
 
-
-    var handleEvent = function(message) {
-        types[message['id']](message);
     }
 
     var findMetaData = function(message) {
@@ -157,7 +159,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', function($rootScope, colors
 
     }
 
-    var types = {
+    var eventHandlers = {
         bufinfo: handleBufferInfo,
         _buffer_line_added: handleBufferLineAdded,
         _buffer_opened: handleBufferOpened
