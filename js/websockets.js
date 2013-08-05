@@ -195,11 +195,14 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', funct
         websocket.onopen = function (evt) {
             // FIXME: does password need to be sent only if protocol is not weechat?
             if (proto == "weechat") {
-                doSend("init compression=off\nversion\n");
+                if (password) {
+                    doSend("init compression=off,password=" + password + "\n");
+                }
+
                 doSend("(bufinfo) hdata buffer:gui_buffers(*) full_name\n");
                 doSend("sync\n");
             } else {
-                doSend("PASS " + password + "\r\nNICK test\r\nUSER test 0 * :test\r\n");
+
             }
             $log.info("Connected to relay");
             $rootScope.connected = true;
