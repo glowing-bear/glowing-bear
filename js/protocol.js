@@ -134,8 +134,8 @@ var Protocol = function() {
             }
         }
 
-        self.parse = function() {
-
+        self.parse = function(data) {
+            self.setData(data);
             var header = getHeader();
             var id = getId();
             var objects = [];

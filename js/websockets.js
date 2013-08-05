@@ -126,8 +126,25 @@ weechat.factory('handlers', ['$rootScope', 'colors', function($rootScope, colors
         console.log($rootScope.buffers);
     }
 
+    var handleBufferInfo = function(message) {
+        // buffer info from message
+        var bufferInfos = message['objects'][0]['content'];
+        // buffers objects
+        var buffers = {};
+        for (var i = 0; i < bufferInfos.length ; i++) {
+            var bufferInfo = bufferInfos[i];
+            var pointer = bufferInfo['pointers'][0];
+
+            bufferInfo['lines'] = [];
+            buffers[pointer] = bufferInfo
+        }
+        $rootScope.buffers = buffers;
+    }
+
+
     var handleEvent = function(message) {
-            types[message['id']](message);
+        console.log(message);
+        types[message['id']](message);
     }
 
     var findMetaData = function(message) {
@@ -141,6 +158,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', function($rootScope, colors
     }
 
     var types = {
+        bufinfo: handleBufferInfo,
         _buffer_line_added: handleBufferLineAdded,
         _buffer_opened: handleBufferOpened
     }
@@ -172,7 +190,7 @@ weechat.factory('connection', ['$rootScope', '$http', 'handlers', 'colors', func
         websocket.onopen = function (evt) {
             if (proto == "weechat") {
                 doSend("init compression=off\nversion\n");
-                doSend("hdata buffer:gui_buffers(*) full_name\n");
+                doSend("(bufinfo) hdata buffer:gui_buffers(*) full_name\n");
                 doSend("sync\n");
             } else {
                 doSend("PASS " + password + "\r\nNICK test\r\nUSER test 0 * :test\r\n");
@@ -187,12 +205,11 @@ weechat.factory('connection', ['$rootScope', '$http', 'handlers', 'colors', func
         }
 
         websocket.onmessage = function (evt) {
-	    protocol.setData(evt.data);
-	    message = protocol.parse()
-            console.log(message);
+
+	    message = protocol.parse(evt.data)
+            handlers.handleEvent(message);
+
             $rootScope.commands.push("RECV: " + evt.data + " TYPE:" + evt.type) ;
-            parseMessage(message);
-	    data = evt.data;
             $rootScope.$apply();
         }
 
@@ -203,43 +220,6 @@ weechat.factory('connection', ['$rootScope', '$http', 'handlers', 'colors', func
 
         this.websocket = websocket;
     }
-
-    var parseMessage = function(message) {
-        
-        if (protocol.isEvent(message)) {
-            handlers.handleEvent(message);
-        } else {
-            parseObjects(message['objects']);
-        }
-
-    };
-    
-    
-    var parseObjects = function(objects) {
-
-        for (var i = 0; i < objects.length ; i++) {
-            console.log('type', objects[i]['type']);
-            if (objects[i]['type'] == 'hda') {
-                parseHdaObject(objects[i]);
-            }
-        }
-    }
-
-    var parseHdaObject = function(hdaObject) {
-        console.log('parse hda', hdaObject['content'], hdaObject['content'].length);
-        buffers = {};
-        for (var i = 0; i < hdaObject['content'].length; i++) {
-            content = hdaObject['content'][i];
-            content['lines'] = [];
-            console.log('content', content);
-            var pointer = content['pointers'][0];
-            buffers[pointer] = content;
-        }
-
-        $rootScope.buffers = buffers;
-    }
-    
-
 
     var sendMessage = function(message) {
         message = "input " + $rootScope.activeBuffer['full_name'] + " " + message + "\n"
