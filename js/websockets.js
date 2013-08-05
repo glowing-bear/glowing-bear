@@ -102,7 +102,57 @@ weechat.factory('colors', [function($scope) {
 }]);
 
 
-weechat.factory('connection', ['$rootScope', '$http', 'colors', function($rootScope, $http, colors) {
+weechat.factory('handlers', ['$rootScope', 'colors', function($rootScope, colors) {
+
+    var handleBufferLineAdded = function(message) {
+
+        var buffer_line = {}
+        var prefix = colors.parse(message['objects'][0]['content'][0]['prefix']);
+        var text = colors.parse(message['objects'][0]['content'][0]['message']);
+        var buffer = message['objects'][0]['content'][0]['buffer'];
+        var message = _.union(prefix, text);
+        buffer_line['message'] = message;
+        buffer_line['metadata'] = findMetaData(text[0]['text']);
+
+
+        $rootScope.buffers[buffer]['lines'].push(buffer_line);
+    }
+
+    var handleBufferOpened = function(message) {
+        console.log('buffer opened');
+        var fullName = message['objects'][0]['content'][0]['full_name']
+        var buffer = message['objects'][0]['content'][0]['pointers'][0]
+        $rootScope.buffers[buffer] = { 'lines':[], 'full_name':fullName }
+        console.log($rootScope.buffers);
+    }
+
+    var handleEvent = function(message) {
+            types[message['id']](message);
+    }
+
+    var findMetaData = function(message) {
+        if (message.indexOf('youtube.com') != -1) {
+            var index = message.indexOf("?v=");
+            var token = message.substr(index+3);
+            return '<iframe width="560" height="315" src="http://www.youtube.com/embed/' + token + '" frameborder="0" allowfullscreen></iframe>'
+        }
+        return null;
+
+    }
+
+    var types = {
+        _buffer_line_added: handleBufferLineAdded,
+        _buffer_opened: handleBufferOpened
+    }
+
+    return {
+        handleEvent: handleEvent
+
+    }
+
+}]);
+
+weechat.factory('connection', ['$rootScope', '$http', 'handlers', 'colors', function($rootScope, $http, handlers, colors) {
     protocol = new Protocol();
     var websocket = null;
 
@@ -160,7 +210,7 @@ weechat.factory('connection', ['$rootScope', '$http', 'colors', function($rootSc
             // should only be in case of hda objects
             parseObjects(message['objects']);
         } else {
-            types[message['id']](message);
+            handlers.handleEvent(message);
         }
     };
     
@@ -189,37 +239,7 @@ weechat.factory('connection', ['$rootScope', '$http', 'colors', function($rootSc
         $rootScope.buffers = buffers;
     }
     
-    var findMetaData = function(message) {
-        if (message.indexOf('youtube.com') != -1) {
-            var index = message.indexOf("?v=");
-            var token = message.substr(index+3);
-            return '<iframe width="560" height="315" src="http://www.youtube.com/embed/' + token + '" frameborder="0" allowfullscreen></iframe>'
-        }
-        return null;
 
-    }
-
-    var handleBufferLineAdded = function(message) {
-
-        var buffer_line = {}
-        var prefix = colors.parse(message['objects'][0]['content'][0]['prefix']);
-        var text = colors.parse(message['objects'][0]['content'][0]['message']);
-        var buffer = message['objects'][0]['content'][0]['buffer'];
-        var message = _.union(prefix, text);
-        buffer_line['message'] = message;
-        buffer_line['metadata'] = findMetaData(text[0]['text']);
-
-
-        $rootScope.buffers[buffer]['lines'].push(buffer_line);
-    }
-
-    var handleBufferOpened = function(message) {
-        console.log('buffer opened');
-        var fullName = message['objects'][0]['content'][0]['full_name']
-        var buffer = message['objects'][0]['content'][0]['pointers'][0]
-        $rootScope.buffers[buffer] = { 'lines':[], 'full_name':fullName }
-        console.log($rootScope.buffers);
-    }
 
     var sendMessage = function(message) {
         message = "input " + $rootScope.activeBuffer['full_name'] + " " + message + "\n"
@@ -227,10 +247,7 @@ weechat.factory('connection', ['$rootScope', '$http', 'colors', function($rootSc
         doSend(message);
     }
 
-    var types = {
-        _buffer_line_added: handleBufferLineAdded,
-        _buffer_opened: handleBufferOpened
-    }
+
 
     return {
         connect: connect,
