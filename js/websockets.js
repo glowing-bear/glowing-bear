@@ -206,12 +206,12 @@ weechat.factory('connection', ['$rootScope', '$http', 'handlers', 'colors', func
 
     var parseMessage = function(message) {
         
-        if (!message['id']) {
-            // should only be in case of hda objects
-            parseObjects(message['objects']);
-        } else {
+        if (protocol.isEvent(message)) {
             handlers.handleEvent(message);
+        } else {
+            parseObjects(message['objects']);
         }
+
     };
     
     

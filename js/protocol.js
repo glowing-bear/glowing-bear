@@ -1,5 +1,23 @@
 var Protocol = function() {
         var self = this;
+
+        self.isEvent = function(receivedMessage) {
+            /* 
+             * Determines whether or not the received message
+             * is an event.
+             *
+             * Right now, only the presence of an id is checked,
+             * as messages from the client don't specify the ID
+             *
+             * FIXME: check content of the id to dermine if message is an event
+             */  
+            if (receivedMessage['id']) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
         var getInfo = function() {
             var info = {};
             info.key = getString();
