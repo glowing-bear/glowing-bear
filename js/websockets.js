@@ -105,7 +105,6 @@ weechat.factory('colors', [function($scope) {
 weechat.factory('handlers', ['$rootScope', 'colors', function($rootScope, colors) {
 
     var handleBufferLineAdded = function(message) {
-
         var buffer_line = {}
         var prefix = colors.parse(message['objects'][0]['content'][0]['prefix']);
         var text = colors.parse(message['objects'][0]['content'][0]['message']);
@@ -113,19 +112,21 @@ weechat.factory('handlers', ['$rootScope', 'colors', function($rootScope, colors
         var message = _.union(prefix, text);
         buffer_line['message'] = message;
         buffer_line['metadata'] = findMetaData(text[0]['text']);
-
-
         $rootScope.buffers[buffer]['lines'].push(buffer_line);
     }
 
     var handleBufferOpened = function(message) {
-        console.log('buffer opened');
         var fullName = message['objects'][0]['content'][0]['full_name']
         var buffer = message['objects'][0]['content'][0]['pointers'][0]
         $rootScope.buffers[buffer] = { 'lines':[], 'full_name':fullName }
-        console.log($rootScope.buffers);
     }
 
+    /*
+     * Handle answers to (bufinfo) messages
+     *
+     * (bufinfo) messages are specified by this client. It is the first
+     * message that is sent to the relay after connection.
+     */
     var handleBufferInfo = function(message) {
         // buffer info from message
         var bufferInfos = message['objects'][0]['content'];
@@ -143,7 +144,6 @@ weechat.factory('handlers', ['$rootScope', 'colors', function($rootScope, colors
 
 
     var handleEvent = function(message) {
-        console.log(message);
         types[message['id']](message);
     }
 
@@ -170,24 +170,28 @@ weechat.factory('handlers', ['$rootScope', 'colors', function($rootScope, colors
 
 }]);
 
-weechat.factory('connection', ['$rootScope', '$http', 'handlers', 'colors', function($rootScope, $http, handlers, colors) {
+weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', function($rootScope, $log, handlers, colors) {
     protocol = new Protocol();
     var websocket = null;
 
-    var doSend = function(message) {
 
+    // Sanitizes messages to be sent to the weechat relay    
+    var doSend = function(message) {
         msgs = message.replace(/[\r\n]+$/g, "").split("\n");
         for (var i = 0; i < msgs.length; i++) {
-            console.log('=' + msgs[i] + '=');
+            $log.log('=' + msgs[i] + '=');
             $rootScope.commands.push("SENT: " + msgs[i]);
         }
         websocket.send(message);
     }
+    
+    // Takes care of the connection and websocket hooks
     var connect = function (hostport, proto, password) {
         websocket = new WebSocket("ws://" + hostport + "/weechat");
         websocket.binaryType = "arraybuffer"
 
         websocket.onopen = function (evt) {
+            // FIXME: does password need to be sent only if protocol is not weechat?
             if (proto == "weechat") {
                 doSend("init compression=off\nversion\n");
                 doSend("(bufinfo) hdata buffer:gui_buffers(*) full_name\n");
@@ -195,27 +199,26 @@ weechat.factory('connection', ['$rootScope', '$http', 'handlers', 'colors', func
             } else {
                 doSend("PASS " + password + "\r\nNICK test\r\nUSER test 0 * :test\r\n");
             }
+            $log.info("Connected to relay");
             $rootScope.connected = true;
             $rootScope.$apply();
         }
 
         websocket.onclose = function (evt) {
-            console.log("disconnected", "Disconnected");
+            $log.info("Disconnected from relay");
             $rootScope.connected = false;
+            $rootScope.$apply();
         }
 
         websocket.onmessage = function (evt) {
-
 	    message = protocol.parse(evt.data)
             handlers.handleEvent(message);
-
             $rootScope.commands.push("RECV: " + evt.data + " TYPE:" + evt.type) ;
             $rootScope.$apply();
         }
 
-
         websocket.onerror = function (evt) {
-            console.log("error", "ERROR: " + evt.data);
+            $log.error("Relay error " + evt.data);
         }
 
         this.websocket = websocket;
@@ -223,11 +226,8 @@ weechat.factory('connection', ['$rootScope', '$http', 'handlers', 'colors', func
 
     var sendMessage = function(message) {
         message = "input " + $rootScope.activeBuffer['full_name'] + " " + message + "\n"
-        console.log($rootScope.activeBuffer);
         doSend(message);
     }
-
-
 
     return {
         connect: connect,
@@ -246,7 +246,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', 'connection', functio
     $scope.password = ""
 
     $scope.setActiveBuffer = function(key) {
-        console.log('change buffer');
         $rootScope.activeBuffer = $rootScope.buffers[key];
     };
 
