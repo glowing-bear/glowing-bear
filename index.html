@@ -47,10 +47,8 @@
           <span ng-repeat="part in bufferline.message" class="text">
             {{ part.text }}
           </span>
-          <div ng-bind-html-unsafe="bufferline.metadata"></div>
+          <div ng-visible="bufferline.metadata" ng-bind-html-unsafe="bufferline.metadata"></div>
 
-
-          <br>
         </div>
               <form ng-submit="sendMessage()">
               <input type="text" ng-model="command"></input>
