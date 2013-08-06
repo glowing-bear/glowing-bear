@@ -39,9 +39,9 @@
       </div>
       <div ng-show="connected">
 
-        <div ng-repeat="(key, content) in buffers">
+        <span class="label" ng-class="{'label-success': content.notification }" ng-repeat="(key, content) in buffers">
           <a ng-click="setActiveBuffer(key)">{{ content.full_name }}</a>
-        </div>
+        </span>
         <div ng-repeat="bufferline in activeBuffer.lines">
 
           <span ng-repeat="part in bufferline.message" class="text">

@@ -112,13 +112,29 @@ weechat.factory('handlers', ['$rootScope', 'colors', function($rootScope, colors
         var message = _.union(prefix, text);
         buffer_line['message'] = message;
         buffer_line['metadata'] = findMetaData(text[0]['text']);
+        if (!_isActiveBuffer(buffer)) {
+            $rootScope.buffers[buffer]['notification'] = true;
+        }
+
         $rootScope.buffers[buffer]['lines'].push(buffer_line);
+    }
+
+    /*
+     * Returns whether or not this buffer is the active buffer
+     */
+    var _isActiveBuffer = function(buffer) {
+      if ($rootScope.activeBuffer['id'] == buffer) {
+          return true;
+      } else {
+          return false;
+      }
     }
 
     var handleBufferOpened = function(message) {
         var fullName = message['objects'][0]['content'][0]['full_name']
         var buffer = message['objects'][0]['content'][0]['pointers'][0]
-        $rootScope.buffers[buffer] = { 'lines':[], 'full_name':fullName }
+        $rootScope.buffers[buffer] = { 'id': buffer, 'lines':[], 'full_name':fullName }
+        
     }
 
     /*
@@ -135,7 +151,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', function($rootScope, colors
         for (var i = 0; i < bufferInfos.length ; i++) {
             var bufferInfo = bufferInfos[i];
             var pointer = bufferInfo['pointers'][0];
-
+            bufferInfo['id'] = pointer;
             bufferInfo['lines'] = [];
             buffers[pointer] = bufferInfo
         }
@@ -251,6 +267,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', 'connection', functio
     $scope.password = ""
 
     $scope.setActiveBuffer = function(key) {
+        $rootScope.buffers[key]['notification'] = false;
         $rootScope.activeBuffer = $rootScope.buffers[key];
     };
 
