@@ -47,11 +47,19 @@
           <span ng-repeat="part in bufferline.message" class="text">
             {{ part.text }}
           </span>
-          <div ng-visible="bufferline.metadata">
-            <div ng-repeat="metadata in bufferline.metadata">
-              <div ng-bind-html-unsafe="bufferline.metadata"></div>
+
+          <div ng-repeat="metadata in bufferline.metadata">
+            <div ng-show="metadata.visible">
+              <a ng-click="metadata.visible = false">Hide additional content</a>
+              <div ng-bind-html-unsafe="metadata.content"></div>
+
             </div>
+            <div ng-hide="metadata.visible">
+              <a ng-click="metadata.visible = true">Show additional content</a>
+            </div>
+            
           </div>
+
 
 
         </div>

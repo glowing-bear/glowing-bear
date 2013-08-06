@@ -116,6 +116,7 @@ weechat.factory('pluginManager', ['youtubePlugin', function(youtubePlugin) {
         for (var i = 0; i < plugins.length; i++) {
             var pluginContent = plugins[i].contentForMessage(message);
             if (pluginContent) {
+                var pluginContent = {'visible': false, 'content': pluginContent }
                 content.push(pluginContent);
             }
         }
