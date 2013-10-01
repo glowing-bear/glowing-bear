@@ -180,6 +180,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
         }
 
         var additionalContent = pluginManager.contentForMessage(text[0]['text']);
+
         if (additionalContent) {
             buffer_line['metadata'] = additionalContent;
         }
