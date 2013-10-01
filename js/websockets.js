@@ -137,6 +137,7 @@ weechat.factory('pluginManager', ['youtubePlugin', 'urlPlugin', 'imagePlugin', f
 }]);
 
 weechat.factory('youtubePlugin', [function() {
+
     var contentForMessage = function(message) {
         if (message.indexOf('youtube.com') != -1) {
             var index = message.indexOf("?v=");
@@ -150,6 +151,7 @@ weechat.factory('youtubePlugin', [function() {
         contentForMessage: contentForMessage,
         exclusive: true
     }
+
 }]);
 
 weechat.factory('urlPlugin', [function() {

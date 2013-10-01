@@ -1,0 +1,9 @@
+body {
+    font-family: monospace;
+    background-color: black;
+    color: white;
+}
+
+li.notification {
+    color: green;
+}
