@@ -205,6 +205,10 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
             bufferInfo['id'] = pointer;
             bufferInfo['lines'] = [];
             buffers[pointer] = bufferInfo
+            if (i == 0) {
+                // first buffer is active buffer by default
+                $rootScope.activeBuffer = buffers[pointer];
+            }
         }
         $rootScope.buffers = buffers;
     }
