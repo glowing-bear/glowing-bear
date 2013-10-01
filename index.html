@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="weechat">
+<html>
   <head>
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
     <script type="text/javascript" src="js/angular.min.js"></script>
@@ -7,7 +7,7 @@
     <script type="text/javascript" src="js/protocol.js"></script>
     <script type="text/javascript" src="js/websockets.js"></script>
   </head>
-  <body>
+  <body ng-app="weechat">
     <div ng-controller="WeechatCtrl">
       <div ng-hide="connected">
         <form class="form-horizontal">
