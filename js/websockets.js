@@ -149,11 +149,10 @@ weechat.factory('youtubePlugin', [function() {
 
 weechat.factory('urlPlugin', [function() {
     var contentForMessage = function(message) {
-        var prefix = 'http://';
-        var linkIndex = message.indexOf(prefix);
-        if (linkIndex != -1) {
-            var token = message.substr(linkIndex);
-            return '<a href="' + token + '">' + token + '</a>';
+        var urlPattern = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/;
+        var url = message.match(urlPattern);
+        if (url) {
+            return '<a href="' + url[0] + '">' + message + '</a>';
         }
         return null;
     }
