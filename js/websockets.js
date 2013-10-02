@@ -330,6 +330,9 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', funct
         }
 
         websocket.onerror = function (evt) {
+            if (evt.type == "error" && websocket.readyState == 0) {
+                $rootScope.errorMessage = true;
+            }
             $log.error("Relay error " + evt.data);
         }
 

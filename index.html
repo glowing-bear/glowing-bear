@@ -13,6 +13,9 @@
       <div ng-hide="connected">
         <form class="form-horizontal">
           <legend>Connection</legend>
+            <div class="alert alert-danger" ng-show="errorMessage">
+              <strong>Oh no!</strong> We cannot connect!
+            </div>
           <div class="control-group">
             <label class="control-label" for="hostport">Hostport</label>
             <div class="controls">
