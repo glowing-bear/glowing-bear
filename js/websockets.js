@@ -118,6 +118,10 @@ weechat.factory('pluginManager', ['youtubePlugin', 'urlPlugin', function(youtube
             if (pluginContent) {
                 var pluginContent = {'visible': false, 'content': pluginContent }
                 content.push(pluginContent);
+
+                if (plugins[i].unique) {
+                    break;
+                }
             }
         }
         
@@ -143,7 +147,8 @@ weechat.factory('youtubePlugin', [function() {
     }
 
     return {
-        contentForMessage: contentForMessage
+        contentForMessage: contentForMessage,
+        unique: true
     }
 }]);
 
@@ -158,7 +163,8 @@ weechat.factory('urlPlugin', [function() {
     }
 
     return {
-        contentForMessage: contentForMessage
+        contentForMessage: contentForMessage,
+        unique: false
     }
 }]);
 
