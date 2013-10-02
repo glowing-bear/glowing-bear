@@ -101,9 +101,9 @@ weechat.factory('colors', [function($scope) {
 
 }]);
 
-weechat.factory('pluginManager', ['youtubePlugin', 'urlPlugin', function(youtubePlugin, urlPlugin) {
+weechat.factory('pluginManager', ['youtubePlugin', 'urlPlugin', 'imagePlugin', function(youtubePlugin, urlPlugin, imagePlugin) {
 
-    var plugins = [youtubePlugin, urlPlugin]
+    var plugins = [youtubePlugin, urlPlugin, imagePlugin]
 
     var hookPlugin = function(plugin) {
         plugins.push(plugin);
@@ -163,7 +163,20 @@ weechat.factory('urlPlugin', [function() {
     }
 }]);
 
+weechat.factory('imagePlugin', [function() {
+    var contentForMessage = function(message) {
+		var urls = message.match(/https?:\/\/[^\s]*\.(jpg|png|gif)\b/)
+		if (urls != null) {
+			var url = urls[0]; /* Actually parse one url per message */
+			return '<img src="' + url + '" height="300">';
+        }
+        return null;
+    }
 
+    return {
+        contentForMessage: contentForMessage
+    }
+}]);
 
 weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($rootScope, colors, pluginManager) {
 
