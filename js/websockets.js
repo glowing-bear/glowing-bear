@@ -167,6 +167,11 @@ weechat.factory('urlPlugin', [function() {
 
 weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($rootScope, colors, pluginManager) {
 
+    var handleBufferClosing = function(message) {
+        var buffer_pointer = message['objects'][0]['content'][0]['pointers'][0];
+        $rootScope.closeBuffer(buffer_pointer);
+    }
+
     var handleBufferLineAdded = function(message) {
         var buffer_line = {}
         var prefix = colors.parse(message['objects'][0]['content'][0]['prefix']);
@@ -249,6 +254,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
 
     var eventHandlers = {
         bufinfo: handleBufferInfo,
+        _buffer_closing: handleBufferClosing, 
         _buffer_line_added: handleBufferLineAdded,
         _buffer_opened: handleBufferOpened
     }
@@ -337,6 +343,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', 'connection', functio
     $scope.hostport = "localhost:9001"
     $scope.proto = "weechat"
     $scope.password = ""
+
+
+    $rootScope.closeBuffer = function(buffer_pointer) {
+        delete($rootScope.buffers[buffer_pointer]);
+        var first_buffer = _.keys($rootScope.buffers)[0];
+        $scope.setActiveBuffer(first_buffer);
+    }
 
     $scope.setActiveBuffer = function(key) {
         $rootScope.buffers[key]['notification'] = false;
