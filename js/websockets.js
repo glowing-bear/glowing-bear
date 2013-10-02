@@ -101,9 +101,9 @@ weechat.factory('colors', [function($scope) {
 
 }]);
 
-weechat.factory('pluginManager', ['youtubePlugin', function(youtubePlugin) {
+weechat.factory('pluginManager', ['youtubePlugin', 'urlPlugin', function(youtubePlugin, urlPlugin) {
 
-    var plugins = [youtubePlugin]
+    var plugins = [youtubePlugin, urlPlugin]
 
     var hookPlugin = function(plugin) {
         plugins.push(plugin);
@@ -146,6 +146,23 @@ weechat.factory('youtubePlugin', [function() {
         contentForMessage: contentForMessage
     }
 }]);
+
+weechat.factory('urlPlugin', [function() {
+    var contentForMessage = function(message) {
+        var prefix = 'http://';
+        var linkIndex = message.indexOf(prefix);
+        if (linkIndex != -1) {
+            var token = message.substr(linkIndex);
+            return '<a href="' + token + '">' + token + '</a>';
+        }
+        return null;
+    }
+
+    return {
+        contentForMessage: contentForMessage
+    }
+}]);
+
 
 
 weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($rootScope, colors, pluginManager) {
