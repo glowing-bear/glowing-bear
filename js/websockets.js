@@ -118,6 +118,10 @@ weechat.factory('pluginManager', ['youtubePlugin', 'urlPlugin', 'imagePlugin', f
             if (pluginContent) {
                 var pluginContent = {'visible': false, 'content': pluginContent }
                 content.push(pluginContent);
+
+                if (plugins[i].unique) {
+                    break;
+                }
             }
         }
         
@@ -143,23 +147,24 @@ weechat.factory('youtubePlugin', [function() {
     }
 
     return {
-        contentForMessage: contentForMessage
+        contentForMessage: contentForMessage,
+        unique: true
     }
 }]);
 
 weechat.factory('urlPlugin', [function() {
     var contentForMessage = function(message) {
-        var prefix = 'http://';
-        var linkIndex = message.indexOf(prefix);
-        if (linkIndex != -1) {
-            var token = message.substr(linkIndex);
-            return '<a href="' + token + '">' + token + '</a>';
+        var urlPattern = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/;
+        var url = message.match(urlPattern);
+        if (url) {
+            return '<a href="' + url[0] + '">' + message + '</a>';
         }
         return null;
     }
 
     return {
-        contentForMessage: contentForMessage
+        contentForMessage: contentForMessage,
+        unique: false
     }
 }]);
 
