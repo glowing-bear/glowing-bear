@@ -4,6 +4,58 @@ body {
     color: white;
 }
 
+.color-light-green {
+    color: chartreuse;
+}
+
+.color-27 {
+    color: deepskyblue;
+}
+
+.color-28 {
+    color: greenyellow;
+}
+
+.color-00 {
+    color: coral;
+}
+
+.color-yellow {
+    color: yellow;
+}
+
+.color-dark-red {
+    color: darkred;
+}
+
+.color-dark-green {
+    color: green;
+}
+
+.color-dark-blue {
+    color: darkblue;
+}
+
+.color-dark-gray {
+    color: gray;
+}
+
+.color-gray {
+    color: lightgray;
+}
+
+.color-brown {
+    color: brown;
+}
+
+.color-cyan {
+    color: cyan;
+}
+
+.color-dark-cyan {
+    color: darkcyan;
+}
+
 li.notification {
     color: green;
 }

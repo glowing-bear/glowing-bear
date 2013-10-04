@@ -24,6 +24,13 @@ weechat.factory('colors', [function($scope) {
         return c;
     }
 
+    function prepareCss(color) {
+        /*
+         * Translates a weechat color string to CSS
+         */
+        return'color-' + color.replace(' ', '-');
+    }
+
     var prefixes = {
         '\x19': function() {
             if (part.match(/^F/)) {
@@ -95,6 +102,7 @@ weechat.factory('colors', [function($scope) {
         
         setAttrs: setAttrs,
         getColor: getColor,
+        prepareCss: prepareCss,
         parse: parse,
         parts: ['', 'black', 'dark gray', 'dark red', 'light red', 'dark green', 'light green', 'brown', 'yellow', 'dark blue', 'light blue', 'dark magenta', 'light magenta', 'dark cyan', 'light cyan', 'gray', 'white']
     }
@@ -198,6 +206,12 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
         var text = colors.parse(message['objects'][0]['content'][0]['message']);
         var buffer = message['objects'][0]['content'][0]['buffer'];
         var message = _.union(prefix, text);
+        message =_.map(message, function(message) {
+            if ('fg' in message) {
+                message['fg'] = colors.prepareCss(message['fg']);
+            }
+            return message;
+        });
         buffer_line['message'] = message;
 
         if (!_isActiveBuffer(buffer)) {

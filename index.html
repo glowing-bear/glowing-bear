@@ -49,7 +49,7 @@
         </span>
         <div ng-repeat="bufferline in activeBuffer.lines">
 
-          <span ng-repeat="part in bufferline.message" class="text">
+          <span ng-repeat="part in bufferline.message" class="text {{ part.fg }}">
             {{ part.text }}
           </span>
 
