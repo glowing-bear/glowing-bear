@@ -15,9 +15,9 @@
       <div ng-hide="connected">
         <form class="form-horizontal">
           <legend>Connection</legend>
-            <div class="alert alert-danger" ng-show="errorMessage">
-              <strong>Oh no!</strong> We cannot connect!
-            </div>
+          <div class="alert alert-danger" ng-show="errorMessage">
+            <strong>Oh no!</strong> We cannot connect!
+          </div>
           <div class="control-group">
             <label class="control-label" for="hostport">Hostport</label>
             <div class="controls">
@@ -38,7 +38,7 @@
           </div>
           <div class="control-group">
             <div class="controls">
-               <button class="btn btn-primary" ng-click="connect()">Connect!</button>
+              <button class="btn btn-primary" ng-click="connect()">Connect!</button>
             </div>
           </div>
         </form>
@@ -69,11 +69,11 @@
 
 
         </div>
-              <form ng-submit="sendMessage()">
-              <input type="text" ng-model="command"></input>
-              <input type="submit" class="btn btn-primary"></button>
-              </form>
-      </div>
-    </div>
-  </body>
+        <form ng-submit="sendMessage()">
+          <input type="text" ng-model="command"></input>
+          <input type="submit" class="btn btn-primary"></index>
+</form>
+</div>
+</div>
+</body>
 </html>
