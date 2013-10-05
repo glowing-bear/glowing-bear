@@ -13,13 +13,13 @@ var WeeChatProtocol = function() {
     };
 };
 WeeChatProtocol._uia2s = function(uia) {
-    var _str = [];
+    var str = [];
 
     for (var c = 0; c < uia.length; c++) {
-        _str[c] = String.fromCharCode(uia[c]);
+        str.push(String.fromCharCode(uia[c]));
     }
 
-    return decodeURIComponent(escape(_str.join("")));
+    return decodeURIComponent(escape(str.join('')));
 };
 WeeChatProtocol.prototype = {
     _getType: function() {
