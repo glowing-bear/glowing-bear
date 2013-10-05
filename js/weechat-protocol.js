@@ -72,37 +72,37 @@ WeeChatProtocol.prototype = {
     _getPointer: function() {
         var l = this._getChar();
         var pointer = this._getSlice(l)
-        var parsed_data = new Uint8Array(pointer);
+        var parsedData = new Uint8Array(pointer);
 
-        return WeeChatProtocol._uia2s(parsed_data);
+        return WeeChatProtocol._uia2s(parsedData);
     },
     _getInt: function() {
-        var parsed_data = new Uint8Array(this._getSlice(4));
+        var parsedData = new Uint8Array(this._getSlice(4));
 
-        return ((parsed_data[0] & 0xff) << 24) |
-            ((parsed_data[1] & 0xff) << 16) |
-            ((parsed_data[2] & 0xff) << 8) |
-            (parsed_data[3] & 0xff);
+        return ((parsedData[0] & 0xff) << 24) |
+            ((parsedData[1] & 0xff) << 16) |
+            ((parsedData[2] & 0xff) << 8) |
+            (parsedData[3] & 0xff);
     },
     _getChar: function() {
-        var parsed_data = new Uint8Array(this._getSlice(1));
+        var parsedData = new Uint8Array(this._getSlice(1));
 
-        return parsed_data[0];
+        return parsedData[0];
     },
     _getString: function() {
         var l = this._getInt();
 
         if (l > 0) {
             var s = this._getSlice(l);
-            var parsed_data = new Uint8Array(s);
+            var parsedData = new Uint8Array(s);
 
-            return WeeChatProtocol._uia2s(parsed_data);
+            return WeeChatProtocol._uia2s(parsedData);
         }
 
         return "";
     },
     _getSlice: function(length) {
-        var slice = this.data.slice(0,length);
+        var slice = this.data.slice(0, length);
 
         this.data = this.data.slice(length);
 
@@ -125,10 +125,10 @@ WeeChatProtocol.prototype = {
         var type = this._getType();
 
         if (type) {
-            return object = {
+            return {
                 type: type,
                 content: self._runType(type),
-            }
+            };
         }
     },
     _getArray: function() {
