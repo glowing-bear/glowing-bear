@@ -224,7 +224,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
 
 
         var buffer = message['objects'][0]['content'][0]['buffer'];
-        var timestamp = message['objects'][0]['content'][0]['date'];        
+        var timestamp = parseInt(message['objects'][0]['content'][0]['date']) * 1e3;
         var text = colors.parse(message['objects'][0]['content'][0]['message']);
         var content = parseLineAddedTextElements(message);
         var additionalContent = pluginManager.contentForMessage(text[0]['text']);
