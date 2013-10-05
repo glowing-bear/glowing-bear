@@ -9,7 +9,15 @@ var WeeChatProtocol = function() {
         'lon': this._getStrNumber,
         'tim': this._getTime,
         'buf': this._getString,
-        'arr': this._getArray
+        'arr': this._getArray,
+        'htb': this._getHashTable
+    };
+    this._typesStr = {
+        'chr': this._strDirect,
+        'str': this._strDirect,
+        'int': this._strToString,
+        'tim': this._strToString,
+        'ptr': this._strDirect
     };
 };
 WeeChatProtocol._uia2s = function(uia) {
@@ -34,10 +42,22 @@ WeeChatProtocol.prototype = {
         return boundCb();
     },
     _getStrNumber: function() {
-        var len = new Uint8Array(this._getSlice(1))[0];
+        var len = this._getByte();
         var str = this._getSlice(len);
 
         return WeeChatProtocol._uia2s(new Uint8Array(str));
+    },
+    _strDirect: function(obj) {
+        return obj;
+    },
+    _strToString: function(obj) {
+        return obj.toString();
+    },
+    _objToString: function(obj, type) {
+        var cb = this._typesStr[type];
+        var boundCb = cb.bind(this);
+
+        return boundCb(obj);
     },
     _getInfo: function() {
         var info = {};
@@ -80,7 +100,7 @@ WeeChatProtocol.prototype = {
     },
     _getTime: function() {
         var str = this._getStrNumber();
-        
+
         return new Date(parseInt(str));
     },
     _getInt: function() {
@@ -91,10 +111,13 @@ WeeChatProtocol.prototype = {
             ((parsedData[2] & 0xff) << 8) |
             (parsedData[3] & 0xff);
     },
-    _getChar: function() {
+    _getByte: function() {
         var parsedData = new Uint8Array(this._getSlice(1));
 
         return parsedData[0];
+    },
+    _getChar: function() {
+        return String.fromCharCode(this._getByte());
     },
     _getString: function() {
         var l = this._getInt();
@@ -110,7 +133,7 @@ WeeChatProtocol.prototype = {
     },
     _getHeader: function() {
         var len = this._getInt();
-        var comp = this._getChar();
+        var comp = this._getByte();
 
         return {
             length: len,
@@ -130,6 +153,24 @@ WeeChatProtocol.prototype = {
                 content: self._runType(type),
             };
         }
+    },
+    _getHashTable: function() {
+        var self = this;
+        var typeKeys, typeValues, count;
+        var dict = {};
+
+        typeKeys = this._getType();
+        typeValues = this._getType();
+        count = this._getInt();
+
+        for (var i = 0; i < count; ++i) {
+            var key = self._runType(typeKeys);
+            var keyStr = self._objToString(key, typeKeys);
+            var value = self.runType(typeValues);
+            dict[keyStr] = value;
+        }
+
+        return dict;
     },
     _getArray: function() {
         var self = this;
