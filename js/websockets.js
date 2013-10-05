@@ -324,11 +324,8 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', funct
             // FIXME: does password need to be sent only if protocol is not weechat?
             if (proto == "weechat") {
                 if (password) {
-                    doSend("init compression=off,password=" + password + "\n");
+                    doSend("init compression=off,password=" + password + "\n(bufinfo) hdata buffer:gui_buffers(*) full_name\nsync\n");
                 }
-
-                doSend("(bufinfo) hdata buffer:gui_buffers(*) full_name\n");
-                doSend("sync\n");
             } else {
 
             }
