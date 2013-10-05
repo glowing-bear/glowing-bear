@@ -10,70 +10,73 @@
     <script type="text/javascript" src="js/protocol.js"></script>
     <script type="text/javascript" src="js/websockets.js"></script>
   </head>
-  <body ng-app="weechat">
-    <div ng-controller="WeechatCtrl">
-      <div ng-hide="connected">
-        <form class="form-horizontal">
-          <legend>Connection</legend>
-          <div class="alert alert-danger" ng-show="errorMessage">
-            <strong>Oh no!</strong> We cannot connect!
-          </div>
-          <div class="control-group">
-            <label class="control-label" for="hostport">Hostport</label>
-            <div class="controls">
-              <input type="text" id="hostport" ng-model="hostport" placeholder="Hostport">
+  <body ng-app="weechat" ng-controller="WeechatCtrl">
+    <div id="wrap">
+      <div>
+        <div ng-hide="connected">
+          <form class="form-horizontal">
+            <legend>Connection</legend>
+            <div class="alert alert-danger" ng-show="errorMessage">
+              <strong>Oh no!</strong> We cannot connect!
             </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label" for="proto">Proto</label>
-            <div class="controls">
-              <input type="text" id="proto" ng-model="proto" placeholder="proto">
+            <div class="control-group">
+              <label class="control-label" for="hostport">Hostport</label>
+              <div class="controls">
+                <input type="text" id="hostport" ng-model="hostport" placeholder="Hostport">
+              </div>
             </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label" for="password">Password</label>
-            <div class="controls">
-              <input type="password" id="password" ng-model="password" placeholder="Password">
+            <div class="control-group">
+              <label class="control-label" for="proto">Proto</label>
+              <div class="controls">
+                <input type="text" id="proto" ng-model="proto" placeholder="proto">
+              </div>
             </div>
-          </div>
-          <div class="control-group">
-            <div class="controls">
-              <button class="btn btn-primary" ng-click="connect()">Connect!</button>
+            <div class="control-group">
+              <label class="control-label" for="password">Password</label>
+              <div class="controls">
+                <input type="password" id="password" ng-model="password" placeholder="Password">
+              </div>
             </div>
-          </div>
-        </form>
-      </div>
-      <div ng-show="connected">
-
-        <span class="label" ng-class="{'label-success': content.notification }" ng-repeat="(key, content) in buffers">
-          <a ng-click="setActiveBuffer(key)">{{ content.full_name }}</a>
-        </span>
-        <div ng-repeat="bufferline in activeBuffer.lines">
-          <span class="timestamp color-dark-gray">{{ bufferline.timestamp  | date: 'h:mm:ss'}}</span>
-          <span ng-repeat="part in bufferline.content" class="text {{ part.fg }}">
-            {{ part.text }}
-          </span>
-
-          <div ng-repeat="metadata in bufferline.metadata">
-            <div ng-show="metadata.visible">
-              <a ng-click="metadata.visible = false">Hide additional content</a>
-              <div ng-bind-html-unsafe="metadata.content"></div>
-
+            <div class="control-group">
+              <div class="controls">
+                <button class="btn btn-primary" ng-click="connect()">Connect!</button>
+              </div>
             </div>
-            <div ng-hide="metadata.visible">
-              <a ng-click="metadata.visible = true">Show additional content</a>
-            </div>
-            
-          </div>
-
-
-
+          </form>
         </div>
-        <form ng-submit="sendMessage()">
-          <input type="text" ng-model="command"></input>
-          <input type="submit" class="btn btn-primary"></index>
-</form>
-</div>
-</div>
-</body>
+
+        <div ng-show="connected">
+          <span class="label" ng-class="{'label-success': content.notification }" ng-repeat="(key, content) in buffers">
+            <a ng-click="setActiveBuffer(key)">{{ content.full_name }}</a>
+          </span>
+          <div ng-repeat="bufferline in activeBuffer.lines">
+            <span class="timestamp color-dark-gray">{{ bufferline.timestamp  | date: 'h:mm:ss'}}</span>
+            <span ng-repeat="part in bufferline.content" class="text {{ part.fg }}">
+              {{ part.text }}
+            </span>
+
+            <div ng-repeat="metadata in bufferline.metadata">
+              <div ng-show="metadata.visible">
+                <a ng-click="metadata.visible = false">Hide additional content</a>
+                <div ng-bind-html-unsafe="metadata.content"></div>
+
+              </div>
+              <div ng-hide="metadata.visible">
+                <a ng-click="metadata.visible = true">Show additional content</a>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+      <div id="push"></div>
+    </div>
+    <div id="footer" ng-show="connected">
+      <form ng-submit="sendMessage()">
+        <input id="sendMessage" type="text" ng-model="command"></input>
+      </form>
+    </div>
+  </body>
 </html>
