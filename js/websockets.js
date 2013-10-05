@@ -337,18 +337,25 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', funct
         }
         websocket.send(message);
     }
-    
+
     // Takes care of the connection and websocket hooks
-    var connect = function (hostport, proto, password) {
+    var connect = function (hostport, proto, passwd) {
         websocket = new WebSocket("ws://" + hostport + "/weechat");
         websocket.binaryType = "arraybuffer"
 
         websocket.onopen = function (evt) {
             // FIXME: does password need to be sent only if protocol is not weechat?
             if (proto == "weechat") {
-                if (password) {
-                    doSend("init compression=off,password=" + password + "\n(bufinfo) hdata buffer:gui_buffers(*) full_name\nsync\n");
-                }
+                doSend(WeeChatProtocol.formatInit({
+                    password: passwd,
+                    compression: 'off'
+                }));
+                doSend(WeeChatProtocol.formatHdata({
+                    id: 'bufinfo',
+                    path: 'buffer:gui_buffers(*)',
+                    keys: ['full_name']
+                }));
+                doSend(WeeChatProtocol.formatSync({}));
             } else {
 
             }
@@ -381,8 +388,10 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', funct
     }
 
     var sendMessage = function(message) {
-        message = "input " + $rootScope.activeBuffer['full_name'] + " " + message + "\n"
-        doSend(message);
+        doSend(WeeChatProtocol.formatInput({
+            buffer: $rootScope.activeBuffer['full_name'],
+            data: message
+        }));
     }
 
     return {

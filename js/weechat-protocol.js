@@ -50,6 +50,166 @@ WeeChatProtocol._uia2s = function(uia) {
     return decodeURIComponent(escape(str.join('')));
 };
 
+WeeChatProtocol._mergeParams = function(defaults, override) {
+    for (var v in override) {
+        defaults[v] = override[v];
+    }
+
+    return defaults;
+}
+
+WeeChatProtocol._formatWrapCmdParts = function(parts) {
+    return parts.join(' ') + '\n';
+};
+
+WeeChatProtocol._formatBeginCmd = function(id, name) {
+    var cmd;
+
+    cmd = (id !== null) ? '(' + id + ') ' : '';
+    cmd += name;
+
+    return cmd;
+}
+
+WeeChatProtocol.formatInit = function(params) {
+    var keys = [];
+    var parts = [];
+    var defaultParams = {
+        password: null,
+        compression: 'off'
+    };
+
+    params = WeeChatProtocol._mergeParams(defaultParams, params);
+    parts.push(WeeChatProtocol._formatBeginCmd(null, 'init'));
+    keys.push('compression=' + params.compression);
+    if (params.password !== null) {
+        keys.push('password=' + params.password);
+    }
+    parts.push(keys.join(','));
+
+    return WeeChatProtocol._formatWrapCmdParts(parts);
+};
+
+WeeChatProtocol.formatHdata = function(params) {
+    var parts = [];
+    var defaultParams = {
+        id: null,
+        keys: null
+    };
+
+    params = WeeChatProtocol._mergeParams(defaultParams, params);
+    parts.push(WeeChatProtocol._formatBeginCmd(params.id, 'hdata'));
+    parts.push(params.path);
+    if (params.keys !== null) {
+        parts.push(params.keys.join(','));
+    }
+
+    return WeeChatProtocol._formatWrapCmdParts(parts);
+};
+
+WeeChatProtocol.formatInfo = function(params) {
+    var parts = [];
+    var defaultParams = {
+        id: null
+    };
+
+    params = WeeChatProtocol._mergeParams(defaultParams, params);
+    parts.push(WeeChatProtocol._formatBeginCmd(params.id, 'info'));
+    parts.push(params.name);
+
+    return WeeChatProtocol._formatWrapCmdParts(parts);
+};
+
+WeeChatProtocol.formatNicklist = function(params) {
+    var parts = [];
+    var defaultParams = {
+        id: null,
+        buffer: null
+    };
+
+    params = WeeChatProtocol._mergeParams(defaultParams, params);
+    parts.push(WeeChatProtocol._formatBeginCmd(params.id, 'nicklist'));
+    if (params.buffer !== null) {
+        parts.push(params.buffer);
+    }
+
+    return WeeChatProtocol._formatWrapCmdParts(parts);
+};
+
+WeeChatProtocol.formatInput = function(params) {
+    var parts = [];
+    var defaultParams = {
+        id: null
+    };
+
+    params = WeeChatProtocol._mergeParams(defaultParams, params);
+    parts.push(WeeChatProtocol._formatBeginCmd(params.id, 'input'));
+    parts.push(params.buffer);
+    parts.push(params.data);
+
+    return WeeChatProtocol._formatWrapCmdParts(parts);
+};
+
+WeeChatProtocol._formatSyncDesync = function(cmdName, params) {
+    var parts = [];
+    var defaultParams = {
+        id: null,
+        buffers: null,
+        options: null
+    };
+
+    params = WeeChatProtocol._mergeParams(defaultParams, params);
+    parts.push(WeeChatProtocol._formatBeginCmd(params.id, cmdName));
+    if (params.buffers !== null) {
+        parts.push(params.buffers.join(','));
+        if (params.options !== null) {
+            parts.push(params.options.join(','));
+        }
+    }
+
+    return WeeChatProtocol._formatWrapCmdParts(parts);
+}
+
+WeeChatProtocol.formatSync = function(params) {
+    return WeeChatProtocol._formatSyncDesync('sync', params);
+};
+
+WeeChatProtocol.formatDesync = function(params) {
+    return WeeChatProtocol._formatSyncDesync('desync', params);
+};
+
+WeeChatProtocol.formatTest = function(params) {
+    var parts = [];
+    var defaultParams = {
+        id: null
+    };
+
+    params = WeeChatProtocol._mergeParams(defaultParams, params);
+    parts.push(WeeChatProtocol._formatBeginCmd(params.id, 'test'));
+
+    return WeeChatProtocol._formatWrapCmdParts(parts);
+};
+
+WeeChatProtocol.formatQuit = function() {
+    return WeeChatProtocol._formatWrapCmdParts(['quit']);
+};
+
+WeeChatProtocol.formatPing = function(params) {
+    var parts = [];
+    var defaultParams = {
+        id: null,
+        args: null
+    };
+
+    params = WeeChatProtocol._mergeParams(defaultParams, params);
+    parts.push(WeeChatProtocol._formatBeginCmd(params.id, 'ping'));
+    if (params.args !== null) {
+        parts.push(params.args.join(' '));
+    }
+
+    return WeeChatProtocol._formatWrapCmdParts(parts);
+};
+
 WeeChatProtocol.prototype = {
     /**
      * Warns that message parsing is not implemented for a
