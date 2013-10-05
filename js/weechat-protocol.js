@@ -1,23 +1,43 @@
 var WeeChatProtocol = function() {
-    var self = this;
+    this.types = {
+        'chr': this.getChar,
+        'int': this.getInt,
+        'str': this.getString,
+        'inf': this.getInfo,
+        'hda': this.getHdata,
+        'ptr': this.getPointer,
+        'lon': this.getPointer,
+        'tim': this.getPointer,
+        'buf': this.getString,
+        'arr': this.getArray
+    };
+};
+WeeChatProtocol._uiatos = function(uia) {
+    var _str = [];
+    for (var c = 0; c < uia.length; c++) {
+        _str[c] = String.fromCharCode(uia[c]);
+    }
 
-    var getInfo = function() {
+    return decodeURIComponent(escape(_str.join("")));
+};
+WeeChatProtocol.prototype = {
+    getInfo: function() {
         var info = {};
-        info.key = getString();
-        info.value = getString();
+        info.key = this.getString();
+        info.value = this.getString();
 
         return info;
-    };
-
-    var getHdata = function() {
+    },
+    getHdata: function() {
+        var self = this;
         var paths;
         var count;
         var objs = [];
-        var hpath = getString();
+        var hpath = this.getString();
 
-        keys = getString().split(',');
+        keys = this.getString().split(',');
         paths = hpath.split('/');
-        count = getInt();
+        count = this.getInt();
 
         keys = keys.map(function(key) {
             return key.split(':');
@@ -27,116 +47,101 @@ var WeeChatProtocol = function() {
             var tmp = {};
 
             tmp.pointers = paths.map(function(path) {
-                return getPointer();
+                return self.getPointer();
             });
             keys.forEach(function(key) {
-                tmp[key[0]] = runType(key[1]);
+                tmp[key[0]] = self.runType(key[1]);
             });
             objs.push(tmp);
         };
 
         return objs;
-    };
-
-    function getPointer() {
-        var l = getChar();
-        var pointer = getSlice(l)
+    },
+    getPointer: function() {
+        var l = this.getChar();
+        var pointer = this.getSlice(l)
         var parsed_data = new Uint8Array(pointer);
 
-        return _uiatos(parsed_data);
-    };
+        return WeeChatProtocol._uiatos(parsed_data);
+    },
+    getInt: function() {
+        var parsed_data = new Uint8Array(this.getSlice(4));
 
-    var _uiatos = function(uia) {
-        var _str = [];
-        for (var c = 0; c < uia.length; c++) {
-            _str[c] = String.fromCharCode(uia[c]);
-        }
-
-        return decodeURIComponent(escape(_str.join("")));
-    };
-
-    var getInt = function() {
-        var parsed_data = new Uint8Array(getSlice(4));
-        var i = ((parsed_data[0] & 0xff) << 24) | ((parsed_data[1] & 0xff) << 16) | ((parsed_data[2] & 0xff) << 8) | (parsed_data[3] & 0xff);
-
-        return i;
-    };
-
-    var getChar = function() {
-        var parsed_data = new Uint8Array(getSlice(1));
+        return ((parsed_data[0] & 0xff) << 24) |
+            ((parsed_data[1] & 0xff) << 16) |
+            ((parsed_data[2] & 0xff) << 8) |
+            (parsed_data[3] & 0xff);
+    },
+    getChar: function() {
+        var parsed_data = new Uint8Array(this.getSlice(1));
 
         return parsed_data[0];
-    };
-
-    var getString = function() {
-        var l = getInt();
+    },
+    getString: function() {
+        var l = this.getInt();
 
         if (l > 0) {
-            var s = getSlice(l);
+            var s = this.getSlice(l);
             var parsed_data = new Uint8Array(s);
 
-            return _uiatos(parsed_data);
+            return WeeChatProtocol._uiatos(parsed_data);
         }
 
         return "";
-    };
+    },
+    getSlice: function(length) {
+        var slice = this.data.slice(0,length);
 
-    var getSlice = function(length) {
-        var slice = self.data.slice(0,length);
-
-        self.data = self.data.slice(length);
+        this.data = this.data.slice(length);
 
         return slice;
-    };
+    },
+    getType: function() {
+        var t = this.getSlice(3);
 
-    var getType = function() {
-        var t = getSlice(3);
+        return WeeChatProtocol._uiatos(new Uint8Array(t));
+    },
+    runType: function(type) {
+        var cb = this.types[type];
+        var boundCb = cb.bind(this);
 
-        return _uiatos(new Uint8Array(t));
-    };
-
-    var runType = function(type) {
-        if (type in types) {
-            return types[type]();
-        }
-    };
-
-    var getHeader = function() {
-        var len = getInt();
-        var comp = getChar();
+        return boundCb();
+    },
+    getHeader: function() {
+        var len = this.getInt();
+        var comp = this.getChar();
 
         return {
             length: len,
             compression: comp,
         };
-    };
-
-    var getId = function() {
-        return getString();
-    }
-
-    var getObject = function() {
-        var type = getType();
+    },
+    getId: function() {
+        return this.getString();
+    },
+    getObject: function() {
+        var self = this;
+        var type = this.getType();
 
         if (type) {
             return object = {
                 type: type,
-                content: runType(type),
+                content: self.runType(type),
             }
         }
-    }
+    },
+    parse: function(data) {
+        var self = this;
+        this.setData(data);
 
-    self.parse = function(data) {
-        self.setData(data);
-
-        var header = getHeader();
-        var id = getId();
+        var header = this.getHeader();
+        var id = this.getId();
         var objects = [];
-        var object = getObject();
+        var object = this.getObject();
 
-        while(object) {
+        while (object) {
             objects.push(object);
-            object = getObject();
+            object = self.getObject();
         }
 
         return {
@@ -144,51 +149,24 @@ var WeeChatProtocol = function() {
             id: id,
             objects: objects,
         };
-    }
-
-    self.setData = function (data) {
-        self.data = data;
-    };
-
-    function array() {
+    },
+    setData: function (data) {
+        this.data = data;
+    },
+    getArray: function() {
+        var self = this;
         var type;
         var count;
         var values;
 
-        type = getType();
-        count = getInt();
+        type = this.getType();
+        count = this.getInt();
         values = [];
 
         for (var i = 0; i < count; i++) {
-            values.push(runType(type));
+            values.push(self.runType(type));
         };
 
         return values;
     }
-
-    var types = {
-        chr: getChar,
-        "int": getInt,
-        str: getString,
-        inf: getInfo,
-        hda: getHdata,
-        ptr: getPointer,
-        lon: getPointer,
-        tim: getPointer,
-        buf: getString,
-        arr: array
-    };
-
-//TODO: IMPLEMENT THIS STUFF
-//            chr: this.getChar,
-//            'int': getInt,
-// hacks
-
-// hacks
-//            htb: getHashtable,
-//            inf: Protocol.getInfo,
-//            inl: getInfolist,
-
-//        },
-
 };
