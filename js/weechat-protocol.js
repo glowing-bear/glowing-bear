@@ -70,6 +70,10 @@ WeeChatProtocol.prototype = {
     _getType: function() {
         var t = this._getSlice(3);
 
+        if (!t) {
+            return null;
+        }
+
         return WeeChatProtocol._uia2s(new Uint8Array(t));
     },
 
@@ -347,6 +351,10 @@ WeeChatProtocol.prototype = {
      * @return Sliced array
      */
     _getSlice: function(length) {
+        if (this.dataAt + length > this._data.byteLength) {
+            return null;
+        }
+
         var slice = this._data.slice(this._dataAt, this._dataAt + length);
 
         this._dataAt += length;
