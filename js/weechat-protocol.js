@@ -22,6 +22,17 @@ WeeChatProtocol._uia2s = function(uia) {
     return decodeURIComponent(escape(_str.join("")));
 };
 WeeChatProtocol.prototype = {
+    _getType: function() {
+        var t = this._getSlice(3);
+
+        return WeeChatProtocol._uia2s(new Uint8Array(t));
+    },
+    _runType: function(type) {
+        var cb = this._types[type];
+        var boundCb = cb.bind(this);
+
+        return boundCb();
+    },
     _getInfo: function() {
         var info = {};
         info.key = this._getString();
@@ -97,17 +108,6 @@ WeeChatProtocol.prototype = {
 
         return slice;
     },
-    _getType: function() {
-        var t = this._getSlice(3);
-
-        return WeeChatProtocol._uia2s(new Uint8Array(t));
-    },
-    _runType: function(type) {
-        var cb = this._types[type];
-        var boundCb = cb.bind(this);
-
-        return boundCb();
-    },
     _getHeader: function() {
         var len = this._getInt();
         var comp = this._getChar();
@@ -131,6 +131,25 @@ WeeChatProtocol.prototype = {
             }
         }
     },
+    _getArray: function() {
+        var self = this;
+        var type;
+        var count;
+        var values;
+
+        type = this._getType();
+        count = this._getInt();
+        values = [];
+
+        for (var i = 0; i < count; i++) {
+            values.push(self._runType(type));
+        };
+
+        return values;
+    },
+    _setData: function (data) {
+        this.data = data;
+    },
     parse: function(data) {
         var self = this;
         this._setData(data);
@@ -150,24 +169,5 @@ WeeChatProtocol.prototype = {
             id: id,
             objects: objects,
         };
-    },
-    _setData: function (data) {
-        this.data = data;
-    },
-    _getArray: function() {
-        var self = this;
-        var type;
-        var count;
-        var values;
-
-        type = this._getType();
-        count = this._getInt();
-        values = [];
-
-        for (var i = 0; i < count; i++) {
-            values.push(self._runType(type));
-        };
-
-        return values;
     }
 };
