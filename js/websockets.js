@@ -324,7 +324,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
 }]);
 
 weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', function($rootScope, $log, handlers, colors) {
-    protocol = new Protocol();
+    protocol = new WeeChatProtocol();
     var websocket = null;
 
 
