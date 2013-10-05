@@ -6,8 +6,8 @@ var WeeChatProtocol = function() {
         'inf': this._getInfo,
         'hda': this._getHdata,
         'ptr': this._getPointer,
-        'lon': this._getPointer,
-        'tim': this._getPointer,
+        'lon': this._getStrNumber,
+        'tim': this._getTime,
         'buf': this._getString,
         'arr': this._getArray
     };
@@ -32,6 +32,12 @@ WeeChatProtocol.prototype = {
         var boundCb = cb.bind(this);
 
         return boundCb();
+    },
+    _getStrNumber: function() {
+        var len = new Uint8Array(this._getSlice(1))[0];
+        var str = this._getSlice(len);
+
+        return WeeChatProtocol._uia2s(new Uint8Array(str));
     },
     _getInfo: function() {
         var info = {};
@@ -70,11 +76,12 @@ WeeChatProtocol.prototype = {
         return objs;
     },
     _getPointer: function() {
-        var l = this._getChar();
-        var pointer = this._getSlice(l)
-        var parsedData = new Uint8Array(pointer);
-
-        return WeeChatProtocol._uia2s(parsedData);
+        return this._getStrNumber();
+    },
+    _getTime: function() {
+        var str = this._getStrNumber();
+        
+        return new Date(parseInt(str));
     },
     _getInt: function() {
         var parsedData = new Uint8Array(this._getSlice(4));
