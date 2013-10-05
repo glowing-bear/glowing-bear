@@ -12,8 +12,9 @@ var WeeChatProtocol = function() {
         'arr': this.getArray
     };
 };
-WeeChatProtocol._uiatos = function(uia) {
+WeeChatProtocol._uia2s = function(uia) {
     var _str = [];
+
     for (var c = 0; c < uia.length; c++) {
         _str[c] = String.fromCharCode(uia[c]);
     }
@@ -62,7 +63,7 @@ WeeChatProtocol.prototype = {
         var pointer = this.getSlice(l)
         var parsed_data = new Uint8Array(pointer);
 
-        return WeeChatProtocol._uiatos(parsed_data);
+        return WeeChatProtocol._uia2s(parsed_data);
     },
     getInt: function() {
         var parsed_data = new Uint8Array(this.getSlice(4));
@@ -84,7 +85,7 @@ WeeChatProtocol.prototype = {
             var s = this.getSlice(l);
             var parsed_data = new Uint8Array(s);
 
-            return WeeChatProtocol._uiatos(parsed_data);
+            return WeeChatProtocol._uia2s(parsed_data);
         }
 
         return "";
@@ -99,7 +100,7 @@ WeeChatProtocol.prototype = {
     getType: function() {
         var t = this.getSlice(3);
 
-        return WeeChatProtocol._uiatos(new Uint8Array(t));
+        return WeeChatProtocol._uia2s(new Uint8Array(t));
     },
     runType: function(type) {
         var cb = this.types[type];
