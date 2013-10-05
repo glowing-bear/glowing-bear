@@ -1,4 +1,4 @@
-var weechat = angular.module('weechat', []);
+var weechat = angular.module('weechat', ['localStorage']);
 
 weechat.factory('colors', [function($scope) {
 
@@ -368,16 +368,17 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', funct
     }
 }]);
 
-weechat.controller('WeechatCtrl', ['$rootScope', '$scope', 'connection', function ($rootScope, $scope, connection) {
+weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'connection', function ($rootScope, $scope, $store, connection) {
     $rootScope.commands = []
 
     $rootScope.buffer = []
     $rootScope.buffers = {}
     $rootScope.activeBuffer = null;
-    $scope.hostport = "localhost:9001"
-    $scope.proto = "weechat"
-    $scope.password = ""
-
+    $store.bind($scope, "hostport", "localhost:9001");
+    $store.bind($scope, "proto", "weechat");
+    $store.bind($scope, "password", "");
+    // TODO checkbox for saving password or not?
+    // $scope.password = "";
 
     $rootScope.closeBuffer = function(buffer_pointer) {
         delete($rootScope.buffers[buffer_pointer]);
