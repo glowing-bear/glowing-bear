@@ -315,7 +315,7 @@ WeeChatProtocol.prototype = {
         for (var i = 0; i < count; ++i) {
             var key = self._runType(typeKeys);
             var keyStr = self._objToString(key, typeKeys);
-            var value = self.runType(typeValues);
+            var value = self._runType(typeValues);
             dict[keyStr] = value;
         }
 
