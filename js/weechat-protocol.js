@@ -102,9 +102,9 @@ WeeChatProtocol.prototype = {
         return "";
     },
     _getSlice: function(length) {
-        var slice = this.data.slice(0, length);
+        var slice = this._data.slice(this._dataAt, this._dataAt + length);
 
-        this.data = this.data.slice(length);
+        this._dataAt += length;
 
         return slice;
     },
@@ -148,11 +148,13 @@ WeeChatProtocol.prototype = {
         return values;
     },
     _setData: function (data) {
-        this.data = data;
+        this._data = data;
     },
     parse: function(data) {
         var self = this;
+
         this._setData(data);
+        this._dataAt = 0;
 
         var header = this._getHeader();
         var id = this._getId();
