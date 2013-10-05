@@ -119,7 +119,6 @@ weechat.factory('pluginManager', ['youtubePlugin', 'urlPlugin', 'imagePlugin', f
 
     var contentForMessage = function(message) {
         
-        console.log('Message: ', message);
         var content = [];
         for (var i = 0; i < plugins.length; i++) {
             var pluginContent = plugins[i].contentForMessage(message);
@@ -133,7 +132,6 @@ weechat.factory('pluginManager', ['youtubePlugin', 'urlPlugin', 'imagePlugin', f
             }
         }
         
-        console.log('Content: ', content);
         return content;
     }
 
@@ -200,31 +198,56 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
         $rootScope.closeBuffer(buffer_pointer);
     }
 
-    var handleBufferLineAdded = function(message) {
-        var buffer_line = {}
-        var prefix = colors.parse(message['objects'][0]['content'][0]['prefix']);
-        var text = colors.parse(message['objects'][0]['content'][0]['message']);
+
+
+    function BufferLine(weechatBufferLine) {
+
+        /*
+         * Parse the text elements from the buffer line added
+         * 
+         */
+        function parseLineAddedTextElements(message) {
+            var prefix = colors.parse(message['objects'][0]['content'][0]['prefix']);
+
+            var buffer = message['objects'][0]['content'][0]['buffer'];
+            text_elements = _.union(prefix, text);
+            text_elements =_.map(text_elements, function(text_element) {
+                if ('fg' in text_element) {
+                    text_element['fg'] = colors.prepareCss(text_element['fg']);
+                }
+                // TODO: parse background as well
+
+                return text_element;
+            });
+            return text_elements;
+        }        
+
+
         var buffer = message['objects'][0]['content'][0]['buffer'];
-        var message = _.union(prefix, text);
-        message =_.map(message, function(message) {
-            if ('fg' in message) {
-                message['fg'] = colors.prepareCss(message['fg']);
-            }
-            return message;
-        });
-        buffer_line['message'] = message;
-
-        if (!_isActiveBuffer(buffer)) {
-            $rootScope.buffers[buffer]['notification'] = true;
-        }
-
+        var timestamp = message['objects'][0]['content'][0]['date'];        
+        var text = colors.parse(message['objects'][0]['content'][0]['message']);
+        var content = parseLineAddedTextElements(message);
         var additionalContent = pluginManager.contentForMessage(text[0]['text']);
 
-        if (additionalContent) {
-            buffer_line['metadata'] = additionalContent;
+        return {
+            metadata: additionalContent,
+            content: content,
+            timestamp: timestamp,
+            buffer: buffer
         }
 
-        $rootScope.buffers[buffer]['lines'].push(buffer_line);
+    }
+
+    var handleBufferLineAdded = function(message) {
+        var buffer_line = {}
+        
+        message = new BufferLine(message);
+     
+        if (!_isActiveBuffer(message.buffer)) {
+            $rootScope.buffers[message.buffer]['notification'] = true;
+        }
+
+        $rootScope.buffers[message.buffer]['lines'].push(message);
     }
 
     /*
