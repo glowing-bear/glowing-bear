@@ -345,6 +345,15 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
         
     }
 
+    var handleBufferTitleChanged = function(message) {
+        var obj = message['objects'][0]['content'][0];
+        var buffer = obj['pointers'][0];
+        var old = $rootScope.buffers[buffer];
+        old['full_name'] = obj['full_name'];
+        old['short_name'] = obj['short_name'];
+        old['title'] = obj['title'];
+    }
+
 
     /*
      * Handle answers to (bufinfo) messages
@@ -408,7 +417,8 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
         lineinfo: handleLineInfo,
         _buffer_closing: handleBufferClosing, 
         _buffer_line_added: handleBufferLineAdded,
-        _buffer_opened: handleBufferOpened
+        _buffer_opened: handleBufferOpened,
+        _buffer_title_changed: handleBufferTitleChanged,
     }
 
     return {
@@ -532,7 +542,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'connection
     }
 
     $scope.setActiveBuffer = function(key) {
-        $rootScope.buffers[key]['notification'] = false;
+        $rootScope.activeBuffer['notification'] = false;
+        $rootScope.buffers[key]['notification'] = true;
         $rootScope.activeBuffer = $rootScope.buffers[key];
         $rootScope.pageTitle = $rootScope.activeBuffer['short_name'] + ' | ' + $rootScope.activeBuffer['title'];
     };
