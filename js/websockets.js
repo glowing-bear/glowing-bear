@@ -99,7 +99,7 @@ weechat.factory('colors', [function($scope) {
 
 
     return {
-        
+
         setAttrs: setAttrs,
         getColor: getColor,
         prepareCss: prepareCss,
@@ -118,7 +118,7 @@ weechat.factory('pluginManager', ['youtubePlugin', 'urlPlugin', 'imagePlugin', f
     }
 
     var contentForMessage = function(message) {
-        
+
         var content = [];
         for (var i = 0; i < plugins.length; i++) {
             var pluginContent = plugins[i].contentForMessage(message);
@@ -131,7 +131,7 @@ weechat.factory('pluginManager', ['youtubePlugin', 'urlPlugin', 'imagePlugin', f
                 }
             }
         }
-        
+
         return content;
     }
 
@@ -204,7 +204,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
 
         /*
          * Parse the text elements from the buffer line added
-         * 
+         *
          */
         function parseLineAddedTextElements(message) {
             var prefix = colors.parse(message['objects'][0]['content'][0]['prefix']);
@@ -220,7 +220,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
                 return text_element;
             });
             return text_elements;
-        }        
+        }
 
 
         var buffer = message['objects'][0]['content'][0]['buffer'];
@@ -240,9 +240,9 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
 
     var handleBufferLineAdded = function(message) {
         var buffer_line = {}
-        
+
         message = new BufferLine(message);
-     
+
         if (!_isActiveBuffer(message.buffer)) {
             $rootScope.buffers[message.buffer]['notification'] = true;
         }
@@ -265,7 +265,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
         var fullName = message['objects'][0]['content'][0]['full_name']
         var buffer = message['objects'][0]['content'][0]['pointers'][0]
         $rootScope.buffers[buffer] = { 'id': buffer, 'lines':[], 'full_name':fullName }
-        
+
     }
 
     /*
@@ -292,7 +292,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
         }
         $rootScope.buffers = buffers;
     }
-   
+
     var handleEvent = function(event) {
         if (_.has(eventHandlers, event['id'])) {
             eventHandlers[event['id']](event);
@@ -311,7 +311,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
 
     var eventHandlers = {
         bufinfo: handleBufferInfo,
-        _buffer_closing: handleBufferClosing, 
+        _buffer_closing: handleBufferClosing,
         _buffer_line_added: handleBufferLineAdded,
         _buffer_opened: handleBufferOpened
     }
@@ -328,7 +328,7 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', funct
     var websocket = null;
 
 
-    // Sanitizes messages to be sent to the weechat relay    
+    // Sanitizes messages to be sent to the weechat relay
     var doSend = function(message) {
         msgs = message.replace(/[\r\n]+$/g, "").split("\n");
         for (var i = 0; i < msgs.length; i++) {
