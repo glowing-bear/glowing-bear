@@ -66,30 +66,25 @@ WeeChatProtocol._mergeParams = function(defaults, override) {
 }
 
 /**
- * Joins parts of a full command and wraps it for transmission.
+ * Formats a command.
  *
- * @param parts Parts to join
- * @return Complete command string
+ * @param id Command ID (null for no ID)
+ * @param name Command name
+ * @param parts Command parts
+ * @return Formatted command string
  */
-WeeChatProtocol._formatWrapCmdParts = function(parts) {
-    return parts.join(' ') + '\n';
-};
-
-/**
- * Begins a command (gets the first part).
- *
- * @param id ID of command (or null for no ID)
- * @param name Name of command
- * @return First part of command
- */
-WeeChatProtocol._formatBeginCmd = function(id, name) {
+WeeChatProtocol._formatCmd = function(id, name, parts) {
+    var cmdIdName;
     var cmd;
 
-    cmd = (id !== null) ? '(' + id + ') ' : '';
-    cmd += name;
+    cmdIdName = (id !== null) ? '(' + id + ') ' : '';
+    cmdIdName += name;
+    parts.unshift(cmdIdName);
+    cmd = parts.join(' ');
+    cmd += '\n';
 
     return cmd;
-}
+};
 
 /**
  * Formats an init command.
@@ -100,22 +95,21 @@ WeeChatProtocol._formatBeginCmd = function(id, name) {
  * @return Formatted init command string
  */
 WeeChatProtocol.formatInit = function(params) {
-    var keys = [];
-    var parts = [];
     var defaultParams = {
         password: null,
         compression: 'off'
     };
+    var keys = [];
+    var parts = [];
 
     params = WeeChatProtocol._mergeParams(defaultParams, params);
-    parts.push(WeeChatProtocol._formatBeginCmd(null, 'init'));
     keys.push('compression=' + params.compression);
     if (params.password !== null) {
         keys.push('password=' + params.password);
     }
     parts.push(keys.join(','));
 
-    return WeeChatProtocol._formatWrapCmdParts(parts);
+    return WeeChatProtocol._formatCmd(null, 'init', parts);
 };
 
 /**
@@ -128,20 +122,19 @@ WeeChatProtocol.formatInit = function(params) {
  * @return Formatted hdata command string
  */
 WeeChatProtocol.formatHdata = function(params) {
-    var parts = [];
     var defaultParams = {
         id: null,
         keys: null
     };
+    var parts = [];
 
     params = WeeChatProtocol._mergeParams(defaultParams, params);
-    parts.push(WeeChatProtocol._formatBeginCmd(params.id, 'hdata'));
     parts.push(params.path);
     if (params.keys !== null) {
         parts.push(params.keys.join(','));
     }
 
-    return WeeChatProtocol._formatWrapCmdParts(parts);
+    return WeeChatProtocol._formatCmd(params.id, 'hdata', parts);
 };
 
 /**
@@ -153,16 +146,15 @@ WeeChatProtocol.formatHdata = function(params) {
  * @return Formatted info command string
  */
 WeeChatProtocol.formatInfo = function(params) {
-    var parts = [];
     var defaultParams = {
         id: null
     };
+    var parts = [];
 
     params = WeeChatProtocol._mergeParams(defaultParams, params);
-    parts.push(WeeChatProtocol._formatBeginCmd(params.id, 'info'));
     parts.push(params.name);
 
-    return WeeChatProtocol._formatWrapCmdParts(parts);
+    return WeeChatProtocol._formatCmd(params.id, 'info', parts);
 };
 
 /**
@@ -174,19 +166,18 @@ WeeChatProtocol.formatInfo = function(params) {
  * @return Formatted nicklist command string
  */
 WeeChatProtocol.formatNicklist = function(params) {
-    var parts = [];
     var defaultParams = {
         id: null,
         buffer: null
     };
+    var parts = [];
 
     params = WeeChatProtocol._mergeParams(defaultParams, params);
-    parts.push(WeeChatProtocol._formatBeginCmd(params.id, 'nicklist'));
     if (params.buffer !== null) {
         parts.push(params.buffer);
     }
 
-    return WeeChatProtocol._formatWrapCmdParts(parts);
+    return WeeChatProtocol._formatCmd(params.id, 'nicklist', parts);
 };
 
 /**
@@ -199,17 +190,16 @@ WeeChatProtocol.formatNicklist = function(params) {
  * @return Formatted input command string
  */
 WeeChatProtocol.formatInput = function(params) {
-    var parts = [];
     var defaultParams = {
         id: null
     };
+    var parts = [];
 
     params = WeeChatProtocol._mergeParams(defaultParams, params);
-    parts.push(WeeChatProtocol._formatBeginCmd(params.id, 'input'));
     parts.push(params.buffer);
     parts.push(params.data);
 
-    return WeeChatProtocol._formatWrapCmdParts(parts);
+    return WeeChatProtocol._formatCmd(params.id, 'input', parts);
 };
 
 /**
@@ -219,15 +209,14 @@ WeeChatProtocol.formatInput = function(params) {
  * @return Formatted sync/desync command string
  */
 WeeChatProtocol._formatSyncDesync = function(cmdName, params) {
-    var parts = [];
     var defaultParams = {
         id: null,
         buffers: null,
         options: null
     };
+    var parts = [];
 
     params = WeeChatProtocol._mergeParams(defaultParams, params);
-    parts.push(WeeChatProtocol._formatBeginCmd(params.id, cmdName));
     if (params.buffers !== null) {
         parts.push(params.buffers.join(','));
         if (params.options !== null) {
@@ -235,7 +224,7 @@ WeeChatProtocol._formatSyncDesync = function(cmdName, params) {
         }
     }
 
-    return WeeChatProtocol._formatWrapCmdParts(parts);
+    return WeeChatProtocol._formatCmd(params.id, cmdName, parts);
 }
 
 /**
@@ -272,15 +261,14 @@ WeeChatProtocol.formatDesync = function(params) {
  * @return Formatted test command string
  */
 WeeChatProtocol.formatTest = function(params) {
-    var parts = [];
     var defaultParams = {
         id: null
     };
+    var parts = [];
 
     params = WeeChatProtocol._mergeParams(defaultParams, params);
-    parts.push(WeeChatProtocol._formatBeginCmd(params.id, 'test'));
 
-    return WeeChatProtocol._formatWrapCmdParts(parts);
+    return WeeChatProtocol._formatCmd(params.id, 'test', parts);
 };
 
 /**
@@ -289,7 +277,7 @@ WeeChatProtocol.formatTest = function(params) {
  * @return Formatted quit command string
  */
 WeeChatProtocol.formatQuit = function() {
-    return WeeChatProtocol._formatWrapCmdParts(['quit']);
+    return WeeChatProtocol._formatCmd(null, 'quit', []);
 };
 
 /**
@@ -301,19 +289,18 @@ WeeChatProtocol.formatQuit = function() {
  * @return Formatted ping command string
  */
 WeeChatProtocol.formatPing = function(params) {
-    var parts = [];
     var defaultParams = {
         id: null,
         args: null
     };
+    var parts = [];
 
     params = WeeChatProtocol._mergeParams(defaultParams, params);
-    parts.push(WeeChatProtocol._formatBeginCmd(params.id, 'ping'));
     if (params.args !== null) {
         parts.push(params.args.join(' '));
     }
 
-    return WeeChatProtocol._formatWrapCmdParts(parts);
+    return WeeChatProtocol._formatCmd(params.id, 'ping', parts);
 };
 
 WeeChatProtocol.prototype = {
