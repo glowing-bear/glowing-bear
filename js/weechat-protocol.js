@@ -1,9 +1,9 @@
 /**
  * WeeChat protocol handling.
  *
- * This object parses messages for the WeeChat protocol. It's
- * independent from the communication layer and thus may be used
- * with any network mechanism.
+ * This object parses messages and formats commands for the WeeChat
+ * protocol. It's independent from the communication layer and thus
+ * may be used with any network mechanism.
  */
 var WeeChatProtocol = function() {
     // specific parsing for each message type
