@@ -1,7 +1,10 @@
 body {
-    font-family: monospace;
     background-color: black;
     color: white;
+    padding: 5px;
+}
+.bufferlines {
+    font-family: sans-serif;
 }
 
 .color-light-green {

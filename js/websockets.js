@@ -1,3 +1,7 @@
+Number.prototype.pad = function (len) {
+  return (new Array(len+1).join("0") + this).slice(-len);
+}
+
 var weechat = angular.module('weechat', ['localStorage']);
 weechat.filter('toArray', function () {
     'use strict';
@@ -270,6 +274,9 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
 
     var handleBufferLineAdded = function(message) {
         var buffer_line = {}
+        var date = message['objects'][0]['content'][0]['date'];
+        date = new Date(parseInt(date, 10) * 1000);
+        var datestring = date.getHours().pad(2) + ':' + date.getMinutes().pad(2);
         var prefix = colors.parse(message['objects'][0]['content'][0]['prefix']);
         var text = colors.parse(message['objects'][0]['content'][0]['message']);
         var buffer = message['objects'][0]['content'][0]['buffer'];
@@ -299,6 +306,8 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
             }
 
             $rootScope.buffers[buffer]['lines'].push(buffer_line);
+
+            buffer_line['date'] = datestring;
 
 
             if(highlight || _.contains(tags_array, 'notify_private')) {
