@@ -235,7 +235,7 @@ weechat.factory('urlPlugin', [function() {
         var urlPattern = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/;
         var url = message.match(urlPattern);
         if (url) {
-            return '<a href="' + url[0] + '">' + message + '</a>';
+            return '<a target="_blank" href="' + url[0] + '">' + message + '</a>';
         }
         return null;
     }
