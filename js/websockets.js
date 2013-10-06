@@ -205,6 +205,10 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
         var prefix = colors.parse(message['objects'][0]['content'][0]['prefix']);
         var text = colors.parse(message['objects'][0]['content'][0]['message']);
         var buffer = message['objects'][0]['content'][0]['buffer'];
+        var tags_array = message['objects'][0]['content'][0]['tags_array'];
+        var displayed = message['objects'][0]['content'][0]['displayed'];
+        var highlight = message['objects'][0]['content'][0]['highlight'];
+        console.log(highlight, tags_array);
         var message = _.union(prefix, text);
         message =_.map(message, function(message) {
             if ('fg' in message) {
@@ -212,19 +216,28 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
             }
             return message;
         });
-        buffer_line['message'] = message;
+        // Only react to line if its displayed
+        if (displayed) {
+            buffer_line['message'] = message;
 
-        if (!_isActiveBuffer(buffer)) {
-            $rootScope.buffers[buffer]['notification'] = true;
+
+            if (!_isActiveBuffer(buffer)) {
+                $rootScope.buffers[buffer]['notification'] = true;
+            }
+
+            var additionalContent = pluginManager.contentForMessage(text[0]['text']);
+
+            if (additionalContent) {
+                buffer_line['metadata'] = additionalContent;
+            }
+
+            $rootScope.buffers[buffer]['lines'].push(buffer_line);
+
+
+            if(highlight || _.contains(tags_array, 'notify_private')) {
+                $rootScope.createHighlight(prefix, text, message, buffer, additionalContent);
+            }
         }
-
-        var additionalContent = pluginManager.contentForMessage(text[0]['text']);
-
-        if (additionalContent) {
-            buffer_line['metadata'] = additionalContent;
-        }
-
-        $rootScope.buffers[buffer]['lines'].push(buffer_line);
     }
 
     /*
@@ -244,6 +257,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
         $rootScope.buffers[buffer] = { 'id': buffer, 'lines':[], 'full_name':fullName }
         
     }
+
 
     /*
      * Handle answers to (bufinfo) messages
@@ -321,18 +335,20 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', funct
         websocket.binaryType = "arraybuffer"
 
         websocket.onopen = function (evt) {
+            var send = ""; 
             // FIXME: does password need to be sent only if protocol is not weechat?
             if (proto == "weechat") {
                 if (password) {
-                    doSend("init compression=off,password=" + password + "\n");
+                    send += "init compression=off,password=" + password + "\n";
                 }
 
-                doSend("(bufinfo) hdata buffer:gui_buffers(*) full_name\n");
-                doSend("sync\n");
+                send += "(bufinfo) hdata buffer:gui_buffers(*) full_name\n";
+                send += "sync\n";
             } else {
 
             }
             $log.info("Connected to relay");
+            doSend(send);
             $rootScope.connected = true;
             $rootScope.$apply();
         }
@@ -372,6 +388,21 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', funct
 }]);
 
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'connection', function ($rootScope, $scope, $store, connection) {
+    
+    // Request notification permission
+    Notification.requestPermission(function (status) {
+        console.log('Notification permission status:',status);
+        if (Notification.permission !== status) {
+            Notification.permission = status;
+        }
+    });
+    if(window.webkitNotifications != undefined) {
+        if (window.webkitNotifications.checkPermission() == 0) { // 0 is PERMISSION_ALLOWED
+            console.log('Notification permission status:', window.webkitNotifications.checkPermission() == 0);
+            window.webkitNotifications.requestPermission();
+        }
+    }
+
     $rootScope.commands = []
 
     $rootScope.buffer = []
@@ -402,5 +433,28 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'connection
     $scope.connect = function() {
         connection.connect($scope.hostport, $scope.proto, $scope.password);
     }
+
+
+    /* Function gets called from bufferLineAdded code if user should be notified */
+    $rootScope.createHighlight = function(prefix, text, message, buffer, additionalContent) {
+        var prefixs = "";
+        prefixs += prefix[0].text;
+        prefixs += prefix[1].text;
+        var messages = "";
+        messages += text[0].text;
+
+        var buffers = $rootScope.buffers[buffer];
+
+        var title = buffers.full_name;
+        var content = "<"+prefixs+">"+messages;
+
+        var timeout = 15*1000;
+        console.log('Displaying notification:',title,',with timeout:',timeout);
+        var notification = new Notification(title, {body:content, icon:'img/favicon.png'});
+        // Cancel notification automatically
+        notification.onshow = function() {
+            setTimeout(function() { notification.close() }, timeout);
+        }
+    };
 }]
                   );
