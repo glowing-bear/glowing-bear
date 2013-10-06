@@ -58,35 +58,37 @@
       </div>
       <div ng-show="connected">
 
-        <ul class="nav nav-pills">
-          <li class="label" ng-class="{'active': content.notification }" ng-repeat="(key, content) in buffers | toArray | orderBy:'content.number':true">
-          <a ng-click="setActiveBuffer(content.id)" title="{{ content.full_name }}">{{ content.short_name }}</a>
-          </li>
-        </ul>
-        <div class="bufferlines" ng-repeat="bufferline in activeBuffer.lines">
-          <span class="date text-muted">
-            {{ bufferline.date | date:'HH:mm' }}
-          </span>
-
-          <span ng-repeat="part in bufferline.message" class="text" style="{{ part.fg }}">
-            {{ part.text }}
-          </span>
-
-          <div ng-repeat="metadata in bufferline.metadata">
-            <div ng-show="metadata.visible">
-              <a ng-click="metadata.visible = false">Hide additional content</a>
-              <div ng-bind-html-unsafe="metadata.content"></div>
-
-            </div>
-            <div ng-hide="metadata.visible">
-              <a ng-click="metadata.visible = true">Show additional content</a>
-            </div>
-            
-          </div>
-
-
-
+        <div class="navbar navbar-inverse navbar-fixed-top">
+          <ul class="nav nav-pills">
+            <li class="label" ng-class="{'active': content.notification }" ng-repeat="(key, content) in buffers | toArray | orderBy:'content.number':true">
+            <a ng-click="setActiveBuffer(content.id)" title="{{ content.full_name }}">{{ content.short_name }}</a>
+            </li>
+          </ul>
         </div>
+        <div class="bufferlines">
+          <div class="bufferline" ng-repeat="bufferline in activeBuffer.lines">
+            <span class="date text-muted">
+              {{ bufferline.date | date:'HH:mm' }}
+            </span>
+
+            <span ng-repeat="part in bufferline.message" class="text" style="{{ part.fg }}">
+              {{ part.text }}
+            </span>
+
+            <div ng-repeat="metadata in bufferline.metadata">
+              <div ng-show="metadata.visible">
+                <a ng-click="metadata.visible = false">Hide additional content</a>
+                <div ng-bind-html-unsafe="metadata.content"></div>
+
+              </div>
+              <div ng-hide="metadata.visible">
+                <a ng-click="metadata.visible = true">Show additional content</a>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
         <div class="navbar navbar-inverse navbar-fixed-bottom">
             <form class="form form-horizontal" ng-submit="sendMessage()">
               <div class="input-group">

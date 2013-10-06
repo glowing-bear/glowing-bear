@@ -4,9 +4,14 @@ body {
     padding: 5px;
 }
 .bufferlines {
-    font-family: sans-serif;
+    font-family: monospace;
+    overflow: scroll-y;
+    height: 100%; 
 }
 
+.navbar-fixed-bottom {
+    margin: 5px;
+}
 .color-light-green {
     color: chartreuse;
 }
