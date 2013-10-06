@@ -50,6 +50,13 @@ WeeChatProtocol._uia2s = function(uia) {
     return decodeURIComponent(escape(str.join('')));
 };
 
+/**
+ * Merges default parameters with overriding parameters.
+ *
+ * @param defaults Default parameters
+ * @param override Overriding parameters
+ * @return Merged parameters
+ */
 WeeChatProtocol._mergeParams = function(defaults, override) {
     for (var v in override) {
         defaults[v] = override[v];
@@ -58,10 +65,23 @@ WeeChatProtocol._mergeParams = function(defaults, override) {
     return defaults;
 }
 
+/**
+ * Joins parts of a full command and wraps it for transmission.
+ *
+ * @param parts Parts to join
+ * @return Complete command string
+ */
 WeeChatProtocol._formatWrapCmdParts = function(parts) {
     return parts.join(' ') + '\n';
 };
 
+/**
+ * Begins a command (gets the first part).
+ *
+ * @param id ID of command (or null for no ID)
+ * @param name Name of command
+ * @return First part of command
+ */
 WeeChatProtocol._formatBeginCmd = function(id, name) {
     var cmd;
 
@@ -71,6 +91,14 @@ WeeChatProtocol._formatBeginCmd = function(id, name) {
     return cmd;
 }
 
+/**
+ * Formats an init command.
+ *
+ * @param params Parameters:
+ *      password: password (optional)
+ *      compression: compression ('off' or 'zlib') (optional)
+ * @return Formatted init command string
+ */
 WeeChatProtocol.formatInit = function(params) {
     var keys = [];
     var parts = [];
@@ -90,6 +118,15 @@ WeeChatProtocol.formatInit = function(params) {
     return WeeChatProtocol._formatWrapCmdParts(parts);
 };
 
+/**
+ * Formats an hdata command.
+ *
+ * @param params Parameters:
+ *      id: command ID (optional)
+ *      path: hdata path (mandatory)
+ *      keys: array of keys (optional)
+ * @return Formatted hdata command string
+ */
 WeeChatProtocol.formatHdata = function(params) {
     var parts = [];
     var defaultParams = {
@@ -107,6 +144,14 @@ WeeChatProtocol.formatHdata = function(params) {
     return WeeChatProtocol._formatWrapCmdParts(parts);
 };
 
+/**
+ * Formats an info command.
+ *
+ * @param params Parameters:
+ *      id: command ID (optional)
+ *      name: info name (mandatory)
+ * @return Formatted info command string
+ */
 WeeChatProtocol.formatInfo = function(params) {
     var parts = [];
     var defaultParams = {
@@ -120,6 +165,14 @@ WeeChatProtocol.formatInfo = function(params) {
     return WeeChatProtocol._formatWrapCmdParts(parts);
 };
 
+/**
+ * Formats a nicklist command.
+ *
+ * @param params Parameters:
+ *      id: command ID (optional)
+ *      buffer: buffer name (optional)
+ * @return Formatted nicklist command string
+ */
 WeeChatProtocol.formatNicklist = function(params) {
     var parts = [];
     var defaultParams = {
@@ -136,6 +189,15 @@ WeeChatProtocol.formatNicklist = function(params) {
     return WeeChatProtocol._formatWrapCmdParts(parts);
 };
 
+/**
+ * Formats an input command.
+ *
+ * @param params Parameters:
+ *      id: command ID (optional)
+ *      buffer: target buffer (mandatory)
+ *      data: input data (mandatory)
+ * @return Formatted input command string
+ */
 WeeChatProtocol.formatInput = function(params) {
     var parts = [];
     var defaultParams = {
@@ -150,6 +212,12 @@ WeeChatProtocol.formatInput = function(params) {
     return WeeChatProtocol._formatWrapCmdParts(parts);
 };
 
+/**
+ * Formats a sync or a desync command.
+ *
+ * @param params Parameters (see _formatSync and _formatDesync)
+ * @return Formatted sync/desync command string
+ */
 WeeChatProtocol._formatSyncDesync = function(cmdName, params) {
     var parts = [];
     var defaultParams = {
@@ -170,14 +238,39 @@ WeeChatProtocol._formatSyncDesync = function(cmdName, params) {
     return WeeChatProtocol._formatWrapCmdParts(parts);
 }
 
+/**
+ * Formats a sync command.
+ *
+ * @param params Parameters:
+ *      id: command ID (optional)
+ *      buffers: array of buffers to sync (optional)
+ *      options: array of options (optional)
+ * @return Formatted sync command string
+ */
 WeeChatProtocol.formatSync = function(params) {
     return WeeChatProtocol._formatSyncDesync('sync', params);
 };
 
+/**
+ * Formats a desync command.
+ *
+ * @param params Parameters:
+ *      id: command ID (optional)
+ *      buffers: array of buffers to desync (optional)
+ *      options: array of options (optional)
+ * @return Formatted desync command string
+ */
 WeeChatProtocol.formatDesync = function(params) {
     return WeeChatProtocol._formatSyncDesync('desync', params);
 };
 
+/**
+ * Formats a test command.
+ *
+ * @param params Parameters:
+ *      id: command ID (optional)
+ * @return Formatted test command string
+ */
 WeeChatProtocol.formatTest = function(params) {
     var parts = [];
     var defaultParams = {
@@ -190,10 +283,23 @@ WeeChatProtocol.formatTest = function(params) {
     return WeeChatProtocol._formatWrapCmdParts(parts);
 };
 
+/**
+ * Formats a quit command.
+ *
+ * @return Formatted quit command string
+ */
 WeeChatProtocol.formatQuit = function() {
     return WeeChatProtocol._formatWrapCmdParts(['quit']);
 };
 
+/**
+ * Formats a ping command.
+ *
+ * @param params Parameters:
+ *      id: command ID (optional)
+ *      args: array of custom arguments (optional)
+ * @return Formatted ping command string
+ */
 WeeChatProtocol.formatPing = function(params) {
     var parts = [];
     var defaultParams = {
