@@ -455,7 +455,7 @@ WeeChatProtocol.prototype = {
     _getTime: function() {
         var str = this._getStrNumber();
 
-        return new Date(parseInt(str));
+        return new Date(parseInt(str) * 1000);
     },
 
     /**

@@ -50,7 +50,7 @@
             <a ng-click="setActiveBuffer(key)">{{ content.full_name }}</a>
           </span>
           <div ng-repeat="bufferline in activeBuffer.lines">
-            <span class="timestamp color-dark-gray">{{ bufferline.timestamp  | date: 'h:mm:ss'}}</span>
+            <span class="timestamp color-dark-gray">{{ bufferline.date | date: 'H:mm:ss'}}</span>
             <span ng-repeat="part in bufferline.content" class="text {{ part.fg }}">
               {{ part.text }}
             </span>
