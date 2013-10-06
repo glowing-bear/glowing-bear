@@ -290,7 +290,11 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
 
 
             if (!_isActiveBuffer(buffer) && !initial) {
-                $rootScope.buffers[buffer]['notification'] = true;
+                
+                if ($rootScope.buffers[buffer]['unread'] == '') {
+                  $rootScope.buffers[buffer]['unread'] == 0;
+                }
+                $rootScope.buffers[buffer]['unread'] += 1;
             }
 
             if (text[0] != undefined) {
@@ -365,10 +369,12 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
             var pointer = bufferInfo['pointers'][0];
             bufferInfo['id'] = pointer;
             bufferInfo['lines'] = [];
+            bufferInfo['unread'] = '';
             buffers[pointer] = bufferInfo
             if (i == 0) {
                 // first buffer is active buffer by default
                 $rootScope.activeBuffer = buffers[pointer];
+                $rootScope.activeBuffer['active'] = true;
             }
         }
         $rootScope.buffers = buffers;
@@ -412,7 +418,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
         _buffer_closing: handleBufferClosing, 
         _buffer_line_added: handleBufferLineAdded,
         _buffer_opened: handleBufferOpened,
-        _buffer_title_changed: handleBufferTitleChanged,
+        _buffer_title_changed: handleBufferTitleChanged
     }
 
     return {
@@ -536,8 +542,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'connection
     }
 
     $scope.setActiveBuffer = function(key) {
-        $rootScope.activeBuffer['notification'] = false;
-        $rootScope.buffers[key]['notification'] = true;
+        $rootScope.activeBuffer['active'] = false;
+        $rootScope.buffers[key]['active'] = true;
+        $rootScope.buffers[key]['unread'] = '';
         $rootScope.activeBuffer = $rootScope.buffers[key];
         $rootScope.pageTitle = $rootScope.activeBuffer['short_name'] + ' | ' + $rootScope.activeBuffer['title'];
     };
