@@ -272,20 +272,20 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
         $rootScope.closeBuffer(buffer_pointer);
     }
 
-    var handleBufferLineAdded = function(message) {
+    var handleLine = function(line) {
         var buffer_line = {}
-        var date = message['objects'][0]['content'][0]['date'];
+        var date = line['date'];
         date = new Date(parseInt(date, 10) * 1000);
         var datestring = date.getHours().pad(2) + ':' + date.getMinutes().pad(2);
-        var prefix = colors.parse(message['objects'][0]['content'][0]['prefix']);
-        var text = colors.parse(message['objects'][0]['content'][0]['message']);
-        var buffer = message['objects'][0]['content'][0]['buffer'];
-        var tags_array = message['objects'][0]['content'][0]['tags_array'];
-        var displayed = message['objects'][0]['content'][0]['displayed'];
-        var highlight = message['objects'][0]['content'][0]['highlight'];
+        var prefix = colors.parse(line['prefix']);
+        var text = colors.parse(line['message']);
+        var buffer = line['buffer'];
+        var tags_array = line['tags_array'];
+        var displayed = line['displayed'];
+        var highlight = line['highlight'];
         var message = _.union(prefix, text);
         message =_.map(message, function(message) {
-            if ('fg' in message) {
+            if (message != "" && 'fg' in message) {
                 message['fg'] = colors.prepareCss(message['fg']);
             }
             return message;
@@ -299,21 +299,28 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
                 $rootScope.buffers[buffer]['notification'] = true;
             }
 
-            var additionalContent = pluginManager.contentForMessage(text[0]['text']);
+            if (text[0] != undefined) {
+              var additionalContent = pluginManager.contentForMessage(text[0]['text']);
 
-            if (additionalContent) {
-                buffer_line['metadata'] = additionalContent;
+              if (additionalContent) {
+                  buffer_line['metadata'] = additionalContent;
+              }
             }
 
             $rootScope.buffers[buffer]['lines'].push(buffer_line);
 
             buffer_line['date'] = datestring;
 
-
             if(highlight || _.contains(tags_array, 'notify_private')) {
                 $rootScope.createHighlight(prefix, text, message, buffer, additionalContent);
             }
         }
+    }
+
+    var handleBufferLineAdded = function(message) {
+      message['objects'][0]['content'].forEach(function(l) {
+        handleLine(l);
+      });
     }
 
     /*
@@ -358,6 +365,22 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
             }
         }
         $rootScope.buffers = buffers;
+
+        // Request latest buffer lines for each buffer
+        $rootScope.getLines();
+    }
+
+
+    /*
+     * Handle answers to (lineinfo) messages
+     *
+     * (lineinfo) messages are specified by this client. It is request after bufinfo completes
+     */
+    var handleLineInfo = function(message) {
+      var lines = message['objects'][0]['content'].reverse();
+      lines.forEach(function(l) {
+        handleLine(l);
+      });
     }
    
     var handleEvent = function(event) {
@@ -378,6 +401,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
 
     var eventHandlers = {
         bufinfo: handleBufferInfo,
+        lineinfo: handleLineInfo,
         _buffer_closing: handleBufferClosing, 
         _buffer_line_added: handleBufferLineAdded,
         _buffer_opened: handleBufferOpened
@@ -457,7 +481,14 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', funct
         doSend(message);
     }
 
+    var getLines = function(count) {
+      var message = "(lineinfo) hdata buffer:gui_buffers(*)/own_lines/last_line(-"+count+")/data\n";
+      doSend(message)
+    }
+
     return {
+        send: doSend,
+        getLines: getLines,
         connect: connect,
         sendMessage: sendMessage
     }
@@ -509,13 +540,18 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'connection
     $scope.connect = function() {
         connection.connect($scope.hostport, $scope.proto, $scope.password);
     }
-
+    $rootScope.getLines = function() {
+      var count = 20;
+      connection.getLines(20);
+    }
 
     /* Function gets called from bufferLineAdded code if user should be notified */
     $rootScope.createHighlight = function(prefix, text, message, buffer, additionalContent) {
         var prefixs = "";
         prefixs += prefix[0].text;
-        prefixs += prefix[1].text;
+        if(prefix[1] != undefined) {
+            prefixs += prefix[1].text;
+        }
         var messages = "";
         messages += text[0].text;
 
