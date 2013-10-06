@@ -534,6 +534,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'connection
     $scope.setActiveBuffer = function(key) {
         $rootScope.buffers[key]['notification'] = false;
         $rootScope.activeBuffer = $rootScope.buffers[key];
+        $rootScope.pageTitle = $rootScope.activeBuffer['short_name'] + ' | ' + $rootScope.activeBuffer['title'];
     };
 
     $scope.sendMessage = function() {

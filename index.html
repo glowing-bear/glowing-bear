@@ -1,6 +1,11 @@
 <!DOCTYPE html>
-<html ng-app="weechat">
+<html ng-app="weechat" ng-cloak>
   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title ng-bind-template="WeeChat {{ pageTitle}}"></title>
+
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js" rel="stylesheet" media="screen">
     <link rel="shortcut icon" type="image/png" href="img/favicon.png" >
@@ -54,7 +59,7 @@
       <div ng-show="connected">
 
         <ul class="nav nav-pills">
-          <li class="label" ng-class="{'label-success': content.notification }" ng-repeat="(key, content) in buffers | toArray | orderBy:'content.number':true">
+          <li class="label" ng-class="{'active': content.notification }" ng-repeat="(key, content) in buffers | toArray | orderBy:'content.number':true">
           <a ng-click="setActiveBuffer(content.id)" title="{{ content.full_name }}">{{ content.short_name }}</a>
           </li>
         </ul>
