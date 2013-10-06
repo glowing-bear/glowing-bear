@@ -46,12 +46,12 @@
       </div>
       <div ng-show="connected">
 
-        <span class="label" ng-class="{'label-success': content.notification }" ng-repeat="(key, content) in buffers">
+        <span class="label" ng-class="{'label-success': content.notification }" ng-repeat="(key, content) in buffers | toArray | orderBy:'content.number':true">
           <a ng-click="setActiveBuffer(key)">{{ content.full_name }}</a>
         </span>
         <div ng-repeat="bufferline in activeBuffer.lines">
 
-          <span ng-repeat="part in bufferline.message" class="text {{ part.fg }}">
+          <span ng-repeat="part in bufferline.message" class="text" style="{{ part.fg }}">
             {{ part.text }}
           </span>
 
