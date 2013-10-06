@@ -65,7 +65,7 @@
         </ul>
         <div class="bufferlines" ng-repeat="bufferline in activeBuffer.lines">
           <span class="date text-muted">
-            {{ bufferline.date }}
+            {{ bufferline.date | date:'HH:mm' }}
           </span>
 
           <span ng-repeat="part in bufferline.message" class="text" style="{{ part.fg }}">
