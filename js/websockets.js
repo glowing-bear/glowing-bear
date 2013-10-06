@@ -272,7 +272,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
         $rootScope.closeBuffer(buffer_pointer);
     }
 
-    var handleLine = function(line) {
+    var handleLine = function(line, initial) {
         var buffer_line = {}
         var date = line['date'];
         date = new Date(parseInt(date, 10) * 1000);
@@ -295,7 +295,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
             buffer_line['message'] = message;
 
 
-            if (!_isActiveBuffer(buffer)) {
+            if (!_isActiveBuffer(buffer) && !initial) {
                 $rootScope.buffers[buffer]['notification'] = true;
             }
 
@@ -311,7 +311,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
 
             buffer_line['date'] = datestring;
 
-            if(highlight || _.contains(tags_array, 'notify_private')) {
+            if(!initial && (highlight || _.contains(tags_array, 'notify_private')) ) {
                 $rootScope.createHighlight(prefix, text, message, buffer, additionalContent);
             }
         }
@@ -319,7 +319,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
 
     var handleBufferLineAdded = function(message) {
       message['objects'][0]['content'].forEach(function(l) {
-        handleLine(l);
+        handleLine(l, false);
       });
     }
 
@@ -335,9 +335,13 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
     }
 
     var handleBufferOpened = function(message) {
-        var fullName = message['objects'][0]['content'][0]['full_name']
-        var buffer = message['objects'][0]['content'][0]['pointers'][0]
-        $rootScope.buffers[buffer] = { 'id': buffer, 'lines':[], 'full_name':fullName }
+        var obj = message['objects'][0]['content'][0];
+        var fullName = obj['full_name'];
+        var buffer = obj['pointers'][0];
+        var short_name = obj['short_name'];
+        var title = obj['title'];
+
+        $rootScope.buffers[buffer] = { 'id': buffer, 'lines':[], 'full_name':fullName, 'short_name':short_name, 'title':title }
         
     }
 
@@ -379,7 +383,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
     var handleLineInfo = function(message) {
       var lines = message['objects'][0]['content'].reverse();
       lines.forEach(function(l) {
-        handleLine(l);
+        handleLine(l, true);
       });
     }
    
@@ -442,7 +446,7 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', funct
                     send += "init compression=off,password=" + password + "\n";
                 }
 
-                send += "(bufinfo) hdata buffer:gui_buffers(*) number,full_name\n";
+                send += "(bufinfo) hdata buffer:gui_buffers(*) number,full_name,short_name,title\n";
                 send += "sync\n";
             } else {
 
