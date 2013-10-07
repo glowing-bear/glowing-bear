@@ -340,7 +340,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
         var short_name = obj['short_name'];
         var title = obj['title'];
 
-        $rootScope.buffers[buffer] = { 'id': buffer, 'lines':[], 'full_name':fullName, 'short_name':short_name, 'title':title }
+        $rootScope.buffers[buffer] = { 'id': buffer, 'lines':[], 'full_name':fullName, 'short_name':short_name, 'title':title, 'unread':'' }
         
     }
 
@@ -349,8 +349,14 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
         var buffer = obj['pointers'][0];
         var old = $rootScope.buffers[buffer];
         old['full_name'] = obj['full_name'];
-        old['short_name'] = obj['short_name'];
         old['title'] = obj['title'];
+    }
+    var handleBufferRenamed = function(message) {
+        var obj = message['objects'][0]['content'][0];
+        var buffer = obj['pointers'][0];
+        var old = $rootScope.buffers[buffer];
+        old['full_name'] = obj['full_name'];
+        old['short_name'] = obj['short_name'];
     }
 
 
@@ -419,7 +425,8 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
         _buffer_closing: handleBufferClosing, 
         _buffer_line_added: handleBufferLineAdded,
         _buffer_opened: handleBufferOpened,
-        _buffer_title_changed: handleBufferTitleChanged
+        _buffer_title_changed: handleBufferTitleChanged,
+        _buffer_renamed: handleBufferRenamed
     }
 
     return {
