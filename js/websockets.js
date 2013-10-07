@@ -292,9 +292,10 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
             if (!_isActiveBuffer(buffer) && !initial) {
                 
                 if ($rootScope.buffers[buffer]['unread'] == '') {
-                  $rootScope.buffers[buffer]['unread'] == 0;
+                  $rootScope.buffers[buffer]['unread'] = 1;
+                }else {
+                  $rootScope.buffers[buffer]['unread'] = parseInt($rootScope.buffers[buffer]['unread']) + 1;
                 }
-                $rootScope.buffers[buffer]['unread'] += 1;
             }
 
             if (text[0] != undefined) {
