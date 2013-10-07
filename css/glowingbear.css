@@ -1,0 +1,76 @@
+body {
+    color: white;
+    background-color: #222;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom:70px;
+    padding-top: 70px;
+}
+.bufferlines {
+    font-family: monospace;
+    overflow: scroll-y;
+    height: 100%; 
+}
+
+.navbar-fixed-bottom {
+    margin: 5px;
+}
+.color-light-green {
+    color: chartreuse;
+}
+
+.color-27 {
+    color: deepskyblue;
+}
+
+.danger {
+    background-color: rgb(217, 83, 79);
+}
+
+.color-28 {
+    color: greenyellow;
+}
+
+.color-00 {
+    color: coral;
+}
+
+.color-yellow {
+    color: yellow;
+}
+
+.color-dark-red {
+    color: darkred;
+}
+
+.color-dark-green {
+    color: green;
+}
+
+.color-dark-blue {
+    color: darkblue;
+}
+
+.color-dark-gray {
+    color: gray;
+}
+
+.color-gray {
+    color: lightgray;
+}
+
+.color-brown {
+    color: brown;
+}
+
+.color-cyan {
+    color: cyan;
+}
+
+.color-dark-cyan {
+    color: darkcyan;
+}
+
+li.notification {
+    color: green;
+}

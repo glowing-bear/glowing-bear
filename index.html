@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html ng-app="weechat" ng-cloak>
+  <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title ng-bind-template="WeeChat {{ pageTitle}}"></title>
+
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <link rel="shortcut icon" type="image/png" href="img/favicon.png" >
+    <link href="css/glowingbear.css" rel="stylesheet" media="screen">
+    <script type="text/javascript" src="js/angular.min.js"></script>
+    <script type="text/javascript" src="js/underscore.js"></script>
+    <script type="text/javascript" src="js/localstorage.js"></script>
+    <script type="text/javascript" src="js/protocol.js"></script>
+    <script type="text/javascript" src="js/websockets.js"></script>
+  </head>
+  <body>
+    <div ng-controller="WeechatCtrl">
+      <div ng-hide="connected" class="container">
+        <h2>
+          <img src="img/favicon.png">
+          glowing bear
+          <small>
+            WeeChat web frontend 
+          </small>
+        </h2>
+        <div>To start using, please enable relay in your WeeChat client:
+          <pre>
+/set relay.network.password yourpassword
+/relay add weechat 9001</pre>
+        Note: The communication goes directly between your browser and your weechat in clear text.
+        Connection settings are saved between sessions, including password, in your own browser.
+        </div>
+        <h3>Connection settings</h3>
+        <form role="form">
+          <div class="alert alert-danger" ng-show="errorMessage">
+            <strong>Oh no!</strong> We cannot connect!
+          </div>
+          <div class="form-group">
+            <label class="control-label" for="hostport">Hostname and port</label>
+            <input type="text" class="form-control" id="hostport" ng-model="hostport" placeholder="Hostport">
+            <p class="help-block">Enter the hostname and the port to the WeeChat relay, separated by a :</p>
+          </div>
+          <div class="form-group">
+            <label class="control-label" for="password">WeeChat relay password</label>
+            <input type="password"class="form-control"  id="password" ng-model="password" placeholder="Password">
+            <p class="help-block">Password will be stored in your browser session</p>
+          </div>
+          <div class="form-group">
+            <label class="control-label" for="proto">Proto</label>
+            <input type="text" class="form-control" id="proto" ng-model="proto" placeholder="proto">
+            <p class="help-block">Default is fine.</p>
+          </div>
+          <button class="btn btn-lg btn-primary" ng-click="connect()">Connect!</button>
+        </form>
+      </div>
+      <div ng-show="connected">
+        <nav class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+          </div>
+          <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav ">
+              <li class="label" ng-class="{'active': content.active }" ng-repeat="(key, content) in buffers | toArray | orderBy:'content.number':true">
+              <a ng-click="setActiveBuffer(content.id)" title="{{ content.full_name }}">{{ content.short_name }} <span class="badge" ng-class="{'danger': content.highlight }" ng-bind="content.unread"></span></a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <div class="bufferlines">
+          <div class="bufferline" ng-repeat="bufferline in activeBuffer.lines">
+            <span class="date text-muted">
+              {{ bufferline.date | date:'HH:mm' }}
+            </span>
+
+            <span ng-repeat="part in bufferline.message" class="text" style="{{ part.fg }}">
+              {{ part.text }}
+            </span>
+
+            <div ng-repeat="metadata in bufferline.metadata">
+              <div ng-show="metadata.visible">
+                <a ng-click="metadata.visible = false">Hide additional content</a>
+                <div ng-bind-html-unsafe="metadata.content"></div>
+
+              </div>
+              <div ng-hide="metadata.visible">
+                <a ng-click="metadata.visible = true">Show additional content</a>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="navbar navbar-inverse navbar-fixed-bottom">
+            <form class="form form-horizontal" ng-submit="sendMessage()">
+              <div class="input-group">
+                <input type="text" class="form-control" ng-model="command"></input>
+                <span class="input-group-btn">
+                  <button class="btn btn-default btn-primary">Send</button>
+                </span>
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
