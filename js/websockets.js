@@ -585,7 +585,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'connection
         connection.connect($scope.hostport, $scope.password, $scope.ssl);
     }
     $rootScope.getLines = function() {
-      var count = 100;
+      var count = 20;
       connection.getLines(count);
     }
 
