@@ -289,7 +289,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
             buffer_line['message'] = message;
 
 
-            if (!_isActiveBuffer(buffer) && !initial) {
+            if (!_isActiveBuffer(buffer) && !initial && !_.contains(tags_array, 'notify_none')) {
                 
                 if ($rootScope.buffers[buffer]['unread'] == '') {
                   $rootScope.buffers[buffer]['unread'] = 1;
