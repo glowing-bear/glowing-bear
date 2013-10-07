@@ -453,23 +453,19 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', funct
     }
     
     // Takes care of the connection and websocket hooks
-    var connect = function (hostport, proto, password) {
-        websocket = new WebSocket("ws://" + hostport + "/weechat");
+    var connect = function (hostport, password, ssl) {
+        var proto = ssl ? 'wss':'ws';
+        websocket = new WebSocket(proto+"://" + hostport + "/weechat");
         websocket.binaryType = "arraybuffer"
 
         websocket.onopen = function (evt) {
             var send = ""; 
-            // FIXME: does password need to be sent only if protocol is not weechat?
-            if (proto == "weechat") {
-                if (password) {
-                    send += "init compression=off,password=" + password + "\n";
-                }
-
-                send += "(bufinfo) hdata buffer:gui_buffers(*) number,full_name,short_name,title\n";
-                send += "sync\n";
-            } else {
-
+            if (password) {
+                send += "init compression=off,password=" + password + "\n";
             }
+
+            send += "(bufinfo) hdata buffer:gui_buffers(*) number,full_name,short_name,title\n";
+            send += "sync\n";
             $log.info("Connected to relay");
             doSend(send);
             $rootScope.connected = true;
@@ -490,7 +486,7 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', funct
         }
 
         websocket.onerror = function (evt) {
-            if (evt.type == "error" && websocket.readyState == 0) {
+            if (evt.type == "error" && websocket.readyState != 1) {
                 $rootScope.errorMessage = true;
             }
             $log.error("Relay error " + evt.data);
@@ -565,7 +561,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'connection
     };
 
     $scope.connect = function() {
-        connection.connect($scope.hostport, $scope.proto, $scope.password);
+        connection.connect($scope.hostport, $scope.password, $scope.ssl);
     }
     $rootScope.getLines = function() {
       var count = 20;

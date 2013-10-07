@@ -7,8 +7,6 @@
       <title ng-bind-template="WeeChat {{ pageTitle}}"></title>
 
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <link rel="shortcut icon" type="image/png" href="img/favicon.png" >
     <link href="css/glowingbear.css" rel="stylesheet" media="screen">
     <script type="text/javascript" src="js/angular.min.js"></script>
@@ -16,6 +14,8 @@
     <script type="text/javascript" src="js/localstorage.js"></script>
     <script type="text/javascript" src="js/protocol.js"></script>
     <script type="text/javascript" src="js/websockets.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   </head>
   <body>
     <div ng-controller="WeechatCtrl">
@@ -33,6 +33,18 @@
 /relay add weechat 9001</pre>
         Note: The communication goes directly between your browser and your weechat in clear text.
         Connection settings are saved between sessions, including password, in your own browser.
+        <h4>Encryption</h4>
+        If you want to use encrypted session you first have to set up the relay using SSL
+        <pre>
+$ mkdir -p ~/.weechat/ssl
+$ cd ~/.weechat/ssl
+$ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out relay.pem
+</pre>
+        If WeeChat is already running, you can reload the certificate and private key with command:
+        <pre>
+/relay sslcertkey
+/relay add ssl.weechat 8000
+</pre>
         </div>
         <h3>Connection settings</h3>
         <form role="form">
@@ -50,9 +62,9 @@
             <p class="help-block">Password will be stored in your browser session</p>
           </div>
           <div class="form-group">
-            <label class="control-label" for="proto">Proto</label>
-            <input type="text" class="form-control" id="proto" ng-model="proto" placeholder="proto">
-            <p class="help-block">Default is fine.</p>
+            <label class="control-label" for="proto">Encryption</label>
+            <input type="checkbox" class="form-control" id="ssl" ng-model="ssl">
+            <p class="help-block">Check the box if you want to encrypt communication between browser and WeeChat. <strong>Note</strong>: Due to a <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">bug</a> encryption will not work in Firefox. You must also first visit the URL https://weechathost:relayport/ to accept the certificate</p>
           </div>
           <button class="btn btn-lg btn-primary" ng-click="connect()">Connect!</button>
         </form>
