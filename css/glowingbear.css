@@ -23,6 +23,10 @@ body {
     color: deepskyblue;
 }
 
+.danger {
+    background-color: rgb(217, 83, 79);
+}
+
 .color-28 {
     color: greenyellow;
 }

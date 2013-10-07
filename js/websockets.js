@@ -312,6 +312,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
 
             if(!initial && (highlight || _.contains(tags_array, 'notify_private')) ) {
                 $rootScope.createHighlight(prefix, text, message, buffer, additionalContent);
+                $rootScope.buffers[buffer]['highlight'] = true;
             }
         }
     }
@@ -552,6 +553,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'connection
     $scope.setActiveBuffer = function(key) {
         $rootScope.activeBuffer['active'] = false;
         $rootScope.buffers[key]['active'] = true;
+        $rootScope.buffers[key]['highlight'] = false;
         $rootScope.buffers[key]['unread'] = '';
         $rootScope.activeBuffer = $rootScope.buffers[key];
         $rootScope.pageTitle = $rootScope.activeBuffer['short_name'] + ' | ' + $rootScope.activeBuffer['title'];

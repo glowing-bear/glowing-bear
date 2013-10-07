@@ -70,7 +70,7 @@
           <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav ">
               <li class="label" ng-class="{'active': content.active }" ng-repeat="(key, content) in buffers | toArray | orderBy:'content.number':true">
-              <a ng-click="setActiveBuffer(content.id)" title="{{ content.full_name }}">{{ content.short_name }} <span class="badge" ng-bind="content.unread"></span></a>
+              <a ng-click="setActiveBuffer(content.id)" title="{{ content.full_name }}">{{ content.short_name }} <span class="badge" ng-class="{'danger': content.highlight }" ng-bind="content.unread"></span></a>
               </li>
             </ul>
           </div>
