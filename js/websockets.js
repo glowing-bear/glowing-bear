@@ -270,7 +270,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
 
     var handleLine = function(line, initial) {
         var buffer_line = {}
-        var date = line['date'];
+        var date = line['date']*1000;
         var prefix = colors.parse(line['prefix']);
         var text = colors.parse(line['message']);
         var buffer = line['buffer'];
@@ -306,7 +306,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
               }
             }
 
-            $rootScope.buffers[buffer]['lines'].push(buffer_line);
+            $rootScope.addLine(buffer, buffer_line);
 
             buffer_line['date'] = date;
 
@@ -553,7 +553,28 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'connection
         $rootScope.buffers[key]['unread'] = '';
         $rootScope.activeBuffer = $rootScope.buffers[key];
         $rootScope.pageTitle = $rootScope.activeBuffer['short_name'] + ' | ' + $rootScope.activeBuffer['title'];
+        $rootScope.scrollToBottom();
     };
+
+    $rootScope.$watch('activeBuffer', function(newVal, oldVal) {
+        if (newVal && newVal !== oldVal) { 
+            $rootScope.scrollToBottom();
+        }
+    });
+
+    $rootScope.addLine = function(buffer, line) {
+        $rootScope.buffers[buffer]['lines'].push(line);
+        // Scroll if needed
+        if ($rootScope.activeBuffer['id'] == buffer) {
+            $rootScope.scrollToBottom();
+        }
+    }
+
+    $rootScope.scrollToBottom = function() {
+        setTimeout(function() {
+            window.scrollTo(0, window.scrollMaxY);
+        });
+    }
 
     $scope.sendMessage = function() {
         connection.sendMessage($scope.command);
@@ -564,8 +585,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'connection
         connection.connect($scope.hostport, $scope.password, $scope.ssl);
     }
     $rootScope.getLines = function() {
-      var count = 20;
-      connection.getLines(20);
+      var count = 100;
+      connection.getLines(count);
     }
 
     /* Function gets called from bufferLineAdded code if user should be notified */
