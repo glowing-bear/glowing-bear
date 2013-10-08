@@ -390,7 +390,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'models', '
 
 
     $scope.setActiveBuffer = function(key) {
-        console.log(key);
         models.setActiveBuffer(key);
     };
 

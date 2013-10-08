@@ -48,8 +48,6 @@
 
         <div ng-show="connected">
           
-          <button ng-click="incrementAge()">Click!</button>
-
           <span class="label" ng-class="{'label-success': content.notification }" ng-repeat="(key, content) in buffers">
             <a ng-click="setActiveBuffer(key)">{{ content.fullName }}</a>
           </span>

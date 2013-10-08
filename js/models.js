@@ -1,3 +1,7 @@
+/*
+ * This file contains the weechat models and various
+ * helper methods to work with them.
+ */
 var models = angular.module('weechatModels', []);
 
 models.service('models', ['colors', function(colors) {
@@ -7,6 +11,12 @@ models.service('models', ['colors', function(colors) {
     
     this.model = { 'buffers': {} }
 
+    /*
+     * Adds a buffer to the list
+     *
+     * @param buffer buffer object
+     * @return undefined
+     */
     this.addBuffer = function(buffer) {
         BufferList[buffer.id] = buffer;
         if (BufferList.length == 1) {
@@ -15,10 +25,22 @@ models.service('models', ['colors', function(colors) {
         this.model.buffers[buffer.id] = buffer;
     }
 
+    /*
+     * Returns the current active buffer
+     *
+     * @return active buffer object
+     */
     this.getActiveBuffer = function() {
         return activeBuffer;
     }
 
+    /*
+     * Sets the buffer specifiee by bufferId as active.
+     * Deactivates the previous current buffer.
+     *
+     * @param bufferId id of the new active buffer
+     * @return undefined
+     */
     this.setActiveBuffer = function(bufferId) {
         
         if (this.getActiveBuffer()) {
@@ -35,10 +57,19 @@ models.service('models', ['colors', function(colors) {
 
     }
 
+    /*
+     * Returns the buffer list
+     */
     this.getBuffers = function() {
         return BufferList;
     }
 
+    /*
+     * Returns a specific buffer object
+     *
+     * @param bufferId id of the buffer
+     * @return the buffer object
+     */
     this.getBuffer = function(bufferId) {
         return _.find(this.model['buffers'], function(buffer) {
             if (buffer['id'] == bufferId) {
@@ -47,6 +78,13 @@ models.service('models', ['colors', function(colors) {
         });
     }
 
+    /*
+     * Closes a weechat buffer. Sets the first buffer
+     * as active.
+     *
+     * @param bufferId id of the buffer to close
+     * @return undefined
+     */
     this.closeBuffer = function(bufferId) {
 
         delete(this.model['buffers'][bufferId.id]);
@@ -54,18 +92,24 @@ models.service('models', ['colors', function(colors) {
         this.setActiveBuffer(firstBuffer);
     }
 
-    this.Buffer = function(message) {
 
+    /*
+     * Buffer class
+     */
+    this.Buffer = function(message) {
+        // weechat properties
         var fullName = message['full_name']
         var pointer = message['pointers'][0]
         var lines = []
         var active = false;
         var notification = false;
 
-        var notify = function() {
-            notification = true;
-        }
-
+        /*
+         * Adds a line to this buffer
+         * 
+         * @param line the BufferLine object
+         * @return undefined
+         */
         var addLine = function(line) {
             lines.push(line);
         }
@@ -78,12 +122,16 @@ models.service('models', ['colors', function(colors) {
         }
 
     }
-
+    
+    /*
+     * BufferLine class
+     */
     this.BufferLine = function(weechatBufferLine) {
 
         /*
          * Parse the text elements from the buffer line added
          *
+         * @param message weechat message
          */
         function parseLineAddedTextElements(message) {
             var prefix = colors.parse(message['objects'][0]['content'][0]['prefix']);
@@ -114,10 +162,5 @@ models.service('models', ['colors', function(colors) {
             text: text[0]['text'],
         }
 
-    }
-
-    this.getBufferList = function() {
-        return BufferList;
-    }
-    
+    }    
 }]);
