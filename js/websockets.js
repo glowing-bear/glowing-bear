@@ -194,8 +194,9 @@ weechat.factory('imagePlugin', [function() {
 weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'pluginManager', function($rootScope, colors, models, pluginManager) {
 
     var handleBufferClosing = function(message) {
-        var buffer_pointer = message['objects'][0]['content'][0]['pointers'][0];
-        $rootScope.closeBuffer(buffer_pointer);
+        var bufferMessage = message['objects'][0]['content'][0];
+        var buffer = new models.Buffer(bufferMessage);
+        $rootScope.closeBuffer(buffer.id);
     }
 
     var handleBufferLineAdded = function(message) {
@@ -223,9 +224,9 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'pluginManager', 
     }
 
     var handleBufferOpened = function(message) {
-        var fullName = message['objects'][0]['content'][0]['full_name']
-        var buffer = message['objects'][0]['content'][0]['pointers'][0]
-        $rootScope.buffers[buffer] = { 'id': buffer, 'lines':[], 'full_name':fullName }
+        var bufferMessage = message['objects'][0]['content'][0];
+        var buffer = new models.Buffer(bufferMessage);
+        $rootScope.buffers[buffer.id] = buffer;
 
     }
 
@@ -241,14 +242,11 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'pluginManager', 
         // buffers objects
         var buffers = {};
         for (var i = 0; i < bufferInfos.length ; i++) {
-            var bufferInfo = bufferInfos[i];
-            var pointer = bufferInfo['pointers'][0];
-            bufferInfo['id'] = pointer;
-            bufferInfo['lines'] = [];
-            buffers[pointer] = bufferInfo
+            var buffer = new models.Buffer(bufferInfos[i]);
+            buffers[buffer.id] = buffer;
             if (i == 0) {
                 // first buffer is active buffer by default
-                $rootScope.activeBuffer = buffers[pointer];
+                $rootScope.activeBuffer = buffers[buffer.id];
             }
         }
         $rootScope.buffers = buffers;
@@ -350,7 +348,7 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', funct
 
     var sendMessage = function(message) {
         doSend(WeeChatProtocol.formatInput({
-            buffer: $rootScope.activeBuffer['full_name'],
+            buffer: $rootScope.activeBuffer['fullName'],
             data: message
         }));
     }

@@ -2,6 +2,20 @@ var models = angular.module('weechatModels', []);
 
 models.factory('models', ['colors', function(colors) {
 
+    function Buffer(message) {
+
+        var fullName = message['full_name']
+        var pointer = message['pointers'][0]
+        var lines = []
+        
+        return {
+            id: pointer,
+            fullName: fullName,
+            lines: lines,
+        }
+
+    }
+
     function BufferLine(weechatBufferLine) {
 
         /*
@@ -40,7 +54,8 @@ models.factory('models', ['colors', function(colors) {
     }
 
     return {
-        BufferLine: BufferLine
+        BufferLine: BufferLine,
+        Buffer: Buffer
     }
 
     
