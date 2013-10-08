@@ -1,6 +1,21 @@
 var plugins = angular.module('plugins', []);
 
+
+plugins.service('plugins', function() {
+
+    this.Plugin = function(contentForMessage) {
+        
+        return {
+            contentForMessage: contentForMessage,
+            exclusive: false,
+        }
+    }
+    
+});
+
+
 plugins.factory('pluginManager', ['youtubePlugin', 'urlPlugin', 'imagePlugin', function(youtubePlugin, urlPlugin, imagePlugin) {
+
 
     var plugins = [youtubePlugin, urlPlugin, imagePlugin]
 
