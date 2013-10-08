@@ -1,5 +1,15 @@
+/*
+ * This file contains the plugin definitions
+ */
+
 plugins = angular.module('plugins', []);
 
+/*
+ * Definition of a user provided plugin with sensible default values
+ *
+ * User plugins are created by providing a contentForMessage function
+ * that parses a string and return any additional content.
+ */
 var Plugin = function(contentForMessage) {
     
     return {
@@ -8,18 +18,38 @@ var Plugin = function(contentForMessage) {
     }
 }
 
+/*
+ * This service provides access to the plugin manager
+ *
+ * The plugin manager is where the various user provided plugins
+ * are registered. It is responsible for finding additional content
+ * to display when messages are received.
+ *
+ */
 plugins.service('plugins', ['userPlugins', function(userPlugins) {
 
-
+    /*
+     * Defines the plugin manager object
+     */
     var PluginManagerObject = function() {
-
+        
         var plugins = [];
+
+        /*
+         * Register the user provides plugins
+         *
+         * @param userPlugins user provided plugins
+         */
         var registerPlugins = function(userPlugins) {
             for (var i = 0; i < userPlugins.length; i++) {
                 plugins.push(userPlugins[i]);
             };
         }
 
+        /*
+         * Iterates through all the registered plugins
+         * and run their contentForMessage function.
+         */
         var contentForMessage = function(message) {
 
             var content = [];
@@ -44,10 +74,26 @@ plugins.service('plugins', ['userPlugins', function(userPlugins) {
         }
     }
 
+    // Instanciates and registers the plugin manager.
     this.PluginManager = new PluginManagerObject();
     this.PluginManager.registerPlugins(userPlugins.plugins);
+
 }]);
 
+/*
+ * This factory exposes the collection of user provided plugins.
+ *
+ * To create your own plugin, you need to:
+ *
+ * 1. Define it's contentForMessage function. The contentForMessage
+ *    function takes a string as a parameter and returns a HTML string.
+ *
+ * 2. Instanciate a Plugin object with contentForMessage function as it's
+ *    argument.
+ *
+ * 3. Add it to the plugins array.
+ *
+ */
 plugins.factory('userPlugins', function() {
 
     var youtubePlugin = new Plugin(function(message) {
