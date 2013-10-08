@@ -110,7 +110,7 @@ weechat.factory('colors', [function($scope) {
 }]);
 
 
-weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'pluginManager', function($rootScope, colors, models, pluginManager) {
+weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', function($rootScope, colors, models, plugins) {
 
     var handleBufferClosing = function(message) {
         var bufferMessage = message['objects'][0]['content'][0];
@@ -124,7 +124,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'pluginManager', 
 
         var message = new models.BufferLine(message);
         var buffer = models.getBuffer(message.buffer);
-        message.metadata = pluginManager.contentForMessage(message.text);
+        message.metadata = plugins.PluginManager.contentForMessage(message.text);
         buffer.addLine(message);
 
         if (!buffer.active) {

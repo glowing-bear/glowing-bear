@@ -10,41 +10,42 @@ plugins.service('plugins', function() {
             exclusive: false,
         }
     }
-    
-});
 
+    var PluginManagerObject = function() {
 
-plugins.factory('pluginManager', ['youtubePlugin', 'urlPlugin', 'imagePlugin', function(youtubePlugin, urlPlugin, imagePlugin) {
+        var plugins = [];
 
-
-    var plugins = [youtubePlugin, urlPlugin, imagePlugin]
-
-    var hookPlugin = function(plugin) {
-        plugins.push(plugin);
-    }
-
-    var contentForMessage = function(message) {
-
-        var content = [];
-        for (var i = 0; i < plugins.length; i++) {
-            var pluginContent = plugins[i].contentForMessage(message);
-            if (pluginContent) {
-                var pluginContent = {'visible': false, 'content': pluginContent }
-                content.push(pluginContent);
-
-                if (plugins[i].exclusive) {
-                    break;
-                }
-            }
+        var addPlugin = function(plugin) {
+            plugins.push(plugin);
         }
 
-        return content;
+        var contentForMessage = function(message) {
+
+            var content = [];
+            for (var i = 0; i < plugins.length; i++) {
+                var pluginContent = plugins[i].contentForMessage(message);
+                if (pluginContent) {
+                    var pluginContent = {'visible': false, 'content': pluginContent }
+                    content.push(pluginContent);
+
+                    if (plugins[i].exclusive) {
+                        break;
+                    }
+                }
+            }
+
+            return content;
+        }
+
+        return {
+            addPlugin: addPlugin,
+            contentForMessage: contentForMessage
+        }
     }
 
-    return {
-        hookPlugin: hookPlugin,
-        contentForMessage: contentForMessage
-    }
+    this.PluginManager = new PluginManagerObject();
+    
+});
 
 }]);
 
