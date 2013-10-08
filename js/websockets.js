@@ -196,7 +196,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'pluginManager', 
     var handleBufferClosing = function(message) {
         var bufferMessage = message['objects'][0]['content'][0];
         var buffer = new models.Buffer(bufferMessage);
-        $rootScope.closeBuffer(buffer.id);
+        models.closeBuffer(buffer);
     }
 
     var handleBufferLineAdded = function(message) {
@@ -388,11 +388,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'models', '
     // TODO checkbox for saving password or not?
     // $scope.password = "";
 
-    $rootScope.closeBuffer = function(buffer_pointer) {
-       // delete($rootScope.buffers[buffer_pointer]);
-       // var first_buffer = _.keys($rootScope.buffers)[0];
-       // $scope.setActiveBuffer(first_buffer);
-    }
 
     $scope.setActiveBuffer = function(key) {
         console.log(key);

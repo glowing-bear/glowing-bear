@@ -48,9 +48,10 @@ models.service('models', ['colors', function(colors) {
     }
 
     this.closeBuffer = function(bufferId) {
-        delete(BufferList[bufferId]);
-        var firstBuffer = _.keys(BufferList)[0];
-        activeBuffer = firstBuffer;
+
+        delete(this.model['buffers'][bufferId.id]);
+        var firstBuffer = _.keys(this.model['buffers'])[0];
+        this.setActiveBuffer(firstBuffer);
     }
 
     this.Buffer = function(message) {
