@@ -216,7 +216,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'pluginManager', 
     var handleBufferOpened = function(message) {
         var bufferMessage = message['objects'][0]['content'][0];
         var buffer = new models.Buffer(bufferMessage);
-        //$rootScope.buffers[buffer.id] = buffer;
+        models.addBuffer(buffer);
 
     }
 
