@@ -213,17 +213,6 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'pluginManager', 
         }
     }
 
-    /*
-     * Returns whether or not this buffer is the active buffer
-     */
-    var _isActiveBuffer = function(buffer) {
-      if ($rootScope.activeBuffer['id'] == buffer) {
-          return true;
-      } else {
-          return false;
-      }
-    }
-
     var handleBufferOpened = function(message) {
         var bufferMessage = message['objects'][0]['content'][0];
         var buffer = new models.Buffer(bufferMessage);
