@@ -51,7 +51,7 @@ models.service('models', ['colors', function(colors) {
             var buffer = message['objects'][0]['content'][0]['buffer'];
             text_elements = _.union(prefix, text);
             text_elements =_.map(text_elements, function(text_element) {
-                if ('fg' in text_element) {
+                if (text_element && ('fg' in text_element)) {
                     text_element['fg'] = colors.prepareCss(text_element['fg']);
                 }
                 // TODO: parse background as well
