@@ -1,22 +1,23 @@
-var plugins = angular.module('plugins', []);
+plugins = angular.module('plugins', []);
 
-
-plugins.service('plugins', function() {
-
-    this.Plugin = function(contentForMessage) {
-        
-        return {
-            contentForMessage: contentForMessage,
-            exclusive: false,
-        }
+var Plugin = function(contentForMessage) {
+    
+    return {
+        contentForMessage: contentForMessage,
+        exclusive: false,
     }
+}
+
+plugins.service('plugins', ['userPlugins', function(userPlugins) {
+
 
     var PluginManagerObject = function() {
 
         var plugins = [];
-
-        var addPlugin = function(plugin) {
-            plugins.push(plugin);
+        var registerPlugins = function(userPlugins) {
+            for (var i = 0; i < userPlugins.length; i++) {
+                plugins.push(userPlugins[i]);
+            };
         }
 
         var contentForMessage = function(message) {
@@ -25,7 +26,8 @@ plugins.service('plugins', function() {
             for (var i = 0; i < plugins.length; i++) {
                 var pluginContent = plugins[i].contentForMessage(message);
                 if (pluginContent) {
-                    var pluginContent = {'visible': false, 'content': pluginContent }
+                    var pluginContent = {'visible': false, 
+                                         'content': pluginContent }
                     content.push(pluginContent);
 
                     if (plugins[i].exclusive) {
@@ -33,20 +35,17 @@ plugins.service('plugins', function() {
                     }
                 }
             }
-
             return content;
         }
 
         return {
-            addPlugin: addPlugin,
+            registerPlugins: registerPlugins,
             contentForMessage: contentForMessage
         }
     }
 
     this.PluginManager = new PluginManagerObject();
-    
-});
-
+    this.PluginManager.registerPlugins(userPlugins.plugins);
 }]);
 
 plugins.factory('userPlugins', function() {
