@@ -1,6 +1,8 @@
 A web client for WeeChat
 ========================
 
+Required Weechat version: 0.4.2
+
 To use the web interface you first need to set a relay and a password:
 
 	/relay add weechat 9001
