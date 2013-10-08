@@ -237,7 +237,6 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', 'mode
 	    message = protocol.parse(evt.data)
             handlers.handleEvent(message);
             $rootScope.commands.push("RECV: " + evt.data + " TYPE:" + evt.type) ;
-            console.log("apply");
             $rootScope.$apply();
         }
 
@@ -264,21 +263,7 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', 'mode
     }
 }]);
 
-weechat.service('testService', function(){
-    var count = 1;
-    var list = [];
-    this.incrementCount = function () {
-        count++;
-        list.push(count);
-        return list;
-    };
-    this.getCount = function(){
-       return list;
-    }
-    
-});
-
-weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'models', 'connection', 'testService', function ($rootScope, $scope, $store, models, connection, testService) {
+weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'models', 'connection', function ($rootScope, $scope, $store, models, connection, testService) {
 
     $scope.buffers = models.model.buffers;
     $scope.activeBuffer = models.getActiveBuffer
