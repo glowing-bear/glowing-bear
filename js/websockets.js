@@ -1,4 +1,4 @@
-var weechat = angular.module('weechat', ['localStorage']);
+var weechat = angular.module('weechat', ['localStorage', 'weechatModels']);
 
 weechat.factory('colors', [function($scope) {
 
@@ -191,57 +191,18 @@ weechat.factory('imagePlugin', [function() {
     }
 }]);
 
-weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($rootScope, colors, pluginManager) {
+weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'pluginManager', function($rootScope, colors, models, pluginManager) {
 
     var handleBufferClosing = function(message) {
         var buffer_pointer = message['objects'][0]['content'][0]['pointers'][0];
         $rootScope.closeBuffer(buffer_pointer);
     }
 
-
-
-    function BufferLine(weechatBufferLine) {
-
-        /*
-         * Parse the text elements from the buffer line added
-         *
-         */
-        function parseLineAddedTextElements(message) {
-            var prefix = colors.parse(message['objects'][0]['content'][0]['prefix']);
-
-            var buffer = message['objects'][0]['content'][0]['buffer'];
-            text_elements = _.union(prefix, text);
-            text_elements =_.map(text_elements, function(text_element) {
-                if ('fg' in text_element) {
-                    text_element['fg'] = colors.prepareCss(text_element['fg']);
-                }
-                // TODO: parse background as well
-
-                return text_element;
-            });
-            return text_elements;
-        }
-
-
-        var buffer = message['objects'][0]['content'][0]['buffer'];
-        var date = message['objects'][0]['content'][0]['date'];
-        var text = colors.parse(message['objects'][0]['content'][0]['message']);
-        var content = parseLineAddedTextElements(message);
-        var additionalContent = pluginManager.contentForMessage(text[0]['text']);
-
-        return {
-            metadata: additionalContent,
-            content: content,
-            date: date,
-            buffer: buffer
-        }
-
-    }
-
     var handleBufferLineAdded = function(message) {
         var buffer_line = {}
 
-        message = new BufferLine(message);
+        message = new models.BufferLine(message);
+        message.metadata = pluginManager.contentForMessage(message.text);
 
         if (!_isActiveBuffer(message.buffer)) {
             $rootScope.buffers[message.buffer]['notification'] = true;
