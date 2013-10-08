@@ -1,22 +1,74 @@
 var models = angular.module('weechatModels', []);
 
-models.factory('models', ['colors', function(colors) {
+models.service('models', ['colors', function(colors) {
 
-    function Buffer(message) {
+    var BufferList = []
+    activeBuffer = null;
+    
+    this.model = { 'buffers': {} }
+
+    this.addBuffer = function(buffer) {
+        BufferList[buffer.id] = buffer;
+        if (BufferList.length == 1) {
+            activeBuffer = buffer.id;
+        }
+        this.model.buffers[buffer.id] = buffer;
+    }
+
+    this.getActiveBuffer = function() {
+        return activeBuffer;
+    }
+
+    this.setActiveBuffer = function(bufferId) {
+
+        activeBuffer = _.find(this.model['buffers'], function(buffer) {
+            if (buffer['id'] == bufferId) {
+                return buffer;
+            }
+        });
+
+        console.log(this.activeBuffer);
+    }
+
+    this.getBuffers = function() {
+        return BufferList;
+    }
+
+    this.getBuffer = function(bufferId) {
+        return _.find(this.model['buffers'], function(buffer) {
+            if (buffer['id'] == bufferId) {
+                console.log('yé');
+                return buffer;
+            }
+        });
+    }
+
+    this.closeBuffer = function(bufferId) {
+        delete(BufferList[bufferId]);
+        var firstBuffer = _.keys(BufferList)[0];
+        activeBuffer = firstBuffer;
+    }
+
+    this.Buffer = function(message) {
 
         var fullName = message['full_name']
         var pointer = message['pointers'][0]
         var lines = []
+
+        var addLine = function(line) {
+            lines.push(line);
+        }
         
         return {
             id: pointer,
             fullName: fullName,
             lines: lines,
+            addLine: addLine
         }
 
     }
 
-    function BufferLine(weechatBufferLine) {
+    this.BufferLine = function(weechatBufferLine) {
 
         /*
          * Parse the text elements from the buffer line added
@@ -53,10 +105,8 @@ models.factory('models', ['colors', function(colors) {
 
     }
 
-    return {
-        BufferLine: BufferLine,
-        Buffer: Buffer
+    this.getBufferList = function() {
+        return BufferList;
     }
-
     
 }]);

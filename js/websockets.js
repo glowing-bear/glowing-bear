@@ -205,11 +205,18 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'pluginManager', 
         message = new models.BufferLine(message);
         message.metadata = pluginManager.contentForMessage(message.text);
 
-        if (!_isActiveBuffer(message.buffer)) {
-            $rootScope.buffers[message.buffer]['notification'] = true;
-        }
+        console.log(message);
+        console.log(message.buffer);
+        console.log(models.getBuffer(message.buffer));
+        models.getBuffer(message.buffer).addLine(message);
+        
 
-        $rootScope.buffers[message.buffer]['lines'].push(message);
+
+        //if (!_isActiveBuffer(message.buffer)) {
+        //    $rootScope.buffers[message.buffer]['notification'] = true;
+        //}
+
+        //$rootScope.buffers[message.buffer]['lines'].push(message);
     }
 
     /*
@@ -226,7 +233,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'pluginManager', 
     var handleBufferOpened = function(message) {
         var bufferMessage = message['objects'][0]['content'][0];
         var buffer = new models.Buffer(bufferMessage);
-        $rootScope.buffers[buffer.id] = buffer;
+        //$rootScope.buffers[buffer.id] = buffer;
 
     }
 
@@ -240,16 +247,11 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'pluginManager', 
         // buffer info from message
         var bufferInfos = message['objects'][0]['content'];
         // buffers objects
-        var buffers = {};
         for (var i = 0; i < bufferInfos.length ; i++) {
             var buffer = new models.Buffer(bufferInfos[i]);
-            buffers[buffer.id] = buffer;
-            if (i == 0) {
-                // first buffer is active buffer by default
-                $rootScope.activeBuffer = buffers[buffer.id];
-            }
+            models.addBuffer(buffer);
         }
-        $rootScope.buffers = buffers;
+
     }
 
     var handleEvent = function(event) {
@@ -282,7 +284,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'pluginManager', 
 
 }]);
 
-weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', function($rootScope, $log, handlers, colors) {
+weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', 'models', function($rootScope, $log, handlers, colors, models) {
     protocol = new WeeChatProtocol();
     var websocket = null;
 
@@ -333,6 +335,7 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', funct
 	    message = protocol.parse(evt.data)
             handlers.handleEvent(message);
             $rootScope.commands.push("RECV: " + evt.data + " TYPE:" + evt.type) ;
+            console.log("apply");
             $rootScope.$apply();
         }
 
@@ -348,7 +351,7 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', funct
 
     var sendMessage = function(message) {
         doSend(WeeChatProtocol.formatInput({
-            buffer: $rootScope.activeBuffer['fullName'],
+            buffer: models.getActiveBuffer()['fullName'],
             data: message
         }));
     }
@@ -359,12 +362,43 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', funct
     }
 }]);
 
-weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'connection', function ($rootScope, $scope, $store, connection) {
+weechat.service('testService', function(){
+    var count = 1;
+    var list = [];
+    this.incrementCount = function () {
+        count++;
+        list.push(count);
+        return list;
+    };
+    this.getCount = function(){
+       return list;
+    }
+    
+});
+
+weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'models', 'connection', 'testService', function ($rootScope, $scope, $store, models, connection, testService) {
+
+    $scope.buffers = models.model.buffers;
+    $scope.activeBuffer = models.getActiveBuffer
+
+    $scope.incrementAge = function () {
+        models.model.age++;
+        models.model.cats.push('nouveau chat');
+    }
+
+
+    $scope.clickS = function () {
+        $scope.countS = testService.incrementCount();
+    };
+
     $rootScope.commands = []
 
+
+    
+    $rootScope.models = models;
+
     $rootScope.buffer = []
-    $rootScope.buffers = {}
-    $rootScope.activeBuffer = null;
+
     $store.bind($scope, "hostport", "localhost:9001");
     $store.bind($scope, "proto", "weechat");
     $store.bind($scope, "password", "");
@@ -372,14 +406,14 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'connection
     // $scope.password = "";
 
     $rootScope.closeBuffer = function(buffer_pointer) {
-        delete($rootScope.buffers[buffer_pointer]);
-        var first_buffer = _.keys($rootScope.buffers)[0];
-        $scope.setActiveBuffer(first_buffer);
+       // delete($rootScope.buffers[buffer_pointer]);
+       // var first_buffer = _.keys($rootScope.buffers)[0];
+       // $scope.setActiveBuffer(first_buffer);
     }
 
     $scope.setActiveBuffer = function(key) {
-        $rootScope.buffers[key]['notification'] = false;
-        $rootScope.activeBuffer = $rootScope.buffers[key];
+        console.log(key);
+        models.setActiveBuffer(key);
     };
 
     $scope.sendMessage = function() {

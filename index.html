@@ -47,10 +47,15 @@
         </div>
 
         <div ng-show="connected">
+          
+          <button ng-click="incrementAge()">Click!</button>
+
           <span class="label" ng-class="{'label-success': content.notification }" ng-repeat="(key, content) in buffers">
             <a ng-click="setActiveBuffer(key)">{{ content.fullName }}</a>
           </span>
-          <div ng-repeat="bufferline in activeBuffer.lines">
+
+
+          <div ng-repeat="bufferline in activeBuffer().lines">
             <span class="timestamp color-dark-gray">{{ bufferline.date | date: 'H:mm:ss'}}</span>
             <span ng-repeat="part in bufferline.content" class="text {{ part.fg }}">
               {{ part.text }}
