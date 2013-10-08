@@ -20,14 +20,19 @@ models.service('models', ['colors', function(colors) {
     }
 
     this.setActiveBuffer = function(bufferId) {
+        
+        if (this.getActiveBuffer()) {
+            this.getActiveBuffer().active = false;
+        }
 
         activeBuffer = _.find(this.model['buffers'], function(buffer) {
             if (buffer['id'] == bufferId) {
                 return buffer;
             }
         });
+        activeBuffer.notification = false;
+        activeBuffer.active = true;
 
-        console.log(this.activeBuffer);
     }
 
     this.getBuffers = function() {
@@ -37,7 +42,6 @@ models.service('models', ['colors', function(colors) {
     this.getBuffer = function(bufferId) {
         return _.find(this.model['buffers'], function(buffer) {
             if (buffer['id'] == bufferId) {
-                console.log('yé');
                 return buffer;
             }
         });
@@ -54,6 +58,12 @@ models.service('models', ['colors', function(colors) {
         var fullName = message['full_name']
         var pointer = message['pointers'][0]
         var lines = []
+        var active = false;
+        var notification = false;
+
+        var notify = function() {
+            notification = true;
+        }
 
         var addLine = function(line) {
             lines.push(line);

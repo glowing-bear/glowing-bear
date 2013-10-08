@@ -202,21 +202,15 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'pluginManager', 
     var handleBufferLineAdded = function(message) {
         var buffer_line = {}
 
-        message = new models.BufferLine(message);
+
+        var message = new models.BufferLine(message);
+        var buffer = models.getBuffer(message.buffer);
         message.metadata = pluginManager.contentForMessage(message.text);
+        buffer.addLine(message);
 
-        console.log(message);
-        console.log(message.buffer);
-        console.log(models.getBuffer(message.buffer));
-        models.getBuffer(message.buffer).addLine(message);
-        
-
-
-        //if (!_isActiveBuffer(message.buffer)) {
-        //    $rootScope.buffers[message.buffer]['notification'] = true;
-        //}
-
-        //$rootScope.buffers[message.buffer]['lines'].push(message);
+        if (!buffer.active) {
+            buffer.notification = true;
+        }
     }
 
     /*
