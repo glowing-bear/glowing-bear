@@ -49,52 +49,39 @@ plugins.service('plugins', function() {
 
 }]);
 
-plugins.factory('youtubePlugin', [function() {
+plugins.factory('userPlugins', function() {
 
-    var contentForMessage = function(message) {
+    var youtubePlugin = new Plugin(function(message) {
+
         if (message.indexOf('youtube.com') != -1) {
             var index = message.indexOf("?v=");
             var token = message.substr(index+3);
             return '<iframe width="560" height="315" src="http://www.youtube.com/embed/' + token + '" frameborder="0" allowfullscreen></iframe>'
         }
+
         return null;
-    }
+    });
 
-    return {
-        contentForMessage: contentForMessage,
-        exclusive: true
-    }
-
-}]);
-
-plugins.factory('urlPlugin', [function() {
-    var contentForMessage = function(message) {
+    var urlPlugin = new Plugin(function(message) {
         var urlPattern = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/;
         var url = message.match(urlPattern);
         if (url) {
             return '<a href="' + url[0] + '">' + message + '</a>';
         }
         return null;
-    }
 
-    return {
-        contentForMessage: contentForMessage,
-        exclusive: false
-    }
-}]);
+    });
 
-plugins.factory('imagePlugin', [function() {
-    var contentForMessage = function(message) {
-		var urls = message.match(/https?:\/\/[^\s]*\.(jpg|png|gif)\b/)
-		if (urls != null) {
-			var url = urls[0]; /* Actually parse one url per message */
-			return '<img src="' + url + '" height="300">';
+    var imagePlugin = new Plugin(function(message) {
+	var urls = message.match(/https?:\/\/[^\s]*\.(jpg|png|gif)\b/)
+	if (urls != null) {
+	    var url = urls[0]; /* Actually parse one url per message */
+	    return '<img src="' + url + '" height="300">';
         }
         return null;
-    }
+    });
 
     return {
-        contentForMessage: contentForMessage
+        plugins: [youtubePlugin, urlPlugin, imagePlugin]
     }
-}]);
-
+});
