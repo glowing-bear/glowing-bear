@@ -20,10 +20,10 @@ weechat.factory('colors', [function($scope) {
     var part, fg, bg, attrs, colors = ['', 'black', 'dark gray', 'dark red', 'light red', 'dark green', 'light green', 'brown', 'yellow', 'dark blue', 'light blue', 'dark magenta', 'light magenta', 'dark cyan', 'light cyan', 'gray', 'white'];
     // XTerm 8-bit pallete
     var colors = [
-                '#000000', '#AA0000', '#00AA00', '#AA5500', '#0000AA',
+                '#666666', '#AA0000', '#00AA00', '#AA5500', '#0000AA',
                 '#AA00AA', '#00AAAA', '#AAAAAA', '#555555', '#FF5555',
                 '#55FF55', '#FFFF55', '#5555FF', '#FF55FF', '#55FFFF',
-                '#FFFFFF', '#000000', '#00005F', '#000087', '#0000AF',
+                '#FFFFFF', '#666666', '#00005F', '#000087', '#0000AF',
                 '#0000D7', '#0000FF', '#005F00', '#005F5F', '#005F87',
                 '#005FAF', '#005FD7', '#005FFF', '#008700', '#00875F',
                 '#008787', '#0087AF', '#0087D7', '#00AF00', '#00AF5F',
@@ -400,7 +400,6 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', 'handlers', 'colors',
             path: "buffer:gui_buffers(*)/own_lines/last_line(-"+count+")/data",
             keys: []
         })).then(function(hdata) {
-            console.log(hdata);
             handlers.handleLineInfo(hdata);
         });
     }
