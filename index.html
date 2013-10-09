@@ -1,126 +1,126 @@
 <!DOCTYPE html>
 <html ng-app="weechat" ng-cloak>
   <head>
-      <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title ng-bind-template="WeeChat {{ pageTitle}}"></title>
-
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title ng-bind-template="WeeChat {{ pageTitle}}"></title>
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link rel="shortcut icon" type="image/png" href="img/favicon.png" >
     <link href="css/glowingbear.css" rel="stylesheet" media="screen">
     <script type="text/javascript" src="js/angular.min.js"></script>
     <script type="text/javascript" src="js/underscore.js"></script>
     <script type="text/javascript" src="js/localstorage.js"></script>
-    <script type="text/javascript" src="js/protocol.js"></script>
+    <script type="text/javascript" src="js/weechat-protocol.js"></script>
     <script type="text/javascript" src="js/websockets.js"></script>
+    <script type="text/javascript" src="js/models.js"></script>
+    <script type="text/javascript" src="js/plugins.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   </head>
-  <body>
-    <div ng-controller="WeechatCtrl">
-      <div ng-hide="connected" class="container">
-        <h2>
-          <img src="img/favicon.png">
-          glowing bear
-          <small>
-            WeeChat web frontend 
-          </small>
-        </h2>
-        <div>To start using, please enable relay in your WeeChat client:
-          <pre>
+  <body ng-controller="WeechatCtrl">
+    <nav ng-show="connected" class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav ">
+          <li class="label" ng-class="{'active': content.active }" ng-repeat="(key, content) in buffers | toArray | orderBy:'content.number':true">
+            <a href="#" ng-click="setActiveBuffer(content.id)" title="{{ content.fullName }}">{{ content.shortName }} <span class="badge" ng-class="{'danger': content.notification }" ng-bind="content.unread"></span></a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div ng-hide="connected" class="container">
+      <h2>
+        <img src="img/favicon.png">
+        glowing bear
+        <small>
+          WeeChat web frontend 
+        </small>
+      </h2>
+      <div>To start using, please enable relay in your WeeChat client:
+        <pre>
 /set relay.network.password yourpassword
 /relay add weechat 9001</pre>
-        Note: The communication goes directly between your browser and your weechat in clear text.
-        Connection settings are saved between sessions, including password, in your own browser.
-        <h4>Encryption</h4>
-        If you want to use encrypted session you first have to set up the relay using SSL
-        <pre>
+      Note: The communication goes directly between your browser and your weechat in clear text.
+      Connection settings are saved between sessions, including password, in your own browser.
+      <h4>Encryption</h4>
+      If you want to use encrypted session you first have to set up the relay using SSL
+      <pre>
 $ mkdir -p ~/.weechat/ssl
 $ cd ~/.weechat/ssl
 $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out relay.pem
 </pre>
-        If WeeChat is already running, you can reload the certificate and private key with command:
-        <pre>
+      If WeeChat is already running, you can reload the certificate and private key with command:
+      <pre>
 /relay sslcertkey
 /relay add ssl.weechat 8000
 </pre>
-        </div>
-        <h3>Connection settings</h3>
-        <form role="form">
-          <div class="alert alert-danger" ng-show="errorMessage">
-            <strong>Oh no!</strong> We cannot connect!
-          </div>
-          <div class="form-group">
-            <label class="control-label" for="hostport">Hostname and port</label>
-            <input type="text" class="form-control" id="hostport" ng-model="hostport" placeholder="Hostport">
-            <p class="help-block">Enter the hostname and the port to the WeeChat relay, separated by a :</p>
-          </div>
-          <div class="form-group">
-            <label class="control-label" for="password">WeeChat relay password</label>
-            <input type="password"class="form-control"  id="password" ng-model="password" placeholder="Password">
-            <p class="help-block">Password will be stored in your browser session</p>
-          </div>
-          <div class="form-group">
-            <label class="control-label" for="proto">Encryption</label>
-            <input type="checkbox" class="form-control" id="ssl" ng-model="ssl">
-            <p class="help-block">Check the box if you want to encrypt communication between browser and WeeChat. <strong>Note</strong>: Due to a <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">bug</a> encryption will not work in Firefox. You must also first visit the URL https://weechathost:relayport/ to accept the certificate</p>
-          </div>
-          <button class="btn btn-lg btn-primary" ng-click="connect()">Connect!</button>
-        </form>
       </div>
-      <div class="content" ng-show="connected">
-        <nav class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-          </div>
-          <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav ">
-              <li class="label" ng-class="{'active': content.active }" ng-repeat="(key, content) in buffers | toArray | orderBy:'content.number':true">
-              <a ng-click="setActiveBuffer(content.id)" title="{{ content.full_name }}">{{ content.short_name }} <span class="badge" ng-class="{'danger': content.highlight }" ng-bind="content.unread"></span></a>
-              </li>
-            </ul>
-          </div>
-        </nav>
-        <div class="bufferlines">
-          <div class="bufferline" ng-repeat="bufferline in activeBuffer.lines">
-            <span class="date text-muted">
-              {{ bufferline.date | date:'HH:mm' }}
-            </span>
+      <h3>Connection settings</h3>
+      <form role="form">
+        <div class="alert alert-danger" ng-show="errorMessage">
+          <strong>Oh no!</strong> We cannot connect!
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="hostport">Hostname and port</label>
+          <input type="text" class="form-control" id="hostport" ng-model="hostport" placeholder="Hostport">
+          <p class="help-block">Enter the hostname and the port to the WeeChat relay, separated by a :</p>
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="password">WeeChat relay password</label>
+          <input type="password" class="form-control" id="password" ng-model="password" placeholder="Password">
+          <p class="help-block">Password will be stored in your browser session</p>
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="proto">Encryption</label>
+          <input type="checkbox" class="form-control" id="ssl" ng-model="ssl">
+          <p class="help-block">Check the box if you want to encrypt communication between browser and WeeChat. <strong>Note</strong>: Due to a <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">bug</a> encryption will not work in Firefox. You must also first visit the URL https://weechathost:relayport/ to accept the certificate</p>
+        </div>
+        <button class="btn btn-lg btn-primary" ng-click="connect()">Connect!</button>
+      </form>
+    </div>
+    <div class="content" ng-show="connected">
+      <div class="bufferlines">
+        <div class="bufferline" ng-repeat="bufferline in activeBuffer().lines">
+          <span class="date text-muted">
+            {{ bufferline.date | date:'HH:mm' }}
+          </span>
 
-            <span ng-repeat="part in bufferline.message" class="text" style="{{ part.fg }}">
-              {{ part.text }}
-            </span>
+          <span ng-repeat="part in bufferline.content" class="text" style="{{ part.fg }}">
+            {{ part.text }}
+          </span>
 
-            <div ng-repeat="metadata in bufferline.metadata">
-              <div ng-show="metadata.visible">
-                <a ng-click="metadata.visible = false">Hide additional content</a>
-                <div ng-bind-html-unsafe="metadata.content"></div>
-
-              </div>
-              <div ng-hide="metadata.visible">
-                <a ng-click="metadata.visible = true">Show additional content</a>
-              </div>
+          <div ng-repeat="metadata in bufferline.metadata">
+            <div ng-show="metadata.visible">
+              <a ng-click="metadata.visible = false">Hide additional content</a>
+              <div ng-bind-html-unsafe="metadata.content"></div>
 
             </div>
+            <div ng-hide="metadata.visible">
+              <a ng-click="metadata.visible = true">Show additional content</a>
+            </div>
+
           </div>
         </div>
-
-        <div class="navbar navbar-inverse navbar-fixed-bottom">
-            <form class="form form-horizontal" ng-submit="sendMessage()">
-              <div class="input-group">
-                <input type="text" class="form-control" ng-model="command"></input>
-                <span class="input-group-btn">
-                  <button class="btn btn-default btn-primary">Send</button>
-                </span>
-              </div>
-            </form>
-        </div>
+      </div>
+    </div>
+    <div id="footer" ng-show="connected">
+      <div class="navbar navbar-inverse navbar-fixed-bottom">
+        <form class="form form-horizontal" ng-submit="sendMessage()">
+          <div class="input-group">
+            <input id="sendMessage" type="text" class="form-control" ng-model="command">
+            <span class="input-group-btn">
+              <button class="btn btn-default btn-primary">Send</button>
+            </span>
+          </div>
+        </form>
       </div>
     </div>
   </body>

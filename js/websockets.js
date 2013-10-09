@@ -1,4 +1,5 @@
-var weechat = angular.module('weechat', ['localStorage']);
+var weechat = angular.module('weechat', ['localStorage', 'weechatModels', 'plugins']);
+
 weechat.filter('toArray', function () {
     'use strict';
 
@@ -167,7 +168,7 @@ weechat.factory('colors', [function($scope) {
 
 
     return {
-        
+
         setAttrs: setAttrs,
         getColor: getColor,
         prepareCss: prepareCss,
@@ -177,142 +178,39 @@ weechat.factory('colors', [function($scope) {
 
 }]);
 
-weechat.factory('pluginManager', ['youtubePlugin', 'urlPlugin', 'imagePlugin', function(youtubePlugin, urlPlugin, imagePlugin) {
-
-    var plugins = [youtubePlugin, urlPlugin, imagePlugin]
-
-    var hookPlugin = function(plugin) {
-        plugins.push(plugin);
-    }
-
-    var contentForMessage = function(message) {
-        
-        console.log('Message: ', message);
-        var content = [];
-        for (var i = 0; i < plugins.length; i++) {
-            var pluginContent = plugins[i].contentForMessage(message);
-            if (pluginContent) {
-                var pluginContent = {'visible': false, 'content': pluginContent }
-                content.push(pluginContent);
-
-                if (plugins[i].exclusive) {
-                    break;
-                }
-            }
-        }
-        
-        console.log('Content: ', content);
-        return content;
-    }
-
-    return {
-        hookPlugin: hookPlugin,
-        contentForMessage: contentForMessage
-    }
-
-}]);
-
-weechat.factory('youtubePlugin', [function() {
-
-    var contentForMessage = function(message) {
-        if (message.indexOf('youtube.com') != -1) {
-            var index = message.indexOf("?v=");
-            var token = message.substr(index+3);
-            return '<iframe width="560" height="315" src="http://www.youtube.com/embed/' + token + '" frameborder="0" allowfullscreen></iframe>'
-        }
-        return null;
-    }
-
-    return {
-        contentForMessage: contentForMessage,
-        exclusive: true
-    }
-
-}]);
-
-weechat.factory('urlPlugin', [function() {
-    var contentForMessage = function(message) {
-        var urlPattern = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/;
-        var url = message.match(urlPattern);
-        if (url) {
-            return '<a target="_blank" href="' + url[0] + '">' + message + '</a>';
-        }
-        return null;
-    }
-
-    return {
-        contentForMessage: contentForMessage,
-        exclusive: false
-    }
-}]);
-
-weechat.factory('imagePlugin', [function() {
-    var contentForMessage = function(message) {
-		var urls = message.match(/https?:\/\/[^\s]*\.(jpg|png|gif)\b/)
-		if (urls != null) {
-			var url = urls[0]; /* Actually parse one url per message */
-			return '<img src="' + url + '" height="300">';
-        }
-        return null;
-    }
-
-    return {
-        contentForMessage: contentForMessage
-    }
-}]);
-
-weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($rootScope, colors, pluginManager) {
+weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', function($rootScope, colors, models, plugins) {
 
     var handleBufferClosing = function(message) {
-        var buffer_pointer = message['objects'][0]['content'][0]['pointers'][0];
-        $rootScope.closeBuffer(buffer_pointer);
+        var bufferMessage = message['objects'][0]['content'][0];
+        var buffer = new models.Buffer(bufferMessage);
+        models.closeBuffer(buffer);
     }
 
     var handleLine = function(line, initial) {
-        var buffer_line = {}
-        var date = line['date']*1000;
-        var prefix = colors.parse(line['prefix']);
-        var text = colors.parse(line['message']);
-        var buffer = line['buffer'];
-        var tags_array = line['tags_array'];
-        var displayed = line['displayed'];
-        var highlight = line['highlight'];
-        var message = _.union(prefix, text);
-        message =_.map(message, function(message) {
-            if (message != "" && 'fg' in message) {
-                message['fg'] = colors.prepareCss(message['fg']);
-            }
-            return message;
-        });
+        var message = new models.BufferLine(line);
         // Only react to line if its displayed
-        if (displayed) {
-            buffer_line['message'] = message;
+        if(message.displayed) {
+            var buffer = models.getBuffer(message.buffer);
+            message.metadata = plugins.PluginManager.contentForMessage(message.text);
+            buffer.addLine(message);
 
+            if (buffer.active) {
+                $rootScope.scrollToBottom();
+            }
 
-            if (!_isActiveBuffer(buffer) && !initial && !_.contains(tags_array, 'notify_none')) {
-                
-                if ($rootScope.buffers[buffer]['unread'] == '') {
-                  $rootScope.buffers[buffer]['unread'] = 1;
-                }else {
-                  $rootScope.buffers[buffer]['unread'] = parseInt($rootScope.buffers[buffer]['unread']) + 1;
+            if (!initial) {
+                if (!buffer.active && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
+                    if (buffer.unread == '' || buffer.unread == undefined) {
+                        buffer.unread = 1;
+                    }else {
+                        buffer.unread++;
+                    }
                 }
-            }
 
-            if (text[0] != undefined) {
-              var additionalContent = pluginManager.contentForMessage(text[0]['text']);
-
-              if (additionalContent) {
-                  buffer_line['metadata'] = additionalContent;
-              }
-            }
-
-            $rootScope.addLine(buffer, buffer_line);
-
-            buffer_line['date'] = date;
-
-            if(!initial && (highlight || _.contains(tags_array, 'notify_private')) ) {
-                $rootScope.createHighlight(prefix, text, message, buffer, additionalContent);
-                $rootScope.buffers[buffer]['highlight'] = true;
+                if(message.highlight || _.contains(message.tags, 'notify_private') ) {
+                    $rootScope.createHighlight(buffer, message);
+                    buffer.notification = true;
+                }
             }
         }
     }
@@ -323,26 +221,10 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
       });
     }
 
-    /*
-     * Returns whether or not this buffer is the active buffer
-     */
-    var _isActiveBuffer = function(buffer) {
-      if ($rootScope.activeBuffer['id'] == buffer) {
-          return true;
-      } else {
-          return false;
-      }
-    }
-
     var handleBufferOpened = function(message) {
-        var obj = message['objects'][0]['content'][0];
-        var fullName = obj['full_name'];
-        var buffer = obj['pointers'][0];
-        var short_name = obj['short_name'];
-        var title = obj['title'];
-
-        $rootScope.buffers[buffer] = { 'id': buffer, 'lines':[], 'full_name':fullName, 'short_name':short_name, 'title':title, 'unread':'' }
-        
+        var bufferMessage = message['objects'][0]['content'][0];
+        var buffer = new models.Buffer(bufferMessage);
+        models.addBuffer(buffer);
     }
 
     var handleBufferTitleChanged = function(message) {
@@ -371,21 +253,10 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
         // buffer info from message
         var bufferInfos = message['objects'][0]['content'];
         // buffers objects
-        var buffers = {};
         for (var i = 0; i < bufferInfos.length ; i++) {
-            var bufferInfo = bufferInfos[i];
-            var pointer = bufferInfo['pointers'][0];
-            bufferInfo['id'] = pointer;
-            bufferInfo['lines'] = [];
-            bufferInfo['unread'] = '';
-            buffers[pointer] = bufferInfo
-            if (i == 0) {
-                // first buffer is active buffer by default
-                $rootScope.activeBuffer = buffers[pointer];
-                $rootScope.activeBuffer['active'] = true;
-            }
+            var buffer = new models.Buffer(bufferInfos[i]);
+            models.addBuffer(buffer);
         }
-        $rootScope.buffers = buffers;
 
         // Request latest buffer lines for each buffer
         $rootScope.getLines();
@@ -403,21 +274,12 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
         handleLine(l, true);
       });
     }
-   
+
     var handleEvent = function(event) {
         if (_.has(eventHandlers, event['id'])) {
             eventHandlers[event['id']](event);
         }
 
-    }
-
-    var findMetaData = function(message) {
-        if (message.indexOf('youtube.com') != -1) {
-            var index = message.indexOf("?v=");
-            var token = message.substr(index+3);
-            return '<iframe width="560" height="315" src="http://www.youtube.com/embed/' + token + '" frameborder="0" allowfullscreen></iframe>'
-        }
-        return null;
     }
 
     var eventHandlers = {
@@ -437,12 +299,12 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'pluginManager', function($
 
 }]);
 
-weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', function($rootScope, $log, handlers, colors) {
-    protocol = new Protocol();
+weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', 'models', function($rootScope, $log, handlers, colors, models) {
+    protocol = new WeeChatProtocol();
     var websocket = null;
 
 
-    // Sanitizes messages to be sent to the weechat relay    
+    // Sanitizes messages to be sent to the weechat relay
     var doSend = function(message) {
         msgs = message.replace(/[\r\n]+$/g, "").split("\n");
         for (var i = 0; i < msgs.length; i++) {
@@ -451,23 +313,26 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', funct
         }
         websocket.send(message);
     }
-    
+
     // Takes care of the connection and websocket hooks
-    var connect = function (hostport, password, ssl) {
+    var connect = function (hostport, passwd, ssl) {
         var proto = ssl ? 'wss':'ws';
         websocket = new WebSocket(proto+"://" + hostport + "/weechat");
         websocket.binaryType = "arraybuffer"
 
         websocket.onopen = function (evt) {
-            var send = ""; 
-            if (password) {
-                send += "init compression=off,password=" + password + "\n";
-            }
+            doSend(WeeChatProtocol.formatInit({
+                password: passwd,
+                compression: 'off'
+            }));
+            doSend(WeeChatProtocol.formatHdata({
+                id: 'bufinfo',
+                path: 'buffer:gui_buffers(*)',
+                keys: ['number,full_name,short_name,title']
+            }));
+            doSend(WeeChatProtocol.formatSync({}));
 
-            send += "(bufinfo) hdata buffer:gui_buffers(*) number,full_name,short_name,title\n";
-            send += "sync\n";
             $log.info("Connected to relay");
-            doSend(send);
             $rootScope.connected = true;
             $rootScope.$apply();
         }
@@ -496,13 +361,18 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', funct
     }
 
     var sendMessage = function(message) {
-        message = "input " + $rootScope.activeBuffer['full_name'] + " " + message + "\n"
-        doSend(message);
+        doSend(WeeChatProtocol.formatInput({
+            buffer: models.getActiveBuffer()['fullName'],
+            data: message
+        }));
     }
 
     var getLines = function(count) {
-      var message = "(lineinfo) hdata buffer:gui_buffers(*)/own_lines/last_line(-"+count+")/data\n";
-      doSend(message)
+        doSend(WeeChatProtocol.formatHdata({
+            id: 'lineinfo',
+            path: "buffer:gui_buffers(*)/own_lines/last_line(-"+count+")/data",
+            keys: []
+        }));
     }
 
     return {
@@ -513,8 +383,8 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', funct
     }
 }]);
 
-weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'connection', function ($rootScope, $scope, $store, connection) {
-    
+weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'models', 'connection', function ($rootScope, $scope, $store, models, connection, testService) {
+
     // Request notification permission
     Notification.requestPermission(function (status) {
         console.log('Notification permission status:',status);
@@ -529,30 +399,38 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'connection
         }
     }
 
+
+    $scope.buffers = models.model.buffers;
+    $scope.activeBuffer = models.getActiveBuffer
+
+    $scope.incrementAge = function () {
+        models.model.age++;
+        models.model.cats.push('nouveau chat');
+    }
+
+
+    $scope.clickS = function () {
+        $scope.countS = testService.incrementCount();
+    };
+
     $rootScope.commands = []
+    
+    $rootScope.models = models;
 
     $rootScope.buffer = []
-    $rootScope.buffers = {}
-    $rootScope.activeBuffer = null;
+
     $store.bind($scope, "hostport", "localhost:9001");
     $store.bind($scope, "proto", "weechat");
     $store.bind($scope, "password", "");
+    $store.bind($scope, "ssl", false);
     // TODO checkbox for saving password or not?
     // $scope.password = "";
 
-    $rootScope.closeBuffer = function(buffer_pointer) {
-        delete($rootScope.buffers[buffer_pointer]);
-        var first_buffer = _.keys($rootScope.buffers)[0];
-        $scope.setActiveBuffer(first_buffer);
-    }
 
     $scope.setActiveBuffer = function(key) {
-        $rootScope.activeBuffer['active'] = false;
-        $rootScope.buffers[key]['active'] = true;
-        $rootScope.buffers[key]['highlight'] = false;
-        $rootScope.buffers[key]['unread'] = '';
-        $rootScope.activeBuffer = $rootScope.buffers[key];
-        $rootScope.pageTitle = $rootScope.activeBuffer['short_name'] + ' | ' + $rootScope.activeBuffer['title'];
+        models.setActiveBuffer(key);
+        var ab = models.getActiveBuffer();
+        $rootScope.pageTitle = ab.shortName + ' | ' + ab.title;
         $rootScope.scrollToBottom();
     };
 
@@ -561,14 +439,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'connection
             $rootScope.scrollToBottom();
         }
     });
-
-    $rootScope.addLine = function(buffer, line) {
-        $rootScope.buffers[buffer]['lines'].push(line);
-        // Scroll if needed
-        if ($rootScope.activeBuffer['id'] == buffer) {
-            $rootScope.scrollToBottom();
-        }
-    }
 
     $rootScope.scrollToBottom = function() {
         setTimeout(function() {
@@ -590,22 +460,18 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'connection
     }
 
     /* Function gets called from bufferLineAdded code if user should be notified */
-    $rootScope.createHighlight = function(prefix, text, message, buffer, additionalContent) {
-        var prefixs = "";
-        prefixs += prefix[0].text;
-        if(prefix[1] != undefined) {
-            prefixs += prefix[1].text;
-        }
+    $rootScope.createHighlight = function(buffer, message) {
         var messages = "";
-        messages += text[0].text;
+        message.content.forEach(function(part) {
+            if (part.text != undefined)
+                messages += part.text + " ";
+        });
 
-        var buffers = $rootScope.buffers[buffer];
-
-        var title = buffers.full_name;
-        var content = "<"+prefixs+">"+messages;
+        var title = buffer.fullName;
+        var content = messages;
 
         var timeout = 15*1000;
-        console.log('Displaying notification:',title,',with timeout:',timeout);
+        console.log('Displaying notification:buffer:',buffer,',message:',message,',with timeout:',timeout);
         var notification = new Notification(title, {body:content, icon:'img/favicon.png'});
         // Cancel notification automatically
         notification.onshow = function() {

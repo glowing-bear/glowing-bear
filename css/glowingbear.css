@@ -1,5 +1,3 @@
-html {
-}
 body {
     color: white;
     background-color: #222;
@@ -7,6 +5,11 @@ body {
     padding-right: 5px;
     padding-bottom:70px;
     padding-top: 70px;
+}
+
+input#sendMessage {
+    border: 0;
+    width: 100%;
 }
 .content {
     height: 100%; 
