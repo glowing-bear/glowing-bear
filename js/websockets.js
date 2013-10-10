@@ -384,7 +384,7 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', 'mode
     }
 }]);
 
-weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'models', 'connection', function ($rootScope, $scope, $store, models, connection, testService) {
+weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', 'models', 'connection', function ($rootScope, $scope, $store, $timeout, models, connection, testService) {
 
     // Request notification permission
     Notification.requestPermission(function (status) {
@@ -432,18 +432,17 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'models', '
         models.setActiveBuffer(key);
         var ab = models.getActiveBuffer();
         $rootScope.pageTitle = ab.shortName + ' | ' + ab.title;
-        $rootScope.scrollToBottom();
     };
 
-    $rootScope.$watch('activeBuffer', function(newVal, oldVal) {
+    $scope.$watch('models.getActiveBuffer()', function(newVal, oldVal) {
         if (newVal && newVal !== oldVal) { 
             $rootScope.scrollToBottom();
         }
     });
 
     $rootScope.scrollToBottom = function() {
-        setTimeout(function() {
-            window.scrollTo(0, window.scrollMaxY);
+        $timeout(function(){
+            window.scrollTo(0, window.scrollMaxY-1);
         });
     }
 
