@@ -230,16 +230,17 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
     var handleBufferTitleChanged = function(message) {
         var obj = message['objects'][0]['content'][0];
         var buffer = obj['pointers'][0];
-        var old = $rootScope.buffers[buffer];
-        old['full_name'] = obj['full_name'];
-        old['title'] = obj['title'];
+        var old = models.getBuffer(buffer);
+        old.fullName = obj['full_name'];
+        old.title = obj['title'];
+        old.number = obj['number'];
     }
     var handleBufferRenamed = function(message) {
         var obj = message['objects'][0]['content'][0];
         var buffer = obj['pointers'][0];
-        var old = $rootScope.buffers[buffer];
-        old['full_name'] = obj['full_name'];
-        old['short_name'] = obj['short_name'];
+        var old = models.getBuffer(buffer);
+        old.fullName = obj['full_name'];
+        old.shortName = obj['short_name'];
     }
 
 
