@@ -11,10 +11,14 @@ models.service('models', ['colors', function(colors) {
     this.Buffer = function(message) {
         // weechat properties
         var fullName = message['full_name']
+        var shortName = message['short_name']
+        var title = message['title']
+        var number = message['number']
         var pointer = message['pointers'][0]
         var lines = []
         var active = false;
         var notification = false;
+        var unread = '';
 
         /*
          * Adds a line to this buffer
@@ -29,6 +33,9 @@ models.service('models', ['colors', function(colors) {
         return {
             id: pointer,
             fullName: fullName,
+            shortName: shortName,
+            number: number,
+            title: title,
             lines: lines,
             addLine: addLine
         }
@@ -38,7 +45,7 @@ models.service('models', ['colors', function(colors) {
     /*
      * BufferLine class
      */
-    this.BufferLine = function(weechatBufferLine) {
+    this.BufferLine = function(message) {
 
         /*
          * Parse the text elements from the buffer line added
@@ -46,9 +53,9 @@ models.service('models', ['colors', function(colors) {
          * @param message weechat message
          */
         function parseLineAddedTextElements(message) {
-            var prefix = colors.parse(message['objects'][0]['content'][0]['prefix']);
+            var prefix = colors.parse(message['prefix']);
 
-            var buffer = message['objects'][0]['content'][0]['buffer'];
+            var buffer = message['buffer'];
             text_elements = _.union(prefix, text);
             text_elements =_.map(text_elements, function(text_element) {
                 if (text_element && ('fg' in text_element)) {
@@ -62,16 +69,26 @@ models.service('models', ['colors', function(colors) {
         }
 
 
-        var buffer = message['objects'][0]['content'][0]['buffer'];
-        var date = message['objects'][0]['content'][0]['date'];
-        var text = colors.parse(message['objects'][0]['content'][0]['message']);
+        var buffer = message['buffer'];
+        var date = message['date'];
+        var text = colors.parse(message['message']);
+        var tags_array = message['tags_array'];
+        var displayed = message['displayed'];
+        var highlight = message['highlight'];
         var content = parseLineAddedTextElements(message);
+        var rtext = "";
+        if(text[0] != undefined) {
+            rtext = text[0]['text'];
+        }
 
         return {
             content: content,
             date: date,
             buffer: buffer,
-            text: text[0]['text'],
+            tags: tags_array,
+            highlight: highlight,
+            displayed: displayed,
+            text: rtext,
         }
 
     }    
@@ -125,6 +142,7 @@ models.service('models', ['colors', function(colors) {
         });
         activeBuffer.notification = false;
         activeBuffer.active = true;
+        activeBuffer.unread = '';
 
     }
 
