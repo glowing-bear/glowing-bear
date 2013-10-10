@@ -76,9 +76,9 @@ models.service('models', ['colors', function(colors) {
         var displayed = message['displayed'];
         var highlight = message['highlight'];
         var content = parseLineAddedTextElements(message);
-        var text = "";
+        var rtext = "";
         if(text[0] != undefined) {
-            text = text[0]['text'];
+            rtext = text[0]['text'];
         }
 
         return {
@@ -88,7 +88,7 @@ models.service('models', ['colors', function(colors) {
             tags: tags_array,
             highlight: highlight,
             displayed: displayed,
-            text: text,
+            text: rtext,
         }
 
     }    
