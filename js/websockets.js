@@ -404,16 +404,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', 'models', '
     $scope.buffers = models.model.buffers;
     $scope.activeBuffer = models.getActiveBuffer
 
-    $scope.incrementAge = function () {
-        models.model.age++;
-        models.model.cats.push('nouveau chat');
-    }
-
-
-    $scope.clickS = function () {
-        $scope.countS = testService.incrementCount();
-    };
-
     $rootScope.commands = []
 
     $rootScope.models = models;
