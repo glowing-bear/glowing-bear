@@ -19,23 +19,6 @@
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   </head>
   <body ng-controller="WeechatCtrl">
-    <nav ng-show="connected" class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-      </div>
-      <div class="navbar-collapse collapse">
-        <ul class="nav navbar-nav ">
-          <li class="label" ng-class="{'active': content.active }" ng-repeat="(key, content) in buffers | toArray | orderBy:'content.number':true">
-          <a href="#" ng-click="setActiveBuffer(content.id)" title="{{ content.fullName }}">{{ content.shortName }}<span ng-hide="content.shortName">{{ content.fullName }}</span> <span class="badge" ng-class="{'danger': content.notification }" ng-bind="content.unread"></span></a>
-          </li>
-        </ul>
-      </div>
-    </nav>
     <div ng-hide="connected" class="container">
       <h2>
         <img src="img/favicon.png">
@@ -87,6 +70,16 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
           </form>
         </div>
     <div class="content" ng-show="connected">
+      <div id="sidebar">
+        <ul class="nav nav-pills nav-stacked">
+          <li class="label" ng-class="{'active': content.active }" ng-repeat="(key, content) in buffers | toArray | orderBy:'content.number':true">
+            <a href="#" ng-click="setActiveBuffer(content.id)" title="{{ content.fullName }}">
+              <span class="badge pull-right" ng-class="{'danger': content.notification }" ng-bind="content.unread"></span>
+              {{ content.shortName }}<span ng-hide="content.shortName">{{ content.fullName }}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
       <div class="bufferlines">
         <div class="bufferline" ng-repeat="bufferline in activeBuffer().lines">
           <span class="date text-muted">
