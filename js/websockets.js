@@ -429,6 +429,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "proto", "weechat");
     $store.bind($scope, "password", "");
     $store.bind($scope, "ssl", false);
+    $store.bind($scope, "lines", "40");
     // TODO checkbox for saving password or not?
     // $scope.password = "";
 
@@ -466,8 +467,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl);
     }
     $rootScope.getLines = function() {
-      var count = 20;
-      connection.getLines(count);
+      connection.getLines($scope.lines);
     }
 
     /* Function gets called from bufferLineAdded code if user should be notified */

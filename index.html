@@ -71,7 +71,12 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
           <label class="control-label" for="proto">Encryption</label>
           <input type="checkbox" class="form-control" id="ssl" ng-model="ssl">
           <p class="help-block">Check the box if you want to encrypt communication between browser and WeeChat. <strong>Note</strong>: Due to a <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">bug</a> encryption will not work in Firefox. You must also first visit the URL https://weechathost:relayport/ to accept the certificate</p>
-            </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="port">Lines</label>
+          <input type="text" class="form-control" id="lines" ng-model="lines" placeholder="40">
+          <p class="help-block">Enter number of lines to sync from WeeChat on connect</p>
+        </div>
         <button class="btn btn-lg btn-primary" ng-click="connect()">Connect!</button>
           </form>
         </div>
