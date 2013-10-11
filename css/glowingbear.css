@@ -66,6 +66,9 @@ input#sendMessage {
     width: auto;
     position: relative;
 }
+.text {
+    word-wrap: break-word;
+}
 
 .navbar-fixed-bottom {
     margin: 0 5px 0 14%;

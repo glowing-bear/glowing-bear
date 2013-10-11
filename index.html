@@ -100,9 +100,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
             {{ bufferline.date | date:'HH:mm' }}
           </span>
 
-          <span ng-repeat="part in bufferline.content" class="text" style="{{ part.fg }}">
-              {{ part.text }}
-            </span>
+          <span ng-repeat="part in bufferline.content" class="text" style="{{ part.fg }}">{{ part.text }} </span>
 
             <div ng-repeat="metadata in bufferline.metadata">
               <div ng-show="metadata.visible">
