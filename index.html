@@ -72,7 +72,20 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
     <div class="content" ng-show="connected">
       <div id="sidebar">
         <ul class="nav nav-pills nav-stacked">
-          <li class="label" ng-class="{'active': content.active }" ng-repeat="(key, content) in buffers | toArray | orderBy:'content.number':true">
+          <li class="bufferfilter">
+            <form role="form">
+              <input class="form-control" type="text" id="bufferFilter" ng-model="search.$" placeholder="Search">
+            </form>
+            <form class="form-inline" role="form">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" ng-model="onlyUnread">
+                    Unread only
+                  </label>
+                </div>
+            </form>
+          </li>
+          <li class="label" ng-class="{'active': content.active }" ng-repeat="(key, content) in buffers | toArray | filter:search | filter:hasUnread | orderBy:'content.number':true">
             <a href="#" ng-click="setActiveBuffer(content.id)" title="{{ content.fullName }}">
               <span class="badge pull-right" ng-class="{'danger': content.notification }" ng-bind="content.unread"></span>
               {{ content.shortName }}<span ng-hide="content.shortName">{{ content.fullName }}</span>

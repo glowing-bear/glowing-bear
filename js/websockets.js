@@ -481,5 +481,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             setTimeout(function() { notification.close() }, timeout);
         }
     };
+
+    $scope.hasUnread = function(buffer) {
+      if($scope.onlyUnread) {
+        return (parseInt(buffer.unread) || 0) > 0;
+      }
+      return true;
+    };
 }]
                   );
