@@ -518,7 +518,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         // Handle alt-a
         if($event.altKey && (code == 97 || code == 65)) {
-            $event.preventDefault();
             $rootScope.switchToActivityBuffer();
             return true;
         }
