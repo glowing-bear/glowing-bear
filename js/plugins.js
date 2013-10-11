@@ -56,7 +56,7 @@ plugins.service('plugins', ['userPlugins', function(userPlugins) {
             for (var i = 0; i < plugins.length; i++) {
                 var pluginContent = plugins[i].contentForMessage(message);
                 if (pluginContent) {
-                    var pluginContent = {'visible': false, 
+                    var pluginContent = {'visible': true, 
                                          'content': pluginContent }
                     content.push(pluginContent);
 
