@@ -428,6 +428,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         models.setActiveBuffer(key);
         var ab = models.getActiveBuffer();
         $rootScope.pageTitle = ab.shortName + ' | ' + ab.title;
+        document.getElementById('sendMessage').focus();
+
     };
 
     $scope.$watch('models.getActiveBuffer()', function(newVal, oldVal) {
