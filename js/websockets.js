@@ -234,7 +234,8 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
         old.fullName = obj['full_name'];
         old.title = obj['title'];
         old.number = obj['number'];
-        }
+    }
+
     var handleBufferRenamed = function(message) {
         var obj = message['objects'][0]['content'][0];
         var buffer = obj['pointers'][0];
@@ -279,6 +280,15 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
         handleLine(l, true);
       });
     }
+    
+    var handleVersionInfo = function(message) {
+      // If we have received this message
+      // that means the user password is good
+      $rootScope.passwordGood = true; 
+
+      // TODO: handle version
+      $rootScope.version = message['objects'][0]['content']['value'];
+    }
 
     var handleEvent = function(event) {
         if (_.has(eventHandlers, event['id'])) {
@@ -288,6 +298,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
     }
 
     var eventHandlers = {
+	versinfo: handleVersionInfo,
         bufinfo: handleBufferInfo,
         lineinfo: handleLineInfo,
         _buffer_closing: handleBufferClosing,
@@ -308,7 +319,6 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', 'mode
     protocol = new WeeChatProtocol();
     var websocket = null;
 
-
     // Sanitizes messages to be sent to the weechat relay
     var doSend = function(message) {
         msgs = message.replace(/[\r\n]+$/g, "").split("\n");
@@ -326,25 +336,61 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', 'mode
         websocket.binaryType = "arraybuffer"
 
         websocket.onopen = function (evt) {
-                doSend(WeeChatProtocol.formatInit({
-                    password: passwd,
-                    compression: 'off'
-                }));
-                doSend(WeeChatProtocol.formatHdata({
-                    id: 'bufinfo',
-                    path: 'buffer:gui_buffers(*)',
-                keys: ['number,full_name,short_name,title']
-            }));
-            doSend(WeeChatProtocol.formatSync({}));
 
-            $log.info("Connected to relay");
-            $rootScope.connected = true;
-            $rootScope.$apply();
+            // First message must be an init request
+            // with the password
+            doSend(WeeChatProtocol.formatInit({
+                password: passwd,
+                compression: 'off'
+            }));
+
+            // password is bad until the next message
+            // received proven the otherwise.
+            $rootScope.passwordGood = false;
+
+            // We are asking for the weechat version here
+            // to avoid two problems :
+            //  - If the version is below 0.4.2, we will have a bug
+            //    with websocket.
+            //  - If the user password is wrong, we will be disconneted
+            //    at this step.
+            doSend(WeeChatProtocol.formatInfo({
+                id: 'versinfo',
+                name: 'version',
+            }));
+
+            // FIXME: could be a better way
+	    // sleep or wait on event
+	    // we know here we gonna received
+	    // a 'versinfo' event, or an onclose event
+	    setTimeout (function () { 
+                if ($rootScope.version == undefined) {
+                    $log.info("wrong password");
+                    $rootScope.connected = false;
+                } else {
+                    doSend(WeeChatProtocol.formatHdata({
+                        id: 'bufinfo',
+                        path: 'buffer:gui_buffers(*)',
+                        keys: ['number,full_name,short_name,title']
+                    }));
+
+                    doSend(WeeChatProtocol.formatSync({}));
+
+                    $log.info("Connected to relay");
+                    $rootScope.connected = true;
+	        }
+
+                $rootScope.$apply();
+	    }, 100);
         }
 
         websocket.onclose = function (evt) {
             $log.info("Disconnected from relay");
             $rootScope.connected = false;
+	    if ($rootScope.passwordGood == false) {
+                $rootScope.passwordError = true;
+	    }
+	    $rootScope.passwordGood = false;
             $rootScope.$apply();
         }
 
