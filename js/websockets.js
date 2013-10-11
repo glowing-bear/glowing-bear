@@ -498,16 +498,16 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $rootScope.switchToActivityBuffer = function() {
         // Find next buffer with activity and switch to it
-        angular.forEach($scope.buffers, function(buffer) {
+        for(i in $scope.buffers) {
+            var buffer = $scope.buffers[i];
             if(buffer.notification) {
                 $scope.setActiveBuffer(buffer.id);
-                return false;
+                break;
             }else if((parseInt(buffer.unread) || 0) > 0) {
                 $scope.setActiveBuffer(buffer.id);
-                return false;
+                break;
             }
-            return true;
-        });
+        }
     }
 
     $scope.handleKeyPress = function($event) {
