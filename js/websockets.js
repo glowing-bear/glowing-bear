@@ -441,9 +441,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     });
 
     $rootScope.scrollToBottom = function() {
-        $timeout(function(){
-            window.scrollTo(0, window.scrollMaxY-1);
-        });
+        // FIXME doesn't work if the settimeout runs without a short delay
+        // 300 ms seems to do the trick but creates a noticable flickr
+        $timeout(function() {
+            // TODO in the future, implement scrolling to last read line
+            window.scrollTo(0, document.querySelector('.bufferline:last-child').offsetTop);
+        }, 300);
     }
 
     $scope.sendMessage = function() {
