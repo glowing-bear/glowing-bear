@@ -65,7 +65,7 @@ input#sendMessage {
     margin-left: 14%;
     width: auto;
     position: relative;
-    margin-bottom: 60px;
+    padding-bottom: 60px;
 }
 .text {
     word-wrap: break-word;
