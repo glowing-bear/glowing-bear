@@ -20,6 +20,7 @@ weechat.factory('colors', [function($scope) {
     var part, fg, bg, attrs, colors = ['', 'black', 'dark gray', 'dark red', 'light red', 'dark green', 'light green', 'brown', 'yellow', 'dark blue', 'light blue', 'dark magenta', 'light magenta', 'dark cyan', 'light cyan', 'gray', 'white'];
     // XTerm 8-bit pallete
     var colors = [
+                '', 
                 '#000000', '#AA0000', '#00AA00', '#AA5500', '#0000AA',
                 '#AA00AA', '#00AAAA', '#AAAAAA', '#555555', '#FF5555',
                 '#55FF55', '#FFFF55', '#5555FF', '#FF55FF', '#55FFFF',
@@ -257,6 +258,10 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
         for (var i = 0; i < bufferInfos.length ; i++) {
             var buffer = new models.Buffer(bufferInfos[i]);
             models.addBuffer(buffer);
+            // Switch to first buffer on startup
+            if (i == 0) {
+                models.setActiveBuffer(buffer.id);
+            }
         }
 
         // Request latest buffer lines for each buffer
