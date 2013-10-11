@@ -1,4 +1,4 @@
-var weechat = angular.module('weechat', ['localStorage', 'weechatModels', 'plugins']);
+var weechat = angular.module('weechat', ['localStorage', 'weechatModels', 'plugins', 'ngSanitize']);
 
 weechat.filter('toArray', function () {
     'use strict';

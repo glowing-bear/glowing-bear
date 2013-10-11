@@ -9,6 +9,7 @@
     <link rel="shortcut icon" type="image/png" href="img/favicon.png" >
     <link href="css/glowingbear.css" rel="stylesheet" media="screen">
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular-sanitize.min.js"></script>
     <script type="text/javascript" src="js/underscore.js"></script>
     <script type="text/javascript" src="js/localstorage.js"></script>
     <script type="text/javascript" src="js/weechat-protocol.js"></script>
@@ -106,13 +107,12 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
             <div ng-repeat="metadata in bufferline.metadata">
               <div ng-show="metadata.visible">
                 <a ng-click="metadata.visible = false">Hide additional content</a>
-                <div ng-bind-html-unsafe="metadata.content"></div>
+                <div ng-bind-html="metadata.content"></div>
 
               </div>
               <div ng-hide="metadata.visible">
                 <a ng-click="metadata.visible = true">Show additional content</a>
               </div>
-              
             </div>
         </div>
       </div>
