@@ -488,5 +488,36 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
       }
       return true;
     };
+
+    $rootScope.switchToActivityBuffer = function() {
+        // Find next buffer with activity and switch to it
+        angular.forEach($scope.buffers, function(buffer) {
+            if(buffer.notification) {
+                console.log('a', buffer.id);
+                $scope.setActiveBuffer(buffer.id);
+                return false;
+            }else if((parseInt(buffer.unread) || 0) > 0) {
+                console.log('b',buffer.id);
+                $scope.setActiveBuffer(buffer.id);
+                return false;
+            }
+            return true;
+        });
+    }
+
+    $scope.handleKeyPress = function($event) {
+        //console.log('keypress', $event.charCode, $event.altKey);
+        // Handle alt-a
+        if($event.altKey && $event.charCode == '97') {
+            $event.preventDefault();
+            $rootScope.switchToActivityBuffer();
+            return true;
+        }
+        // Handle ctrl-g
+        if($event.ctrlKey && $event.charCode == '103') {
+            document.querySelector('#bufferFilter').focus();
+            return true;
+        }
+    };
 }]
                   );
