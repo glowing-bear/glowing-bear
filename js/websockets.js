@@ -482,6 +482,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $scope.hasUnread = function(buffer) {
       if($scope.onlyUnread) {
+        // Always show current buffer in list
+        if (models.getActiveBuffer() == buffer) {
+            return true;
+        }
         return (parseInt(buffer.unread) || 0) > 0;
       }
       return true;
