@@ -53,10 +53,15 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
               <strong>Oh no!</strong> We cannot connect!
             </div>
         <div class="form-group">
-          <label class="control-label" for="hostport">Hostname and port</label>
-          <input type="text" class="form-control" id="hostport" ng-model="hostport" placeholder="Hostport">
-          <p class="help-block">Enter the hostname and the port to the WeeChat relay, separated by a :</p>
-              </div>
+          <label class="control-label" for="host">WeeChat hostname</label>
+          <input type="text" class="form-control" id="host" ng-model="host" placeholder="Address">
+          <p class="help-block">Enter the hostname to the WeeChat relay</p>
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="port">WeeChat port number</label>
+          <input type="text" class="form-control" id="port" ng-model="port" placeholder="9001">
+          <p class="help-block">Enter the the port to the WeeChat relay</p>
+        </div>
         <div class="form-group">
           <label class="control-label" for="password">WeeChat relay password</label>
           <input type="password" class="form-control" id="password" ng-model="password" placeholder="Password">

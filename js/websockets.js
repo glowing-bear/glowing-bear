@@ -320,9 +320,9 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', 'mode
     }
 
     // Takes care of the connection and websocket hooks
-    var connect = function (hostport, passwd, ssl) {
+    var connect = function (host, port, passwd, ssl) {
         var proto = ssl ? 'wss':'ws';
-        websocket = new WebSocket(proto+"://" + hostport + "/weechat");
+        websocket = new WebSocket(proto+"://" + host + ':' + port + "/weechat");
         websocket.binaryType = "arraybuffer"
 
         websocket.onopen = function (evt) {
@@ -424,7 +424,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $rootScope.buffer = []
 
-    $store.bind($scope, "hostport", "localhost:9001");
+    $store.bind($scope, "host", "localhost");
+    $store.bind($scope, "port", "9001");
     $store.bind($scope, "proto", "weechat");
     $store.bind($scope, "password", "");
     $store.bind($scope, "ssl", false);
@@ -462,7 +463,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.connect = function() {
-        connection.connect($scope.hostport, $scope.password, $scope.ssl);
+        connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl);
     }
     $rootScope.getLines = function() {
       var count = 20;
