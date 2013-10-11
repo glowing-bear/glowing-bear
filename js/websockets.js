@@ -449,7 +449,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // 300 ms seems to do the trick but creates a noticable flickr
         $timeout(function() {
             // TODO in the future, implement scrolling to last read line
-            window.scrollTo(0, document.querySelector('.bufferline:last-child').offsetTop);
+            var lastline = document.querySelector('.bufferline:last-child');
+            if(lastline) {
+                window.scrollTo(0, lastline.offsetTop);
+            }
         }, 300);
     }
 
