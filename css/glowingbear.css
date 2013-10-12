@@ -24,11 +24,11 @@ input#sendMessage {
     width: 100%;
 }
 
-td#time {
+td.time {
     padding-right: 5px;
 }
 
-td#nickname {
+td.prefix {
     text-align: right;
     vertical-align: middle;
     padding-right: 5px;
