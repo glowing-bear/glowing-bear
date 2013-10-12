@@ -430,6 +430,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     }
 
 
+    $rootScope.$on('activeBufferChanged', function() {
+        $rootScope.scrollToBottom();
+        document.getElementById('sendMessage').focus();
+        var ab = models.getActiveBuffer();
+        $rootScope.pageTitle = ab.shortName + ' | ' + ab.title;
+    });
+
     $scope.buffers = models.model.buffers;
     $scope.activeBuffer = models.getActiveBuffer
 
@@ -451,11 +458,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $scope.setActiveBuffer = function(key) {
         models.setActiveBuffer(key);
-        $rootScope.scrollToBottom();
-        document.getElementById('sendMessage').focus();
-        var ab = models.getActiveBuffer();
-        $rootScope.pageTitle = ab.shortName + ' | ' + ab.title;
-
     };
 
     $rootScope.scrollToBottom = function() {
