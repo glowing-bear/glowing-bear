@@ -109,7 +109,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
       <div class="bufferlines">
         <table>
           <tbody>
-            <tr class="bufferline" ng-repeat="bufferline in activeBuffer().lines">
+            <tr class="bufferline" ng-repeat-start="bufferline in activeBuffer().lines">
               <td class="time">
                 <span class="date text-muted">
                   {{ bufferline.date | date:'HH:mm' }}
@@ -131,6 +131,11 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
                     <a ng-click="metadata.visible = true">Show additional content</a>
                   </div>
                 </div>
+              </td>
+            </tr>
+            <tr ng-repeat-end ng-if="activeBuffer().lastSeen-1==$index">
+              <td colspan="3">
+                <hr id="readmarker">
               </td>
             </tr>
           </tbody>

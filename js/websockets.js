@@ -451,26 +451,22 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $scope.setActiveBuffer = function(key) {
         models.setActiveBuffer(key);
+        $rootScope.scrollToBottom();
+        document.getElementById('sendMessage').focus();
         var ab = models.getActiveBuffer();
         $rootScope.pageTitle = ab.shortName + ' | ' + ab.title;
-        document.getElementById('sendMessage').focus();
 
     };
-
-    $scope.$watch('models.getActiveBuffer()', function(newVal, oldVal) {
-        if (newVal && newVal !== oldVal) { 
-            $rootScope.scrollToBottom();
-        }
-    });
 
     $rootScope.scrollToBottom = function() {
         // FIXME doesn't work if the settimeout runs without a short delay
         // 300 ms seems to do the trick but creates a noticable flickr
         $timeout(function() {
-            // TODO in the future, implement scrolling to last read line
-            var lastline = document.querySelector('.bufferline:last-child');
-            if(lastline) {
-                window.scrollTo(0, lastline.offsetTop);
+            var readmarker = document.getElementById('readmarker');
+            if(readmarker) {
+              readmarker.scrollIntoView();
+            }else{
+                window.scroll(0, window.scrollMaxY);
             }
         }, 300);
     }
@@ -553,12 +549,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         // Handle alt-a
         if($event.altKey && (code == 97 || code == 65)) {
+            $event.preventDefault();
             $rootScope.switchToActivityBuffer();
             return true;
         }
         // Handle ctrl-g
         if($event.ctrlKey && (code == 103 || code == 71)) {
-            document.querySelector('#bufferFilter').focus();
+            document.getElementById('bufferFilter').focus();
             return true;
         }
     };

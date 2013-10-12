@@ -19,6 +19,7 @@ models.service('models', ['colors', function(colors) {
         var active = false;
         var notification = false;
         var unread = '';
+        var lastSeen = -2;
 
         /*
          * Adds a line to this buffer
@@ -37,7 +38,8 @@ models.service('models', ['colors', function(colors) {
             number: number,
             title: title,
             lines: lines,
-            addLine: addLine
+            addLine: addLine,
+            lastSeen: lastSeen,
         }
 
     }
@@ -143,9 +145,14 @@ models.service('models', ['colors', function(colors) {
      * @return undefined
      */
     this.setActiveBuffer = function(bufferId) {
+
+        var previousBuffer = this.getActiveBuffer();
         
-        if (this.getActiveBuffer()) {
-            this.getActiveBuffer().active = false;
+        if (previousBuffer) {
+            // turn off the active status for the previous buffer
+            previousBuffer.active = false;
+            // Save the last line we saw
+            previousBuffer.lastSeen = previousBuffer.lines.length;
         }
 
         activeBuffer = _.find(this.model['buffers'], function(buffer) {
@@ -156,7 +163,6 @@ models.service('models', ['colors', function(colors) {
         activeBuffer.notification = false;
         activeBuffer.active = true;
         activeBuffer.unread = '';
-
     }
 
     /*

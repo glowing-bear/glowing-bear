@@ -24,6 +24,9 @@ input#sendMessage {
     width: 100%;
 }
 
+table {
+  width: 100%;
+}
 td.time {
     padding-right: 5px;
 }
@@ -35,6 +38,11 @@ td.prefix {
 }
 td.message {
     word-wrap: break-word;
+    width: 100%;
+}
+#readmarker {
+  margin: 0;
+  color: #111;
 }
 .text {
     white-space: pre;
