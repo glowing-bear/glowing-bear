@@ -152,7 +152,7 @@ models.service('models', ['colors', function(colors) {
             // turn off the active status for the previous buffer
             previousBuffer.active = false;
             // Save the last line we saw
-            previousBuffer.lastSeen = previousBuffer.lines.length;
+            previousBuffer.lastSeen = previousBuffer.lines.length-1;
         }
 
         activeBuffer = _.find(this.model['buffers'], function(buffer) {

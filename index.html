@@ -133,9 +133,9 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
                 </div>
               </td>
             </tr>
-            <tr ng-repeat-end ng-if="activeBuffer().lastSeen-1==$index">
+            <tr class="readmarker" ng-repeat-end ng-show="activeBuffer().lastSeen==$index">
               <td colspan="3">
-                <hr id="readmarker">
+                <hr ng-if="activeBuffer().lastSeen==$index" id="readmarker">
               </td>
             </tr>
           </tbody>

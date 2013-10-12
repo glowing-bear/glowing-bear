@@ -40,9 +40,9 @@ td.message {
     word-wrap: break-word;
     width: 100%;
 }
-#readmarker {
+hr {
   margin: 0;
-  color: #111;
+  border-color: darkgreen;
 }
 .text {
     white-space: pre;
