@@ -466,7 +466,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             if(readmarker) {
               readmarker.scrollIntoView();
             }else{
-                window.scroll(0, window.scrollMaxY);
+                window.scroll(0, document.documentElement.scrollHeight - document.documentElement.clientHeight);
             }
         }, 300);
     }
