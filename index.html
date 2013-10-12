@@ -45,6 +45,9 @@
         </div>
         <div class="form-group">
           <label class="control-label" for="password">WeeChat relay password</label>
+          <div class="alert alert-danger" ng-show="passwordError">
+            Error wrong password
+          </div>
           <input type="password" class="form-control" id="password" ng-model="password" placeholder="Password">
           <p class="help-block">Password will be stored in your browser session</p>
             </div>
@@ -138,6 +141,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
       </div>
       <div class="push"></div>
     </div>
+        
     <div id="footer" ng-show="connected">
       <div class="navbar navbar-inverse navbar-fixed-bottom">
         <form class="form form-horizontal" ng-submit="sendMessage()">
