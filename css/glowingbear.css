@@ -24,6 +24,16 @@ input#sendMessage {
     width: 100%;
 }
 
+td#time {
+    padding-right: 5px;
+}
+
+td#nickname {
+    text-align: right;
+    vertical-align: middle;
+    padding-right: 5px;
+}
+
 /* Lastly, apply responsive CSS fixes as necessary */
 @media (max-width: 767px) {
     #footer {
@@ -59,13 +69,17 @@ input#sendMessage {
     height: 100%; 
     min-height: 100%; 
 }
+span.text {
+    white-space: nowrap;
+}
+
 .bufferlines {
     font-family: monospace;
     overflow-y: auto;
     margin-left: 14%;
     width: auto;
     position: relative;
-    padding-bottom: 60px;
+    padding-bottom: 55px;
 }
 .text {
     word-wrap: break-word;

@@ -107,25 +107,36 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
         </ul>
       </div>
       <div class="bufferlines">
-        <div class="bufferline" ng-repeat="bufferline in activeBuffer().lines">
-          <span class="date text-muted">
-            {{ bufferline.date | date:'HH:mm' }}
-          </span>
+        <table>
+          <tbody>
+            <tr class="bufferline" ng-repeat="bufferline in activeBuffer().lines">
+              <td id="time">
+                <span class="date text-muted">
+                  {{ bufferline.date | date:'HH:mm' }}
+                </span>
+              </td>
+              <td id="nickname">
+                <span ng-repeat="part in bufferline.prefix" class="text" style="{{ part.fg }}">{{ part.text }}</span>
+              </td>
+              <td id="content">
+                <span ng-repeat="part in bufferline.content" class="text" style="{{ part.fg }}">{{ part.text }} </span>
 
-          <span ng-repeat="part in bufferline.content" class="text" style="{{ part.fg }}">{{ part.text }} </span>
+                <div ng-repeat="metadata in bufferline.metadata">
+                  <div ng-show="metadata.visible">
+                    <a ng-click="metadata.visible = false">Hide additional content</a>
+                    <div ng-bind-html="metadata.content"></div>
 
-            <div ng-repeat="metadata in bufferline.metadata">
-              <div ng-show="metadata.visible">
-                <a ng-click="metadata.visible = false">Hide additional content</a>
-                <div ng-bind-html="metadata.content"></div>
-
-              </div>
-              <div ng-hide="metadata.visible">
-                <a ng-click="metadata.visible = true">Show additional content</a>
-              </div>
-            </div>
-        </div>
+                  </div>
+                  <div ng-hide="metadata.visible">
+                    <a ng-click="metadata.visible = true">Show additional content</a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+      <div class="push"></div>
     </div>
     <div id="footer" ng-show="connected">
       <div class="navbar navbar-inverse navbar-fixed-bottom">
