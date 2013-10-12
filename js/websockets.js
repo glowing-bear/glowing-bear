@@ -252,19 +252,6 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
      */
     var handleBufferInfo = function(message) {
         // buffer info from message
-        var bufferInfos = message['objects'][0]['content'];
-        // buffers objects
-        for (var i = 0; i < bufferInfos.length ; i++) {
-            var buffer = new models.Buffer(bufferInfos[i]);
-            models.addBuffer(buffer);
-            // Switch to first buffer on startup
-            if (i == 0) {
-                models.setActiveBuffer(buffer.id);
-            }
-        }
-
-        // Request latest buffer lines for each buffer
-        $rootScope.getLines();
     }
 
 
@@ -281,6 +268,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
     }
 
     var handleEvent = function(event) {
+
         if (_.has(eventHandlers, event['id'])) {
             eventHandlers[event['id']](event);
         }
@@ -304,10 +292,25 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
 
 }]);
 
-weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', 'models', function($rootScope, $log, handlers, colors, models) {
+weechat.factory('connection', ['$q', '$rootScope', '$log', 'handlers', 'colors', 'models', function($q, $rootScope, $log, handlers, colors, models) {
     protocol = new WeeChatProtocol();
     var websocket = null;
 
+    var callbacks = {}
+    var currentCallBackId = 0;
+
+
+
+    var doSendWithCallback = function(message) {
+        var defer = $q.defer();
+        callbacks[++currentCallBackId] = {
+            time: new Date,
+            cb: defer
+        }
+        callBackIdString = "(" + currentCallBackId + ")";
+        doSend(callBackIdString + " " + message);
+        return defer.promise;
+    }
 
     // Sanitizes messages to be sent to the weechat relay
     var doSend = function(message) {
@@ -330,11 +333,25 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', 'mode
                     password: passwd,
                     compression: 'off'
                 }));
-                doSend(WeeChatProtocol.formatHdata({
-                    id: 'bufinfo',
+            doSendWithCallback(WeeChatProtocol.formatHdata({
                     path: 'buffer:gui_buffers(*)',
                 keys: ['number,full_name,short_name,title']
-            }));
+            })).then(function(hdata) {
+                var bufferInfos = message['objects'][0]['content'];
+                // buffers objects
+                for (var i = 0; i < bufferInfos.length ; i++) {
+                    var buffer = new models.Buffer(bufferInfos[i]);
+                    models.addBuffer(buffer);
+                    // Switch to first buffer on startup
+                    if (i == 0) {
+                        models.setActiveBuffer(buffer.id);
+                    }
+                }
+
+                // Request latest buffer lines for each buffer
+                $rootScope.getLines();
+
+            });
             doSend(WeeChatProtocol.formatSync({}));
 
             $log.info("Connected to relay");
@@ -350,7 +367,13 @@ weechat.factory('connection', ['$rootScope', '$log', 'handlers', 'colors', 'mode
 
         websocket.onmessage = function (evt) {
 	    message = protocol.parse(evt.data)
-            handlers.handleEvent(message);
+            if (_.has(callbacks, message['id'])) {
+                var promise = callbacks[message['id']];
+                promise.cb.resolve(message.data);
+                delete(callbacks[message['id']]);
+            } else {
+                handlers.handleEvent(message);
+            }
             $rootScope.commands.push("RECV: " + evt.data + " TYPE:" + evt.type) ;
             $rootScope.$apply();
         }
