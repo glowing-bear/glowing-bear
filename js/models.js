@@ -115,6 +115,17 @@ models.service('models', ['colors', function(colors) {
         this.model.buffers[buffer.id] = buffer;
     }
 
+    this.getBufferByIndex  = function(index) {
+        var i = 0;
+
+        for (var v in BufferList) {
+            if (index == ++i) {
+                return BufferList[v];
+            }
+        }
+
+    }
+
     /*
      * Returns the current active buffer
      *

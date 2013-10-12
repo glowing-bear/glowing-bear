@@ -536,6 +536,19 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Support different browser quirks
         var code = $event.keyCode ? $event.keyCode : $event.charCode;
 
+        if ($event.altKey && (code > 47 && code < 58)) {
+            if (code == 48) {
+                code = 58;
+            }
+
+            var bufferNumber = code - 48;
+            var activeBuffer = models.getBufferByIndex(bufferNumber);
+            if (activeBuffer) {
+                models.setActiveBuffer(activeBuffer.id);
+                $event.preventDefault();
+            }
+        }
+
         //console.log('keypress', $event.charCode, $event.altKey);
 
         // Handle alt-a
