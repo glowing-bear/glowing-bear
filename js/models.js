@@ -47,24 +47,13 @@ models.service('models', ['colors', function(colors) {
      */
     this.BufferLine = function(message) {
 
-        function formatTextElement(textElement) {
-
-            textElement = colors.parse(textElement);
-
-            if (textElement && ('fg' in textElement)) {
-                textElement['fg'] = colors.prepareCss(textElement['fg']);
-            }
-
-            return textElement;
-        }
-
         /*
          * Parse the text elements from the buffer line added
          *
          * @param message weechat message
          */
         function parseLineAddedTextElements(message) {
-            var text = colors.parse(message['message']);
+            var text = colors.parse(message);
             text_elements =_.map(text, function(text_element) {
                 if (text_element && ('fg' in text_element)) {
                     text_element['fg'] = colors.prepareCss(text_element['fg']);
@@ -81,14 +70,12 @@ models.service('models', ['colors', function(colors) {
         var date = message['date'];
 
 
-        var prefix = formatTextElement(message['prefix']);
-        console.log(message['prefix'])
-        console.log(prefix);
+        var prefix = parseLineAddedTextElements(message['prefix']);
 
         var tags_array = message['tags_array'];
         var displayed = message['displayed'];
         var highlight = message['highlight'];
-        var content = parseLineAddedTextElements(message);
+        var content = parseLineAddedTextElements(message['message']);
 
         var rtext = "";
         if(content[0] != undefined) {
