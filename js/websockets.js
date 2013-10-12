@@ -286,8 +286,8 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
     }
 
     return {
-        handleEvent: handleEvent
-
+        handleEvent: handleEvent,
+        handleLineInfo: handleLineInfo
     }
 
 }]);
@@ -369,7 +369,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', 'handlers', 'colors',
 	    message = protocol.parse(evt.data)
             if (_.has(callbacks, message['id'])) {
                 var promise = callbacks[message['id']];
-                promise.cb.resolve(message.data);
+                promise.cb.resolve(message);
                 delete(callbacks[message['id']]);
             } else {
                 handlers.handleEvent(message);
@@ -396,11 +396,13 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', 'handlers', 'colors',
     }
 
     var getLines = function(count) {
-        doSend(WeeChatProtocol.formatHdata({
-            id: 'lineinfo',
+        doSendWithCallback(WeeChatProtocol.formatHdata({
             path: "buffer:gui_buffers(*)/own_lines/last_line(-"+count+")/data",
             keys: []
-        }));
+        })).then(function(hdata) {
+            console.log(hdata);
+            handlers.handleLineInfo(hdata);
+        });
     }
 
     return {
