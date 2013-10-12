@@ -4,7 +4,7 @@
  */
 var models = angular.module('weechatModels', []);
 
-models.service('models', ['colors', function(colors) {
+models.service('models', ['$rootScope', 'colors', function($rootScope, colors) {
     /*
      * Buffer class
      */
@@ -84,7 +84,7 @@ models.service('models', ['colors', function(colors) {
             rtext = content[0]['text'];
         }
 
-        return {
+       return {
             prefix: prefix,
             content: content,
             date: date,
@@ -160,9 +160,12 @@ models.service('models', ['colors', function(colors) {
                 return buffer;
             }
         });
+
         activeBuffer.notification = false;
         activeBuffer.active = true;
         activeBuffer.unread = '';
+
+        $rootScope.$emit('activeBufferChanged');
     }
 
     /*
