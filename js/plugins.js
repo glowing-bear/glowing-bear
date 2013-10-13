@@ -110,6 +110,8 @@ plugins.service('plugins', ['userPlugins', '$sce',  function(userPlugins, $sce) 
  */
 plugins.factory('userPlugins', function() {
 
+    var urlRegexp = RegExp(/(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/);
+
     var youtubePlugin = new Plugin(function(message) {
 
         if (message.indexOf('youtube.com') != -1) {
@@ -123,8 +125,7 @@ plugins.factory('userPlugins', function() {
     youtubePlugin.name = 'youtube video';
 
     var urlPlugin = new Plugin(function(message) {
-        var urlPattern = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/;
-        var url = message.match(urlPattern);
+        var url = message.match(urlRegexp);
         if (url) {
             return '<a target="_blank" href="' + url[0] + '">' + message + '</a>';
         }
@@ -134,10 +135,14 @@ plugins.factory('userPlugins', function() {
     urlPlugin.name = 'url';
 
     var imagePlugin = new Plugin(function(message) {
-	var urls = message.match(/https?:\/\/[^\s]*\.(jpg|png|gif)\b/)
-	if (urls != null) {
-	    var url = urls[0]; /* Actually parse one url per message */
-	    return '<img src="' + url + '" height="300">';
+        
+        var url = message.match(urlRegexp);
+
+	if (url) {
+	    var url = url[0]; /* Actually parse one url per message */
+            if (url.match(/png$|gif$|jpg$|jpeg$/)) {
+	        return '<img src="' + url + '" height="300">';
+            } 
         }
         return null;
     });
