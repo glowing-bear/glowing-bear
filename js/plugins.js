@@ -15,6 +15,7 @@ var Plugin = function(contentForMessage) {
     return {
         contentForMessage: contentForMessage,
         exclusive: false,
+        name: "additional content"
     }
 }
 
@@ -68,7 +69,8 @@ plugins.service('plugins', ['userPlugins', '$sce',  function(userPlugins, $sce) 
                 if (pluginContent) {
                     var pluginContent = {'visible': visible,
                                          'content': $sce.trustAsHtml(pluginContent),
-                                         'nsfw': nsfw }
+                                         'nsfw': nsfw,
+                                         'name': plugins[i].name }
 
                     content.push(pluginContent);
 

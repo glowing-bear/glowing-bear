@@ -124,12 +124,12 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
                 <div ng-repeat="metadata in bufferline.metadata">
                   <div ng-show="metadata.visible">
                     <div ng-bind-html="metadata.content"></div>
-                    <button class="btn btn-primary" ng-click="metadata.visible = false">Hide additional content</button>
+                    <button class="btn btn-primary" ng-click="metadata.visible = false">Hide {{ metadata.name }}</button>
 
 
                   </div>
                   <div ng-hide="metadata.visible">
-                    <button class="btn" ng-class="{'btn-warning': metadata.nsfw, 'btn-primary': !metadata.nsfw}" ng-click="metadata.visible = true">Show additional content</button>
+                    <button class="btn" ng-class="{'btn-warning': metadata.nsfw, 'btn-primary': !metadata.nsfw}" ng-click="metadata.visible = true">Show {{ metadata.name }}</button>
                   </div>
                 </div>
               </td>
