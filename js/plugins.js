@@ -57,16 +57,18 @@ plugins.service('plugins', ['userPlugins', '$sce',  function(userPlugins, $sce) 
             var content = [];
             for (var i = 0; i < plugins.length; i++) {
 
+                var nsfw = false;
                 var visible = true;
-
                 if (message.match(nsfwRegexp)) {
+                    var nsfw = true;
                     var visible = false;
                 }
 
                 var pluginContent = plugins[i].contentForMessage(message);
                 if (pluginContent) {
                     var pluginContent = {'visible': visible,
-                                         'content': $sce.trustAsHtml(pluginContent) }
+                                         'content': $sce.trustAsHtml(pluginContent),
+                                         'nsfw': nsfw }
 
                     content.push(pluginContent);
 

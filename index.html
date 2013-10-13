@@ -129,7 +129,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
 
                   </div>
                   <div ng-hide="metadata.visible">
-                    <a ng-click="metadata.visible = true">Show additional content</a>
+                    <a ng-click="metadata.visible = true">Show additional content</a> <span ng-show="metadata.nsfw">(possibly nsfw)</span>
                   </div>
                 </div>
               </td>
