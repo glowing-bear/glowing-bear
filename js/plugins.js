@@ -26,7 +26,7 @@ var Plugin = function(contentForMessage) {
  * to display when messages are received.
  *
  */
-plugins.service('plugins', ['userPlugins', function(userPlugins) {
+plugins.service('plugins', ['userPlugins', '$sce',  function(userPlugins, $sce) {
 
     /*
      * Defines the plugin manager object
@@ -57,7 +57,8 @@ plugins.service('plugins', ['userPlugins', function(userPlugins) {
                 var pluginContent = plugins[i].contentForMessage(message);
                 if (pluginContent) {
                     var pluginContent = {'visible': true, 
-                                         'content': pluginContent }
+                                         'content': $sce.trustAsHtml(pluginContent) }
+
                     content.push(pluginContent);
 
                     if (plugins[i].exclusive) {

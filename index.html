@@ -123,8 +123,9 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
 
                 <div ng-repeat="metadata in bufferline.metadata">
                   <div ng-show="metadata.visible">
-                    <a ng-click="metadata.visible = false">Hide additional content</a>
                     <div ng-bind-html="metadata.content"></div>
+                    <a ng-click="metadata.visible = false">Hide additional content</a>
+
 
                   </div>
                   <div ng-hide="metadata.visible">
