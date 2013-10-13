@@ -28,6 +28,8 @@ var Plugin = function(contentForMessage) {
  */
 plugins.service('plugins', ['userPlugins', '$sce',  function(userPlugins, $sce) {
 
+    var nsfwRegexp = new RegExp('nsfw$', 'i');
+
     /*
      * Defines the plugin manager object
      */
@@ -54,9 +56,16 @@ plugins.service('plugins', ['userPlugins', '$sce',  function(userPlugins, $sce) 
 
             var content = [];
             for (var i = 0; i < plugins.length; i++) {
+
+                var visible = true;
+
+                if (message.match(nsfwRegexp)) {
+                    var visible = false;
+                }
+
                 var pluginContent = plugins[i].contentForMessage(message);
                 if (pluginContent) {
-                    var pluginContent = {'visible': true, 
+                    var pluginContent = {'visible': visible,
                                          'content': $sce.trustAsHtml(pluginContent) }
 
                     content.push(pluginContent);
