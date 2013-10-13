@@ -120,6 +120,7 @@ plugins.factory('userPlugins', function() {
 
         return null;
     });
+    youtubePlugin.name = 'youtube video';
 
     var urlPlugin = new Plugin(function(message) {
         var urlPattern = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/;
@@ -130,6 +131,7 @@ plugins.factory('userPlugins', function() {
         return null;
 
     });
+    urlPlugin.name = 'url';
 
     var imagePlugin = new Plugin(function(message) {
 	var urls = message.match(/https?:\/\/[^\s]*\.(jpg|png|gif)\b/)
@@ -139,6 +141,7 @@ plugins.factory('userPlugins', function() {
         }
         return null;
     });
+    imagePlugin.name = 'image';
 
     return {
         plugins: [youtubePlugin, urlPlugin, imagePlugin]
