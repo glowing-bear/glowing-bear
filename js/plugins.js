@@ -127,7 +127,7 @@ plugins.factory('userPlugins', function() {
     var urlPlugin = new Plugin(function(message) {
         var url = message.match(urlRegexp);
         if (url) {
-            return '<a target="_blank" href="' + url[0] + '">' + message + '</a>';
+            return '<a target="_blank" href="' + url[0] + '">' + url[0] + '</a>';
         }
         return null;
 
