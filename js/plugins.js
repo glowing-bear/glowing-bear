@@ -29,7 +29,7 @@ var Plugin = function(contentForMessage) {
  */
 plugins.service('plugins', ['userPlugins', '$sce',  function(userPlugins, $sce) {
 
-    var nsfwRegexp = new RegExp('nsfw$', 'i');
+    var nsfwRegexp = new RegExp('nsfw', 'i');
 
     /*
      * Defines the plugin manager object
