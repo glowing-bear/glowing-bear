@@ -15,6 +15,8 @@ models.service('models', ['$rootScope', 'colors', function($rootScope, colors) {
         var title = message['title']
         var number = message['number']
         var pointer = message['pointers'][0]
+        var local_variables = message['local_vars'];
+        var notify = message['notify'];
         var lines = []
         var active = false
         var notification = 0 
@@ -42,6 +44,8 @@ models.service('models', ['$rootScope', 'colors', function($rootScope, colors) {
             lastSeen: lastSeen,
             unread: unread,
             notification: notification,
+            localvars: local_variables,
+            notify: notify,
         }
 
     }

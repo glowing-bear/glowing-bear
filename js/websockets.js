@@ -199,12 +199,12 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
             }
 
             if (!initial) {
-                if (!buffer.active && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
+                if (!buffer.active && !buffer.notify==0 && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
                     buffer.unread++;
                     $rootScope.$emit('notificationChanged');
                 }
 
-                if(message.highlight || _.contains(message.tags, 'notify_private') ) {
+                if(!buffer.notify==0 && message.highlight || _.contains(message.tags, 'notify_private') ) {
                     buffer.notification++;
                     $rootScope.createHighlight(buffer, message);
                     $rootScope.$emit('notificationChanged');
@@ -320,8 +320,8 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
                     compression: 'off'
             }));
             doSendWithCallback(WeeChatProtocol.formatHdata({
-                    path: 'buffer:gui_buffers(*)',
-                keys: ['number,full_name,short_name,title']
+                path: 'buffer:gui_buffers(*)',
+                keys: ['local_variables,notify,number,full_name,short_name,title']
             })).then(function(message) {
                 $log.info("Parsing bufinfo");
                 var bufferInfos = message['objects'][0]['content'];
