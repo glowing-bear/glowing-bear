@@ -32,55 +32,96 @@
         <div class="alert alert-danger" ng-show="errorMessage">
           <strong>Oh no!</strong> We cannot connect!
         </div>
-      <form class="form-signin" role="form">
-        <div class="form-group">
-          <label class="control-label" for="host">WeeChat hostname</label>
-          <input type="text" class="form-control" id="host" ng-model="host" placeholder="Address">
-          <p class="help-block">Enter the hostname to the WeeChat relay</p>
-        </div>
-        <div class="form-group">
-          <label class="control-label" for="port">WeeChat port number</label>
-          <input type="text" class="form-control" id="port" ng-model="port" placeholder="9001">
-          <p class="help-block">Enter the the port to the WeeChat relay</p>
-        </div>
-        <div class="form-group">
-          <label class="control-label" for="password">WeeChat relay password</label>
-          <input type="password" class="form-control" id="password" ng-model="password" placeholder="Password">
-          <p class="help-block">Password will be stored in your browser session</p>
+        <div class="panel-group" id="accordion">
+          <div class="panel ">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                  Connection settings
+                </a>
+              </h4>
             </div>
-        <div class="form-group">
-          <label class="control-label" for="proto">Encryption</label>
-          <input type="checkbox" class="form-control" id="ssl" ng-model="ssl">
-          <p class="help-block">Check the box if you want to encrypt communication between browser and WeeChat. <strong>Note</strong>: Due to a <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">bug</a> encryption will not work in Firefox. You must also first visit the URL https://weechathost:relayport/ to accept the certificate</p>
+            <div id="collapseOne" class="panel-collapse collapse in">
+              <div class="panel-body">
+                <form class="form-signin" role="form">
+                  <div class="form-group">
+                    <label class="control-label" for="host">WeeChat hostname</label>
+                    <input type="text" class="form-control" id="host" ng-model="host" placeholder="Address">
+                    <p class="help-block">Enter the hostname to the WeeChat relay</p>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label" for="port">WeeChat port number</label>
+                    <input type="text" class="form-control" id="port" ng-model="port" placeholder="9001">
+                    <p class="help-block">Enter the the port to the WeeChat relay</p>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label" for="password">WeeChat relay password</label>
+                    <input type="password" class="form-control" id="password" ng-model="password" placeholder="Password">
+                    <p class="help-block">Password will be stored in your browser session</p>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label" for="proto">Encryption</label>
+                    <input type="checkbox" class="form-control" id="ssl" ng-model="ssl">
+                    <p class="help-block">Read encryption instructions for help</p>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label" for="port">Lines</label>
+                    <input type="text" class="form-control" id="lines" ng-model="lines" placeholder="40">
+                    <p class="help-block">Enter number of lines to sync from WeeChat on connect</p>
+                  </div>
+                  <button class="btn btn-lg btn-primary" ng-click="connect()">Connect!</button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="panel ">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                  Usage instructions
+                </a>
+              </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse">
+              <div class="panel-body">
+                <div>To start using, please enable relay in your WeeChat client:
+                  <pre>
+          /set relay.network.password yourpassword
+          /relay add weechat 9001</pre>
+                <span class="label label-warning">WeeChat version 0.4.2 or higher is required.</span><br>
+                The communication goes directly between your browser and your weechat in clear text.
+                Connection settings are saved between sessions, including password, in your own browser.
+              </div>
+            </div>
+          </div>
+          <div class="panel ">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                  Encryption instructions
+                </a>
+              </h4>
+            </div>
+            <div id="collapseThree" class="panel-collapse collapse">
+              <div class="panel-body">
+                If you check the encryption box, communication between browser and WeeChat will be encrypted.<br>
+                <strong>Note</strong>: Due to a <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">bug</a> encryption will not work in Firefox. You must also first visit the URL https://weechathost:relayport/ to accept the certificate</p>
+                If you want to use encrypted session you first have to set up the relay using SSL like this:
+                <pre>
+          $ mkdir -p ~/.weechat/ssl
+          $ cd ~/.weechat/ssl
+          $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out relay.pem
+          </pre>
+                If WeeChat is already running, you can reload the certificate and private key with command:
+                <pre>
+          /relay sslcertkey
+          /relay add ssl.weechat 8000
+          </pre>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label class="control-label" for="port">Lines</label>
-          <input type="text" class="form-control" id="lines" ng-model="lines" placeholder="40">
-          <p class="help-block">Enter number of lines to sync from WeeChat on connect</p>
-        </div>
-        <button class="btn btn-lg btn-primary" ng-click="connect()">Connect!</button>
-      </form>
-
-      <h3>Instructions</h3>
-      <div>To start using, please enable relay in your WeeChat client:
-        <pre>
-/set relay.network.password yourpassword
-/relay add weechat 9001</pre>
-      <span class="label label-warning">WeeChat version 0.4.2 or higher is required.</span><br>
-      The communication goes directly between your browser and your weechat in clear text.
-      Connection settings are saved between sessions, including password, in your own browser.
-      <h4>Encryption</h4>
-      If you want to use encrypted session you first have to set up the relay using SSL
-      <pre>
-$ mkdir -p ~/.weechat/ssl
-$ cd ~/.weechat/ssl
-$ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out relay.pem
-</pre>
-      If WeeChat is already running, you can reload the certificate and private key with command:
-      <pre>
-/relay sslcertkey
-/relay add ssl.weechat 8000
-</pre>
       </div>
     </div>
     <div class="content" ng-show="connected">
