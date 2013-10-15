@@ -112,6 +112,9 @@ input[type=text], input[type=password] {
     position: relative;
     padding-bottom: 55px;
 }
+.bufferlines .btn {
+    font-family: sans-serif;
+}
 
 .navbar-fixed-bottom {
     margin: 0 5px 0 14%;
