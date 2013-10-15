@@ -200,20 +200,12 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
 
             if (!initial) {
                 if (!buffer.active && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
-                    if (buffer.unread == '' || buffer.unread == undefined) {
-                        buffer.unread = 1;
-                    }else {
-                        buffer.unread++;
-                    }
+                    buffer.unread++;
                 }
 
                 if(message.highlight || _.contains(message.tags, 'notify_private') ) {
+                    buffer.notification++;
                     $rootScope.createHighlight(buffer, message);
-                    if (buffer.notification == '' || buffer.notification == undefined) {
-                        buffer.notification = 1;
-                    }else {
-                        buffer.notification++;
-                    }
                 }
             }
         }
@@ -523,10 +515,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Find next buffer with activity and switch to it
         for(i in $scope.buffers) {
             var buffer = $scope.buffers[i];
-            if((parseInt(buffer.notification) || 0) > 0) {
+            if(buffer.notification > 0) {
                 $scope.setActiveBuffer(buffer.id);
                 break;
-            }else if((parseInt(buffer.unread) || 0) > 0) {
+            }else if(buffer.unread > 0) {
                 $scope.setActiveBuffer(buffer.id);
                 break;
             }
