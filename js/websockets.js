@@ -191,7 +191,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
         // Only react to line if its displayed
         if(message.displayed) {
             var buffer = models.getBuffer(message.buffer);
-            message.metadata = plugins.PluginManager.contentForMessage(message.text);
+            message = plugins.PluginManager.contentForMessage(message);
             buffer.addLine(message);
 
             if (buffer.active) {
@@ -200,16 +200,14 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
 
             if (!initial) {
                 if (!buffer.active && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
-                    if (buffer.unread == '' || buffer.unread == undefined) {
-                        buffer.unread = 1;
-                    }else {
-                        buffer.unread++;
-                    }
+                    buffer.unread++;
+                    $rootScope.$emit('notificationChanged');
                 }
 
                 if(message.highlight || _.contains(message.tags, 'notify_private') ) {
+                    buffer.notification++;
                     $rootScope.createHighlight(buffer, message);
-                    buffer.notification = true;
+                    $rootScope.$emit('notificationChanged');
                 }
             }
         }
@@ -243,18 +241,6 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
         old.shortName = obj['short_name'];
     }
 
-
-    /*
-     * Handle answers to (bufinfo) messages
-     *
-     * (bufinfo) messages are specified by this client. It is the first
-     * message that is sent to the relay after connection.
-     */
-    var handleBufferInfo = function(message) {
-        // buffer info from message
-    }
-
-
     /*
      * Handle answers to (lineinfo) messages
      *
@@ -276,7 +262,6 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
     }
 
     var eventHandlers = {
-        bufinfo: handleBufferInfo,
         lineinfo: handleLineInfo,
         _buffer_closing: handleBufferClosing,
         _buffer_line_added: handleBufferLineAdded,
@@ -292,7 +277,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
 
 }]);
 
-weechat.factory('connection', ['$q', '$rootScope', '$log', 'handlers', 'colors', 'models', function($q, $rootScope, $log, handlers, colors, models) {
+weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers', 'colors', 'models', function($q, $rootScope, $log, storage, handlers, colors, models) {
     protocol = new WeeChatProtocol();
     var websocket = null;
 
@@ -329,14 +314,16 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', 'handlers', 'colors',
         websocket.binaryType = "arraybuffer"
 
         websocket.onopen = function (evt) {
-                doSend(WeeChatProtocol.formatInit({
+            $log.info("Connected to relay");
+            doSend(WeeChatProtocol.formatInit({
                     password: passwd,
                     compression: 'off'
-                }));
+            }));
             doSendWithCallback(WeeChatProtocol.formatHdata({
                     path: 'buffer:gui_buffers(*)',
                 keys: ['number,full_name,short_name,title']
-            })).then(function(hdata) {
+            })).then(function(message) {
+                $log.info("Parsing bufinfo");
                 var bufferInfos = message['objects'][0]['content'];
                 // buffers objects
                 for (var i = 0; i < bufferInfos.length ; i++) {
@@ -347,16 +334,19 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', 'handlers', 'colors',
                         models.setActiveBuffer(buffer.id);
                     }
                 }
-
-                // Request latest buffer lines for each buffer
-                $rootScope.getLines();
-
+                $rootScope.connected = true;
+            }).then(function() {
+                $log.info("Parsing lineinfo");
+                doSendWithCallback(WeeChatProtocol.formatHdata({
+                    path: "buffer:gui_buffers(*)/own_lines/last_line(-"+storage.get('lines')+")/data",
+                    keys: []
+                })).then(function(hdata) {
+                    handlers.handleLineInfo(hdata);
+                });
+            }).then(function() {
+                doSend(WeeChatProtocol.formatSync({}));
+                $log.info("Synced");
             });
-            doSend(WeeChatProtocol.formatSync({}));
-
-            $log.info("Connected to relay");
-            $rootScope.connected = true;
-            $rootScope.$apply();
         }
 
         websocket.onclose = function (evt) {
@@ -395,18 +385,9 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', 'handlers', 'colors',
         }));
     }
 
-    var getLines = function(count) {
-        doSendWithCallback(WeeChatProtocol.formatHdata({
-            path: "buffer:gui_buffers(*)/own_lines/last_line(-"+count+")/data",
-            keys: []
-        })).then(function(hdata) {
-            handlers.handleLineInfo(hdata);
-        });
-    }
 
     return {
         send: doSend,
-        getLines: getLines,
         connect: connect,
         sendMessage: sendMessage
     }
@@ -428,12 +409,28 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     }
 
-
     $rootScope.$on('activeBufferChanged', function() {
         $rootScope.scrollToBottom();
         document.getElementById('sendMessage').focus();
         var ab = models.getActiveBuffer();
         $rootScope.pageTitle = ab.shortName + ' | ' + ab.title;
+    });
+    $rootScope.$on('notificationChanged', function() {
+        var notifications = _.reduce(models.model.buffers, function(memo, num) { return (memo||0) + num.notification;});
+        if (notifications > 0 ) {
+            $scope.favico = new Favico({
+                animation:'none'
+            });
+            $scope.favico.badge(notifications);
+        }else {
+            var unread = _.reduce(models.model.buffers, function(memo, num) { return (memo||0) + num.unread;});
+            $scope.favico = new Favico({
+                animation:'none',
+                bgColor : '#5CB85C',
+                textColor : '#ff0',
+            });
+            $scope.favico.badge(unread);
+        }
     });
 
     $scope.buffers = models.model.buffers;
@@ -480,9 +477,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.connect = function() {
         connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl);
     }
-    $rootScope.getLines = function() {
-      connection.getLines($scope.lines);
-    }
 
     /* Function gets called from bufferLineAdded code if user should be notified */
     $rootScope.createHighlight = function(buffer, message) {
@@ -510,7 +504,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if (models.getActiveBuffer() == buffer) {
             return true;
         }
-        return (parseInt(buffer.unread) || 0) > 0;
+        return buffer.unread > 0;
       }
       return true;
     };
@@ -519,10 +513,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Find next buffer with activity and switch to it
         for(i in $scope.buffers) {
             var buffer = $scope.buffers[i];
-            if(buffer.notification) {
+            if(buffer.notification > 0) {
                 $scope.setActiveBuffer(buffer.id);
                 break;
-            }else if((parseInt(buffer.unread) || 0) > 0) {
+            }else if(buffer.unread > 0) {
                 $scope.setActiveBuffer(buffer.id);
                 break;
             }
@@ -560,5 +554,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             return true;
         }
     };
+
 }]
                   );

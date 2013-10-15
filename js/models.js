@@ -16,10 +16,10 @@ models.service('models', ['$rootScope', 'colors', function($rootScope, colors) {
         var number = message['number']
         var pointer = message['pointers'][0]
         var lines = []
-        var active = false;
-        var notification = false;
-        var unread = '';
-        var lastSeen = -2;
+        var active = false
+        var notification = 0 
+        var unread = 0
+        var lastSeen = -2
 
         /*
          * Adds a line to this buffer
@@ -30,7 +30,7 @@ models.service('models', ['$rootScope', 'colors', function($rootScope, colors) {
         var addLine = function(line) {
             lines.push(line);
         }
-        
+
         return {
             id: pointer,
             fullName: fullName,
@@ -40,6 +40,8 @@ models.service('models', ['$rootScope', 'colors', function($rootScope, colors) {
             lines: lines,
             addLine: addLine,
             lastSeen: lastSeen,
+            unread: unread,
+            notification: notification,
         }
 
     }
@@ -100,6 +102,8 @@ models.service('models', ['$rootScope', 'colors', function($rootScope, colors) {
 
     var BufferList = []
     activeBuffer = null;
+    unreads = 0;
+    notifications = 0;
     
     this.model = { 'buffers': {} }
 
@@ -161,11 +165,12 @@ models.service('models', ['$rootScope', 'colors', function($rootScope, colors) {
             }
         });
 
-        activeBuffer.notification = false;
         activeBuffer.active = true;
-        activeBuffer.unread = '';
+        activeBuffer.unread = 0;
+        activeBuffer.notification = 0;
 
         $rootScope.$emit('activeBufferChanged');
+        $rootScope.$emit('notificationChanged');
     }
 
     /*

@@ -55,31 +55,46 @@ plugins.service('plugins', ['userPlugins', '$sce',  function(userPlugins, $sce) 
          */
         var contentForMessage = function(message) {
 
-            var content = [];
+            message.metadata = [];
             for (var i = 0; i < plugins.length; i++) {
 
                 var nsfw = false;
                 var visible = true;
-                if (message.match(nsfwRegexp)) {
+                if (message.text.match(nsfwRegexp)) {
                     var nsfw = true;
                     var visible = false;
                 }
 
-                var pluginContent = plugins[i].contentForMessage(message);
+                var pluginContent = plugins[i].contentForMessage(message.text);
                 if (pluginContent) {
                     var pluginContent = {'visible': visible,
                                          'content': $sce.trustAsHtml(pluginContent),
                                          'nsfw': nsfw,
                                          'name': plugins[i].name }
 
-                    content.push(pluginContent);
+                    message.metadata.push(pluginContent);
+
 
                     if (plugins[i].exclusive) {
                         break;
                     }
                 }
             }
-            return content;
+
+            /* Replace all URLs with hyperlinks  */
+
+            var urlRegexp = RegExp(/(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/g);
+            for(k in message.content) {
+                var text = message.content[k].text;
+                var url = text.match(urlRegexp);
+                for(i in url) {
+                    var u = url[i];
+                    text = text.replace(u, '<a target="_blank" href="' + u + '">' + u + '</a>');
+                }
+                message.content[k].text = $sce.trustAsHtml(text);
+            }
+
+            return message;
         }
 
         return {
@@ -124,16 +139,6 @@ plugins.factory('userPlugins', function() {
     });
     youtubePlugin.name = 'youtube video';
 
-    var urlPlugin = new Plugin(function(message) {
-        var url = message.match(urlRegexp);
-        if (url) {
-            return '<a target="_blank" href="' + url[0] + '">' + url[0] + '</a>';
-        }
-        return null;
-
-    });
-    urlPlugin.name = 'url';
-
     var imagePlugin = new Plugin(function(message) {
         
         var url = message.match(urlRegexp);
@@ -149,6 +154,6 @@ plugins.factory('userPlugins', function() {
     imagePlugin.name = 'image';
 
     return {
-        plugins: [youtubePlugin, urlPlugin, imagePlugin]
+        plugins: [youtubePlugin, imagePlugin]
     }
 });
