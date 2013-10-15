@@ -162,7 +162,7 @@
                 <span ng-repeat="part in bufferline.prefix" class="text" style="{{ part.fg }}">{{ part.text }}</span>
               </td>
               <td class="message">
-                <span ng-repeat="part in bufferline.content" class="text" style="{{ part.fg }}">{{ part.text }} </span>
+                <span ng-repeat="part in bufferline.content" class="text" style="{{ part.fg }}" ng-bind-html="part.text"></span>
 
                 <div ng-repeat="metadata in bufferline.metadata">
                   <div ng-show="metadata.visible">

@@ -191,7 +191,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
         // Only react to line if its displayed
         if(message.displayed) {
             var buffer = models.getBuffer(message.buffer);
-            message.metadata = plugins.PluginManager.contentForMessage(message.text);
+            message = plugins.PluginManager.contentForMessage(message);
             buffer.addLine(message);
 
             if (buffer.active) {
