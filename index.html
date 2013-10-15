@@ -166,13 +166,12 @@
 
                 <div ng-repeat="metadata in bufferline.metadata">
                   <div ng-show="metadata.visible">
+                    <button class="btn btn-primary pull-right" ng-click="metadata.visible = false">Hide {{ metadata.name }}</button>
                     <div ng-bind-html="metadata.content"></div>
-                    <button class="btn btn-primary" ng-click="metadata.visible = false">Hide {{ metadata.name }}</button>
-
 
                   </div>
                   <div ng-hide="metadata.visible">
-                    <button class="btn" ng-class="{'btn-warning': metadata.nsfw, 'btn-primary': !metadata.nsfw}" ng-click="metadata.visible = true">Show {{ metadata.name }}</button>
+                    <button class="btn pull-right" ng-class="{'btn-warning': metadata.nsfw, 'btn-primary': !metadata.nsfw}" ng-click="metadata.visible = true">Show {{ metadata.name }}</button>
                   </div>
                 </div>
               </td>
