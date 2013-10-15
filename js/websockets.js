@@ -241,18 +241,6 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
         old.shortName = obj['short_name'];
     }
 
-
-    /*
-     * Handle answers to (bufinfo) messages
-     *
-     * (bufinfo) messages are specified by this client. It is the first
-     * message that is sent to the relay after connection.
-     */
-    var handleBufferInfo = function(message) {
-        // buffer info from message
-    }
-
-
     /*
      * Handle answers to (lineinfo) messages
      *
@@ -274,7 +262,6 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
     }
 
     var eventHandlers = {
-        bufinfo: handleBufferInfo,
         lineinfo: handleLineInfo,
         _buffer_closing: handleBufferClosing,
         _buffer_line_added: handleBufferLineAdded,
