@@ -17,7 +17,7 @@ models.service('models', ['$rootScope', 'colors', function($rootScope, colors) {
         var pointer = message['pointers'][0]
         var lines = []
         var active = false;
-        var notification = false;
+        var notification = '';
         var unread = '';
         var lastSeen = -2;
 
@@ -161,9 +161,9 @@ models.service('models', ['$rootScope', 'colors', function($rootScope, colors) {
             }
         });
 
-        activeBuffer.notification = false;
         activeBuffer.active = true;
         activeBuffer.unread = '';
+        activeBuffer.notification = '';
 
         $rootScope.$emit('activeBufferChanged');
     }

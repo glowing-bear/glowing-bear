@@ -209,7 +209,11 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
 
                 if(message.highlight || _.contains(message.tags, 'notify_private') ) {
                     $rootScope.createHighlight(buffer, message);
-                    buffer.notification = true;
+                    if (buffer.notification == '' || buffer.notification == undefined) {
+                        buffer.notification = 1;
+                    }else {
+                        buffer.notification++;
+                    }
                 }
             }
         }
@@ -519,7 +523,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Find next buffer with activity and switch to it
         for(i in $scope.buffers) {
             var buffer = $scope.buffers[i];
-            if(buffer.notification) {
+            if((parseInt(buffer.notification) || 0) > 0) {
                 $scope.setActiveBuffer(buffer.id);
                 break;
             }else if((parseInt(buffer.unread) || 0) > 0) {

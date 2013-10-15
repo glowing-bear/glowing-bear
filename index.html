@@ -100,7 +100,8 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
           </li>
           <li class="label" ng-class="{'active': content.active }" ng-repeat="(key, content) in buffers | toArray | filter:search | filter:hasUnread | orderBy:'content.number':true">
             <a href="#" ng-click="setActiveBuffer(content.id)" title="{{ content.fullName }}">
-              <span class="badge pull-right" ng-class="{'danger': content.notification }" ng-bind="content.unread"></span>
+              <span class="badge pull-right" ng-hide="content.notification" ng-bind="content.unread"></span>
+              <span class="badge pull-right danger" ng-show="content.notification" ng-bind="content.notification"></span>
               {{ content.shortName }}<span ng-hide="content.shortName">{{ content.fullName }}</span>
             </a>
           </li>
