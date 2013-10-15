@@ -29,7 +29,6 @@
           WeeChat web frontend 
         </small>
       </h2>
-        <div class="alert alert-info">WeeChat 0.4.2 or later is required</div>
         <div class="alert alert-danger" ng-show="errorMessage">
           <strong>Oh no!</strong> We cannot connect!
         </div>
@@ -67,7 +66,8 @@
         <pre>
 /set relay.network.password yourpassword
 /relay add weechat 9001</pre>
-      Note: The communication goes directly between your browser and your weechat in clear text.
+      <span class="label label-warning">WeeChat version 0.4.2 or higher is required.</span><br>
+      The communication goes directly between your browser and your weechat in clear text.
       Connection settings are saved between sessions, including password, in your own browser.
       <h4>Encryption</h4>
       If you want to use encrypted session you first have to set up the relay using SSL
