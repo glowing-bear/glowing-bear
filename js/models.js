@@ -166,10 +166,11 @@ models.service('models', ['$rootScope', 'colors', function($rootScope, colors) {
         });
 
         activeBuffer.active = true;
-        activeBuffer.unread = '';
-        activeBuffer.notification = '';
+        activeBuffer.unread = 0;
+        activeBuffer.notification = 0;
 
         $rootScope.$emit('activeBufferChanged');
+        $rootScope.$emit('notificationChanged');
     }
 
     /*

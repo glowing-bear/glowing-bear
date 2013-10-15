@@ -201,11 +201,13 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
             if (!initial) {
                 if (!buffer.active && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
                     buffer.unread++;
+                    $rootScope.$emit('notificationChanged');
                 }
 
                 if(message.highlight || _.contains(message.tags, 'notify_private') ) {
                     buffer.notification++;
                     $rootScope.createHighlight(buffer, message);
+                    $rootScope.$emit('notificationChanged');
                 }
             }
         }
@@ -424,12 +426,28 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     }
 
-
     $rootScope.$on('activeBufferChanged', function() {
         $rootScope.scrollToBottom();
         document.getElementById('sendMessage').focus();
         var ab = models.getActiveBuffer();
         $rootScope.pageTitle = ab.shortName + ' | ' + ab.title;
+    });
+    $rootScope.$on('notificationChanged', function() {
+        var notifications = _.reduce(models.model.buffers, function(memo, num) { return parseInt(memo||0) + num.notification;});
+        if (notifications > 0 ) {
+            $scope.favico = new Favico({
+                animation:'none'
+            });
+            $scope.favico.badge(notifications);
+        }else {
+            var unread = _.reduce(models.model.buffers, function(memo, num) { return parseInt(memo||0) + num.unread;});
+            $scope.favico = new Favico({
+                animation:'none',
+                bgColor : '#5CB85C',
+                textColor : '#ff0',
+            });
+            $scope.favico.badge(unread);
+        }
     });
 
     $scope.buffers = models.model.buffers;
@@ -506,7 +524,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if (models.getActiveBuffer() == buffer) {
             return true;
         }
-        return (parseInt(buffer.unread) || 0) > 0;
+        return buffer.unread > 0;
       }
       return true;
     };
@@ -556,5 +574,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             return true;
         }
     };
+
 }]
                   );
