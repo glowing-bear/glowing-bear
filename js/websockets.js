@@ -253,6 +253,27 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
       });
     }
 
+    /*
+     * Handle answers to hotlist request
+     */
+    var handleHotlistInfo = function(message) {
+      var hotlist = message['objects'][0]['content'];
+      hotlist.forEach(function(l) {
+          var buffer = models.getBuffer(l.buffer);
+          // 1 is message
+          buffer.unread += l.count[1];
+          // 2 is ?
+          buffer.unread += l.count[2];
+          // 3 is highlight
+          buffer.notification += l.count[3];
+          /* Since there is unread messages, we can guess 
+           * what the last read line is and update it accordingly
+           */
+          var unreadSum = _.reduce(l.count, function(memo, num){ return memo + num; }, 0);
+          buffer.lastSeen = buffer.lines.length - 1 - unreadSum;
+      });
+    }
+
     var handleEvent = function(event) {
 
         if (_.has(eventHandlers, event['id'])) {
@@ -262,7 +283,6 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
     }
 
     var eventHandlers = {
-        lineinfo: handleLineInfo,
         _buffer_closing: handleBufferClosing,
         _buffer_line_added: handleBufferLineAdded,
         _buffer_opened: handleBufferOpened,
@@ -272,7 +292,8 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
 
     return {
         handleEvent: handleEvent,
-        handleLineInfo: handleLineInfo
+        handleLineInfo: handleLineInfo,
+        handleHotlistInfo: handleHotlistInfo
     }
 
 }]);
@@ -315,6 +336,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
 
         websocket.onopen = function (evt) {
             $log.info("Connected to relay");
+            $rootScope.connected = true;
             doSend(WeeChatProtocol.formatInit({
                     password: passwd,
                     compression: 'off'
@@ -334,7 +356,6 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
                         models.setActiveBuffer(buffer.id);
                     }
                 }
-                $rootScope.connected = true;
             }).then(function() {
                 $log.info("Parsing lineinfo");
                 doSendWithCallback(WeeChatProtocol.formatHdata({
@@ -342,6 +363,14 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
                     keys: []
                 })).then(function(hdata) {
                     handlers.handleLineInfo(hdata);
+                });
+            }).then(function() {
+                $log.info("Requesting hotlist");
+                doSendWithCallback(WeeChatProtocol.formatHdata({
+                    path: "hotlist:gui_hotlist(*)",
+                    keys: []
+                })).then(function(hdata) {
+                    handlers.handleHotlistInfo(hdata)
                 });
             }).then(function() {
                 doSend(WeeChatProtocol.formatSync({}));
@@ -393,18 +422,18 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
     }
 }]);
 
-weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', 'models', 'connection', function ($rootScope, $scope, $store, $timeout, models, connection, testService) {
+weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', function ($rootScope, $scope, $store, $timeout, $log, models, connection, testService) {
 
     // Request notification permission
     Notification.requestPermission(function (status) {
-        console.log('Notification permission status:',status);
+        $log.info('Notification permission status:',status);
         if (Notification.permission !== status) {
             Notification.permission = status;
         }
     });
     if(window.webkitNotifications != undefined) {
         if (window.webkitNotifications.checkPermission() == 0) { // 0 is PERMISSION_ALLOWED
-            console.log('Notification permission status:', window.webkitNotifications.checkPermission() == 0);
+            $log.info('Notification permission status:', window.webkitNotifications.checkPermission() == 0);
             window.webkitNotifications.requestPermission();
         }
     }
@@ -490,7 +519,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         var content = messages;
 
         var timeout = 15*1000;
-        console.log('Displaying notification:buffer:',buffer,',message:',message,',with timeout:',timeout);
+        $log.info('Displaying notification:buffer:',buffer,',message:',message,',with timeout:',timeout);
         var notification = new Notification(title, {body:content, icon:'img/favicon.png'});
         // Cancel notification automatically
         notification.onshow = function() {
@@ -540,7 +569,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             }
         }
 
-        //console.log('keypress', $event.charCode, $event.altKey);
+        //log('keypress', $event.charCode, $event.altKey);
 
         // Handle alt-a
         if($event.altKey && (code == 97 || code == 65)) {
