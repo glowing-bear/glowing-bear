@@ -277,7 +277,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
 
 }]);
 
-weechat.factory('connection', ['$q', '$rootScope', '$log', 'handlers', 'colors', 'models', function($q, $rootScope, $log, handlers, colors, models) {
+weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers', 'colors', 'models', function($q, $rootScope, $log, storage, handlers, colors, models) {
     protocol = new WeeChatProtocol();
     var websocket = null;
 
@@ -314,14 +314,16 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', 'handlers', 'colors',
         websocket.binaryType = "arraybuffer"
 
         websocket.onopen = function (evt) {
-                doSend(WeeChatProtocol.formatInit({
+            $log.info("Connected to relay");
+            doSend(WeeChatProtocol.formatInit({
                     password: passwd,
                     compression: 'off'
-                }));
+            }));
             doSendWithCallback(WeeChatProtocol.formatHdata({
                     path: 'buffer:gui_buffers(*)',
                 keys: ['number,full_name,short_name,title']
-            })).then(function(hdata) {
+            })).then(function(message) {
+                $log.info("Parsing bufinfo");
                 var bufferInfos = message['objects'][0]['content'];
                 // buffers objects
                 for (var i = 0; i < bufferInfos.length ; i++) {
@@ -332,16 +334,19 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', 'handlers', 'colors',
                         models.setActiveBuffer(buffer.id);
                     }
                 }
-
-                // Request latest buffer lines for each buffer
-                $rootScope.getLines();
-
+                $rootScope.connected = true;
+            }).then(function() {
+                $log.info("Parsing lineinfo");
+                doSendWithCallback(WeeChatProtocol.formatHdata({
+                    path: "buffer:gui_buffers(*)/own_lines/last_line(-"+storage.get('lines')+")/data",
+                    keys: []
+                })).then(function(hdata) {
+                    handlers.handleLineInfo(hdata);
+                });
+            }).then(function() {
+                doSend(WeeChatProtocol.formatSync({}));
+                $log.info("Synced");
             });
-            doSend(WeeChatProtocol.formatSync({}));
-
-            $log.info("Connected to relay");
-            $rootScope.connected = true;
-            $rootScope.$apply();
         }
 
         websocket.onclose = function (evt) {
@@ -380,18 +385,9 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', 'handlers', 'colors',
         }));
     }
 
-    var getLines = function(count) {
-        doSendWithCallback(WeeChatProtocol.formatHdata({
-            path: "buffer:gui_buffers(*)/own_lines/last_line(-"+count+")/data",
-            keys: []
-        })).then(function(hdata) {
-            handlers.handleLineInfo(hdata);
-        });
-    }
 
     return {
         send: doSend,
-        getLines: getLines,
         connect: connect,
         sendMessage: sendMessage
     }
@@ -480,9 +476,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $scope.connect = function() {
         connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl);
-    }
-    $rootScope.getLines = function() {
-      connection.getLines($scope.lines);
     }
 
     /* Function gets called from bufferLineAdded code if user should be notified */
