@@ -40,11 +40,13 @@ td.prefix {
     vertical-align: top;
     padding-right: 5px;
     white-space: nowrap;
+    border-right: 1px solid #555;
 }
 td.message {
     word-wrap: break-word;
     vertical-align: top;
     width: 100%;
+    padding-left: 5px;
 }
 hr {
   margin: 0;
