@@ -410,6 +410,11 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
         this.websocket = websocket;
     }
 
+    var disconnect = function() {
+      console.log(this.websocket);
+      this.websocket.close();
+    }
+
     var sendMessage = function(message) {
         doSend(WeeChatProtocol.formatInput({
             buffer: models.getActiveBuffer()['fullName'],
@@ -421,6 +426,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
     return {
         send: doSend,
         connect: connect,
+        disconnect: disconnect,
         sendMessage: sendMessage
     }
 }]);
@@ -508,6 +514,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $scope.connect = function() {
         connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl);
+    }
+    $scope.discconnect = function() {
+        connection.disconnect();
     }
 
     /* Function gets called from bufferLineAdded code if user should be notified */

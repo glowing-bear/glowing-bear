@@ -69,7 +69,7 @@
                     <input type="text" class="form-control" id="lines" ng-model="lines" placeholder="40">
                     <p class="help-block">Enter number of lines to sync from WeeChat on connect</p>
                   </div>
-                  <button class="btn btn-lg btn-primary" ng-click="connect()">Connect!</button>
+                  <button class="btn btn-lg btn-primary" ng-click="connect()">Connect <i class="glyphicon glyphicon-chevron-right"></i></button>
                 </form>
               </div>
             </div>
@@ -129,8 +129,13 @@
             <div class="brand pull-left">
               <img alt="brand" src="img/favicon.png">
             </div>
-            <div class="title">
+            <div class="title pull-left">
                 {{ pageTitle}}
+            </div>
+            <div class="actions pull-right">
+              <a ng-click="disconnect()">
+                <i class="glyphicon glyphicon-remove"></i>
+              </a>
             </div>
       </div>
       <div id="sidebar">

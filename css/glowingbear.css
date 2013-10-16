@@ -200,7 +200,7 @@ input[type=text], input[type=password] {
 }
 
 .color-gray {
-    color: lightgray;
+    color: lightgray;u
 }
 
 .color-brown {
@@ -219,3 +219,8 @@ li.notification {
     color: green;
 }
 
+[ng-click],
+[data-ng-click],
+[x-ng-click] {
+    cursor: pointer;
+}
