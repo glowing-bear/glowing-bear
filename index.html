@@ -23,7 +23,7 @@
   <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)">
     <div ng-hide="connected" class="container">
       <h2>
-        <img src="img/favicon.png">
+        <img alt="logo" src="img/favicon.png">
         glowing bear
         <small>
           WeeChat web frontend 
@@ -125,19 +125,27 @@
       </div>
     </div>
     <div class="content" ng-show="connected">
+      <div id="topbar">
+            <div class="brand pull-left">
+              <img alt="brand" src="img/favicon.png">
+            </div>
+            <div class="title">
+                {{ pageTitle}}
+            </div>
+      </div>
       <div id="sidebar">
+        <form class="form-inline" role="form">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-model="onlyUnread">
+              Unread only
+            </label>
+          </div>
+        </form>
         <ul class="nav nav-pills nav-stacked">
           <li class="bufferfilter">
             <form role="form">
               <input class="form-control" type="text" id="bufferFilter" ng-model="search.$" placeholder="Search">
-            </form>
-            <form class="form-inline" role="form">
-                <div class="checkbox">
-                  <label>
-                    <input type="checkbox" ng-model="onlyUnread">
-                    Unread only
-                  </label>
-                </div>
             </form>
           </li>
           <li class="label" ng-class="{'active': content.active }" ng-repeat="(key, content) in buffers | toArray | filter:search | filter:hasUnread | orderBy:'content.number':true">
