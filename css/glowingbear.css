@@ -18,6 +18,18 @@ body {
 #footer {
     height: 25px;
 }
+.horizontal-line {
+-webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+   -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+        box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+    border-bottom: 1px solid #121212;
+}
+.vertical-line {
+-webkit-box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
+   -moz-box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
+        box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
+        border-right: 1px solid #121212;
+}
 
 input#sendMessage {
     border: 0;
@@ -40,7 +52,6 @@ td.prefix {
     vertical-align: top;
     padding-right: 5px;
     white-space: nowrap;
-    border-right: 1px solid #555;
 }
 td.message {
     word-wrap: break-word;

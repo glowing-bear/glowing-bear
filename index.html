@@ -125,7 +125,7 @@
       </div>
     </div>
     <div class="content" ng-show="connected">
-      <div id="topbar">
+      <div id="topbar" class="horizontal-line">
             <div class="brand">
               <img alt="brand" src="img/favicon.png">
             </div>
@@ -156,7 +156,7 @@
               </a>
             </div>
       </div>
-      <div id="sidebar">
+      <div id="sidebar" class="vertical-line">
         <ul class="nav nav-pills nav-stacked">
           <li class="bufferfilter">
             <form role="form">
@@ -181,7 +181,7 @@
                   {{ bufferline.date | date:'HH:mm' }}
                 </span>
               </td>
-              <td class="prefix">
+              <td class="prefix vertical-line">
                 <span ng-repeat="part in bufferline.prefix" class="text" style="{{ part.fg }}">{{ part.text }}</span>
               </td>
               <td class="message">
