@@ -386,7 +386,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $scope.hasUnread = function(buffer) {
       // if search is set, return every buffer 
-      if($scope.search.$) return true;
+      if($scope.search != undefined && $scope.search.$) return true;
       if($scope.onlyUnread) {
         // Always show current buffer in list
         if (models.getActiveBuffer() == buffer) {
