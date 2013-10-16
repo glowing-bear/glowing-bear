@@ -231,3 +231,14 @@ li.notification {
 [x-ng-click] {
     cursor: pointer;
 }
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+::-webkit-scrollbar-track-piece  {
+    background-color: black;
+}
+::-webkit-scrollbar-thumb:vertical {
+    height: 15px;
+    background: rgba(255,255,255,0.5);
+}
