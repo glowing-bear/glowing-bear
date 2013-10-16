@@ -17,9 +17,9 @@ weechat.filter('toArray', function () {
 weechat.factory('colors', [function($scope) {
 
     // http://weechat.org/files/doc/devel/weechat_dev.en.html#color_codes_in_strings
-    var part, fg, bg, attrs, colors = ['', 'black', 'dark gray', 'dark red', 'light red', 'dark green', 'light green', 'brown', 'yellow', 'dark blue', 'light blue', 'dark magenta', 'light magenta', 'dark cyan', 'light cyan', 'gray', 'white'];
+    var part, fg, bg, attrs,
     // XTerm 8-bit pallete
-    var colors = [
+        colors = [
                 '#666666', '#AA0000', '#00AA00', '#AA5500', '#0000AA',
                 '#AA00AA', '#00AAAA', '#AAAAAA', '#555555', '#FF5555',
                 '#55FF55', '#FFFF55', '#5555FF', '#FF55FF', '#55FFFF',
@@ -71,7 +71,11 @@ weechat.factory('colors', [function($scope) {
                 '#626262', '#6C6C6C', '#767676', '#808080', '#8A8A8A',
                 '#949494', '#9E9E9E', '#A8A8A8', '#B2B2B2', '#BCBCBC',
                 '#C6C6C6', '#D0D0D0', '#DADADA', '#E4E4E4', '#EEEEEE'
-            ]
+        ]
+    // Push the basic color list on top of the extended color list
+    // and then when weechat requests a basic color (0-15) we rewrite 
+    // it to be a number in the extended color table
+    colors.push.apply(colors, ['', 'black', 'darkgray', 'darkred', 'red', 'darkgreen', 'lightgreen', 'brown', 'yellow', 'darkblue', 'lightblue', 'darkmagenta', 'magenta', 'darkcyan', 'lightcyan', 'gray', 'white']);
     
 
     function setAttrs() {
@@ -88,6 +92,9 @@ weechat.factory('colors', [function($scope) {
             part = part.slice(6);
         } else {
             c = part.slice(0, 2);
+            // Rewrite the basic color value to the part in the extended
+            // palette where we store the basic colors
+            c = parseInt(c) + 255;
             part = part.slice(2);
         }
         return c;
@@ -168,12 +175,8 @@ weechat.factory('colors', [function($scope) {
 
 
     return {
-
-        setAttrs: setAttrs,
-        getColor: getColor,
         prepareCss: prepareCss,
-        parse: parse,
-        parts: ['', 'black', 'dark gray', 'dark red', 'light red', 'dark green', 'light green', 'brown', 'yellow', 'dark blue', 'light blue', 'dark magenta', 'light magenta', 'dark cyan', 'light cyan', 'gray', 'white']
+        parse: parse
     }
 
 }]);
