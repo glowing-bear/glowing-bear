@@ -23,7 +23,7 @@
   <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)">
     <div ng-hide="connected" class="container">
       <h2>
-        <img src="img/favicon.png">
+        <img alt="logo" src="img/favicon.png">
         glowing bear
         <small>
           WeeChat web frontend 
@@ -69,7 +69,7 @@
                     <input type="text" class="form-control" id="lines" ng-model="lines" placeholder="40">
                     <p class="help-block">Enter number of lines to sync from WeeChat on connect</p>
                   </div>
-                  <button class="btn btn-lg btn-primary" ng-click="connect()">Connect!</button>
+                  <button class="btn btn-lg btn-primary" ng-click="connect()">Connect <i class="glyphicon glyphicon-chevron-right"></i></button>
                 </form>
               </div>
             </div>
@@ -125,22 +125,45 @@
       </div>
     </div>
     <div class="content" ng-show="connected">
+      <div id="topbar">
+            <div class="brand">
+              <img alt="brand" src="img/favicon.png">
+            </div>
+            <div class="title">
+                {{ pageTitle}}
+            </div>
+            <div class="actions pull-right">
+              <div class="dropdown pull-left">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <i class="glyphicon glyphicon-cog"></i>
+                  <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu pull-right">
+                  <li class="">
+                    <form class="form-inline" role="form">
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" ng-model="onlyUnread">
+                          Only show unread
+                        </label>
+                      </div>
+                    </form>
+                  </li>
+                </ul>
+              </div>
+              <a ng-click="disconnect()">
+                <i class="glyphicon glyphicon-remove"></i>
+              </a>
+            </div>
+      </div>
       <div id="sidebar">
         <ul class="nav nav-pills nav-stacked">
           <li class="bufferfilter">
             <form role="form">
               <input class="form-control" type="text" id="bufferFilter" ng-model="search.$" placeholder="Search">
             </form>
-            <form class="form-inline" role="form">
-                <div class="checkbox">
-                  <label>
-                    <input type="checkbox" ng-model="onlyUnread">
-                    Unread only
-                  </label>
-                </div>
-            </form>
           </li>
-          <li class="label" ng-class="{'active': content.active }" ng-repeat="(key, content) in buffers | toArray | filter:search | filter:hasUnread | orderBy:'content.number':true">
+          <li class="" ng-class="{'active': content.active }" ng-repeat="(key, content) in buffers | toArray | filter:search | filter:hasUnread | orderBy:'content.number':true">
             <a href="#" ng-click="setActiveBuffer(content.id)" title="{{ content.fullName }}">
                 <span class="badge pull-right" ng-hide="content.notification" ng-if="content.unread" ng-bind="content.unread"></span>
               <span class="badge pull-right danger" ng-show="content.notification" ng-bind="content.notification"></span>
@@ -166,13 +189,12 @@
 
                 <div ng-repeat="metadata in bufferline.metadata">
                   <div ng-show="metadata.visible">
+                    <button class="btn btn-primary pull-right" ng-click="metadata.visible = false">Hide {{ metadata.name }}</button>
                     <div ng-bind-html="metadata.content"></div>
-                    <button class="btn btn-primary" ng-click="metadata.visible = false">Hide {{ metadata.name }}</button>
-
 
                   </div>
                   <div ng-hide="metadata.visible">
-                    <button class="btn" ng-class="{'btn-warning': metadata.nsfw, 'btn-primary': !metadata.nsfw}" ng-click="metadata.visible = true">Show {{ metadata.name }}</button>
+                    <button class="btn pull-right" ng-class="{'btn-warning': metadata.nsfw, 'btn-primary': !metadata.nsfw}" ng-click="metadata.visible = true">Show {{ metadata.name }}</button>
                   </div>
                 </div>
               </td>

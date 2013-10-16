@@ -17,9 +17,9 @@ weechat.filter('toArray', function () {
 weechat.factory('colors', [function($scope) {
 
     // http://weechat.org/files/doc/devel/weechat_dev.en.html#color_codes_in_strings
-    var part, fg, bg, attrs, colors = ['', 'black', 'dark gray', 'dark red', 'light red', 'dark green', 'light green', 'brown', 'yellow', 'dark blue', 'light blue', 'dark magenta', 'light magenta', 'dark cyan', 'light cyan', 'gray', 'white'];
+    var part, fg, bg, attrs,
     // XTerm 8-bit pallete
-    var colors = [
+        colors = [
                 '#666666', '#AA0000', '#00AA00', '#AA5500', '#0000AA',
                 '#AA00AA', '#00AAAA', '#AAAAAA', '#555555', '#FF5555',
                 '#55FF55', '#FFFF55', '#5555FF', '#FF55FF', '#55FFFF',
@@ -71,7 +71,11 @@ weechat.factory('colors', [function($scope) {
                 '#626262', '#6C6C6C', '#767676', '#808080', '#8A8A8A',
                 '#949494', '#9E9E9E', '#A8A8A8', '#B2B2B2', '#BCBCBC',
                 '#C6C6C6', '#D0D0D0', '#DADADA', '#E4E4E4', '#EEEEEE'
-            ]
+        ]
+    // Push the basic color list on top of the extended color list
+    // and then when weechat requests a basic color (0-15) we rewrite 
+    // it to be a number in the extended color table
+    colors.push.apply(colors, ['', 'black', 'darkgray', 'darkred', 'red', 'darkgreen', 'lightgreen', 'brown', 'yellow', 'darkblue', 'lightblue', 'darkmagenta', 'magenta', 'darkcyan', 'lightcyan', 'gray', 'white']);
     
 
     function setAttrs() {
@@ -88,6 +92,9 @@ weechat.factory('colors', [function($scope) {
             part = part.slice(6);
         } else {
             c = part.slice(0, 2);
+            // Rewrite the basic color value to the part in the extended
+            // palette where we store the basic colors
+            c = parseInt(c) + 255;
             part = part.slice(2);
         }
         return c;
@@ -168,12 +175,8 @@ weechat.factory('colors', [function($scope) {
 
 
     return {
-
-        setAttrs: setAttrs,
-        getColor: getColor,
         prepareCss: prepareCss,
-        parse: parse,
-        parts: ['', 'black', 'dark gray', 'dark red', 'light red', 'dark green', 'light green', 'brown', 'yellow', 'dark blue', 'light blue', 'dark magenta', 'light magenta', 'dark cyan', 'light cyan', 'gray', 'white']
+        parse: parse
     }
 
 }]);
@@ -199,12 +202,12 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
             }
 
             if (!initial) {
-                if (!buffer.active && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
+                if (!buffer.active && !buffer.notify==0 && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
                     buffer.unread++;
                     $rootScope.$emit('notificationChanged');
                 }
 
-                if(message.highlight || _.contains(message.tags, 'notify_private') ) {
+                if(!buffer.notify==0 && message.highlight || _.contains(message.tags, 'notify_private') ) {
                     buffer.notification++;
                     $rootScope.createHighlight(buffer, message);
                     $rootScope.$emit('notificationChanged');
@@ -253,6 +256,27 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
       });
     }
 
+    /*
+     * Handle answers to hotlist request
+     */
+    var handleHotlistInfo = function(message) {
+      var hotlist = message['objects'][0]['content'];
+      hotlist.forEach(function(l) {
+          var buffer = models.getBuffer(l.buffer);
+          // 1 is message
+          buffer.unread += l.count[1];
+          // 2 is ?
+          buffer.unread += l.count[2];
+          // 3 is highlight
+          buffer.notification += l.count[3];
+          /* Since there is unread messages, we can guess 
+           * what the last read line is and update it accordingly
+           */
+          var unreadSum = _.reduce(l.count, function(memo, num){ return memo + num; }, 0);
+          buffer.lastSeen = buffer.lines.length - 1 - unreadSum;
+      });
+    }
+
     var handleEvent = function(event) {
 
         if (_.has(eventHandlers, event['id'])) {
@@ -262,7 +286,6 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
     }
 
     var eventHandlers = {
-        lineinfo: handleLineInfo,
         _buffer_closing: handleBufferClosing,
         _buffer_line_added: handleBufferLineAdded,
         _buffer_opened: handleBufferOpened,
@@ -272,7 +295,8 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
 
     return {
         handleEvent: handleEvent,
-        handleLineInfo: handleLineInfo
+        handleLineInfo: handleLineInfo,
+        handleHotlistInfo: handleHotlistInfo
     }
 
 }]);
@@ -315,13 +339,14 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
 
         websocket.onopen = function (evt) {
             $log.info("Connected to relay");
+            $rootScope.connected = true;
             doSend(WeeChatProtocol.formatInit({
                     password: passwd,
                     compression: 'off'
             }));
             doSendWithCallback(WeeChatProtocol.formatHdata({
-                    path: 'buffer:gui_buffers(*)',
-                keys: ['number,full_name,short_name,title']
+                path: 'buffer:gui_buffers(*)',
+                keys: ['local_variables,notify,number,full_name,short_name,title']
             })).then(function(message) {
                 $log.info("Parsing bufinfo");
                 var bufferInfos = message['objects'][0]['content'];
@@ -334,7 +359,6 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
                         models.setActiveBuffer(buffer.id);
                     }
                 }
-                $rootScope.connected = true;
             }).then(function() {
                 $log.info("Parsing lineinfo");
                 doSendWithCallback(WeeChatProtocol.formatHdata({
@@ -342,6 +366,14 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
                     keys: []
                 })).then(function(hdata) {
                     handlers.handleLineInfo(hdata);
+                });
+            }).then(function() {
+                $log.info("Requesting hotlist");
+                doSendWithCallback(WeeChatProtocol.formatHdata({
+                    path: "hotlist:gui_hotlist(*)",
+                    keys: []
+                })).then(function(hdata) {
+                    handlers.handleHotlistInfo(hdata)
                 });
             }).then(function() {
                 doSend(WeeChatProtocol.formatSync({}));
@@ -378,6 +410,11 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
         this.websocket = websocket;
     }
 
+    var disconnect = function() {
+      console.log(this.websocket);
+      this.websocket.close();
+    }
+
     var sendMessage = function(message) {
         doSend(WeeChatProtocol.formatInput({
             buffer: models.getActiveBuffer()['fullName'],
@@ -389,22 +426,23 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
     return {
         send: doSend,
         connect: connect,
+        disconnect: disconnect,
         sendMessage: sendMessage
     }
 }]);
 
-weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', 'models', 'connection', function ($rootScope, $scope, $store, $timeout, models, connection, testService) {
+weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', function ($rootScope, $scope, $store, $timeout, $log, models, connection, testService) {
 
     // Request notification permission
     Notification.requestPermission(function (status) {
-        console.log('Notification permission status:',status);
+        $log.info('Notification permission status:',status);
         if (Notification.permission !== status) {
             Notification.permission = status;
         }
     });
     if(window.webkitNotifications != undefined) {
         if (window.webkitNotifications.checkPermission() == 0) { // 0 is PERMISSION_ALLOWED
-            console.log('Notification permission status:', window.webkitNotifications.checkPermission() == 0);
+            $log.info('Notification permission status:', window.webkitNotifications.checkPermission() == 0);
             window.webkitNotifications.requestPermission();
         }
     }
@@ -450,6 +488,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "lines", "40");
     // TODO checkbox for saving password or not?
     // $scope.password = "";
+    //
+
+    $store.bind($scope, "onlyUnread", false);
 
 
     $scope.setActiveBuffer = function(key) {
@@ -477,6 +518,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.connect = function() {
         connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl);
     }
+    $scope.disconnect = function() {
+        connection.disconnect();
+    }
 
     /* Function gets called from bufferLineAdded code if user should be notified */
     $rootScope.createHighlight = function(buffer, message) {
@@ -490,7 +534,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         var content = messages;
 
         var timeout = 15*1000;
-        console.log('Displaying notification:buffer:',buffer,',message:',message,',with timeout:',timeout);
+        $log.info('Displaying notification:buffer:',buffer,',message:',message,',with timeout:',timeout);
         var notification = new Notification(title, {body:content, icon:'img/favicon.png'});
         // Cancel notification automatically
         notification.onshow = function() {
@@ -540,7 +584,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             }
         }
 
-        //console.log('keypress', $event.charCode, $event.altKey);
+        //log('keypress', $event.charCode, $event.altKey);
 
         // Handle alt-a
         if($event.altKey && (code == 97 || code == 65)) {

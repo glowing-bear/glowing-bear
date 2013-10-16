@@ -87,8 +87,40 @@ input[type=text], input[type=password] {
       inset 0 0 8px  rgba(0,0,0,0.4),
             0 0 16px rgba(0,0,0,0.4); 
     background: rgba(255,255,255,0.5);
+    border-radius: 0;
 }
-#sidebar, .panel {
+#topbar {
+    position: fixed;
+    width: 100%;
+    height: 25px;
+    max-height: 25px;
+    z-index: 1;
+    line-height: 25px;
+    white-space: nowrap;
+}
+    #topbar > * {
+        float: left;
+    }
+    #topbar .brand {
+        height: 25px;
+        padding-left: 5px;
+    }
+        #topbar .brand img {
+            height: 25px;
+        }
+    #topbar .title {
+        padding-left: 10%;
+        overflow: hidden;
+    }
+    #topbar .actions {
+        float: right;
+    }
+    #topbar .dropdown-menu form {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+
+#topbar, #sidebar, .panel, .dropdown-menu {
     background: #282828;
 }
 #sidebar {
@@ -98,7 +130,23 @@ input[type=text], input[type=password] {
     height: 100%;
     min-width: 130px;
     overflow: auto;
+    padding-top: 35px; /* topbar */
+    font-size: smaller;
   }
+    #sidebar form {
+    }
+
+    #sidebar .badge {
+        border-radius: 0;
+        margin-right: -15px;
+    }
+.nav-pills > li > a {
+    border-radius: 0;
+    color: #ddd;
+}
+.nav-pills > li > a:hover {
+    color: #222;
+}
 .content {
     height: 100%; 
     min-height: 100%; 
@@ -110,7 +158,11 @@ input[type=text], input[type=password] {
     margin-left: 14%;
     width: auto;
     position: relative;
-    padding-bottom: 55px;
+    padding-bottom: 55px; /* bottom input */
+    padding-top: 35px; /* topbar */
+}
+.bufferlines .btn {
+    font-family: sans-serif;
 }
 
 .navbar-fixed-bottom {
@@ -121,6 +173,7 @@ input[type=text], input[type=password] {
         position: relative;
         min-height: 0;
         margin-left: 0;
+        height: auto;
         max-width: 100%;
         border: 0;
     }
@@ -173,7 +226,7 @@ input[type=text], input[type=password] {
 }
 
 .color-gray {
-    color: lightgray;
+    color: lightgray;u
 }
 
 .color-brown {
@@ -192,3 +245,19 @@ li.notification {
     color: green;
 }
 
+[ng-click],
+[data-ng-click],
+[x-ng-click] {
+    cursor: pointer;
+}
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+::-webkit-scrollbar-track-piece  {
+    background-color: black;
+}
+::-webkit-scrollbar-thumb:vertical {
+    height: 15px;
+    background: rgba(255,255,255,0.5);
+}
