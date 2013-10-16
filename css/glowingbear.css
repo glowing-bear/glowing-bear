@@ -27,6 +27,9 @@ input#sendMessage {
 table {
   width: 100%;
 }
+tr {
+    line-height: 100%;
+}
 td.time {
     padding-right: 5px;
     vertical-align: top;
@@ -105,7 +108,7 @@ input[type=text], input[type=password] {
 }
 
 .bufferlines {
-    font-family: monospace;
+    font-family: 'Consolas', 'Monaco', 'Ubuntu Mono', monospace;
     overflow-y: auto;
     margin-left: 14%;
     width: auto;
