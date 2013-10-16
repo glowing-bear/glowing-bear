@@ -36,6 +36,7 @@ td.prefix {
     text-align: right;
     vertical-align: top;
     padding-right: 5px;
+    white-space: nowrap;
 }
 td.message {
     word-wrap: break-word;
