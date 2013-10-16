@@ -124,13 +124,23 @@ input[type=text], input[type=password] {
     min-width: 130px;
     overflow: auto;
     padding-top: 35px; /* topbar */
+    font-size: smaller;
   }
     #sidebar form {
         padding-left: 6px;
         padding-right: 6px;
     }
+
+    #sidebar .badge {
+        border-radius: 0;
+        margin-right: -15px;
+    }
 .nav-pills > li > a {
     border-radius: 0;
+    color: #ddd;
+}
+.nav-pills > li > a:hover {
+    color: #222;
 }
 .content {
     height: 100%; 
