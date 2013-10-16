@@ -94,6 +94,7 @@ input[type=text], input[type=password] {
     width: 100%;
     height: 25px;
     z-index: 1;
+    line-height: 25px;
 }
     #topbar .brand {
         height: 25px;
@@ -104,6 +105,8 @@ input[type=text], input[type=password] {
         }
     #topbar .title {
         padding-left: 14%;
+    }
+    #topbar .actions {
     }
 
 #topbar, #sidebar, .panel {

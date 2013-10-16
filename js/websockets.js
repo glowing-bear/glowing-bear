@@ -515,7 +515,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.connect = function() {
         connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl);
     }
-    $scope.discconnect = function() {
+    $scope.disconnect = function() {
         connection.disconnect();
     }
 
