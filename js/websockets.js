@@ -488,6 +488,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "lines", "40");
     // TODO checkbox for saving password or not?
     // $scope.password = "";
+    //
+
+    $store.bind($scope, "onlyUnread", false);
 
 
     $scope.setActiveBuffer = function(key) {
