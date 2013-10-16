@@ -119,8 +119,12 @@ input[type=text], input[type=password] {
     padding-top: 35px; /* topbar */
   }
     #sidebar form {
-        padding-left: 5px;
+        padding-left: 6px;
+        padding-right: 6px;
     }
+.nav-pills > li > a {
+    border-radius: 0;
+}
 .content {
     height: 100%; 
     min-height: 100%; 
