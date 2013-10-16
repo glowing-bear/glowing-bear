@@ -133,20 +133,30 @@
                 {{ pageTitle}}
             </div>
             <div class="actions pull-right">
+              <div class="dropdown pull-left">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <i class="glyphicon glyphicon-cog"></i>
+                  <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu pull-right">
+                  <li class="">
+                    <form class="form-inline" role="form">
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" ng-model="onlyUnread">
+                          Only show unread
+                        </label>
+                      </div>
+                    </form>
+                  </li>
+                </ul>
+              </div>
               <a ng-click="disconnect()">
                 <i class="glyphicon glyphicon-remove"></i>
               </a>
             </div>
       </div>
       <div id="sidebar">
-        <form class="form-inline" role="form">
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" ng-model="onlyUnread">
-              Unread only
-            </label>
-          </div>
-        </form>
         <ul class="nav nav-pills nav-stacked">
           <li class="bufferfilter">
             <form role="form">

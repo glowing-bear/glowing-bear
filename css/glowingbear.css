@@ -108,8 +108,12 @@ input[type=text], input[type=password] {
     }
     #topbar .actions {
     }
+    #topbar .dropdown-menu form {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
 
-#topbar, #sidebar, .panel {
+#topbar, #sidebar, .panel, .dropdown-menu {
     background: #282828;
 }
 #sidebar {
