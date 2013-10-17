@@ -115,10 +115,8 @@ input[type=text], input[type=password] {
     line-height: 25px;
     white-space: nowrap;
 }
-    #topbar > * {
-        float: left;
-    }
     #topbar .brand {
+        float: left;
         height: 25px;
         padding-left: 5px;
     }
@@ -126,11 +124,14 @@ input[type=text], input[type=password] {
             height: 25px;
         }
     #topbar .title {
-        padding-left: 10%;
+        position: fixed;
+        left: 14%;
         overflow: hidden;
     }
     #topbar .actions {
-        float: right;
+        position: fixed;
+        right: 0;
+        background: #282828;
     }
     #topbar .dropdown-menu form {
         padding-left: 6px;
