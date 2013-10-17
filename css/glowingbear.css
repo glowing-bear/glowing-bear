@@ -170,7 +170,7 @@ input[type=text], input[type=password] {
 }
 
 .bufferlines {
-    font-family: 'Consolas', 'Monaco', 'Ubuntu Mono', monospace;
+    font-family: 'Terminus', 'Inconsolata', 'Consolas', 'Monaco', 'Ubuntu Mono', monospace;
     overflow-y: auto;
     margin-left: 14%;
     width: auto;
