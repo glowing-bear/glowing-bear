@@ -27,7 +27,7 @@ var Plugin = function(contentForMessage) {
  * to display when messages are received.
  *
  */
-plugins.service('plugins', ['userPlugins', '$sce',  function(userPlugins, $sce) {
+plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
 
     var nsfwRegexp = new RegExp('nsfw', 'i');
 
@@ -129,10 +129,12 @@ plugins.factory('userPlugins', function() {
 
     var youtubePlugin = new Plugin(function(message) {
 
-        if (message.indexOf('youtube.com') != -1) {
-            var index = message.indexOf("?v=");
-            var token = message.substr(index+3);
-            return '<iframe width="560" height="315" src="http://www.youtube.com/embed/' + token + '" frameborder="0" allowfullscreen></iframe>'
+        var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
+        var match = message.match(regExp);
+        if (match && match[7].length==11){
+            var token = match[7];
+            var embedurl = "http://www.youtube.com/embed/" + token+ "?html5=1&autoplay=0&theme=dark&color=black&iv_load_policy=3";
+            return '<iframe width="560" height="315" src="'+ embedurl + '" frameborder="0" allowfullscreen frameborder="0"></iframe>';
         }
 
         return null;

@@ -332,7 +332,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // $scope.password = "";
     //
 
+    // Save setting for displaying only buffers with unread messages
     $store.bind($scope, "onlyUnread", false);
+    // Save setting for not showing timestamp
+    $store.bind($scope, "notimestamp", false);
 
 
     $scope.setActiveBuffer = function(key) {
@@ -342,14 +345,16 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $rootScope.scrollToBottom = function() {
         // FIXME doesn't work if the settimeout runs without a short delay
         // 300 ms seems to do the trick but creates a noticable flickr
-        $timeout(function() {
+        var scroll = function() {
             var readmarker = document.getElementById('readmarker');
             if(readmarker) {
               readmarker.scrollIntoView();
             }else{
                 window.scroll(0, document.documentElement.scrollHeight - document.documentElement.clientHeight);
             }
-        }, 300);
+        }
+        scroll();
+        $timeout(scroll, 300);
     }
 
     $scope.sendMessage = function() {
@@ -444,6 +449,20 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             return true;
         }
     };
+    $scope.handleSearchBoxKey = function($event) {
+        // Support different browser quirks
+        var code = $event.keyCode ? $event.keyCode : $event.charCode;
+        // Handle escape
+        if(code == 27) {
+          $event.preventDefault();
+          $scope.search = '';
+        } // Handle enter
+        else if (code == 13) {
+          $event.preventDefault();
+          // TODO Switch to first matching buffer and reset query
+          $scope.search = '';
+        }
+    }
 
 }]
                   );
