@@ -332,7 +332,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // $scope.password = "";
     //
 
+    // Save setting for displaying only buffers with unread messages
     $store.bind($scope, "onlyUnread", false);
+    // Save setting for not showing timestamp
+    $store.bind($scope, "notimestamp", false);
 
 
     $scope.setActiveBuffer = function(key) {

@@ -149,6 +149,16 @@
                       </div>
                     </form>
                   </li>
+                  <li class="">
+                    <form class="form-inline" role="form">
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" ng-model="notimestamp">
+                         Hide timestamps 
+                        </label>
+                      </div>
+                    </form>
+                  </li>
                 </ul>
               </div>
               <a ng-click="disconnect()">
@@ -176,7 +186,7 @@
         <table>
           <tbody>
             <tr class="bufferline" ng-repeat-start="bufferline in activeBuffer().lines">
-              <td class="time">
+              <td ng-hide="notimestamp" class="time">
                 <span class="date text-muted">
                   {{ bufferline.date | date:'HH:mm' }}
                 </span>
