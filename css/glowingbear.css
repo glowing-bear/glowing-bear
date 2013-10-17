@@ -181,6 +181,7 @@ input[type=text], input[type=password] {
     position: relative;
     padding-bottom: 60px; /* bottom input */
     padding-top: 35px; /* topbar */
+    font-size: 13px;
 }
 .bufferlines .btn {
     font-family: sans-serif;
