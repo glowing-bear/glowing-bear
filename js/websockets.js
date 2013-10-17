@@ -449,6 +449,20 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             return true;
         }
     };
+    $scope.handleSearchBoxKey = function($event) {
+        // Support different browser quirks
+        var code = $event.keyCode ? $event.keyCode : $event.charCode;
+        // Handle escape
+        if(code == 27) {
+          $event.preventDefault();
+          $scope.search = '';
+        } // Handle enter
+        else if (code == 13) {
+          $event.preventDefault();
+          // TODO Switch to first matching buffer and reset query
+          $scope.search = '';
+        }
+    }
 
 }]
                   );
