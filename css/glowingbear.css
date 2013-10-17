@@ -53,7 +53,7 @@ td.prefix {
     text-align: right;
     vertical-align: top;
     padding-right: 5px;
-    white-space: nowrap;
+    white-space: pre;
 }
 td.message {
     word-wrap: break-word;
