@@ -55,7 +55,10 @@
                     <p class="help-block">Enter the the port to the WeeChat relay</p>
                   </div>
                   <div class="form-group">
-                    <label class="control-label" for="password">WeeChat relay password</label>
+                    <label class="control-label" for="password">WeeChat relay password</label> 
+                    <div class="alert alert-danger" ng-show="passwordError">
+                      Error wrong password
+                    </div>
                     <input type="password" class="form-control" id="password" ng-model="password" placeholder="Password">
                     <p class="help-block">Password will be stored in your browser session</p>
                   </div>

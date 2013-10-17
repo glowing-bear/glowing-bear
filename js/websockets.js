@@ -77,7 +77,8 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
         old.fullName = obj['full_name'];
         old.title = obj['title'];
         old.number = obj['number'];
-        }
+    }
+
     var handleBufferRenamed = function(message) {
         var obj = message['objects'][0]['content'][0];
         var buffer = obj['pointers'][0];
@@ -150,8 +151,6 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
     var callbacks = {}
     var currentCallBackId = 0;
 
-
-
     var doSendWithCallback = function(message) {
         var defer = $q.defer();
         callbacks[++currentCallBackId] = {
@@ -180,52 +179,86 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
         websocket.binaryType = "arraybuffer"
 
         websocket.onopen = function (evt) {
+
             $log.info("Connected to relay");
-            $rootScope.connected = true;
+
+            // First message must be an init request
+            // with the password
             doSend(weeChat.Protocol.formatInit({
                     password: passwd,
                     compression: 'off'
             }));
-            doSendWithCallback(weeChat.Protocol.formatHdata({
-                path: 'buffer:gui_buffers(*)',
-                keys: ['local_variables,notify,number,full_name,short_name,title']
+
+            // password is bad until the next message
+            // received proven the otherwise.
+            $rootScope.passwordError = true;
+
+            // We are asking for the weechat version here
+            // to avoid two problems :
+            //  - If the version is below 0.4.2, we will have a bug
+            //    with websocket.
+            //  - If the user password is wrong, we will be disconneted
+            //    at this step.
+            doSendWithCallback(weeChat.Protocol.formatInfo({
+                name: 'version',
             })).then(function(message) {
-                $log.info("Parsing bufinfo");
-                var bufferInfos = message['objects'][0]['content'];
-                // buffers objects
-                for (var i = 0; i < bufferInfos.length ; i++) {
-                    var buffer = new models.Buffer(bufferInfos[i]);
-                    models.addBuffer(buffer);
-                    // Switch to first buffer on startup
-                    if (i == 0) {
-                        models.setActiveBuffer(buffer.id);
+                // If we have received this message
+                // that means the user password is good.
+                $rootScope.passwordError = false;
+
+                // Parse the version info message to retrieve
+                // the current weechat version.
+                var version = message['objects'][0]['content']['value'];
+                $rootScope.version = version;
+                $log.info(version);
+            }).then(function() {
+                doSendWithCallback(weeChat.Protocol.formatHdata({
+                    path: 'buffer:gui_buffers(*)',
+                    keys: ['local_variables,notify,number,full_name,short_name,title']
+                })).then(function(message) {
+                    $log.info("Parsing bufinfo");
+                    var bufferInfos = message['objects'][0]['content'];
+                    // buffers objects
+                    for (var i = 0; i < bufferInfos.length ; i++) {
+                        var buffer = new models.Buffer(bufferInfos[i]);
+                        models.addBuffer(buffer);
+                        // Switch to first buffer on startup
+                        if (i == 0) {
+                            models.setActiveBuffer(buffer.id);
+                        }
                     }
-                }
-            }).then(function() {
-                $log.info("Parsing lineinfo");
-                doSendWithCallback(weeChat.Protocol.formatHdata({
-                    path: "buffer:gui_buffers(*)/own_lines/last_line(-"+storage.get('lines')+")/data",
-                    keys: []
-                })).then(function(hdata) {
-                    handlers.handleLineInfo(hdata);
+                }).then(function() {
+                    $log.info("Parsing lineinfo");
+                    doSendWithCallback(weeChat.Protocol.formatHdata({
+                        path: "buffer:gui_buffers(*)/own_lines/last_line(-"+storage.get('lines')+")/data",
+                        keys: []
+                    })).then(function(hdata) {
+                        handlers.handleLineInfo(hdata);
+                    });
+                }).then(function() {
+                    $log.info("Requesting hotlist");
+                    doSendWithCallback(weeChat.Protocol.formatHdata({
+                        path: "hotlist:gui_hotlist(*)",
+                        keys: []
+                    })).then(function(hdata) {
+                        handlers.handleHotlistInfo(hdata)
+                    });
+                }).then(function() {
+                    doSend(weeChat.Protocol.formatSync({}));
+                    $log.info("Synced");
+
+                    // here we are really connected !
+                    $rootScope.connected = true;
                 });
-            }).then(function() {
-                $log.info("Requesting hotlist");
-                doSendWithCallback(weeChat.Protocol.formatHdata({
-                    path: "hotlist:gui_hotlist(*)",
-                    keys: []
-                })).then(function(hdata) {
-                    handlers.handleHotlistInfo(hdata)
-                });
-            }).then(function() {
-                doSend(weeChat.Protocol.formatSync({}));
-                $log.info("Synced");
             });
-        }
+	}
 
         websocket.onclose = function (evt) {
             $log.info("Disconnected from relay");
             $rootScope.connected = false;
+            if ($rootScope.passwordError == true) {
+                $log.info("wrong password");
+            }
             $rootScope.$apply();
         }
 
@@ -243,6 +276,10 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
         }
 
         websocket.onerror = function (evt) {
+            // on error it means the connection problem
+            // come from the relay not from the password.
+            $rootScope.passwordError = false;
+
             if (evt.type == "error" && websocket.readyState != 1) {
                 $rootScope.errorMessage = true;
             }
