@@ -150,16 +150,24 @@ plugins.factory('userPlugins', function() {
      * Image Preview
      */
     var imagePlugin = new Plugin(function(message) {
-        
-        var url = message.match(urlRegexp);
 
-	if (url) {
-	    var url = url[0]; /* Actually parse one url per message */
+        var url = message.match(urlRegexp);
+        var content = null;
+
+        if (url) {
+            var url = url[0]; /* Actually parse one url per message */
             if (url.match(/png$|gif$|jpg$|jpeg$/)) {
-	        return '<img src="' + url + '" height="300">';
-            } 
+
+                /* A fukung.net URL may end by an image extension but is not a direct link. */
+                if (url.indexOf("fukung.net/v/") != -1) {
+                    url = url.replace(/.*\//, "http://media.fukung.net/imgs/")
+                }
+
+                content = '<img src="' + url + '" height="300">';
+            }
         }
-        return null;
+
+        return content;
     });
     imagePlugin.name = 'image';
 
