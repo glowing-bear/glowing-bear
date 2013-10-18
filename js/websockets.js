@@ -436,7 +436,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if (models.getActiveBuffer() == buffer) {
             return true;
         }
-        return buffer.unread > 0;
+        return buffer.unread > 0 || buffer.notification > 0;
       }
       return true;
     };
