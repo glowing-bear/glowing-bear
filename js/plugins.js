@@ -194,7 +194,32 @@ plugins.factory('userPlugins', function() {
     });
     imagePlugin.name = 'image';
 
+    /*
+     * Cloud Music Embedded Players
+     */
+    var cloudmusicPlugin = new Plugin(function(message) {
+
+        var match = message.match(urlRegexp);
+
+        if (match) {
+            var url = match[0];
+
+            /* SoundCloud http://help.soundcloud.com/customer/portal/articles/247785-what-widgets-can-i-use-from-soundcloud- */
+            if (url.indexOf("soundcloud.com") != -1) {
+                return '<iframe width="100%" height="120" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=' + url + '&amp;color=ff6600&amp;auto_play=false&amp;show_artwork=true"></iframe>';
+            }
+
+            /* MixCloud */
+            if (url.indexOf("mixcloud.com") != -1) {
+                return '<iframe width="480" height="60" src="//www.mixcloud.com/widget/iframe/?feed=' + url + '&mini=1&stylecolor=&hide_artwork=&embed_type=widget_standard&hide_tracklist=1&hide_cover=" frameborder="0"></iframe>';
+            }
+        }
+
+        return null;
+    });
+    cloudmusicPlugin.name = 'cloud music';
+
     return {
-        plugins: [youtubePlugin, imagePlugin, spotifyPlugin]
+        plugins: [youtubePlugin, imagePlugin, spotifyPlugin, cloudmusicPlugin]
     }
 });
