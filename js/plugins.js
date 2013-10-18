@@ -219,7 +219,27 @@ plugins.factory('userPlugins', function() {
     });
     cloudmusicPlugin.name = 'cloud music';
 
+    /*
+     * Google Maps
+     */
+    var googlemapPlugin = new Plugin(function(message) {
+
+        var match = message.match(urlRegexp);
+
+        if (match) {
+            var url = match[0];
+
+            /* SoundCloud http://help.soundcloud.com/customer/portal/articles/247785-what-widgets-can-i-use-from-soundcloud- */
+            if (url.match(/google.*maps/)) {
+                return '<iframe width="450" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="' + url + '&output=embed"></iframe>';
+            }
+        }
+
+        return null;
+    });
+    googlemapPlugin.name = 'Google Map';
+
     return {
-        plugins: [youtubePlugin, imagePlugin, spotifyPlugin, cloudmusicPlugin]
+        plugins: [youtubePlugin, imagePlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin]
     }
 });
