@@ -16,12 +16,17 @@ models.service('models', ['$rootScope', 'colors', function($rootScope, colors) {
         var number = message['number']
         var pointer = message['pointers'][0]
         var local_variables = message['local_vars'];
-        var notify = message['notify'];
+        var notify = 1; // Default 1
         var lines = []
         var active = false
         var notification = 0 
         var unread = 0
         var lastSeen = -2
+
+        // Buffer opened message does not include notify level
+        if( message['notify'] ) {
+            notify = message['notify'];
+        }
 
         /*
          * Adds a line to this buffer
