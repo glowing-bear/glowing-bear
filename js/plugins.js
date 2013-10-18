@@ -171,7 +171,25 @@ plugins.factory('userPlugins', function() {
     });
     imagePlugin.name = 'image';
 
+    /*
+     * SoundCloud Embedded Player
+     *
+     * http://help.soundcloud.com/customer/portal/articles/247785-what-widgets-can-i-use-from-soundcloud-
+     */
+    var soundcloudPlugin = new Plugin(function(message) {
+
+        var url = message.match(urlRegexp);
+        var content = null;
+
+        if (url && url[0].indexOf("soundcloud.com") != -1) {
+            content = '<iframe width="100%" height="140" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=' + url[0] + '&amp;color=ff6600&amp;auto_play=false&amp;show_artwork=true"></iframe>'
+        }
+
+        return content;
+    });
+    soundcloudPlugin.name = 'SoundCloud sound';
+
     return {
-        plugins: [youtubePlugin, imagePlugin]
+        plugins: [youtubePlugin, imagePlugin, soundcloudPlugin]
     }
 });
