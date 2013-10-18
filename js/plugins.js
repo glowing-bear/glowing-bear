@@ -128,6 +128,29 @@ plugins.factory('userPlugins', function() {
     var urlRegexp = RegExp(/(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/);
 
     /*
+     * Spotify Embedded Player
+     *
+     * See: https://developer.spotify.com/technologies/widgets/spotify-play-button/
+     *
+     */
+
+    var spotifyPlugin = new Plugin(function(message) {
+        var addMatch = function(match) {
+            var ret = '';
+            for(i in match) {
+                var id = match[i].substr(match[i].length-22, match[i].length);
+                ret += '<iframe src="//embed.spotify.com/?uri=spotify:track:'+id+'" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>';
+            }
+            return ret;
+        };
+        var match = message.match(/spotify:track:([a-zA-Z-0-9]{22})/g);
+        var ret = addMatch(match);
+        ret += addMatch(message.match(/open.spotify.com\/track\/([a-zA-Z-0-9]{22})/g));
+        return ret;
+    });
+    spotifyPlugin.name = 'Spotify track'
+
+    /*
      * YouTube Embedded Player
      *
      * See: https://developers.google.com/youtube/player_parameters
@@ -172,6 +195,6 @@ plugins.factory('userPlugins', function() {
     imagePlugin.name = 'image';
 
     return {
-        plugins: [youtubePlugin, imagePlugin]
+        plugins: [youtubePlugin, imagePlugin, spotifyPlugin]
     }
 });
