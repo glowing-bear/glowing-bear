@@ -103,6 +103,9 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
      * Handle answers to hotlist request
      */
     var handleHotlistInfo = function(message) {
+      if (message.objects.length == 0) {
+          return;
+      }
       var hotlist = message['objects'][0]['content'];
       hotlist.forEach(function(l) {
           var buffer = models.getBuffer(l.buffer);
