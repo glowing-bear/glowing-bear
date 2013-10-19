@@ -59,9 +59,9 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
     }
 
     var handleBufferLineAdded = function(message) {
-      message['objects'][0]['content'].forEach(function(l) {
-        handleLine(l, false);
-      });
+        message['objects'][0]['content'].forEach(function(l) {
+            handleLine(l, false);
+        });
     }
 
     var handleBufferOpened = function(message) {
@@ -93,34 +93,34 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
      * (lineinfo) messages are specified by this client. It is request after bufinfo completes
      */
     var handleLineInfo = function(message) {
-      var lines = message['objects'][0]['content'].reverse();
-      lines.forEach(function(l) {
-        handleLine(l, true);
-      });
+        var lines = message['objects'][0]['content'].reverse();
+        lines.forEach(function(l) {
+            handleLine(l, true);
+        });
     }
 
     /*
      * Handle answers to hotlist request
      */
     var handleHotlistInfo = function(message) {
-      if (message.objects.length == 0) {
-          return;
-      }
-      var hotlist = message['objects'][0]['content'];
-      hotlist.forEach(function(l) {
-          var buffer = models.getBuffer(l.buffer);
-          // 1 is message
-          buffer.unread += l.count[1];
-          // 2 is ?
-          buffer.unread += l.count[2];
-          // 3 is highlight
-          buffer.notification += l.count[3];
-          /* Since there is unread messages, we can guess 
-           * what the last read line is and update it accordingly
-           */
-          var unreadSum = _.reduce(l.count, function(memo, num){ return memo + num; }, 0);
-          buffer.lastSeen = buffer.lines.length - 1 - unreadSum;
-      });
+        if (message.objects.length == 0) {
+            return;
+        }
+        var hotlist = message['objects'][0]['content'];
+        hotlist.forEach(function(l) {
+            var buffer = models.getBuffer(l.buffer);
+            // 1 is message
+            buffer.unread += l.count[1];
+            // 2 is ?
+            buffer.unread += l.count[2];
+            // 3 is highlight
+            buffer.notification += l.count[3];
+            /* Since there is unread messages, we can guess
+            * what the last read line is and update it accordingly
+            */
+            var unreadSum = _.reduce(l.count, function(memo, num){ return memo + num; }, 0);
+            buffer.lastSeen = buffer.lines.length - 1 - unreadSum;
+        });
     }
 
     var handleEvent = function(event) {
@@ -254,7 +254,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
                     $rootScope.connected = true;
                 });
             });
-	}
+        }
 
         websocket.onclose = function (evt) {
             $log.info("Disconnected from relay");
@@ -293,8 +293,8 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
     }
 
     var disconnect = function() {
-      console.log(this.websocket);
-      this.websocket.close();
+        console.log(this.websocket);
+        this.websocket.close();
     }
 
     var sendMessage = function(message) {
@@ -454,18 +454,18 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.hasUnread = function(buffer) {
-      // if search is set, return every buffer 
-      if($scope.search && $scope.search != "") {
-          return true;
-      }
-      if($scope.onlyUnread) {
-        // Always show current buffer in list
-        if (models.getActiveBuffer() == buffer) {
+        // if search is set, return every buffer 
+        if($scope.search && $scope.search != "") {
             return true;
         }
-        return buffer.unread > 0 || buffer.notification > 0;
-      }
-      return true;
+        if($scope.onlyUnread) {
+            // Always show current buffer in list
+            if (models.getActiveBuffer() == buffer) {
+                return true;
+            }
+            return buffer.unread > 0 || buffer.notification > 0;
+        }
+        return true;
     };
 
     $rootScope.switchToActivityBuffer = function() {
@@ -518,13 +518,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         var code = $event.keyCode ? $event.keyCode : $event.charCode;
         // Handle escape
         if(code == 27) {
-          $event.preventDefault();
-          $scope.search = '';
+            $event.preventDefault();
+            $scope.search = '';
         } // Handle enter
         else if (code == 13) {
-          $event.preventDefault();
-          // TODO Switch to first matching buffer and reset query
-          $scope.search = '';
+            $event.preventDefault();
+            // TODO Switch to first matching buffer and reset query
+            $scope.search = '';
         }
     }
 
