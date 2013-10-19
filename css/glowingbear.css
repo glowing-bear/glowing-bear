@@ -30,6 +30,12 @@ body {
         box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
         border-right: 1px solid #121212;
 }
+.vertical-line-left {
+-webkit-box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
+   -moz-box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
+        box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
+        border-left: 1px solid #121212;
+}
 
 
 
@@ -132,6 +138,8 @@ input[type=text], input[type=password] {
         overflow: hidden;
     }
     #topbar .actions {
+        margin-left: 5px;
+        padding-left: 5px;
         position: fixed;
         right: 0;
         background: #282828;
