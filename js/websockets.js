@@ -301,12 +301,20 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
         }));
     }
 
+    var sendCoreCommand = function(command) {
+        doSend(weeChat.Protocol.formatInput({
+            buffer: 'core.weechat',
+            data: command
+        }));
+    }
+
 
     return {
         send: doSend,
         connect: connect,
         disconnect: disconnect,
-        sendMessage: sendMessage
+        sendMessage: sendMessage,
+        sendCoreCommand: sendCoreCommand
     }
 }]);
 
@@ -331,6 +339,20 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         document.getElementById('sendMessage').focus();
         var ab = models.getActiveBuffer();
         $rootScope.pageTitle = ab.shortName + ' | ' + ab.title;
+
+        // If user wants to sync hotlist with weechat
+        // we will send a /buffer bufferName command every time
+        // the user switches a buffer. This will ensure that notifications
+        // are cleared in the buffer the user switches to
+        if($scope.hotlistsync && ab.fullName) { 
+            /*
+            doSend(weeChat.Protocol.formatInput({
+                buffer: 'weechat',
+                data: '/buffer ' + ab.fullName
+            }));
+            */
+            connection.sendCoreCommand('/buffer ' + ab.fullName);
+        }
     });
     $rootScope.$on('notificationChanged', function() {
         var notifications = _.reduce(models.model.buffers, function(memo, num) { return (memo||0) + num.notification;});
@@ -373,6 +395,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "onlyUnread", false);
     // Save setting for not showing timestamp
     $store.bind($scope, "notimestamp", false);
+    // Save setting for syncing hotlist
+    $store.bind($scope, "hotlistsync", true);
 
 
     $scope.setActiveBuffer = function(key) {
