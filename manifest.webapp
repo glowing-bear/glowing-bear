@@ -1,0 +1,16 @@
+{
+  "name": "WeeChat",
+  "description": "WeeChat Web frontend",
+  "icons": {
+    "128": "/glowing-bear/img/favicon.png"
+  },
+  "installs_allowed_from": [
+    "*"
+  ],
+  "developer": {
+    "name": "Tor Hveem",
+    "url": "http://github.com/torhve/"
+  },
+  "default_locale": "en"
+}
+
