@@ -170,6 +170,28 @@ plugins.factory('userPlugins', function() {
     youtubePlugin.name = 'YouTube video';
 
     /*
+     * Dailymotion Embedded Player
+     *
+     * See: http://www.dailymotion.com/doc/api/player.html
+     */
+    var dailymotionPlugin = new Plugin(function(message) {
+
+        var rPath = /dailymotion.com\/.*video\/([^_?# ]+)/;
+        var rAnchor = /dailymotion.com\/.*#video=([^_& ]+)/;
+        var rShorten = /dai.ly\/([^_?# ]+)/;
+
+        var match = message.match(rPath) || message.match(rAnchor) || message.match(rShorten);
+        if (match) {
+            var id = match[1];
+            var embedurl = 'http://www.dailymotion.com/embed/video/' + id + '?html&controls=html&startscreen=html&info=0&logo=0&related=0';
+            return '<iframe frameborder="0" width="480" height="270" src="' + embedurl + '"></iframe>';
+        }
+
+        return null;
+    });
+    dailymotionPlugin.name = 'Dailymotion video';
+
+    /*
      * Image Preview
      */
     var imagePlugin = new Plugin(function(message) {
@@ -240,6 +262,6 @@ plugins.factory('userPlugins', function() {
     googlemapPlugin.name = 'Google Map';
 
     return {
-        plugins: [youtubePlugin, imagePlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin]
+        plugins: [youtubePlugin, dailymotionPlugin, imagePlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin]
     }
 });
