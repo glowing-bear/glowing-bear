@@ -120,7 +120,21 @@
           /relay sslcertkey
           /relay add ssl.weechat 8000
           </pre>
-                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel" ng-hide="isinstalled">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
+                  Install app
+                </a>
+              </h4>
+            </div>
+            <div id="collapseFour" class="panel-collapse collapse">
+              <div class="panel-body">
+                <p>If you have a very new Firefox you can install the frontend as an app. Click the button to install.</p>
+                <button class="btn btn-lg btn-primary" ng-click="install()">Install app <i class="glyphicon glyphicon-chevron-right"></i></button>
               </div>
             </div>
           </div>
