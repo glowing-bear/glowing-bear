@@ -1,0 +1,25 @@
+{
+  "name": "Weechat",
+  "description": "WeeChat Web frontend",
+  "version": "0.0.0.1",
+  "manifest_version": 2,
+  "icons": {
+    "32": "img/favicon.png",
+    "128": "img/weechat_logo_128x128.png"
+  },
+  "app": {
+    "urls": [
+      "http://torhve.github.io/glowing-bear/"
+    ],
+    "launch": {
+      "web_url": "http://torhve.github.io/glowing-bear/"
+    }
+  },
+  "permissions": [
+    "notifications"
+  ],
+  "web_accessible_resources": [
+    "img/favicon.png"
+  ],
+}
+}
