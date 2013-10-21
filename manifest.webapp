@@ -2,8 +2,9 @@
   "name": "WeeChat",
   "description": "WeeChat Web frontend",
   "icons": {
-    "128": "/glowing-bear/img/favicon.png"
+    "128": "/glowing-bear/img/weechat_logo_128x128.png"
   },
+  "launch_path": "/glowing-bear/",
   "installs_allowed_from": [
     "*"
   ],
@@ -11,6 +12,7 @@
     "name": "Tor Hveem",
     "url": "http://github.com/torhve/"
   },
-  "default_locale": "en"
+  "default_locale": "en",
+  "version": "2"
 }
 
