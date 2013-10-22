@@ -192,6 +192,25 @@ plugins.factory('userPlugins', function() {
     dailymotionPlugin.name = 'Dailymotion video';
 
     /*
+     * AlloCine Embedded Player
+     */
+    var allocinePlugin = new Plugin(function(message) {
+
+        var rVideokast = /allocine.fr\/videokast\/video-(\d+)/;
+        var rCmedia = /allocine.fr\/.*cmedia=(\d+)/;
+
+        var match = message.match(rVideokast) || message.match(rCmedia);
+        if (match) {
+            var id = match[1];
+            var embedurl = 'http://www.allocine.fr/_video/iblogvision.aspx?cmedia=' + id;
+            return '<iframe frameborder="0" width="480" height="270" src="' + embedurl + '"></iframe>';
+        }
+
+        return null;
+    });
+    allocinePlugin.name = 'AlloCine video';
+
+    /*
      * Image Preview
      */
     var imagePlugin = new Plugin(function(message) {
@@ -262,6 +281,6 @@ plugins.factory('userPlugins', function() {
     googlemapPlugin.name = 'Google Map';
 
     return {
-        plugins: [youtubePlugin, dailymotionPlugin, imagePlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin]
+        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin]
     }
 });
