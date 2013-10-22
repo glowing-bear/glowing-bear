@@ -33,7 +33,7 @@
           <strong>Oh no!</strong> We cannot connect!
         </div>
         <div class="panel-group" id="accordion">
-          <div class="panel ">
+          <div class="panel">
             <div class="panel-heading">
               <h4 class="panel-title">
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
@@ -77,7 +77,7 @@
               </div>
             </div>
           </div>
-          <div class="panel ">
+          <div class="panel">
             <div class="panel-heading">
               <h4 class="panel-title">
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
@@ -94,6 +94,7 @@
                 <span class="label label-warning">WeeChat version 0.4.2 or higher is required.</span><br>
                 The communication goes directly between your browser and your weechat in clear text.
                 Connection settings are saved between sessions, including password, in your own browser.
+                </div>
               </div>
             </div>
           </div>
@@ -120,7 +121,21 @@
           /relay sslcertkey
           /relay add ssl.weechat 8000
           </pre>
-                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel" ng-hide="isinstalled">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
+                  Install app
+                </a>
+              </h4>
+            </div>
+            <div id="collapseFour" class="panel-collapse collapse">
+              <div class="panel-body">
+                <p>If you have a very new Firefox you can install the frontend as an app. Click the button to install.</p>
+                <button class="btn btn-lg btn-primary" ng-click="install()">Install app <i class="glyphicon glyphicon-chevron-right"></i></button>
               </div>
             </div>
           </div>
