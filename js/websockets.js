@@ -356,6 +356,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             */
             connection.sendCoreCommand('/buffer ' + ab.fullName);
         }
+
+        // Clear search term on buffer change
+        $scope.search = '';
     });
     $rootScope.$on('notificationChanged', function() {
         var notifications = _.reduce(models.model.buffers, function(memo, num) { return (memo||0) + num.notification;});
