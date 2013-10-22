@@ -425,17 +425,23 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $rootScope.scrollToBottom = function() {
         // FIXME doesn't work if the settimeout runs without a short delay
-        // 300 ms seems to do the trick but creates a noticable flickr
         var scroll = function() {
             var readmarker = document.getElementById('readmarker');
             if(readmarker) {
-              readmarker.scrollIntoView();
+                readmarker.scrollIntoView();
             }else{
-                window.scroll(0, document.documentElement.scrollHeight - document.documentElement.clientHeight);
+                var sTop = document.documentElement.scrollTop;
+                var sVal = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                if(sTop < sVal) {
+                    document.documentElement.scrollTop = sVal;
+                }
             }
         }
-        scroll();
+        // Here be scrolling dragons
+        $timeout(scroll);
+        $timeout(scroll, 100);
         $timeout(scroll, 300);
+        $timeout(scroll, 500);
     }
 
     $scope.sendMessage = function() {
