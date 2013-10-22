@@ -336,6 +336,20 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             window.webkitNotifications.requestPermission();
         }
     }
+    // Check for firefox & app installed
+    if(navigator.mozApps != undefined) {
+        navigator.mozApps.getSelf().onsuccess = function _onAppReady(evt) {
+            var app = evt.target.result;
+            if(app) {
+                $scope.isinstalled = true;
+            }else {
+                $scope.isinstalled = false;
+            }
+            console.log($scope.isinstalled);
+        } 
+    }else {
+        $scope.isinstalled = false;
+    }
 
     $rootScope.$on('activeBufferChanged', function() {
         $rootScope.scrollToBottom();
@@ -435,6 +449,26 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.disconnect = function() {
         connection.disconnect();
     }
+    $scope.install = function() {
+        if(navigator.mozApps != undefined) {
+            var request = navigator.mozApps.install('http://torhve.github.io/glowing-bear/manifest.webapp');
+            request.onsuccess = function () {
+                $scope.isinstalled = true;
+                // Save the App object that is returned
+                var appRecord = this.result;
+                // Start the app.
+                appRecord.launch();
+                alert('Installation successful!');
+            };
+            request.onerror = function () {
+                // Display the error information from the DOMError object
+                alert('Install failed, error: ' + this.error.name);
+            };
+        }else{
+            alert('Sorry. Only supported in Firefox v26+');
+        }
+    }
+
 
     /* Function gets called from bufferLineAdded code if user should be notified */
     $rootScope.createHighlight = function(buffer, message) {

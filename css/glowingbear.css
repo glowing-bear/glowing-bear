@@ -36,6 +36,12 @@ body {
         box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
         border-left: 1px solid #121212;
 }
+.panel-group .panel-heading + .panel-collapse .panel-body {
+-webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
+   -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
+        box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
+        border-top: 1px solid #121212;
+}
 
 table {
   width: 100%;
