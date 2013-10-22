@@ -293,7 +293,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
     }
 
     var disconnect = function() {
-        console.log(this.websocket);
+        /* TODO: Send protocol disconnect */
         this.websocket.close();
     }
 
