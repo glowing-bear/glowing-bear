@@ -43,13 +43,13 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
                 $rootScope.scrollToBottom();
             }
 
-            if (!initial) {
-                if (!buffer.active && !buffer.notify==0 && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
+            if (!initial && !buffer.active) {
+                if (buffer.notify>1 && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
                     buffer.unread++;
                     $rootScope.$emit('notificationChanged');
                 }
 
-                if(!buffer.notify==0 && message.highlight || _.contains(message.tags, 'notify_private') ) {
+                if(buffer.notify!=0 && message.highlight || _.contains(message.tags, 'notify_private') ) {
                     buffer.notification++;
                     $rootScope.createHighlight(buffer, message);
                     $rootScope.$emit('notificationChanged');

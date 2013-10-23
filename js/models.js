@@ -16,7 +16,7 @@ models.service('models', ['$rootScope', 'colors', function($rootScope, colors) {
         var number = message['number']
         var pointer = message['pointers'][0]
         var local_variables = message['local_vars'];
-        var notify = 1; // Default 1
+        var notify = 3 // Default 3 == message
         var lines = []
         var active = false
         var notification = 0 
@@ -24,7 +24,7 @@ models.service('models', ['$rootScope', 'colors', function($rootScope, colors) {
         var lastSeen = -2
 
         // Buffer opened message does not include notify level
-        if( message['notify'] ) {
+        if( message['notify'] != undefined ) {
             notify = message['notify'];
         }
 
