@@ -323,13 +323,18 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
 
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', function ($rootScope, $scope, $store, $timeout, $log, models, connection, testService) {
 
-    // Request notification permission
-    Notification.requestPermission(function (status) {
-        $log.info('Notification permission status:',status);
-        if (Notification.permission !== status) {
-            Notification.permission = status;
-        }
-    });
+
+    if(Notification != undefined) {
+
+        // Request notification permission
+        Notification.requestPermission(function (status) {
+            $log.info('Notification permission status:',status);
+            if (Notification.permission !== status) {
+                Notification.permission = status;
+            }
+        });
+
+    }
     if(window.webkitNotifications != undefined) {
         if (window.webkitNotifications.checkPermission() == 0) { // 0 is PERMISSION_ALLOWED
             $log.info('Notification permission status:', window.webkitNotifications.checkPermission() == 0);
