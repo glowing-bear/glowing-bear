@@ -324,8 +324,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', function ($rootScope, $scope, $store, $timeout, $log, models, connection, testService) {
 
 
-    if(Notification != undefined) {
-
+    if(window.Notification) {
         // Request notification permission
         Notification.requestPermission(function (status) {
             $log.info('Notification permission status:',status);
@@ -350,7 +349,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             }else {
                 $scope.isinstalled = false;
             }
-            console.log($scope.isinstalled);
         } 
     }else {
         $scope.isinstalled = false;
