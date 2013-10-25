@@ -365,12 +365,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // the user switches a buffer. This will ensure that notifications
         // are cleared in the buffer the user switches to
         if($scope.hotlistsync && ab.fullName) { 
-            /*
-            doSend(weeChat.Protocol.formatInput({
-                buffer: 'weechat',
-                data: '/buffer ' + ab.fullName
-            }));
-            */
             connection.sendCoreCommand('/buffer ' + ab.fullName);
         }
 
