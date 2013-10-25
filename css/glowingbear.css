@@ -95,7 +95,7 @@ input#sendMessage {
     border: 0;
     width: 100%;
 }
-.panel input {
+.panel input, .panel .input-group {
   max-width: 300px;
 }
 input[type=text], input[type=password], .badge {

@@ -401,12 +401,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "host", "localhost");
     $store.bind($scope, "port", "9001");
     $store.bind($scope, "proto", "weechat");
-    $store.bind($scope, "password", "");
     $store.bind($scope, "ssl", false);
     $store.bind($scope, "lines", "40");
-    // TODO checkbox for saving password or not?
-    // $scope.password = "";
-    //
+    $store.bind($scope, "savepassword", false);
+    if($scope.savepassword) {
+        $store.bind($scope, "password", "");
+    }
 
     // Save setting for displaying only buffers with unread messages
     $store.bind($scope, "onlyUnread", false);
