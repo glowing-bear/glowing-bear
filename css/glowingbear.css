@@ -174,16 +174,16 @@ input[type=text], input[type=password], .badge {
     min-height: 100%; 
 }
 
-.bufferlines {
+#bufferlines {
     font-family: 'Terminus', 'Inconsolata', 'Consolas', 'Monaco', 'Ubuntu Mono', monospace;
+    position: relative;
+    height: 99%;
     overflow-y: auto;
     margin-left: 14%;
     width: auto;
-    position: relative;
-    padding-bottom: 60px; /* bottom input */
-    padding-top: 35px; /* topbar */
+    top: 25px; /* topbar */
 }
-.bufferlines .btn {
+#bufferlines .btn {
     font-family: sans-serif;
 }
 
@@ -191,7 +191,7 @@ input[type=text], input[type=password], .badge {
     margin: 0 5px 0 14%;
 }
 @media (max-width: 968px) {
-    #sidebar, .bufferlines {
+    #sidebar, #bufferlines {
         position: relative;
         min-height: 0;
         margin-left: 0;

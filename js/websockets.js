@@ -427,10 +427,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             if(readmarker) {
                 readmarker.scrollIntoView();
             }else{
-                var sTop = document.documentElement.scrollTop;
-                var sVal = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                var bl = document.getElementById('bufferlines');
+                var sTop = bl.scrollTop;
+                var sVal = bl.scrollHeight - bl.clientHeight;
                 if(sTop < sVal) {
-                    document.documentElement.scrollTop = sVal;
+                    bl.scrollTop = sVal;
                 }
             }
         }
