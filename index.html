@@ -10,7 +10,7 @@
     <link href="css/glowingbear.css" rel="stylesheet" media="screen">
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular-sanitize.min.js"></script>
-    <script type="text/javascript" src="js/underscore.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
     <script type="text/javascript" src="js/localstorage.js"></script>
     <script type="text/javascript" src="js/weechat.js"></script>
     <script type="text/javascript" src="js/websockets.js"></script>
@@ -45,27 +45,28 @@
               <div class="panel-body">
                 <form class="form-signin" role="form">
                   <div class="form-group">
-                    <label class="control-label" for="host">WeeChat hostname</label>
-                    <input type="text" class="form-control" id="host" ng-model="host" placeholder="Address">
-                    <p class="help-block">Enter the hostname to the WeeChat relay</p>
-                  </div>
-                  <div class="form-group">
-                    <label class="control-label" for="port">WeeChat port number</label>
-                    <input type="text" class="form-control" id="port" ng-model="port" placeholder="9001">
-                    <p class="help-block">Enter the the port to the WeeChat relay</p>
-                  </div>
-                  <div class="form-group">
-                    <label class="control-label" for="password">WeeChat relay password</label> 
+                    <label class="control-label" for="host">WeeChat relay hostname and port number</label>
+                    <div class="input-group">
+                      <input type="text" class="form-control" id="host" ng-model="host" placeholder="Address">
+                      <input type="text" class="form-control" id="port" ng-model="port" placeholder="9001">
+                    </div>
                     <div class="alert alert-danger" ng-show="passwordError">
                       Error wrong password
                     </div>
+                    <label class="control-label" for="password">WeeChat relay password</label> 
                     <input type="password" class="form-control" id="password" ng-model="password" placeholder="Password">
-                    <p class="help-block">Password will be stored in your browser session</p>
-                  </div>
-                  <div class="form-group">
-                    <label class="control-label" for="proto">Encryption</label>
-                    <input type="checkbox" class="form-control" id="ssl" ng-model="ssl">
-                    <p class="help-block">Read encryption instructions for help</p>
+                    <div class="checkbox">
+                      <label>
+                          <input type="checkbox" class="checkbox" id="savepassword" ng-model="savepassword">
+                          Save password in your browser
+                      </label>
+                    </div>
+                    <div class="checkbox">
+                      <label class="control-label " for="ssl">
+                        <input type="checkbox" class="" id="ssl" ng-model="ssl">
+                        Encryption. Read instructions for help
+                      </label>
+                    </div>
                   </div>
                   <div class="form-group">
                     <label class="control-label" for="port">Lines</label>

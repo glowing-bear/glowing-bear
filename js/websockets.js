@@ -323,13 +323,17 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
 
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', function ($rootScope, $scope, $store, $timeout, $log, models, connection, testService) {
 
-    // Request notification permission
-    Notification.requestPermission(function (status) {
-        $log.info('Notification permission status:',status);
-        if (Notification.permission !== status) {
-            Notification.permission = status;
-        }
-    });
+
+    if(window.Notification) {
+        // Request notification permission
+        Notification.requestPermission(function (status) {
+            $log.info('Notification permission status:',status);
+            if (Notification.permission !== status) {
+                Notification.permission = status;
+            }
+        });
+
+    }
     if(window.webkitNotifications != undefined) {
         if (window.webkitNotifications.checkPermission() == 0) { // 0 is PERMISSION_ALLOWED
             $log.info('Notification permission status:', window.webkitNotifications.checkPermission() == 0);
@@ -345,7 +349,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             }else {
                 $scope.isinstalled = false;
             }
-            console.log($scope.isinstalled);
         } 
     }else {
         $scope.isinstalled = false;
@@ -362,12 +365,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // the user switches a buffer. This will ensure that notifications
         // are cleared in the buffer the user switches to
         if($scope.hotlistsync && ab.fullName) { 
-            /*
-            doSend(weeChat.Protocol.formatInput({
-                buffer: 'weechat',
-                data: '/buffer ' + ab.fullName
-            }));
-            */
             connection.sendCoreCommand('/buffer ' + ab.fullName);
         }
 
@@ -404,12 +401,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "host", "localhost");
     $store.bind($scope, "port", "9001");
     $store.bind($scope, "proto", "weechat");
-    $store.bind($scope, "password", "");
     $store.bind($scope, "ssl", false);
     $store.bind($scope, "lines", "40");
-    // TODO checkbox for saving password or not?
-    // $scope.password = "";
-    //
+    $store.bind($scope, "savepassword", false);
+    if($scope.savepassword) {
+        $store.bind($scope, "password", "");
+    }
 
     // Save setting for displaying only buffers with unread messages
     $store.bind($scope, "onlyUnread", false);
