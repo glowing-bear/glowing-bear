@@ -114,6 +114,47 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         });
     }
 
+    /*
+     * Handle nicklist event
+     */
+    var handleNicklist = function(message) {
+        var nicklist = message['objects'][0]['content'];
+        var group = 'root';
+        nicklist.forEach(function(n) {
+            var buffer = models.getBuffer(n.pointers[0]);
+            if(n.group == 1) {
+                var g = new models.NickGroup(n);
+                group = g.name;
+                buffer.nicklist[group] = g;
+            }else{
+                var nick = new models.Nick(n);
+                buffer.nicklist[group].nicks.push(nick);
+            }
+        });
+    }
+    /*
+     * Handle nicklist diff event
+     */
+    var handleNicklistDiff = function(message) {
+        var nicklist = message['objects'][0]['content'];
+        var group;
+        nicklist.forEach(function(n) {
+            var buffer = models.getBuffer(n.pointers[0]);
+            var d = n['_diff'];
+            if(n.group == 1) {
+                group = buffer.nicklist[n.name];
+            }
+            if(d == 43) { // +
+                var nick = new models.Nick(n);
+                buffer.nicklist[group].nicks.push(nick);
+            }else if (d == 45) { // -
+                var nick = new models.Nick(n);
+            }else if (d == 42) { // *
+                var nick = new models.Nick(n);
+            }
+        });
+    }
+
     var handleEvent = function(event) {
 
         if (_.has(eventHandlers, event['id'])) {
@@ -127,13 +168,16 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         _buffer_line_added: handleBufferLineAdded,
         _buffer_opened: handleBufferOpened,
         _buffer_title_changed: handleBufferTitleChanged,
-        _buffer_renamed: handleBufferRenamed
+        _buffer_renamed: handleBufferRenamed,
+        _nicklist: handleNicklist,
+        _nicklist_diff: handleNicklistDiff
     }
 
     return {
         handleEvent: handleEvent,
         handleLineInfo: handleLineInfo,
-        handleHotlistInfo: handleHotlistInfo
+        handleHotlistInfo: handleHotlistInfo,
+        handleNicklist: handleNicklist
     }
 
 }]);
@@ -236,6 +280,12 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
                         keys: []
                     })).then(function(hdata) {
                         handlers.handleHotlistInfo(hdata)
+                    });
+                }).then(function() {
+                    $log.info("Requesting nicklist");
+                    doSendWithCallback(weeChat.Protocol.formatNicklist({
+                    })).then(function(nicklistdata) {
+                        handlers.handleNicklist(nicklistdata)
                     });
                 }).then(function() {
                     doSend(weeChat.Protocol.formatSync({}));

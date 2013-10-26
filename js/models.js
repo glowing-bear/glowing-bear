@@ -18,6 +18,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var local_variables = message['local_vars'];
         var notify = 3 // Default 3 == message
         var lines = []
+        var nicklist = {} 
         var active = false
         var notification = 0 
         var unread = 0
@@ -38,6 +39,12 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             lines.push(line);
         }
 
+        /*
+         * Adds a nick to nicklist
+         */
+        var addNick = function(nick) {
+        }
+
         return {
             id: pointer,
             fullName: fullName,
@@ -51,6 +58,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             notification: notification,
             localvars: local_variables,
             notify: notify,
+            nicklist: nicklist
         }
 
     }
@@ -129,7 +137,39 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         }
 
     }    
+    /*
+     * Nick class
+     */
+    this.Nick = function(message) {
+        var prefix = message['prefix'];
+        var visible = message['visible'];
+        var name = message['name'];
+        var prefix_color = message['prefix_color'];
+        var color = message['color'];
 
+        return {
+            prefix: prefix,
+            visible: visible,
+            name: name,
+            prefix_color: prefix_color,
+            color: color
+        }
+    }
+    /*
+     * Nicklist Group class
+     */
+    this.NickGroup = function(message) {
+        var name = message['name'];
+        var visible = message['visible'];
+        var nicks = [];
+
+        return {
+            name: name,
+            visible: visible,
+            nicks: nicks
+        }
+    }
+          
 
     var BufferList = []
     activeBuffer = null;
