@@ -44,7 +44,7 @@ body {
 }
 
 table {
-  width: 100%;
+    width: 100%;
 }
 tr {
     line-height: 100%;
@@ -81,8 +81,8 @@ td.message {
     padding-left: 5px;
 }
 hr {
-  margin: 0;
-  border-color: darkgreen;
+    margin: 0;
+    border-color: darkgreen;
 }
 .text {
     white-space: pre-wrap;
@@ -131,30 +131,30 @@ input[type=text], input[type=password], .badge {
     line-height: 25px;
     white-space: nowrap;
 }
-    #topbar .brand {
-        float: left;
+#topbar .brand {
+    float: left;
+    height: 25px;
+    padding-left: 5px;
+}
+    #topbar .brand img {
         height: 25px;
-        padding-left: 5px;
     }
-        #topbar .brand img {
-            height: 25px;
-        }
-    #topbar .title {
-        position: fixed;
-        left: 14%;
-        overflow: hidden;
-    }
-    #topbar .actions {
-        margin-left: 5px;
-        padding-left: 5px;
-        position: fixed;
-        right: 0;
-        background: #282828;
-    }
-    #topbar .dropdown-menu form {
-        padding-left: 6px;
-        padding-right: 6px;
-    }
+#topbar .title {
+    position: fixed;
+    left: 14%;
+    overflow: hidden;
+}
+#topbar .actions {
+    margin-left: 5px;
+    padding-left: 5px;
+    position: fixed;
+    right: 0;
+    background: #282828;
+}
+#topbar .dropdown-menu form {
+    padding-left: 6px;
+    padding-right: 6px;
+}
 
 #topbar, #sidebar, .panel, .dropdown-menu {
     background: #282828;
@@ -260,50 +260,6 @@ input[type=text], input[type=password], .badge {
 .alert-danger {
   border-color: #121212;
   color: black;
-}
-
-.color-28 {
-    color: greenyellow;
-}
-
-.color-00 {
-    color: coral;
-}
-
-.color-yellow {
-    color: yellow;
-}
-
-.color-dark-red {
-    color: darkred;
-}
-
-.color-dark-green {
-    color: green;
-}
-
-.color-dark-blue {
-    color: darkblue;
-}
-
-.color-dark-gray {
-    color: gray;
-}
-
-.color-gray {
-    color: lightgray;u
-}
-
-.color-brown {
-    color: brown;
-}
-
-.color-cyan {
-    color: cyan;
-}
-
-.color-dark-cyan {
-    color: darkcyan;
 }
 
 li.notification {
