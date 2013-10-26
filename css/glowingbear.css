@@ -49,6 +49,9 @@ table {
 tr {
     line-height: 100%;
 }
+tr:hover {
+    background-color: #222222;
+}
 td.time {
     padding-right: 5px;
     vertical-align: top;
@@ -59,6 +62,7 @@ td.prefix {
     vertical-align: top;
     padding-right: 5px;
     white-space: pre;
+    border-right: 1px solid #444;
 }
 td.message {
     word-wrap: break-word;
@@ -85,7 +89,7 @@ hr {
 
 body {
     color: #ddd;
-    background-color: #222;
+    background-color: #181818;
     padding-left: 0;
     padding-right: 5px;
     padding-bottom:70px;
@@ -175,13 +179,14 @@ input[type=text], input[type=password], .badge {
 }
 
 #bufferlines {
-    font-family: 'Terminus', 'Inconsolata', 'Consolas', 'Monaco', 'Ubuntu Mono', monospace;
+    font-family: 'Terminus', 'Consolas', 'Monaco', 'Inconsolata', 'Ubuntu Mono', monospace;
     position: relative;
     height: 99%;
     overflow-y: auto;
     margin-left: 14%;
     width: auto;
     top: 25px; /* topbar */
+    padding-bottom: 10px;
 }
 #bufferlines .btn {
     font-family: sans-serif;
@@ -189,6 +194,9 @@ input[type=text], input[type=password], .badge {
 
 .navbar-fixed-bottom {
     margin: 0 5px 0 14%;
+}
+.navbar-inverse {
+    background-color: #181818;
 }
 @media (max-width: 968px) {
     #sidebar, #bufferlines {
