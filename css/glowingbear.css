@@ -85,7 +85,7 @@ hr {
 
 body {
     color: #ddd;
-    background-color: #222;
+    background-color: #181818;
     padding-left: 0;
     padding-right: 5px;
     padding-bottom:70px;
@@ -189,6 +189,9 @@ input[type=text], input[type=password], .badge {
 
 .navbar-fixed-bottom {
     margin: 0 5px 0 14%;
+}
+.navbar-inverse {
+    background-color: #181818;
 }
 @media (max-width: 968px) {
     #sidebar, #bufferlines {
