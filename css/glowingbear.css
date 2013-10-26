@@ -58,7 +58,14 @@ td.time {
 }
 
 .repeated-time {
-    display: none;
+}
+.repeated-time .cof-chat_time,
+.repeated-time .cof-chat_time_delimiters {
+    color: #333;
+}
+.repeated-time .cob-chat_time,
+.repeated-time .cob-chat_time_delimiters {
+    background-color: transparent;
 }
 td.prefix {
     text-align: right;
