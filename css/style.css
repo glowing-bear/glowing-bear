@@ -3,7 +3,7 @@
     color: #68b5d4;
 }
 .cof-chat {
-    color: #f7f7f7;
+    color: #d9d9d9;
 }
 .cof-chat_time {
     color: #f7f7f7;
@@ -45,7 +45,7 @@
     color: #77dfd8;
 }
 .cof-chat_nick_self {
-    color: #f7f7f7;
+    color: #d9d9d9;
 }
 .cof-chat_nick_other {
     color: #77dfd8;
@@ -259,7 +259,7 @@
 
 /* WeeChat colors, foreground */
 .cwf-default {
-    color: #f7f7f7;
+    color: #d9d9d9;
 }
 .cwf-black {
     color: #000000;
