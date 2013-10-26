@@ -14,16 +14,7 @@ weechat.filter('toArray', function () {
     }
 });
 
-weechat.factory('colors', [function($scope) {
-
-    return {
-        prepareCss: weeChat.color.prepareCss,
-        parse: weeChat.color.parse
-    };
-
-}]);
-
-weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', function($rootScope, colors, models, plugins) {
+weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootScope, models, plugins) {
 
     var handleBufferClosing = function(message) {
         var bufferMessage = message['objects'][0]['content'][0];
@@ -147,7 +138,7 @@ weechat.factory('handlers', ['$rootScope', 'colors', 'models', 'plugins', functi
 
 }]);
 
-weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers', 'colors', 'models', function($q, $rootScope, $log, storage, handlers, colors, models) {
+weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers', 'models', function($q, $rootScope, $log, storage, handlers, models) {
     protocol = new weeChat.Protocol();
     var websocket = null;
 
@@ -570,4 +561,4 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     }
 
 }]
-                  );
+);

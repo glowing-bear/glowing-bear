@@ -4,7 +4,7 @@
  */
 var models = angular.module('weechatModels', []);
 
-models.service('models', ['$rootScope', 'colors', function($rootScope, colors) {
+models.service('models', ['$rootScope', function($rootScope) {
     /*
      * Buffer class
      */
@@ -59,36 +59,64 @@ models.service('models', ['$rootScope', 'colors', function($rootScope, colors) {
      * BufferLine class
      */
     this.BufferLine = function(message) {
-
-        /*
-         * Parse the text elements from the buffer line added
-         *
-         * @param message weechat message
-         */
-        function parseLineAddedTextElements(message) {
-            var text = colors.parse(message);
-            text_elements =_.map(text, function(text_element) {
-                if (text_element && ('fg' in text_element)) {
-                    text_element['fg'] = colors.prepareCss(text_element['fg']);
-                }
-                // TODO: parse background as well
-
-                return text_element;
-            });
-            return text_elements;
-        }
-
-
         var buffer = message['buffer'];
         var date = message['date'];
 
+        function addClasses(textElements) {
+            var typeToClassPrefixFg = {
+                'option': 'cof-',
+                'weechat': 'cwf-',
+                'ext': 'cef-'
+            };
+            var typeToClassPrefixBg = {
+                'option': 'cob-',
+                'weechat': 'cwb-',
+                'ext': 'ceb-'
+            };
+            textElements.forEach(function(textEl) {
+                textEl.classes = [];
 
-        var prefix = parseLineAddedTextElements(message['prefix']);
+                // foreground color
+                var prefix = typeToClassPrefixFg[textEl.fgColor.type];
+                textEl.classes.push(prefix + textEl.fgColor.name);
+
+                // background color
+                prefix = typeToClassPrefixBg[textEl.bgColor.type];
+                textEl.classes.push(prefix + textEl.bgColor.name);
+
+                // attributes
+                if (textEl.attrs.name !== null) {
+                    textEl.classes.push('coa-' + textEl.attrs.name);
+                }
+                var allReset = true;
+                for (var attr in textEl.attrs.override) {
+                    if (textEl.attrs.override[attr]) {
+                        allReset = false;
+                        break;
+                    }
+                }
+                if (allReset) {
+                    textEl.classes.push('a-reset');
+                } else for (var attr in textEl.attrs.override) {
+                    val = textEl.attrs.override[attr];
+                    if (val) {
+                        textEl.classes.push('a-' + attr);
+                    } else {
+                        textEl.classes.push('a-no-' + attr);
+                    }
+                }
+            });
+        }
+
+
+        var prefix = weeChat.Protocol.rawText2Rich(message['prefix']);
+        addClasses(prefix);
 
         var tags_array = message['tags_array'];
         var displayed = message['displayed'];
         var highlight = message['highlight'];
-        var content = parseLineAddedTextElements(message['message']);
+        var content = weeChat.Protocol.rawText2Rich(message['message']);
+        addClasses(content);
 
         var rtext = "";
         if(content[0] != undefined) {
@@ -104,6 +132,7 @@ models.service('models', ['$rootScope', 'colors', function($rootScope, colors) {
             highlight: highlight,
             displayed: displayed,
             text: rtext,
+
         }
 
     }    

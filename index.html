@@ -7,6 +7,7 @@
     <title ng-bind-template="WeeChat {{ pageTitle}}"></title>
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link rel="shortcut icon" type="image/png" href="img/favicon.png" >
+    <link href="css/style.css" rel="stylesheet" media="screen">
     <link href="css/glowingbear.css" rel="stylesheet" media="screen">
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular-sanitize.min.js"></script>
@@ -221,9 +222,9 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
                   {{ bufferline.date | date:'HH:mm' }}
                 </span>
               </td>
-              <td class="prefix vertical-line"><span ng-repeat="part in bufferline.prefix" style="{{ part.fg }}">{{ part.text }}</span></td>
+              <td class="prefix vertical-line"><span ng-repeat="part in bufferline.prefix" ng-class="{{ part.classes }}">{{ part.text }}</span></td>
               <td class="message">
-                <span ng-repeat="part in bufferline.content" class="text" style="{{ part.fg }}" ng-bind-html="part.text"></span>
+                <span ng-repeat="part in bufferline.content" class="text" ng-class="{{ part.classes }}" ng-bind-html="part.text"></span>
 
                 <div ng-repeat="metadata in bufferline.metadata">
                   <div ng-show="metadata.visible">
