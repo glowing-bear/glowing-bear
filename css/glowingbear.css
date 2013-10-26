@@ -49,6 +49,9 @@ table {
 tr {
     line-height: 100%;
 }
+tr:hover {
+    background-color: #222222;
+}
 td.time {
     padding-right: 5px;
     vertical-align: top;
