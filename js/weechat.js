@@ -355,10 +355,10 @@
             },
             {
                 // foreground, background (+ attributes)
-                //   "*" + (A)STD + "," + (A)STD
-                //   "*" + (A)STD + "," + (A)EXT
-                //   "*" + (A)EXT + "," + (A)STD
-                //   "*" + (A)EXT + "," + (A)EXT
+                //   "*" + (A)STD + "," + STD
+                //   "*" + (A)STD + "," + EXT
+                //   "*" + (A)EXT + "," + STD
+                //   "*" + (A)EXT + "," + EXT
                 regex: /^\*(?:([*!\/_|]*)(\d{2})|@([*!\/_|]*)(\d{5})),(\d{2}|@\d{5})/,
                 fn: function(m) {
                     var ret = {};
