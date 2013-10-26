@@ -160,6 +160,10 @@ var IrcUtils = {
                 return ret;
             }
             beforeCaret = m[1] + newNick + ' ';
+            if (afterCaret[0] == ' ') {
+                // swallow first space after caret if any
+                afterCaret = afterCaret.substring(1);
+            }
             return {
                 text: beforeCaret + afterCaret,
                 caretPos: beforeCaret.length,
