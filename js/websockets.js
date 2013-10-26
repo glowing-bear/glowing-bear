@@ -455,6 +455,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "notimestamp", false);
     // Save setting for syncing hotlist
     $store.bind($scope, "hotlistsync", true);
+    // Save setting for displaying nicklist
+    $store.bind($scope, "nonicklist", false); 
 
 
     $scope.setActiveBuffer = function(key) {

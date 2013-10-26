@@ -146,7 +146,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
       </div>
     </div>
     <div class="content" ng-show="connected">
-      <div id="topbar" class="horizontal-line">
+      <div id="topbar" class="">
             <div class="brand">
               <img alt="brand" src="img/favicon.png">
             </div>
@@ -190,6 +190,16 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
                       </div>
                     </form>
                   </li>
+                  <li class="">
+                    <form class="form-inline" role="form">
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" ng-model="nonicklist">
+                          Hide nicklist
+                        </label>
+                      </div>
+                    </form>
+                  </li>
                 </ul>
               </div>
               <a ng-click="disconnect()">
@@ -213,14 +223,14 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
           </li>
         </ul>
       </div>
-      <div id="nicklist" class="">
-        <ul class="nicklistgroup list-unstyled" ng-repeat="group in activeBuffer().nicklist | toArray">
-          <li class="" ng-repeat="nick in group.nicks">
-            <a ng-click="nickAction(nick)"><span ng-class="nick.prefix_color">{{nick.prefix}}</span><span ng-class="color">{{nick.name}}</span></a>
-          </li>
-        </ul>
-      </div>
-      <div id="bufferlines" class="vertical-line">
+      <div id="bufferlines">
+        <div id="nicklist" ng-hide="nonicklist" class="vertical-line-left">
+          <ul class="nicklistgroup list-unstyled" ng-repeat="group in activeBuffer().nicklist | toArray">
+            <li class="" ng-repeat="nick in group.nicks">
+              <a ng-click="nickAction(nick)"><span ng-class="nick.prefix_color">{{nick.prefix}}</span><span ng-class="color">{{nick.name}}</span></a>
+            </li>
+          </ul>
+        </div>
         <table>
           <tbody>
             <tr class="bufferline" ng-repeat-start="bufferline in (bufferlines = activeBuffer().lines)">

@@ -144,7 +144,9 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var prefix = message['prefix'];
         var visible = message['visible'];
         var name = message['name'];
+        /* TODO translate color to CSS value */
         var prefix_color = message['prefix_color'];
+        /* TODO translate color to CSS value */
         var color = message['color'];
 
         return {

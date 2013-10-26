@@ -175,10 +175,17 @@ input[type=text], input[type=password], .badge {
     min-height: 100%;
     height: 100%;
     overflow-y: auto;
+    overflow-x: hidden;
     right: 0;
     top: 0;
-    padding-top: 35px; /* topbar */
-  }
+    padding-top: 25px; 
+    padding-left: 5px;
+    padding-bottom: 35px;
+}
+    #nicklist ul {
+        padding: 0;
+        margin: 0;
+    }
 .nav-pills > li > a {
     border-radius: 0;
     color: #ddd;
@@ -207,7 +214,7 @@ input[type=text], input[type=password], .badge {
 }
 
 .navbar-fixed-bottom {
-    margin: 0 5px 0 14%;
+    margin: 0 105px 0 14%;
 }
 .navbar-inverse {
     background-color: #181818;
