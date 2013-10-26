@@ -195,16 +195,16 @@
     WeeChatProtocol._attrNameFromChar = function(ch) {
         var chars = {
             // WeeChat protocol
-            '*': 'bold',
-            '!': 'reverse',
-            '/': 'italic',
-            '_': 'underline',
+            '*': 'b',
+            '!': 'r',
+            '/': 'i',
+            '_': 'u',
 
             // some extension often used (IRC?)
-            '\x01': 'bold',
-            '\x02': 'reverse',
-            '\x03': 'italic',
-            '\x04': 'underline'
+            '\x01': 'b',
+            '\x02': 'r',
+            '\x03': 'i',
+            '\x04': 'u'
         };
 
         if (ch in chars) {

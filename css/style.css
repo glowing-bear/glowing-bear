@@ -1904,22 +1904,22 @@
 }
 
 /* attributes overrides */
-.a-bold {
+.a-b {
     font-weight: bold;
 }
-.a-no-bold {
+.a-no-b {
     font-weight: normal;
 }
-.a-italic {
+.a-i {
     font-style: italic;
 }
-.a-no-italic {
+.a-no-i {
     font-style: normal;
 }
-.a-underline {
+.a-u {
     text-decoration: underline;
 }
-.a-no-underline {
+.a-no-u {
     text-decoration: none;
 }
 .a-reset {
