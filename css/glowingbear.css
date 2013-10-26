@@ -59,6 +59,7 @@ td.prefix {
     vertical-align: top;
     padding-right: 5px;
     white-space: pre;
+    border-right: 1px solid #444;
 }
 td.message {
     word-wrap: break-word;
@@ -175,13 +176,14 @@ input[type=text], input[type=password], .badge {
 }
 
 #bufferlines {
-    font-family: 'Terminus', 'Inconsolata', 'Consolas', 'Monaco', 'Ubuntu Mono', monospace;
+    font-family: 'Terminus', 'Consolas', 'Monaco', 'Inconsolata', 'Ubuntu Mono', monospace;
     position: relative;
     height: 99%;
     overflow-y: auto;
     margin-left: 14%;
     width: auto;
     top: 25px; /* topbar */
+    padding-bottom: 10px;
 }
 #bufferlines .btn {
     font-family: sans-serif;

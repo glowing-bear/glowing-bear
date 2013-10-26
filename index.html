@@ -222,7 +222,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
                   {{ bufferline.date | date:'HH:mm' }}
                 </span>
               </td>
-              <td class="prefix vertical-line"><span ng-repeat="part in bufferline.prefix" ng-class="{{ part.classes }}">{{ part.text }}</span></td>
+              <td class="prefix"><span ng-repeat="part in bufferline.prefix" ng-class="{{ part.classes }}">{{ part.text }}</span></td>
               <td class="message">
                 <span ng-repeat="part in bufferline.content" class="text" ng-class="{{ part.classes }}" ng-bind-html="part.text"></span>
 
