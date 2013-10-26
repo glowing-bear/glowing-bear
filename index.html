@@ -219,7 +219,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
             <tr class="bufferline" ng-repeat-start="bufferline in activeBuffer().lines">
               <td ng-hide="notimestamp" class="time">
                 <span class="date text-muted">
-                  {{ bufferline.date | date:'HH:mm' }}
+                  <span class="cof-chat_time cob-chat_time coa-chat_time">{{ bufferline.date | date:'HH' }}</span><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time">{{ bufferline.date | date:'mm' }}</span>
                 </span>
               </td>
               <td class="prefix"><span ng-repeat="part in bufferline.prefix" ng-class="{{ part.classes }}">{{ part.text }}</span></td>
