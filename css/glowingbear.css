@@ -57,6 +57,9 @@ td.time {
     vertical-align: top;
 }
 
+.repeated-time {
+    display: none;
+}
 td.prefix {
     text-align: right;
     vertical-align: top;

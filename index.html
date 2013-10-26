@@ -9,6 +9,7 @@
     <link rel="shortcut icon" type="image/png" href="img/favicon.png" >
     <link href="css/style.css" rel="stylesheet" media="screen">
     <link href="css/glowingbear.css" rel="stylesheet" media="screen">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular-sanitize.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
@@ -18,7 +19,6 @@
     <script type="text/javascript" src="js/models.js"></script>
     <script type="text/javascript" src="js/plugins.js"></script>
     <script type="text/javascript" src="js/favico-0.3.0.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   </head>
   <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)">
@@ -216,9 +216,9 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
       <div id="bufferlines">
         <table>
           <tbody>
-            <tr class="bufferline" ng-repeat-start="bufferline in activeBuffer().lines">
+            <tr class="bufferline" ng-repeat-start="bufferline in (bufferlines = activeBuffer().lines)">
               <td ng-hide="notimestamp" class="time">
-                <span class="date text-muted">
+                <span class="date" ng-class="{'repeated-time': bufferline.shortTime==bufferlines[$index-1].shortTime}">
                   <span class="cof-chat_time cob-chat_time coa-chat_time">{{ bufferline.date | date:'HH' }}</span><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time">{{ bufferline.date | date:'mm' }}</span>
                 </span>
               </td>
