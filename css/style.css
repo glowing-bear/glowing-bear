@@ -3,7 +3,7 @@
     color: #68b5d4;
 }
 .cof-chat {
-    color: #f7f7f7;
+    color: #d9d9d9;
 }
 .cof-chat_time {
     color: #f7f7f7;
@@ -45,7 +45,7 @@
     color: #77dfd8;
 }
 .cof-chat_nick_self {
-    color: #f7f7f7;
+    color: #d9d9d9;
 }
 .cof-chat_nick_other {
     color: #77dfd8;
@@ -259,7 +259,7 @@
 
 /* WeeChat colors, foreground */
 .cwf-default {
-    color: #f7f7f7;
+    color: #d9d9d9;
 }
 .cwf-black {
     color: #000000;
@@ -1904,22 +1904,22 @@
 }
 
 /* attributes overrides */
-.a-bold {
+.a-b {
     font-weight: bold;
 }
-.a-no-bold {
+.a-no-b {
     font-weight: normal;
 }
-.a-italic {
+.a-i {
     font-style: italic;
 }
-.a-no-italic {
+.a-no-i {
     font-style: normal;
 }
-.a-underline {
+.a-u {
     text-decoration: underline;
 }
-.a-no-underline {
+.a-no-u {
     text-decoration: none;
 }
 .a-reset {

@@ -194,10 +194,17 @@
      */
     WeeChatProtocol._attrNameFromChar = function(ch) {
         var chars = {
-            '*': 'bold',
-            '!': 'reverse',
-            '/': 'italic',
-            '_': 'underline'
+            // WeeChat protocol
+            '*': 'b',
+            '!': 'r',
+            '/': 'i',
+            '_': 'u',
+
+            // some extension often used (IRC?)
+            '\x01': 'b',
+            '\x02': 'r',
+            '\x03': 'i',
+            '\x04': 'u'
         };
 
         if (ch in chars) {
@@ -323,7 +330,7 @@
                 // foreground color with F
                 //   "F" + (A)STD
                 //   "F" + (A)EXT
-                regex: /^F(?:([*!\/_|]*)(\d{2})|@([*!\/_|]*)(\d{5}))/,
+                regex: /^F(?:([*!\/_|]*)(\d{2})|@([\x01\x02\x03\x04*!\/_|]*)(\d{5}))/,
                 fn: function(m) {
                     var ret = {
                         bgColor: null
@@ -359,7 +366,7 @@
                 //   "*" + (A)STD + "," + EXT
                 //   "*" + (A)EXT + "," + STD
                 //   "*" + (A)EXT + "," + EXT
-                regex: /^\*(?:([*!\/_|]*)(\d{2})|@([*!\/_|]*)(\d{5})),(\d{2}|@\d{5})/,
+                regex: /^\*(?:([\x01\x02\x03\x04*!\/_|]*)(\d{2})|@([\x01\x02\x03\x04*!\/_|]*)(\d{5})),(\d{2}|@\d{5})/,
                 fn: function(m) {
                     var ret = {};
                     
@@ -379,7 +386,7 @@
                 // foreground color with * (+ attributes) (fall back, must be checked before previous case)
                 //   "*" + (A)STD
                 //   "*" + (A)EXT
-                regex: /^\*([*!\/_|]*)(\d{2}|@\d{5})/,
+                regex: /^\*([\x01\x02\x03\x04*!\/_|]*)(\d{2}|@\d{5})/,
                 fn: function(m) {
                     return {
                         fgColor: WeeChatProtocol._getColorObj(m[2]),
