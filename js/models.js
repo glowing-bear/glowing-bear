@@ -4,7 +4,7 @@
  */
 var models = angular.module('weechatModels', []);
 
-models.service('models', ['$rootScope', function($rootScope) {
+models.service('models', ['$rootScope', '$filter', function($rootScope, $filter) {
     /*
      * Buffer class
      */
@@ -61,6 +61,7 @@ models.service('models', ['$rootScope', function($rootScope) {
     this.BufferLine = function(message) {
         var buffer = message['buffer'];
         var date = message['date'];
+        var shortTime = $filter('date')(date, 'HH:mm');
 
         function addClasses(textElements) {
             var typeToClassPrefixFg = {
@@ -118,6 +119,7 @@ models.service('models', ['$rootScope', function($rootScope) {
             prefix: prefix,
             content: content,
             date: date,
+            shortTime: shortTime,
             buffer: buffer,
             tags: tags_array,
             highlight: highlight,
