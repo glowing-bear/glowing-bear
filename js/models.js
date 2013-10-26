@@ -88,16 +88,7 @@ models.service('models', ['$rootScope', function($rootScope) {
                 if (textEl.attrs.name !== null) {
                     textEl.classes.push('coa-' + textEl.attrs.name);
                 }
-                var allReset = true;
                 for (var attr in textEl.attrs.override) {
-                    if (textEl.attrs.override[attr]) {
-                        allReset = false;
-                        break;
-                    }
-                }
-                if (allReset) {
-                    textEl.classes.push('a-reset');
-                } else for (var attr in textEl.attrs.override) {
                     val = textEl.attrs.override[attr];
                     if (val) {
                         textEl.classes.push('a-' + attr);

@@ -461,6 +461,7 @@
         var curBgColor = WeeChatProtocol._getDefaultColor();
         var curAttrs = WeeChatProtocol._getDefaultAttributes();
         var curSpecialToken = null;
+        var curAttrsOnlyFalseOverrides = true;
         
         return parts.map(function(p) {
             if (p.length == 0) {
@@ -527,6 +528,24 @@
             // if text is empty, don't bother returning it
             if (text.length == 0) {
                 return null;
+            }
+
+            /* As long as attributes are only false overrides, without any option
+             * name, it's safe to remove them.
+             */
+            if (curAttrsOnlyFalseOverrides && curAttrs.name === null) {
+                var allReset = true;
+                for (var attr in curAttrs.override) {
+                    if (curAttrs.override[attr]) {
+                        allReset = false;
+                        break;
+                    }
+                }
+                if (allReset) {
+                    curAttrs.override = {};
+                } else {
+                    curAttrsOnlyFalseOverrides = false;
+                }
             }
 
             // parsed text element
