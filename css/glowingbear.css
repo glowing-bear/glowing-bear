@@ -204,17 +204,19 @@ input[type=text], input[type=password], .badge {
     height: 99%;
     overflow-y: auto;
     margin-left: 14%;    /* sidebar */
-    margin-right: 100px; /* nicklist */
     width: auto;
     top: 25px; /* topbar */
     padding-bottom: 10px;
+}
+.withnicklist {
+    margin-right: 100px !important; /* nicklist */
 }
 #bufferlines .btn {
     font-family: sans-serif;
 }
 
 .navbar-fixed-bottom {
-    margin: 0 105px 0 14%;
+    margin: 0 5px 0 14%;
 }
 .navbar-inverse {
     background-color: #181818;

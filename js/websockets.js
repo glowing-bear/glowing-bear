@@ -458,7 +458,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Save setting for displaying nicklist
     $store.bind($scope, "nonicklist", false); 
 
-
     $scope.setActiveBuffer = function(key) {
         models.setActiveBuffer(key);
     };

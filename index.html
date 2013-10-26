@@ -223,7 +223,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
           </li>
         </ul>
       </div>
-      <div id="bufferlines">
+      <div id="bufferlines" ng-class="{'withnicklist': nonicklist==false}">
         <div id="nicklist" ng-hide="nonicklist" class="vertical-line-left">
           <ul class="nicklistgroup list-unstyled" ng-repeat="group in activeBuffer().nicklist | toArray">
             <li class="" ng-repeat="nick in group.nicks">
@@ -266,7 +266,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
       <div class="push"></div>
     </div>
     <div id="footer" ng-show="connected">
-      <div class="navbar navbar-inverse navbar-fixed-bottom">
+      <div class="navbar navbar-inverse navbar-fixed-bottom" ng-class="{'withnicklist': nonicklist==false}">
         <form class="form form-horizontal" ng-submit="sendMessage()">
           <div class="input-group">
             <input id="sendMessage" type="text" class="form-control" autocomplete="off" ng-model="command" autofocus>
