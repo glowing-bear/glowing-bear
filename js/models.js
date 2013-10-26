@@ -42,8 +42,37 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         /*
          * Adds a nick to nicklist
          */
-        var addNick = function(nick) {
+        var addNick = function(group, nick) {
+            nicklist[group].nicks.push(nick);
         }
+        /*
+         * Deletes a nick from nicklist
+         */
+        var delNick = function(group, nick) {
+            var group = nicklist[group];
+            group.nicks = _.filter(group.nicks, function(n) { return n.name != nick.name});
+            /*
+            for(i in group.nicks) {
+                if(group.nicks[i].name == nick.name) {
+                    delete group.nicks[i];
+                    break;
+                }
+            }
+            */
+        }
+        /*
+         * Updates a nick in nicklist
+         */
+        var updateNick = function(group, nick) {
+            var group = nicklist[group];
+            for(i in group.nicks) {
+                if(group.nicks[i].name == nick.name) {
+                    group.nicks[i] = nick;
+                    break;
+                }
+            }
+        }
+
 
         return {
             id: pointer,
@@ -58,7 +87,10 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             notification: notification,
             localvars: local_variables,
             notify: notify,
-            nicklist: nicklist
+            nicklist: nicklist,
+            addNick: addNick,
+            delNick: delNick,
+            updateNick: updateNick
         }
 
     }

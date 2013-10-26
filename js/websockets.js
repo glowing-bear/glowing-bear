@@ -142,30 +142,21 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
             var buffer = models.getBuffer(n.pointers[0]);
             var d = n['_diff'];
             if(n.group == 1) {
-                group = buffer.nicklist[n.name];
+                group = n.name;
                 if(group==undefined) {
                     var g = new models.NickGroup(n);
                     buffer.nicklist[group] = g;
-                    group = buffer.nicklist[g.name];
+                    group = g.name;
                 }
             }
-            if(d == 43) { // +
+            else {
                 var nick = new models.Nick(n);
-                group.nicks.push(nick);
-            }else if (d == 45) { // -
-                for(i in group.nicks) {
-                    if(group.nicks[i].name == n.name) {
-                        delete group.nicks[i];
-                        break;
-                    }
-                }
-            }else if (d == 42) { // *
-                var nick = new models.Nick(n);
-                for(i in group.nicks) {
-                    if(group.nicks[i].name == n.name) {
-                        group.nicks[i] = n;
-                        break;
-                    }
+                if(d == 43) { // +
+                    buffer.addNick(group, nick);
+                }else if (d == 45) { // -
+                    buffer.delNick(group, nick);
+                }else if (d == 42) { // *
+                    buffer.updateNick(group, nick);
                 }
             }
         });
