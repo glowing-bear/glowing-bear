@@ -221,7 +221,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
      * @param messages list of messages
      * @returns a promise
      */
-    var doSendAllWithCallback = function(messages) {
+    var sendAll = function(messages) {
         var promises = [];
         for(i in messages) {
             var promise = send(messages[i]);
@@ -256,7 +256,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
              * Send all the initialization commands
              * and resolve them as a single promise.
              */
-            doSendAllWithCallback([
+            sendAll([
                 weeChat.Protocol.formatInfo({
                     name: 'version',
                 }),
