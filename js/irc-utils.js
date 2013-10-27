@@ -70,14 +70,18 @@ var IrcUtils = {
      * @param caretPos Current caret position (0 means before the first character)
      * @param iterCandidate Current iteration candidate (null if not iterating)
      * @param nickList Array of current nicks sorted alphabetically
+     * @param suf Custom suffix (at least one character, escaped for regex)
      * @return Object with following properties:
      *      text: new complete replacement text
      *      caretPos: new caret position within new text
      *      foundNick: completed nick (or null if not possible)
      *      iterCandidate: current iterating candidate
      */
-    completeNick: function(text, caretPos, iterCandidate, nickList) {
+    completeNick: function(text, caretPos, iterCandidate, nickList, suf) {
         var doIterate = (iterCandidate !== null);
+        if (suf === null) {
+            suf = ':';
+        }
 
         // text before and after caret
         var beforeCaret = text.substring(0, caretPos);
@@ -92,12 +96,12 @@ var IrcUtils = {
         };
 
         // iterating nicks at the beginning?
-        var m = beforeCaret.match(/^([a-zA-Z0-9_\\\[\]{}^`|-]+): $/);
+        var m = beforeCaret.match(new RegExp('^([a-zA-Z0-9_\\\\\\[\\]{}^`|-]+)' + suf + ' $'));
         if (m) {
             if (doIterate) {
                 // try iterating
                 var newNick = IrcUtils._nextNick(iterCandidate, m[1], nickList);
-                beforeCaret = newNick + ': ';
+                beforeCaret = newNick + suf + ' ';
                 return {
                     text: beforeCaret + afterCaret,
                     caretPos: beforeCaret.length,
@@ -119,7 +123,7 @@ var IrcUtils = {
                 // no match
                 return ret;
             }
-            beforeCaret = newNick + ': ';
+            beforeCaret = newNick + suf + ' ';
             if (afterCaret[0] == ' ') {
                 // swallow first space after caret if any
                 afterCaret = afterCaret.substring(1);

@@ -595,7 +595,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         // complete nick
         var nickComp = IrcUtils.completeNick(inputText, caretPos,
-            $rootScope.iterCandidate, flatNickList);
+            $rootScope.iterCandidate, flatNickList, ':');
 
         // remember iteration candidate
         $rootScope.iterCandidate = nickComp.iterCandidate;
