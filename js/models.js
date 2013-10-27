@@ -168,7 +168,39 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
 
         }
 
-    }    
+    }
+
+    function nickGetColorClasses(nickMsg, propName) {
+        if (propName in nickMsg && nickMsg[propName] && nickMsg[propName].length > 0) {
+            var color = nickMsg[propName];
+            if (color.match(/^weechat/)) {
+                // color option
+                var colorName = color.match(/[a-zA-Z0-9_]+$/)[0];
+                return [
+                    'cof-' + colorName,
+                    'cob-' + colorName,
+                    'coa-' + colorName
+                ];
+            } else if (color.match(/^[a-zA-Z]+$/)) {
+                // WeeChat color name
+                return [
+                    'cwf-' + color
+                ];
+            }
+        }
+
+        return [
+            'cwf-default'
+        ];
+    }
+
+    function nickGetClasses(nickMsg) {
+        return {
+            'name': nickGetColorClasses(nickMsg, 'color'),
+            'prefix': nickGetColorClasses(nickMsg, 'prefix_color')
+        };
+    }
+
     /*
      * Nick class
      */
@@ -176,17 +208,14 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var prefix = message['prefix'];
         var visible = message['visible'];
         var name = message['name'];
-        /* TODO translate color to CSS value */
-        var prefix_color = message['prefix_color'];
-        /* TODO translate color to CSS value */
-        var color = message['color'];
+        var colorClasses = nickGetClasses(message);
 
         return {
             prefix: prefix,
             visible: visible,
             name: name,
-            prefix_color: prefix_color,
-            color: color
+            prefixClasses: colorClasses.prefix,
+            nameClasses: colorClasses.name
         }
     }
     /*

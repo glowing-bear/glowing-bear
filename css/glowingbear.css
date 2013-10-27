@@ -192,6 +192,16 @@ input[type=text], input[type=password], .badge {
     padding: 0;
     margin: 0;
 }
+#nicklist li,
+#nicklist a {
+    display: block;
+}
+#nicklist a {
+    text-decoration: none;
+}
+#nicklist a:hover {
+    background: #3b3b3b;
+}
 
 #connection-infos {
     float: left;
