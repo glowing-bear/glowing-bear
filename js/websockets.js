@@ -196,7 +196,11 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
     var callbacks = {}
     var currentCallBackId = 0;
 
-    var createCallback = function(message) {
+    /*
+     * Create a callback, adds it to the callback list
+     * and return it.
+     */
+    var createCallback = function() {
         var defer = $q.defer();
         callbacks[++currentCallBackId] = {
             time: new Date,
@@ -209,6 +213,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
     /*
      * Fails every currently subscribed callback for the
      * given reason
+     *
      * @param reason reason for failure
      */
     failCallbacks = function(reason) {
@@ -218,6 +223,12 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
 
     }
 
+    /* Send a message to the websocket and returns a promise.
+     * See: http://docs.angularjs.org/api/ng.$q
+     *
+     * @param message message to send
+     * @returns a promise
+     */
     var send = function(message) {
         message.replace(/[\r\n]+$/g, "").split("\n");
         var cb = createCallback(message);
