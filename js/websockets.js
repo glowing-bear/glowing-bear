@@ -212,6 +212,23 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
         return cb.promise;
     }
 
+
+    /*
+     * Send all messages to the websocket and returns a promise that is resolved
+     * when all message are resolved.
+     *
+     * @param messages list of messages
+     * @returns a promise
+     */
+    var doSendAllWithCallback = function(messages) {
+        var promises = [];
+        for(i in messages) {
+            var cb = createCallback(messages[i]);
+            promises.push(cb.promise);
+        };
+        return $q.all(promises);
+    };
+
     // Sanitizes messages to be sent to the weechat relay
     var doSend = function(message) {
         msgs = message.replace(/[\r\n]+$/g, "").split("\n");
