@@ -576,7 +576,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Support different browser quirks
         var code = $event.keyCode ? $event.keyCode : $event.charCode;
 
-        if ($event.altKey && (code > 47 && code < 58)) {
+        if ($event.altKey && !$event.ctrlKey && (code > 47 && code < 58)) {
             if (code == 48) {
                 code = 58;
             }
