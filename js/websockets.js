@@ -448,7 +448,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $rootScope.$on('activeBufferChanged', function() {
         $rootScope.scrollToBottom();
-        document.getElementById('sendMessage').focus();
+
         var ab = models.getActiveBuffer();
         $rootScope.pageTitle = ab.shortName + ' | ' + ab.title;
 
@@ -540,10 +540,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $timeout(scroll, 500);
     }
 
-    $scope.sendMessage = function() {
-        connection.sendMessage($scope.command);
-        $scope.command = "";
-    };
 
     $scope.connect = function() {
         connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl);
@@ -674,69 +670,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     }
 
     $scope.handleKeyPress = function($event) {
-        // don't do anything if not connected
-        if (!$rootScope.connected) {
-            return true;
-        }
-        
-        // Support different browser quirks
-        var code = $event.keyCode ? $event.keyCode : $event.charCode;
-
-        // any other key than Tab resets nick completion iteration
-        var tmpIterCandidate = $rootScope.iterCandidate;
-        $rootScope.iterCandidate = null;
-
-        // Left Alt+[0-9] -> jump to buffer
-        if ($event.altKey && !$event.ctrlKey && (code > 47 && code < 58)) {
-            if (code == 48) {
-                code = 58;
-            }
-
-            var bufferNumber = code - 48;
-            var activeBuffer = models.getBufferByIndex(bufferNumber);
-            if (activeBuffer) {
-                models.setActiveBuffer(activeBuffer.id);
-                $event.preventDefault();
-            }
-        }
-
-        // Tab -> nick completion
-        if (code == 9 && !$event.altKey && !$event.ctrlKey) {
-            $event.preventDefault();
-            $rootScope.iterCandidate = tmpIterCandidate;
-            $rootScope.completeNick();
-            return true;
-        }
-
-        // Alt+A -> switch to buffer with activity
-        if ($event.altKey && (code == 97 || code == 65)) {
-            $event.preventDefault();
-            $rootScope.switchToActivityBuffer();
-            return true;
-        }
-
-        // Alt+L -> focus on input bar
-        if ($event.altKey && (code == 76 || code == 108)) {
-            $event.preventDefault();
-            var inputNode = document.getElementById('sendMessage');
-            inputNode.focus();
-            inputNode.setSelectionRange(inputNode.value.length, inputNode.value.length);
-            return true;
-        }
-
-        // Escape -> disconnect
-        if (code == 27) {
-            $event.preventDefault();
-            connection.disconnect();
-            return true;
-        }
-
-        // Ctrl+G -> focus on buffer filter input
-        if ($event.ctrlKey && (code == 103 || code == 71)) {
-            $event.preventDefault();
-            document.getElementById('bufferFilter').focus();
-            return true;
-        }
     };
     $scope.handleSearchBoxKey = function($event) {
         // Support different browser quirks
@@ -767,6 +700,7 @@ weechat.config(['$routeProvider',
 ]);
 
 weechat.directive('inputBar', function() {
+
     return {
 
         templateUrl: 'directives/input.html',
@@ -807,6 +741,7 @@ weechat.directive('inputBar', function() {
                 inputNode.focus();
                 inputNode.setSelectionRange(nickComp.caretPos, nickComp.caretPos);
             }
+
 
 
             // Send the message to the websocket
