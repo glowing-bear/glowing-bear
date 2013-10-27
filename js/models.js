@@ -211,7 +211,13 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
                 return [
                     'cwf-' + color
                 ];
+            } else if (color.match(/^[0-9]+$/)) {
+                // extended color
+                return [
+                    'cef-' + color
+                ];
             }
+
         }
 
         return [
