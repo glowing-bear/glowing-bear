@@ -107,7 +107,6 @@ body {
 
 input#sendMessage {
     width: 100%;
-    font-size: large;
 }
 #footer button {
     border-radius: 0;
@@ -118,7 +117,7 @@ input#sendMessage {
 input[type=text], input[type=password], .badge {
     border: 0;
     border-radius: 0;
-    color: #6e6e6e;
+    color: #ccc;
     box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.8) inset;
     background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.3);
 }
@@ -205,8 +204,11 @@ input[type=text], input[type=password], .badge {
     min-height: 100%; 
 }
 
-#bufferlines {
+.monospace {
     font-family: 'Terminus', 'Consolas', 'Monaco', 'Inconsolata', 'Ubuntu Mono', monospace;
+}
+
+#bufferlines {
     position: relative;
     height: 99%;
     overflow-y: auto;

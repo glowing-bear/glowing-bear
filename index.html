@@ -49,14 +49,14 @@
                   <div class="form-group">
                     <label class="control-label" for="host">WeeChat relay hostname and port number</label>
                     <div class="input-group">
-                      <input type="text" class="form-control" id="host" ng-model="host" placeholder="Address">
-                      <input type="text" class="form-control" id="port" ng-model="port" placeholder="9001">
+                      <input type="text" class="form-control monospace" id="host" ng-model="host" placeholder="Address">
+                      <input type="text" class="form-control monospace" id="port" ng-model="port" placeholder="9001">
                     </div>
                     <div class="alert alert-danger" ng-show="passwordError">
                       Error wrong password
                     </div>
                     <label class="control-label" for="password">WeeChat relay password</label> 
-                    <input type="password" class="form-control" id="password" ng-model="password" placeholder="Password">
+                    <input type="password" class="form-control monospace" id="password" ng-model="password" placeholder="Password">
                     <div class="checkbox">
                       <label>
                           <input type="checkbox" class="checkbox" id="savepassword" ng-model="savepassword">
@@ -72,7 +72,7 @@
                   </div>
                   <div class="form-group">
                     <label class="control-label" for="port">Lines</label>
-                    <input type="text" class="form-control" id="lines" ng-model="lines" placeholder="40">
+                    <input type="text" class="form-control monospace" id="lines" ng-model="lines" placeholder="40">
                     <p class="help-block">Enter number of lines to sync from WeeChat on connect</p>
                   </div>
                   <button class="btn btn-lg btn-primary" ng-click="connect()">Connect <i class="glyphicon glyphicon-chevron-right"></i></button>
@@ -212,7 +212,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
         <ul class="nav nav-pills nav-stacked">
           <li class="bufferfilter">
             <form role="form">
-              <input class="form-control" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="Search">
+              <input class="form-control monospace" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="Search">
             </form>
           </li>
           <li class="buffer" ng-class="{'active': content.active }" ng-repeat="(key, content) in buffers | toArray | filter:{fullName:search} | filter:hasUnread | orderBy:'content.number':true">
@@ -224,7 +224,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
           </li>
         </ul>
       </div>
-      <div id="bufferlines" ng-class="{'withnicklist': nonicklist==false}">
+      <div id="bufferlines" class="monospace" ng-class="{'withnicklist': nonicklist==false}">
         <div id="nicklist" ng-hide="nonicklist" class="vertical-line-left">
           <ul class="nicklistgroup list-unstyled" ng-repeat="group in activeBuffer().nicklist">
             <li class="" ng-repeat="nick in group.nicks|orderBy:'nick.name'">
@@ -270,7 +270,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
       <div class="navbar navbar-inverse navbar-fixed-bottom" ng-class="{'withnicklist': nonicklist==false}">
         <form class="form form-horizontal" ng-submit="sendMessage()">
           <div class="input-group">
-            <input id="sendMessage" type="text" class="form-control" autocomplete="off" ng-model="command" autofocus>
+            <input id="sendMessage" type="text" class="form-control monospace" autocomplete="off" ng-model="command" autofocus>
             <span class="input-group-btn">
               <button class="btn btn-default btn-primary">Send</button>
             </span>
