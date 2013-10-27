@@ -666,7 +666,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $rootScope.iterCandidate = nickComp.iterCandidate;
 
         // update current input
-        inputNode.value = nickComp.text;
+        $scope.command = nickComp.text;
 
         // update current caret position
         inputNode.focus();
