@@ -230,11 +230,6 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
         return $q.all(promises);
     };
 
-    // Sanitizes messages to be sent to the weechat relay
-    var doSend = function(message) {
-        send(message);
-    }
-
     // Takes care of the connection and websocket hooks
     var connect = function (host, port, passwd, ssl) {
         var proto = ssl ? 'wss':'ws';
@@ -247,7 +242,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
 
             // First message must be an init request
             // with the password
-            doSend(weeChat.Protocol.formatInit({
+            send(weeChat.Protocol.formatInit({
                     password: passwd,
                     compression: 'off'
             }));
@@ -302,7 +297,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
                     handlers.handleLineInfo(lineinfo);
                     handlers.handleHotlistInfo(hotlist)
                     handlers.handleNicklist(nicklist)
-                    doSend(weeChat.Protocol.formatSync({}));
+                    send(weeChat.Protocol.formatSync({}));
                     $log.info("Synced");
 
                     // here we are really connected !
@@ -372,14 +367,14 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
     }
 
     var sendMessage = function(message) {
-        doSend(weeChat.Protocol.formatInput({
+        send(weeChat.Protocol.formatInput({
             buffer: models.getActiveBuffer()['fullName'],
             data: message
         }));
     }
 
     var sendCoreCommand = function(command) {
-        doSend(weeChat.Protocol.formatInput({
+        send(weeChat.Protocol.formatInput({
             buffer: 'core.weechat',
             data: command
         }));
@@ -387,7 +382,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
 
 
     return {
-        send: doSend,
+        send: send,
         connect: connect,
         disconnect: disconnect,
         sendMessage: sendMessage,
