@@ -599,6 +599,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
         // Handle ctrl-g
         if($event.ctrlKey && (code == 103 || code == 71)) {
+            $event.preventDefault();
             document.getElementById('bufferFilter').focus();
             return true;
         }
