@@ -591,7 +591,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 flatNickList.push(nickObj.name);
             });
         });
-        flatNickList.sort();
 
         // complete nick
         var nickComp = IrcUtils.completeNick(inputText, caretPos,
