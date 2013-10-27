@@ -18,6 +18,8 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var local_variables = message['local_vars'];
         var notify = 3 // Default 3 == message
         var lines = []
+        var nicklist = {} 
+        var flatnicklist = []
         var active = false
         var notification = 0 
         var unread = 0
@@ -38,6 +40,64 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             lines.push(line);
         }
 
+        /*
+         * Adds a nick to nicklist
+         */
+        var addNick = function(group, nick) {
+            nicklist[group].nicks.push(nick);
+            flatnicklist = getFlatNicklist();
+        }
+        /*
+         * Deletes a nick from nicklist
+         */
+        var delNick = function(group, nick) {
+            var group = nicklist[group];
+            group.nicks = _.filter(group.nicks, function(n) { return n.name != nick.name});
+            flatnicklist = getFlatNicklist();
+            /*
+            for(i in group.nicks) {
+                if(group.nicks[i].name == nick.name) {
+                    delete group.nicks[i];
+                    break;
+                }
+            }
+            */
+        }
+        /*
+         * Updates a nick in nicklist
+         */
+        var updateNick = function(group, nick) {
+            var group = nicklist[group];
+            for(i in group.nicks) {
+                if(group.nicks[i].name == nick.name) {
+                    group.nicks[i] = nick;
+                    break;
+                }
+            }
+            flatnicklist = getFlatNicklist();
+        }
+
+        /*
+         * Maintain a cached version of a flat sorted nicklist
+         * 
+         */
+        var getFlatNicklist = function() {
+            var newlist = [];
+            _.each(nicklist, function(nickGroup) {
+                _.each(nickGroup.nicks, function(nickObj) {
+                    newlist.push(nickObj.name);
+                });
+            }); 
+            newlist.sort(function(a, b) {
+                return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
+            });
+            return newlist;
+        }
+
+        var flatNicklist = function() {
+            return flatnicklist;
+        }
+
         return {
             id: pointer,
             fullName: fullName,
@@ -51,6 +111,11 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             notification: notification,
             localvars: local_variables,
             notify: notify,
+            nicklist: nicklist,
+            addNick: addNick,
+            delNick: delNick,
+            updateNick: updateNick,
+            flatNicklist: flatNicklist
         }
 
     }
@@ -128,8 +193,77 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
 
         }
 
-    }    
+    }
 
+    function nickGetColorClasses(nickMsg, propName) {
+        if (propName in nickMsg && nickMsg[propName] && nickMsg[propName].length > 0) {
+            var color = nickMsg[propName];
+            if (color.match(/^weechat/)) {
+                // color option
+                var colorName = color.match(/[a-zA-Z0-9_]+$/)[0];
+                return [
+                    'cof-' + colorName,
+                    'cob-' + colorName,
+                    'coa-' + colorName
+                ];
+            } else if (color.match(/^[a-zA-Z]+$/)) {
+                // WeeChat color name
+                return [
+                    'cwf-' + color
+                ];
+            } else if (color.match(/^[0-9]+$/)) {
+                // extended color
+                return [
+                    'cef-' + color
+                ];
+            }
+
+        }
+
+        return [
+            'cwf-default'
+        ];
+    }
+
+    function nickGetClasses(nickMsg) {
+        return {
+            'name': nickGetColorClasses(nickMsg, 'color'),
+            'prefix': nickGetColorClasses(nickMsg, 'prefix_color')
+        };
+    }
+
+    /*
+     * Nick class
+     */
+    this.Nick = function(message) {
+        var prefix = message['prefix'];
+        var visible = message['visible'];
+        var name = message['name'];
+        var colorClasses = nickGetClasses(message);
+
+        return {
+            prefix: prefix,
+            visible: visible,
+            name: name,
+            prefixClasses: colorClasses.prefix,
+            nameClasses: colorClasses.name
+        }
+    }
+    /*
+     * Nicklist Group class
+     */
+    this.NickGroup = function(message) {
+        var name = message['name'];
+        var visible = message['visible'];
+        var nicks = [];
+
+        return {
+            name: name,
+            visible: visible,
+            nicks: nicks
+        }
+    }
+          
 
     var BufferList = []
     activeBuffer = null;

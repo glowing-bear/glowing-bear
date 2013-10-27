@@ -114,6 +114,54 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         });
     }
 
+    /*
+     * Handle nicklist event
+     */
+    var handleNicklist = function(message) {
+        var nicklist = message['objects'][0]['content'];
+        var group = 'root';
+        nicklist.forEach(function(n) {
+            var buffer = models.getBuffer(n.pointers[0]);
+            if(n.group == 1) {
+                var g = new models.NickGroup(n);
+                group = g.name;
+                buffer.nicklist[group] = g;
+            }else{
+                var nick = new models.Nick(n);
+                buffer.addNick(group, nick);
+            }
+        });
+    }
+    /*
+     * Handle nicklist diff event
+     */
+    var handleNicklistDiff = function(message) {
+        var nicklist = message['objects'][0]['content'];
+        var group;
+        nicklist.forEach(function(n) {
+            var buffer = models.getBuffer(n.pointers[0]);
+            var d = n['_diff'];
+            if(n.group == 1) {
+                group = n.name;
+                if(group==undefined) {
+                    var g = new models.NickGroup(n);
+                    buffer.nicklist[group] = g;
+                    group = g.name;
+                }
+            }
+            else {
+                var nick = new models.Nick(n);
+                if(d == 43) { // +
+                    buffer.addNick(group, nick);
+                }else if (d == 45) { // -
+                    buffer.delNick(group, nick);
+                }else if (d == 42) { // *
+                    buffer.updateNick(group, nick);
+                }
+            }
+        });
+    }
+
     var handleEvent = function(event) {
 
         if (_.has(eventHandlers, event['id'])) {
@@ -127,13 +175,16 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         _buffer_line_added: handleBufferLineAdded,
         _buffer_opened: handleBufferOpened,
         _buffer_title_changed: handleBufferTitleChanged,
-        _buffer_renamed: handleBufferRenamed
+        _buffer_renamed: handleBufferRenamed,
+        _nicklist: handleNicklist,
+        _nicklist_diff: handleNicklistDiff
     }
 
     return {
         handleEvent: handleEvent,
         handleLineInfo: handleLineInfo,
-        handleHotlistInfo: handleHotlistInfo
+        handleHotlistInfo: handleHotlistInfo,
+        handleNicklist: handleNicklist
     }
 
 }]);
@@ -238,6 +289,12 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
                         handlers.handleHotlistInfo(hdata)
                     });
                 }).then(function() {
+                    $log.info("Requesting nicklist");
+                    doSendWithCallback(weeChat.Protocol.formatNicklist({
+                    })).then(function(nicklistdata) {
+                        handlers.handleNicklist(nicklistdata)
+                    });
+                }).then(function() {
                     doSend(weeChat.Protocol.formatSync({}));
                     $log.info("Synced");
 
@@ -313,8 +370,6 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
 }]);
 
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', function ($rootScope, $scope, $store, $timeout, $log, models, connection, testService) {
-
-
     if(window.Notification) {
         // Request notification permission
         Notification.requestPermission(function (status) {
@@ -361,6 +416,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         // Clear search term on buffer change
         $scope.search = '';
+        
+        // Check if we should show nicklist or not
+        $scope.showNicklist = $scope.updateShowNicklist();
     });
     $rootScope.$on('notificationChanged', function() {
         var notifications = _.reduce(models.model.buffers, function(memo, num) { return (memo||0) + num.notification;});
@@ -389,6 +447,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $rootScope.buffer = []
 
+    $rootScope.iterCandidate = null;
+
     $store.bind($scope, "host", "localhost");
     $store.bind($scope, "port", "9001");
     $store.bind($scope, "proto", "weechat");
@@ -405,7 +465,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "notimestamp", false);
     // Save setting for syncing hotlist
     $store.bind($scope, "hotlistsync", true);
-
+    // Save setting for displaying nicklist
+    $store.bind($scope, "nonicklist", false); 
 
     $scope.setActiveBuffer = function(key) {
         models.setActiveBuffer(key);
@@ -500,6 +561,30 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         return true;
     };
 
+    // Watch model and update show setting when it changes
+    $scope.$watch('nonicklist', function() {
+        $scope.showNicklist = $scope.updateShowNicklist();
+    });
+    $scope.showNicklist = false;
+    // Utility function that template can use to check if nicklist should 
+    // be displayed for current buffer or not
+    // is called on buffer switch
+    $scope.updateShowNicklist = function() {
+        var ab = models.getActiveBuffer();
+        if(!ab) {
+            return false;
+        }
+        // Check if option no nicklist is set
+        if($scope.nonicklist) {
+            return false;
+        }
+        // Use flat nicklist to check if empty
+        if(ab.flatNicklist().length === 0) { 
+            return false;
+        }
+        return true;
+    }
+
     $rootScope.switchToActivityBuffer = function() {
         // Find next buffer with activity and switch to it
         for(i in $scope.buffers) {
@@ -514,11 +599,49 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     }
 
+    $rootScope.completeNick = function() {
+        // input DOM node
+        var inputNode = document.getElementById('sendMessage');
+
+        // get current input
+        var inputText = inputNode.value;
+
+        // get current caret position
+        var caretPos = inputNode.selectionStart;
+
+        // create flat array of nicks
+        var activeBuffer = models.getActiveBuffer();
+
+        // complete nick
+        var nickComp = IrcUtils.completeNick(inputText, caretPos,
+            $rootScope.iterCandidate, activeBuffer.flatNicklist(), ':');
+
+        // remember iteration candidate
+        $rootScope.iterCandidate = nickComp.iterCandidate;
+
+        // update current input
+        inputNode.value = nickComp.text;
+
+        // update current caret position
+        inputNode.focus();
+        inputNode.setSelectionRange(nickComp.caretPos, nickComp.caretPos);
+    }
+
     $scope.handleKeyPress = function($event) {
+        // don't do anything if not connected
+        if (!$rootScope.connected) {
+            return true;
+        }
+        
         // Support different browser quirks
         var code = $event.keyCode ? $event.keyCode : $event.charCode;
 
-        if ($event.altKey && (code > 47 && code < 58)) {
+        // any other key than Tab resets nick completion iteration
+        var tmpIterCandidate = $rootScope.iterCandidate;
+        $rootScope.iterCandidate = null;
+
+        // Left Alt+[0-9] -> jump to buffer
+        if ($event.altKey && !$event.ctrlKey && (code > 47 && code < 58)) {
             if (code == 48) {
                 code = 58;
             }
@@ -531,16 +654,40 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             }
         }
 
-        //log('keypress', $event.charCode, $event.altKey);
+        // Tab -> nick completion
+        if (code == 9 && !$event.altKey && !$event.ctrlKey) {
+            $event.preventDefault();
+            $rootScope.iterCandidate = tmpIterCandidate;
+            $rootScope.completeNick();
+            return true;
+        }
 
-        // Handle alt-a
-        if($event.altKey && (code == 97 || code == 65)) {
+        // Alt+A -> switch to buffer with activity
+        if ($event.altKey && (code == 97 || code == 65)) {
             $event.preventDefault();
             $rootScope.switchToActivityBuffer();
             return true;
         }
-        // Handle ctrl-g
-        if($event.ctrlKey && (code == 103 || code == 71)) {
+
+        // Alt+L -> focus on input bar
+        if ($event.altKey && (code == 76 || code == 108)) {
+            $event.preventDefault();
+            var inputNode = document.getElementById('sendMessage');
+            inputNode.focus();
+            inputNode.setSelectionRange(inputNode.value.length, inputNode.value.length);
+            return true;
+        }
+
+        // Escape -> disconnect
+        if (code == 27) {
+            $event.preventDefault();
+            connection.disconnect();
+            return true;
+        }
+
+        // Ctrl+G -> focus on buffer filter input
+        if ($event.ctrlKey && (code == 103 || code == 71)) {
+            $event.preventDefault();
             document.getElementById('bufferFilter').focus();
             return true;
         }

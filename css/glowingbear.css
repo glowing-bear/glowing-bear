@@ -44,7 +44,7 @@ body {
 }
 
 table {
-  width: 100%;
+    width: 100%;
 }
 tr {
     line-height: 100%;
@@ -58,7 +58,14 @@ td.time {
 }
 
 .repeated-time {
-    display: none;
+}
+.repeated-time .cof-chat_time,
+.repeated-time .cof-chat_time_delimiters {
+    color: #333;
+}
+.repeated-time .cob-chat_time,
+.repeated-time .cob-chat_time_delimiters {
+    background-color: transparent;
 }
 td.prefix {
     text-align: right;
@@ -74,8 +81,8 @@ td.message {
     padding-left: 5px;
 }
 hr {
-  margin: 0;
-  border-color: darkgreen;
+    margin: 0;
+    border-color: darkgreen;
 }
 .text {
     white-space: pre-wrap;
@@ -100,7 +107,6 @@ body {
 
 input#sendMessage {
     width: 100%;
-    font-size: large;
 }
 #footer button {
     border-radius: 0;
@@ -111,7 +117,7 @@ input#sendMessage {
 input[type=text], input[type=password], .badge {
     border: 0;
     border-radius: 0;
-    color: #6e6e6e;
+    color: #ccc;
     box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.8) inset;
     background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.3);
 }
@@ -124,30 +130,30 @@ input[type=text], input[type=password], .badge {
     line-height: 25px;
     white-space: nowrap;
 }
-    #topbar .brand {
-        float: left;
+#topbar .brand {
+    float: left;
+    height: 25px;
+    padding-left: 5px;
+}
+    #topbar .brand img {
         height: 25px;
-        padding-left: 5px;
     }
-        #topbar .brand img {
-            height: 25px;
-        }
-    #topbar .title {
-        position: fixed;
-        left: 14%;
-        overflow: hidden;
-    }
-    #topbar .actions {
-        margin-left: 5px;
-        padding-left: 5px;
-        position: fixed;
-        right: 0;
-        background: #282828;
-    }
-    #topbar .dropdown-menu form {
-        padding-left: 6px;
-        padding-right: 6px;
-    }
+#topbar .title {
+    position: fixed;
+    left: 14%;
+    overflow: hidden;
+}
+#topbar .actions {
+    margin-left: 5px;
+    padding-left: 5px;
+    position: fixed;
+    right: 0;
+    background: #282828;
+}
+#topbar .dropdown-menu form {
+    padding-left: 6px;
+    padding-right: 6px;
+}
 
 #topbar, #sidebar, .panel, .dropdown-menu {
     background: #282828;
@@ -162,13 +168,50 @@ input[type=text], input[type=password], .badge {
     padding-top: 35px; /* topbar */
     font-size: smaller;
   }
-    #sidebar form {
-    }
+#sidebar form {
+}
 
-    #sidebar .badge {
-        border-radius: 0;
-        margin-right: -15px;
-    }
+#sidebar .badge {
+    border-radius: 0;
+    margin-right: -15px;
+}
+#nicklist {
+    position: fixed;
+    width: 100px;
+    min-height: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    right: 0;
+    top: 0;
+    padding-top: 25px; 
+    padding-left: 5px;
+    padding-bottom: 35px;
+}
+#nicklist ul {
+    padding: 0;
+    margin: 0;
+}
+#nicklist li,
+#nicklist a {
+    display: block;
+}
+#nicklist a {
+    text-decoration: none;
+}
+#nicklist a:hover {
+    background: #3b3b3b;
+}
+
+#connection-infos {
+    float: left;
+    max-width: 10%;
+    padding-left: 5px;
+    font-size: 12px;
+    color: #aaa;
+    overflow: hidden;
+}
+
 .nav-pills > li > a {
     border-radius: 0;
     color: #ddd;
@@ -181,15 +224,21 @@ input[type=text], input[type=password], .badge {
     min-height: 100%; 
 }
 
-#bufferlines {
+.monospace {
     font-family: 'Terminus', 'Consolas', 'Monaco', 'Inconsolata', 'Ubuntu Mono', monospace;
+}
+
+#bufferlines {
     position: relative;
     height: 99%;
     overflow-y: auto;
-    margin-left: 14%;
+    margin-left: 14%;    /* sidebar */
     width: auto;
     top: 25px; /* topbar */
     padding-bottom: 10px;
+}
+.withnicklist {
+    margin-right: 100px !important; /* nicklist */
 }
 #bufferlines .btn {
     font-family: sans-serif;
@@ -202,7 +251,7 @@ input[type=text], input[type=password], .badge {
     background-color: #181818;
 }
 @media (max-width: 968px) {
-    #sidebar, #bufferlines {
+    #sidebar, #bufferlines, #nicklist {
         position: relative;
         min-height: 0;
         margin-left: 0;
@@ -210,7 +259,7 @@ input[type=text], input[type=password], .badge {
         max-width: 100%;
         border: 0;
     }
-    #sidebar {
+    #sidebar, #nicklist {
         width: 100%;
         text-align: center;
     }
@@ -233,50 +282,6 @@ input[type=text], input[type=password], .badge {
 .alert-danger {
   border-color: #121212;
   color: black;
-}
-
-.color-28 {
-    color: greenyellow;
-}
-
-.color-00 {
-    color: coral;
-}
-
-.color-yellow {
-    color: yellow;
-}
-
-.color-dark-red {
-    color: darkred;
-}
-
-.color-dark-green {
-    color: green;
-}
-
-.color-dark-blue {
-    color: darkblue;
-}
-
-.color-dark-gray {
-    color: gray;
-}
-
-.color-gray {
-    color: lightgray;u
-}
-
-.color-brown {
-    color: brown;
-}
-
-.color-cyan {
-    color: cyan;
-}
-
-.color-dark-cyan {
-    color: darkcyan;
 }
 
 li.notification {
