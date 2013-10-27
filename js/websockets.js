@@ -609,6 +609,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     }
 
     $scope.handleKeyPress = function($event) {
+        // don't do anything if not connected
+        if (!$rootScope.connected) {
+            return true;
+        }
+        
         // Support different browser quirks
         var code = $event.keyCode ? $event.keyCode : $event.charCode;
 
