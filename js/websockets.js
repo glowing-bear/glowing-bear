@@ -234,10 +234,6 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
                     compression: 'off'
             }));
 
-            // password is bad until the next message
-            // received proven the otherwise.
-            $rootScope.passwordError = true;
-
             // We are asking for the weechat version here
             // to avoid two problems :
             //  - If the version is below 0.4.2, we will have a bug
@@ -249,13 +245,16 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
             })).then(function(message) {
                 // If we have received this message
                 // that means the user password is good.
-                $rootScope.passwordError = false;
 
                 // Parse the version info message to retrieve
                 // the current weechat version.
                 var version = message['objects'][0]['content']['value'];
                 $rootScope.version = version;
                 $log.info(version);
+            }, function(error) {
+                // If the first command fails, it means that we do not have the
+                // proper password
+                $rootScope.passwordError = true;
             }).then(function() {
                 doSendWithCallback(weeChat.Protocol.formatHdata({
                     path: 'buffer:gui_buffers(*)',
@@ -320,9 +319,6 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
             $log.info("Disconnected from relay");
             $rootScope.connected = false;
             failCallbacks('disconnection');
-            if ($rootScope.passwordError == true) {
-                $log.info("wrong password");
-            }
             $rootScope.$apply();
         }
 
@@ -342,7 +338,6 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
         websocket.onerror = function (evt) {
             // on error it means the connection problem
             // come from the relay not from the password.
-            $rootScope.passwordError = false;
 
             if (evt.type == "error" && websocket.readyState != 1) {
                 failCallbacks('error');
