@@ -206,7 +206,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
         return defer;
     }
 
-    var doSendWithCallback = function(message) {
+    var send = function(message) {
         message.replace(/[\r\n]+$/g, "").split("\n");
         var cb = createCallback(message);
         websocket.send(callBackIdString + " " + message);
@@ -224,7 +224,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
     var doSendAllWithCallback = function(messages) {
         var promises = [];
         for(i in messages) {
-            var promise = doSendWithCallback(messages[i]);
+            var promise = send(messages[i]);
             promises.push(promise);
         };
         return $q.all(promises);
@@ -232,7 +232,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
 
     // Sanitizes messages to be sent to the weechat relay
     var doSend = function(message) {
-        doSendWithCallback(message);
+        send(message);
     }
 
     // Takes care of the connection and websocket hooks
