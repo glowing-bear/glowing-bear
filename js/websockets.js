@@ -650,6 +650,22 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             return true;
         }
 
+        // Alt+L -> focus on input bar
+        if ($event.altKey && (code == 76 || code == 108)) {
+            $event.preventDefault();
+            var inputNode = document.getElementById('sendMessage');
+            inputNode.focus();
+            inputNode.setSelectionRange(inputNode.value.length, inputNode.value.length);
+            return true;
+        }
+
+        // Escape -> disconnect
+        if (code == 27) {
+            $event.preventDefault();
+            connection.disconnect();
+            return true;
+        }
+
         // Ctrl+G -> focus on buffer filter input
         if ($event.ctrlKey && (code == 103 || code == 71)) {
             $event.preventDefault();
