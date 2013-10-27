@@ -196,7 +196,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
     var callbacks = {}
     var currentCallBackId = 0;
 
-    var doSendWithCallback = function(message) {
+    var createCallback = function(message) {
         var defer = $q.defer();
         callbacks[++currentCallBackId] = {
             time: new Date,
@@ -204,7 +204,12 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
         }
         callBackIdString = "(" + currentCallBackId + ")";
         doSend(callBackIdString + " " + message);
-        return defer.promise;
+        return defer;
+    }
+
+    var doSendWithCallback = function(message) {
+        var cb = createCallback(message);
+        return cb.promise;
     }
 
     // Sanitizes messages to be sent to the weechat relay
