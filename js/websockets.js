@@ -523,8 +523,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     }
 
     $scope.sendMessage = function() {
-        connection.sendMessage($scope.command);
-        $scope.command = "";
+        var inputNode = document.getElementById('sendMessage');
+
+        connection.sendMessage(inputNode.value);
+        inputNode.value = '';
     };
 
     $scope.connect = function() {
