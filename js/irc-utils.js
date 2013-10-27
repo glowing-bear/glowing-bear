@@ -4,17 +4,36 @@
 
 var IrcUtils = {
     /**
+     * Get a new version of a nick list, sorted alphabetically by lowercase nick.
+     *
+     * @param nickList Original nick list
+     * @return Nick list sorted alphabetically by lowercase nick
+     */
+    _ciSearchNickList: function(nickList) {
+        var newList = [];
+
+        nickList.forEach(function(nick) {
+            newList.push(nick);
+        });
+        newList.sort(function(a, b) {
+            return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
+        });
+
+        return newList;
+    },
+
+    /**
      * Completes a single nick.
      *
      * @param candidate What to search for
-     * @param nickList Array of current nicks sorted alphabetically
+     * @param nickList Array of current nicks sorted for case insensitive searching
      * @return Completed nick (null if not found)
      */
     _completeSingleNick: function(candidate, nickList) {
         var foundNick = null;
 
         nickList.some(function(nick) {
-            if (nick.search(candidate) == 0) {
+            if (nick.toLowerCase().search(candidate.toLowerCase()) == 0) {
                 // found!
                 foundNick = nick;
                 return true;
@@ -30,19 +49,22 @@ var IrcUtils = {
      *
      * @param iterCandidate First characters to look at
      * @param currentNick Current selected nick
-     * @param nickList Array of current nicks sorted alphabetically
+     * @param nickList Array of current nicks sorted for case insensitive searching
      * @return Next nick (may be the same)
      */
     _nextNick: function(iterCandidate, currentNick, nickList) {
         var firstInGroup = null;
         var matchingNicks = [];
         var at = null;
+        var lcIterCandidate = iterCandidate.toLowerCase();
+        var lcCurrentNick = currentNick.toLowerCase();
 
         // collect matching nicks
         for (var i = 0; i < nickList.length; ++i) {
-            if (nickList[i].search(iterCandidate) == 0) {
+            var lcNick = nickList[i].toLowerCase();
+            if (lcNick.search(lcIterCandidate) == 0) {
                 matchingNicks.push(nickList[i]);
-                if (currentNick == nickList[i]) {
+                if (lcCurrentNick == lcNick) {
                     at = matchingNicks.length - 1;
                 }
             } else if (matchingNicks.length > 0) {
@@ -69,7 +91,7 @@ var IrcUtils = {
      * @param text Plain text (no colors)
      * @param caretPos Current caret position (0 means before the first character)
      * @param iterCandidate Current iteration candidate (null if not iterating)
-     * @param nickList Array of current nicks sorted alphabetically
+     * @param nickList Array of current nicks
      * @param suf Custom suffix (at least one character, escaped for regex)
      * @return Object with following properties:
      *      text: new complete replacement text
@@ -82,6 +104,9 @@ var IrcUtils = {
         if (suf === null) {
             suf = ':';
         }
+
+        // new nick list to search in
+        var searchNickList = IrcUtils._ciSearchNickList(nickList);
 
         // text before and after caret
         var beforeCaret = text.substring(0, caretPos);
@@ -100,7 +125,7 @@ var IrcUtils = {
         if (m) {
             if (doIterate) {
                 // try iterating
-                var newNick = IrcUtils._nextNick(iterCandidate, m[1], nickList);
+                var newNick = IrcUtils._nextNick(iterCandidate, m[1], searchNickList);
                 beforeCaret = newNick + suf + ' ';
                 return {
                     text: beforeCaret + afterCaret,
@@ -118,7 +143,7 @@ var IrcUtils = {
         m = beforeCaret.match(/^([a-zA-Z0-9_\\\[\]{}^`|-]+)$/);
         if (m) {
             // try completing
-            var newNick = IrcUtils._completeSingleNick(m[1], nickList);
+            var newNick = IrcUtils._completeSingleNick(m[1], searchNickList);
             if (newNick === null) {
                 // no match
                 return ret;
@@ -141,7 +166,7 @@ var IrcUtils = {
         if (m) {
             if (doIterate) {
                 // try iterating
-                var newNick = IrcUtils._nextNick(iterCandidate, m[2], nickList);
+                var newNick = IrcUtils._nextNick(iterCandidate, m[2], searchNickList);
                 beforeCaret = m[1] + newNick + ' ';
                 return {
                     text: beforeCaret + afterCaret,
@@ -159,7 +184,7 @@ var IrcUtils = {
         m = beforeCaret.match(/^(.* )([a-zA-Z0-9_\\\[\]{}^`|-]+)$/);
         if (m) {
             // try completing
-            var newNick = IrcUtils._completeSingleNick(m[2], nickList);
+            var newNick = IrcUtils._completeSingleNick(m[2], searchNickList);
             if (newNick === null) {
                 // no match
                 return ret;
