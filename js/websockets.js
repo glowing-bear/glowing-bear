@@ -206,13 +206,24 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
         return defer;
     }
 
+    /*
+     * Fails every currently subscribed callback for the
+     * given reason
+     * @param reason reason for failure
+     */
+    failCallbacks = function(reason) {
+        for(i in callbacks) {
+            callbacks[i].cb.reject(reason);
+        }
+
+    }
+
     var send = function(message) {
         message.replace(/[\r\n]+$/g, "").split("\n");
         var cb = createCallback(message);
         websocket.send(callBackIdString + " " + message);
         return cb.promise;
     }
-
 
     /*
      * Send all messages to the websocket and returns a promise that is resolved
@@ -309,21 +320,6 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
                     $rootScope.passwordError = true;
                 }
             );
-
-
-
-
-        }
-
-        /*
-         * Fails every currently subscribed callback for the
-         * given reason
-         * @param reason reason for failure
-         */
-        failCallbacks = function(reason) {
-            for(i in callbacks) {
-                callbacks[i].cb.reject(reason);
-            }
 
         }
 
