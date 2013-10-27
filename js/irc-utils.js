@@ -68,7 +68,6 @@ var IrcUtils = {
      *
      * @param text Plain text (no colors)
      * @param caretPos Current caret position (0 means before the first character)
-     * @param doIterate True to iterate the nicks if possible
      * @param iterCandidate Current iteration candidate (null if not iterating)
      * @param nickList Array of current nicks sorted alphabetically
      * @return Object with following properties:
@@ -77,7 +76,9 @@ var IrcUtils = {
      *      foundNick: completed nick (or null if not possible)
      *      iterCandidate: current iterating candidate
      */
-    completeNick: function(text, caretPos, doIterate, iterCandidate, nickList) {
+    completeNick: function(text, caretPos, iterCandidate, nickList) {
+        var doIterate = (iterCandidate !== null);
+
         // text before and after caret
         var beforeCaret = text.substring(0, caretPos);
         var afterCaret = text.substring(caretPos);

@@ -370,8 +370,6 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
 }]);
 
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', function ($rootScope, $scope, $store, $timeout, $log, models, connection, testService) {
-
-
     if(window.Notification) {
         // Request notification permission
         Notification.requestPermission(function (status) {
@@ -445,6 +443,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $rootScope.models = models;
 
     $rootScope.buffer = []
+
+    $rootScope.iterCandidate = null;
 
     $store.bind($scope, "host", "localhost");
     $store.bind($scope, "port", "9001");
@@ -572,10 +572,51 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     }
 
+    $rootScope.completeNick = function() {
+        // input DOM node
+        var inputNode = document.getElementById('sendMessage');
+
+        // get current input
+        var inputText = inputNode.value;
+
+        // get current caret position
+        var caretPos = inputNode.selectionStart;
+
+        // create flat array of nicks
+        // TODO: compute this elsewhere since it doesn't change often
+        var activeBuffer = models.getActiveBuffer();
+        var flatNickList = [];
+        _.each(activeBuffer.nicklist, function(nickGroup) {
+            _.each(nickGroup.nicks, function(nickObj) {
+                flatNickList.push(nickObj.name);
+            });
+        });
+        flatNickList.sort();
+
+        // complete nick
+        var nickComp = IrcUtils.completeNick(inputText, caretPos,
+            $rootScope.iterCandidate, flatNickList);
+
+        // remember iteration candidate
+        $rootScope.iterCandidate = nickComp.iterCandidate;
+
+        // update current input
+        inputNode.value = nickComp.text;
+
+        // update current caret position
+        inputNode.focus();
+        inputNode.setSelectionRange(nickComp.caretPos, nickComp.caretPos);
+    }
+
     $scope.handleKeyPress = function($event) {
         // Support different browser quirks
         var code = $event.keyCode ? $event.keyCode : $event.charCode;
 
+        // any other key than Tab resets nick completion iteration
+        var tmpIterCandidate = $rootScope.iterCandidate;
+        $rootScope.iterCandidate = null;
+
+        // Left Alt+[0-9] -> jump to buffer
         if ($event.altKey && !$event.ctrlKey && (code > 47 && code < 58)) {
             if (code == 48) {
                 code = 58;
@@ -589,16 +630,23 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             }
         }
 
-        //log('keypress', $event.charCode, $event.altKey);
+        // Tab -> nick completion
+        if (code == 9 && !$event.altKey && !$event.ctrlKey) {
+            $event.preventDefault();
+            $rootScope.iterCandidate = tmpIterCandidate;
+            $rootScope.completeNick();
+            return true;
+        }
 
-        // Handle alt-a
-        if($event.altKey && (code == 97 || code == 65)) {
+        // Alt+A -> switch to buffer with activity
+        if ($event.altKey && (code == 97 || code == 65)) {
             $event.preventDefault();
             $rootScope.switchToActivityBuffer();
             return true;
         }
-        // Handle ctrl-g
-        if($event.ctrlKey && (code == 103 || code == 71)) {
+
+        // Ctrl+G -> focus on buffer filter input
+        if ($event.ctrlKey && (code == 103 || code == 71)) {
             $event.preventDefault();
             document.getElementById('bufferFilter').focus();
             return true;
