@@ -225,8 +225,8 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
           </li>
         </ul>
       </div>
-      <div id="bufferlines" class="monospace" ng-class="{'withnicklist': nonicklist==false}">
-        <div id="nicklist" ng-hide="nonicklist" class="vertical-line-left">
+      <div id="bufferlines" class="monospace" ng-class="{'withnicklist': showNicklist}">
+        <div id="nicklist" ng-show="showNicklist" class="vertical-line-left">
           <ul class="nicklistgroup list-unstyled" ng-repeat="group in activeBuffer().nicklist">
             <li class="" ng-repeat="nick in group.nicks|orderBy:'nick.name'">
               <a ng-click="nickAction(nick)"><span ng-class="nick.prefixClasses">{{nick.prefix}}</span><span ng-class="nick.nameClasses">{{nick.name}}</span></a>
@@ -268,7 +268,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
       <div class="push"></div>
     </div>
     <div id="footer" ng-show="connected">
-      <div class="navbar navbar-inverse navbar-fixed-bottom" ng-class="{'withnicklist': nonicklist==false}">
+      <div class="navbar navbar-inverse navbar-fixed-bottom" ng-class="{'withnicklist': showNicklist}">
         <form class="form form-horizontal" ng-submit="sendMessage()">
           <div class="input-group">
             <input id="sendMessage" type="text" class="form-control monospace" autocomplete="off" ng-model="command" autofocus>

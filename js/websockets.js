@@ -128,7 +128,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
                 buffer.nicklist[group] = g;
             }else{
                 var nick = new models.Nick(n);
-                buffer.nicklist[group].nicks.push(nick);
+                buffer.addNick(group, nick);
             }
         });
     }
@@ -416,6 +416,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         // Clear search term on buffer change
         $scope.search = '';
+        
+        // Check if we should show nicklist or not
+        $scope.showNicklist = $scope.updateShowNicklist();
     });
     $rootScope.$on('notificationChanged', function() {
         var notifications = _.reduce(models.model.buffers, function(memo, num) { return (memo||0) + num.notification;});
@@ -558,6 +561,30 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         return true;
     };
 
+    // Watch model and update show setting when it changes
+    $scope.$watch('nonicklist', function() {
+        $scope.showNicklist = $scope.updateShowNicklist();
+    });
+    $scope.showNicklist = false;
+    // Utility function that template can use to check if nicklist should 
+    // be displayed for current buffer or not
+    // is called on buffer switch
+    $scope.updateShowNicklist = function() {
+        var ab = models.getActiveBuffer();
+        if(!ab) {
+            return false;
+        }
+        // Check if option no nicklist is set
+        if($scope.nonicklist) {
+            return false;
+        }
+        // Use flat nicklist to check if empty
+        if(ab.flatNicklist().length === 0) { 
+            return false;
+        }
+        return true;
+    }
+
     $rootScope.switchToActivityBuffer = function() {
         // Find next buffer with activity and switch to it
         for(i in $scope.buffers) {
@@ -583,18 +610,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         var caretPos = inputNode.selectionStart;
 
         // create flat array of nicks
-        // TODO: compute this elsewhere since it doesn't change often
         var activeBuffer = models.getActiveBuffer();
-        var flatNickList = [];
-        _.each(activeBuffer.nicklist, function(nickGroup) {
-            _.each(nickGroup.nicks, function(nickObj) {
-                flatNickList.push(nickObj.name);
-            });
-        });
 
         // complete nick
         var nickComp = IrcUtils.completeNick(inputText, caretPos,
-            $rootScope.iterCandidate, flatNickList, ':');
+            $rootScope.iterCandidate, activeBuffer.flatNicklist(), ':');
 
         // remember iteration candidate
         $rootScope.iterCandidate = nickComp.iterCandidate;

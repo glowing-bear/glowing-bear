@@ -19,6 +19,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var notify = 3 // Default 3 == message
         var lines = []
         var nicklist = {} 
+        var flatnicklist = []
         var active = false
         var notification = 0 
         var unread = 0
@@ -44,6 +45,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
          */
         var addNick = function(group, nick) {
             nicklist[group].nicks.push(nick);
+            flatnicklist = getFlatNicklist();
         }
         /*
          * Deletes a nick from nicklist
@@ -51,6 +53,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var delNick = function(group, nick) {
             var group = nicklist[group];
             group.nicks = _.filter(group.nicks, function(n) { return n.name != nick.name});
+            flatnicklist = getFlatNicklist();
             /*
             for(i in group.nicks) {
                 if(group.nicks[i].name == nick.name) {
@@ -71,8 +74,29 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
                     break;
                 }
             }
+            flatnicklist = getFlatNicklist();
         }
 
+        /*
+         * Maintain a cached version of a flat sorted nicklist
+         * 
+         */
+        var getFlatNicklist = function() {
+            var newlist = [];
+            _.each(nicklist, function(nickGroup) {
+                _.each(nickGroup.nicks, function(nickObj) {
+                    newlist.push(nickObj.name);
+                });
+            }); 
+            newlist.sort(function(a, b) {
+                return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
+            });
+            return newlist;
+        }
+
+        var flatNicklist = function() {
+            return flatnicklist;
+        }
 
         return {
             id: pointer,
@@ -90,7 +114,8 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             nicklist: nicklist,
             addNick: addNick,
             delNick: delNick,
-            updateNick: updateNick
+            updateNick: updateNick,
+            flatNicklist: flatNicklist
         }
 
     }
