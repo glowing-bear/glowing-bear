@@ -304,9 +304,22 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
             });
         }
 
+        /*
+         * Fails every currently subscribed callback for the
+         * given reason
+         * @param reason reason for failure
+         */
+        failCallbacks = function(reason) {
+            for(i in callbacks) {
+                callbacks[i].cb.reject(reason);
+            }
+
+        }
+
         websocket.onclose = function (evt) {
             $log.info("Disconnected from relay");
             $rootScope.connected = false;
+            failCallbacks('disconnection');
             if ($rootScope.passwordError == true) {
                 $log.info("wrong password");
             }
@@ -332,6 +345,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
             $rootScope.passwordError = false;
 
             if (evt.type == "error" && websocket.readyState != 1) {
+                failCallbacks('error');
                 $rootScope.errorMessage = true;
             }
             $log.error("Relay error " + evt.data);
