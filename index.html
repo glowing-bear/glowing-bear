@@ -272,7 +272,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
       <div class="navbar navbar-inverse navbar-fixed-bottom" ng-class="{'withnicklist': showNicklist}">
         <form class="form form-horizontal" ng-submit="sendMessage()">
           <div class="input-group">
-            <input id="sendMessage" type="text" class="form-control monospace" autocomplete="off" ng-model="command" autofocus>
+            <input id="sendMessage" type="text" class="form-control monospace" autocomplete="off" autofocus>
             <span class="input-group-btn">
               <button class="btn btn-default btn-primary">Send</button>
             </span>
