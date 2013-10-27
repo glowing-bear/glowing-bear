@@ -197,16 +197,34 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
     var currentCallBackId = 0;
 
     /*
+     * Returns the current callback id
+     */
+    var getCurrentCallBackId = function() {
+        
+        currentCallBackId += 1;
+
+        if (currentCallBackId > 1000) {
+            currentCallBackId = 0;
+        }
+
+        return currentCallBackId;
+    }
+
+    /*
      * Create a callback, adds it to the callback list
      * and return it.
      */
     var createCallback = function() {
         var defer = $q.defer();
-        callbacks[++currentCallBackId] = {
+        var cbId = getCurrentCallBackId();
+
+        callbacks[cbId] = {
             time: new Date,
-            cb: defer
+            cb: defer,
         }
-        callBackIdString = "(" + currentCallBackId + ")";
+
+        defer.id = cbId
+
         return defer;
     }
 
@@ -232,7 +250,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
     var send = function(message) {
         message.replace(/[\r\n]+$/g, "").split("\n");
         var cb = createCallback(message);
-        websocket.send(callBackIdString + " " + message);
+        websocket.send("(" + cb.id + ") " + message);
         return cb.promise;
     }
 
