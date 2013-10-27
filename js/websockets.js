@@ -641,33 +641,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     }
 
-    $rootScope.completeNick = function() {
-        // input DOM node
-        var inputNode = document.getElementById('sendMessage');
-
-        // get current input
-        var inputText = inputNode.value;
-
-        // get current caret position
-        var caretPos = inputNode.selectionStart;
-
-        // create flat array of nicks
-        var activeBuffer = models.getActiveBuffer();
-
-        // complete nick
-        var nickComp = IrcUtils.completeNick(inputText, caretPos,
-            $rootScope.iterCandidate, activeBuffer.flatNicklist(), ':');
-
-        // remember iteration candidate
-        $rootScope.iterCandidate = nickComp.iterCandidate;
-
-        // update current input
-        $scope.command = nickComp.text;
-
-        // update current caret position
-        inputNode.focus();
-        inputNode.setSelectionRange(nickComp.caretPos, nickComp.caretPos);
-    }
 
     $scope.handleKeyPress = function($event) {
     };
@@ -741,7 +714,6 @@ weechat.directive('inputBar', function() {
                 inputNode.focus();
                 inputNode.setSelectionRange(nickComp.caretPos, nickComp.caretPos);
             }
-
 
 
             // Send the message to the websocket
