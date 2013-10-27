@@ -151,6 +151,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
             <div class="brand">
               <img alt="brand" src="img/favicon.png">
             </div>
+            <div id="connection-infos" class="monospace">{{ host }}:{{ port }}</div>
             <div class="title">
                 {{ activeBuffer().title}}
             </div>
