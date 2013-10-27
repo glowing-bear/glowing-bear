@@ -256,34 +256,43 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
                     compression: 'off'
             }));
 
-            // We are asking for the weechat version here
-            // to avoid two problems :
-            //  - If the version is below 0.4.2, we will have a bug
-            //    with websocket.
-            //  - If the user password is wrong, we will be disconneted
-            //    at this step.
-            doSendWithCallback(weeChat.Protocol.formatInfo({
-                name: 'version',
-            })).then(function(message) {
-                // If we have received this message
-                // that means the user password is good.
+            /*
+             * Send all the initialization commands
+             * and resolve them as a single promise.
+             */
+            doSendAllWithCallback([
+                weeChat.Protocol.formatInfo({
+                    name: 'version',
+                }),
 
-                // Parse the version info message to retrieve
-                // the current weechat version.
-                var version = message['objects'][0]['content']['value'];
-                $rootScope.version = version;
-                $log.info(version);
-            }, function(error) {
-                // If the first command fails, it means that we do not have the
-                // proper password
-                $rootScope.passwordError = true;
-            }).then(function() {
-                doSendWithCallback(weeChat.Protocol.formatHdata({
+                weeChat.Protocol.formatHdata({
                     path: 'buffer:gui_buffers(*)',
-                    keys: ['local_variables,notify,number,full_name,short_name,title']
-                })).then(function(message) {
+                    keys: ['local_variables,notify,number,full_name,short_name,title']                        
+                }),
+
+                weeChat.Protocol.formatHdata({
+                    path: "buffer:gui_buffers(*)/own_lines/last_line(-"+storage.get('lines')+")/data",
+                    keys: []
+                }),
+
+                weeChat.Protocol.formatHdata({
+                    path: "hotlist:gui_hotlist(*)",
+                    keys: []
+                }),
+
+                weeChat.Protocol.formatNicklist({
+                })
+
+            ]).then(
+                function(messages) {
+                    var version = messages[0];
+                    var bufinfo = messages[1];
+                    var lineinfo = messages[2];
+                    var hotlist = messages[3];
+                    var nicklist = messages[4];
+
                     $log.info("Parsing bufinfo");
-                    var bufferInfos = message['objects'][0]['content'];
+                    var bufferInfos = bufinfo['objects'][0]['content'];
                     // buffers objects
                     for (var i = 0; i < bufferInfos.length ; i++) {
                         var buffer = new models.Buffer(bufferInfos[i]);
@@ -293,36 +302,26 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
                             models.setActiveBuffer(buffer.id);
                         }
                     }
-                }).then(function() {
-                    $log.info("Parsing lineinfo");
-                    doSendWithCallback(weeChat.Protocol.formatHdata({
-                        path: "buffer:gui_buffers(*)/own_lines/last_line(-"+storage.get('lines')+")/data",
-                        keys: []
-                    })).then(function(hdata) {
-                        handlers.handleLineInfo(hdata);
-                    });
-                }).then(function() {
-                    $log.info("Requesting hotlist");
-                    doSendWithCallback(weeChat.Protocol.formatHdata({
-                        path: "hotlist:gui_hotlist(*)",
-                        keys: []
-                    })).then(function(hdata) {
-                        handlers.handleHotlistInfo(hdata)
-                    });
-                }).then(function() {
-                    $log.info("Requesting nicklist");
-                    doSendWithCallback(weeChat.Protocol.formatNicklist({
-                    })).then(function(nicklistdata) {
-                        handlers.handleNicklist(nicklistdata)
-                    });
-                }).then(function() {
+
+                    handlers.handleLineInfo(lineinfo);
+                    handlers.handleHotlistInfo(hotlist)
+                    handlers.handleNicklist(nicklist)
                     doSend(weeChat.Protocol.formatSync({}));
                     $log.info("Synced");
 
                     // here we are really connected !
                     $rootScope.connected = true;
-                });
-            });
+                },
+                function(error) {
+                    // If the first command fails, it means that we do not have the
+                    // proper password
+                    $rootScope.passwordError = true;
+                }
+            );
+
+
+
+
         }
 
         /*
