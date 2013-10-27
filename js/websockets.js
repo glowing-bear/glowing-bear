@@ -687,7 +687,7 @@ weechat.directive('inputBar', function() {
                 angular.element('#sendMessage').focus();
             });
 
-            $rootScope.completeNick = function() {
+            $scope.completeNick = function() {
                 // input DOM node
                 var inputNode = document.getElementById('sendMessage');
 
@@ -702,10 +702,10 @@ weechat.directive('inputBar', function() {
 
                 // complete nick
                 var nickComp = IrcUtils.completeNick(inputText, caretPos,
-                                                     $rootScope.iterCandidate, activeBuffer.flatNicklist(), ':');
+                                                     $scope.iterCandidate, activeBuffer.flatNicklist(), ':');
 
                 // remember iteration candidate
-                $rootScope.iterCandidate = nickComp.iterCandidate;
+                $scope.iterCandidate = nickComp.iterCandidate;
 
                 // update current input
                 $scope.command = nickComp.text;
@@ -733,8 +733,8 @@ weechat.directive('inputBar', function() {
                 var code = $event.keyCode ? $event.keyCode : $event.charCode;
 
                 // any other key than Tab resets nick completion iteration
-                var tmpIterCandidate = $rootScope.iterCandidate;
-                $rootScope.iterCandidate = null;
+                var tmpIterCandidate = $scope.iterCandidate;
+                $scope.iterCandidate = null;
 
                 // Left Alt+[0-9] -> jump to buffer
                 if ($event.altKey && !$event.ctrlKey && (code > 47 && code < 58)) {
@@ -753,15 +753,15 @@ weechat.directive('inputBar', function() {
                 // Tab -> nick completion
                 if (code == 9 && !$event.altKey && !$event.ctrlKey) {
                     $event.preventDefault();
-                    $rootScope.iterCandidate = tmpIterCandidate;
-                    $rootScope.completeNick();
+                    $scope.iterCandidate = tmpIterCandidate;
+                    $scope.completeNick();
                     return true;
                 }
 
                 // Alt+A -> switch to buffer with activity
                 if ($event.altKey && (code == 97 || code == 65)) {
                     $event.preventDefault();
-                    $rootScope.switchToActivityBuffer();
+                    $scope.switchToActivityBuffer();
                     return true;
                 }
 
