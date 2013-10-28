@@ -27,7 +27,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         // Only react to line if its displayed
         if(message.displayed) {
             var buffer = models.getBuffer(message.buffer);
-            message = plugins.PluginManager.contentForMessage(message);
+            message = plugins.PluginManager.contentForMessage(message, $rootScope.visible);
             buffer.addLine(message);
 
             if (buffer.active) {
@@ -513,6 +513,14 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "hotlistsync", true);
     // Save setting for displaying nicklist
     $store.bind($scope, "nonicklist", false); 
+    // Save setting for displaying embeds
+    $store.bind($scope, "noembed", false); 
+    // Save setting for displaying embeds in rootscope so it can be used from service
+    $rootScope.visible = $scope.noembed == false;
+    // Watch model and update show setting when it changes
+    $scope.$watch('noembed', function() {
+        $rootScope.visible = $scope.noembed == false;
+    });
 
     $scope.setActiveBuffer = function(key) {
         models.setActiveBuffer(key);

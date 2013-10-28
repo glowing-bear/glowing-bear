@@ -304,3 +304,7 @@ li.notification {
     height: 15px;
     background: rgba(255,255,255,0.5);
 }
+
+img.embed {
+  max-height: 300px;
+}

@@ -53,16 +53,15 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
          * Iterates through all the registered plugins
          * and run their contentForMessage function.
          */
-        var contentForMessage = function(message) {
+        var contentForMessage = function(message, visible) {
 
             message.metadata = [];
             for (var i = 0; i < plugins.length; i++) {
 
                 var nsfw = false;
-                var visible = true;
                 if (message.text.match(nsfwRegexp)) {
                     var nsfw = true;
-                    var visible = false;
+                    visible = false;
                 }
 
                 var pluginContent = plugins[i].contentForMessage(message.text);
@@ -227,7 +226,7 @@ plugins.factory('userPlugins', function() {
                     url = url.replace(/.*\//, "http://media.fukung.net/imgs/")
                 }
 
-                content = '<a target="_blank" href="'+url+'"><img src="' + url + '" height="300"></a>';
+                content = '<a target="_blank" href="'+url+'"><img class="embed" src="' + url + '"></a>';
             }
         }
 
