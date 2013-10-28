@@ -226,7 +226,7 @@ plugins.factory('userPlugins', function() {
                     url = url.replace(/.*\//, "http://media.fukung.net/imgs/")
                 }
 
-                content = '<a target="_blank" href="'+url+'"><img src="' + url + '" height="300"></a>';
+                content = '<a target="_blank" href="'+url+'"><img class="embed" src="' + url + '"></a>';
             }
         }
 
