@@ -178,7 +178,17 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
                       <div class="checkbox">
                         <label>
                           <input type="checkbox" ng-model="notimestamp">
-                         Hide timestamps 
+                          Hide timestamps 
+                        </label>
+                      </div>
+                    </form>
+                  </li>
+                  <li class="">
+                    <form class="form-inline" role="form">
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" ng-model="noembed">
+                           Hide embedded content by default 
                         </label>
                       </div>
                     </form>
