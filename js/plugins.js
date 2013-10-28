@@ -80,19 +80,6 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
                 }
             }
 
-            /* Replace all URLs with hyperlinks  */
-
-            var urlRegexp = RegExp(/(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/g);
-            for(k in message.content) {
-                var text = message.content[k].text;
-                var url = text.match(urlRegexp);
-                for(i in url) {
-                    var u = url[i];
-                    text = text.replace(u, '<a target="_blank" href="' + u + '">' + u + '</a>');
-                }
-                message.content[k].text = $sce.trustAsHtml(text);
-            }
-
             return message;
         }
 
