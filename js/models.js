@@ -361,15 +361,17 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
 
     /*
      * Closes a weechat buffer. Sets the first buffer
-     * as active.
+     * as active, if the closing buffer was active before
      *
      * @param bufferId id of the buffer to close
      * @return undefined
      */
     this.closeBuffer = function(bufferId) {
-
+        var wasActive = this.model['buffers'][bufferId.id].active;
+        if(wasActive) {
+            var firstBuffer = _.keys(this.model['buffers'])[0];
+            this.setActiveBuffer(firstBuffer);
+        }
         delete(this.model['buffers'][bufferId.id]);
-        var firstBuffer = _.keys(this.model['buffers'])[0];
-        this.setActiveBuffer(firstBuffer);
     }
 }]);
