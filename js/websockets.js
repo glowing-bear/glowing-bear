@@ -771,6 +771,13 @@ weechat.directive('inputBar', function() {
                     return true;
                 }
 
+                // Left Alt+n -> toggle nicklist
+                if ($event.altKey && !$event.ctrlKey && code == 78) {
+                    $event.preventDefault();
+                    $scope.nonicklist = !$scope.nonicklist;
+                    return true;
+                }
+
                 // Alt+A -> switch to buffer with activity
                 if ($event.altKey && (code == 97 || code == 65)) {
                     $event.preventDefault();
