@@ -150,9 +150,8 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
     <div class="content" ng-show="connected">
       <div id="topbar" class="horizontal-line">
             <div class="brand">
-              <img alt="brand" src="img/favicon.png">
+              <img alt="brand" src="img/favicon.png" title="Connected to {{ host }}:{{ port}}">
             </div>
-            <div id="connection-infos" class="monospace">{{ host }}:{{ port }}</div>
             <div class="title" ng-bind-html="activeBuffer().title | linky:'_blank'"></div>
             <div class="actions pull-right vertical-line-left">
               <div class="dropdown pull-left">
