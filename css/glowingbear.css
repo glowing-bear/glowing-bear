@@ -235,6 +235,7 @@ input[type=text], input[type=password], .badge {
     width: auto;
     top: 25px; /* topbar */
     padding-bottom: 10px;
+    margin-right: -5px;
 }
 .withnicklist {
     margin-right: 100px !important; /* nicklist */
