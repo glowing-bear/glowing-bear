@@ -242,8 +242,8 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
           </ul>
         </div>
         <table>
-          <tbody>
-            <tr class="bufferline" ng-repeat-start="bufferline in (bufferlines = activeBuffer().lines)">
+          <tbody ng-repeat="bufferline in (bufferlines = activeBuffer().lines)">
+            <tr class="bufferline">
               <td ng-hide="notimestamp" class="time">
                 <span class="date" ng-class="{'repeated-time': bufferline.shortTime==bufferlines[$index-1].shortTime}">
                   <span class="cof-chat_time cob-chat_time coa-chat_time">{{ bufferline.date | date:'HH' }}</span><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time">{{ bufferline.date | date:'mm' }}</span>
@@ -265,9 +265,9 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
                 </div>
               </td>
             </tr>
-            <tr class="readmarker" ng-repeat-end ng-show="activeBuffer().lastSeen==$index">
+            <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
               <td colspan="3">
-                <hr ng-if="activeBuffer().lastSeen==$index" id="readmarker">
+                <hr id="readmarker">
               </td>
             </tr>
           </tbody>
