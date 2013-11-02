@@ -731,7 +731,11 @@ weechat.directive('inputBar', function() {
 
             // Send the message to the websocket
             $scope.sendMessage = function() {
-                connection.sendMessage($scope.command);
+                // Split the command into multiple commands based on line breaks
+                var commands = $scope.command.split(/\r?\n/);
+                commands.forEach(function(c) {
+                    connection.sendMessage(c);
+                });
                 $scope.command = "";
             }
 
@@ -807,6 +811,15 @@ weechat.directive('inputBar', function() {
                     document.getElementById('bufferFilter').focus();
                     return true;
                 }
+
+                // Enter to submit, shift-enter for newline
+                if (code == 13 && !$event.shiftKey) {
+                    $event.preventDefault();
+                    // Prevent inprog
+                    setTimeout(function() {$('#inputform').submit();},0);
+                    return true;
+                }
+
 
             }
 
