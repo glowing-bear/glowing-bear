@@ -45,7 +45,8 @@
     color: #77dfd8;
 }
 .cof-chat_nick_self {
-    color: #fff1bd;
+    color: #ffffff;
+    font-weight: bold;
 }
 .cof-chat_nick_other {
     color: #77dfd8;
