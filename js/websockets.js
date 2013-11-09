@@ -280,75 +280,76 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
 
             $log.info("Connected to relay");
 
-            // First message must be an init request
-            // with the password
-            send(weeChat.Protocol.formatInit({
+            // First command asks for the password and issues
+            // a version command. If it fails, it means the we
+            // did not provide the proper password.
+            sendAll([
+                weeChat.Protocol.formatInit({
                     password: passwd,
                     compression: 'off'
-            }));
+                }),
 
-            /*
-             * Send all the initialization commands
-             * and resolve them as a single promise.
-             */
-            sendAll([
                 weeChat.Protocol.formatInfo({
                     name: 'version',
-                }),
-
-                weeChat.Protocol.formatHdata({
-                    path: 'buffer:gui_buffers(*)',
-                    keys: ['local_variables,notify,number,full_name,short_name,title']                        
-                }),
-
-                weeChat.Protocol.formatHdata({
-                    path: "buffer:gui_buffers(*)/own_lines/last_line(-"+storage.get('lines')+")/data",
-                    keys: []
-                }),
-
-                weeChat.Protocol.formatHdata({
-                    path: "hotlist:gui_hotlist(*)",
-                    keys: []
-                }),
-
-                weeChat.Protocol.formatNicklist({
                 })
-
             ]).then(
-                function(messages) {
-                    var version = messages[0];
-                    var bufinfo = messages[1];
-                    var lineinfo = messages[2];
-                    var hotlist = messages[3];
-                    var nicklist = messages[4];
-
-                    $log.info("Parsing bufinfo");
-                    var bufferInfos = bufinfo['objects'][0]['content'];
-                    // buffers objects
-                    for (var i = 0; i < bufferInfos.length ; i++) {
-                        var buffer = new models.Buffer(bufferInfos[i]);
-                        models.addBuffer(buffer);
-                        // Switch to first buffer on startup
-                        if (i == 0) {
-                            models.setActiveBuffer(buffer.id);
-                        }
-                    }
-
-                    handlers.handleLineInfo(lineinfo);
-                    handlers.handleHotlistInfo(hotlist)
-                    handlers.handleNicklist(nicklist)
-                    send(weeChat.Protocol.formatSync({}));
-                    $log.info("Synced");
-
-                    // here we are really connected !
-                    $rootScope.connected = true;
-                },
+                null,
                 function(error) {
-                    // If the first command fails, it means that we do not have the
-                    // proper password
                     $rootScope.passwordError = true;
                 }
             );
+
+            send(
+                weeChat.Protocol.formatHdata({
+                    path: 'buffer:gui_buffers(*)',
+                    keys: ['local_variables,notify,number,full_name,short_name,title']
+                })
+            ).then(function(bufinfo) {
+                var bufferInfos = bufinfo['objects'][0]['content'];
+                // buffers objects
+                for (var i = 0; i < bufferInfos.length ; i++) {
+                    var buffer = new models.Buffer(bufferInfos[i]);
+                    models.addBuffer(buffer);
+                    // Switch to first buffer on startup
+                    if (i == 0) {
+                        models.setActiveBuffer(buffer.id);
+                    }
+                }
+            });
+
+
+            // Send all the other commands required for initialization
+            send(
+                weeChat.Protocol.formatHdata({
+                    path: "buffer:gui_buffers(*)/own_lines/last_line(-"+storage.get('lines')+")/data",
+                    keys: []
+                })
+            ).then(function(lineinfo) {
+                handlers.handleLineInfo(lineinfo);
+            });
+
+            send(
+                weeChat.Protocol.formatHdata({
+                    path: "hotlist:gui_hotlist(*)",
+                    keys: []
+                })
+            ).then(function(hotlist) {
+                handlers.handleHotlistInfo(hotlist);
+            });
+
+
+            send(
+                weeChat.Protocol.formatNicklist({
+                })
+            ).then(function(nicklist) {
+                handlers.handleNicklist(nicklist)
+            });
+
+            send(
+                weeChat.Protocol.formatSync({})
+            )
+
+            $rootScope.connected = true;
 
         }
 
