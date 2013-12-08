@@ -210,6 +210,16 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
                       </div>
                     </form>
                   </li>
+                  <li class="">
+                    <form class="form-inline" role="form">
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" ng-model="orderbyserver">
+                          Order channels by server
+                        </label>
+                      </div>
+                    </form>
+                  </li>
                 </ul>
               </div>
               <a ng-click="disconnect()">
@@ -228,7 +238,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
             <a href="#" ng-click="setActiveBuffer(content.id)" title="{{ content.fullName }}">
                 <span class="badge pull-right" ng-hide="content.notification" ng-if="content.unread" ng-bind="content.unread"></span>
               <span class="badge pull-right danger" ng-show="content.notification" ng-bind="content.notification"></span>
-              {{ content.shortName }}<span ng-hide="content.shortName">{{ content.fullName }}</span>
+              {{ content.indent(predicate) }}{{ content.shortName }}<span ng-hide="content.shortName">{{ content.fullName }}</span>
             </a>
           </li>
         </ul>
