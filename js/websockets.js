@@ -315,6 +315,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
                         models.setActiveBuffer(buffer.id);
                     }
                 }
+                $rootScope.predicate = 'number';
             });
 
 
