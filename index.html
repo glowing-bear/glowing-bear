@@ -210,6 +210,16 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
                       </div>
                     </form>
                   </li>
+                  <li class="">
+                    <form class="form-inline" role="form">
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" ng-model="orderbyserver">
+                          Order channels by server
+                        </label>
+                      </div>
+                    </form>
+                  </li>
                 </ul>
               </div>
               <a ng-click="disconnect()">
@@ -224,11 +234,11 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
               <input class="form-control monospace" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="Search">
             </form>
           </li>
-          <li class="buffer" ng-class="{'active': content.active }" ng-repeat="(key, content) in buffers | toArray | filter:{fullName:search} | filter:hasUnread | orderBy:'content.number':true">
+          <li class="buffer" ng-class="{'active': content.active }" ng-repeat="(key, content) in buffers | toArray | filter:{fullName:search} | filter:hasUnread | orderBy:predicate">
             <a href="#" ng-click="setActiveBuffer(content.id)" title="{{ content.fullName }}">
                 <span class="badge pull-right" ng-hide="content.notification" ng-if="content.unread" ng-bind="content.unread"></span>
               <span class="badge pull-right danger" ng-show="content.notification" ng-bind="content.notification"></span>
-              {{ content.shortName }}<span ng-hide="content.shortName">{{ content.fullName }}</span>
+              {{ content.indent(predicate) }}{{ content.shortName }}<span ng-hide="content.shortName">{{ content.fullName }}</span>
             </a>
           </li>
         </ul>
@@ -236,7 +246,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
       <div id="bufferlines" class="monospace" ng-class="{'withnicklist': showNicklist}">
         <div id="nicklist" ng-show="showNicklist" class="vertical-line-left">
           <ul class="nicklistgroup list-unstyled" ng-repeat="group in activeBuffer().nicklist">
-            <li class="" ng-repeat="nick in group.nicks|orderBy:'nick.name'">
+            <li class="" ng-repeat="nick in group.nicks|orderBy:name">
               <a ng-click="nickAction(nick)"><span ng-class="nick.prefixClasses">{{nick.prefix}}</span><span ng-class="nick.nameClasses">{{nick.name}}</span></a>
             </li>
           </ul>
