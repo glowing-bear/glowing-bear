@@ -580,16 +580,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $rootScope.scrollToBottom = function() {
         // FIXME doesn't work if the settimeout runs without a short delay
         var scroll = function() {
-            var readmarker = document.getElementById('readmarker');
-            if(readmarker) {
-                readmarker.scrollIntoView();
-            }else{
-                var bl = document.getElementById('bufferlines');
-                var sTop = bl.scrollTop;
-                var sVal = bl.scrollHeight - bl.clientHeight;
-                if(sTop < sVal) {
-                    bl.scrollTop = sVal;
-                }
+            var bl = document.getElementById('bufferlines');
+            var sTop = bl.scrollTop;
+            var sVal = bl.scrollHeight - bl.clientHeight;
+            if(sTop < sVal) {
+                bl.scrollTop = sVal;
             }
         };
         // Here be scrolling dragons
