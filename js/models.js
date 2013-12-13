@@ -23,7 +23,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var active = false
         var notification = 0 
         var unread = 0
-        var lastSeen = -2
+        var lastSeen = -1
         var serverSortKey = fullName.replace(/^irc.server.(\w+)/, "irc.$1");
 
         var indent = function(predicate) {

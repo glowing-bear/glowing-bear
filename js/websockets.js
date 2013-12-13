@@ -30,6 +30,10 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
             message = plugins.PluginManager.contentForMessage(message, $rootScope.visible);
             buffer.addLine(message);
 
+            if (initial) {
+                buffer.lastSeen++;
+            }
+
             if (buffer.active) {
                 $rootScope.scrollToBottom();
             }
