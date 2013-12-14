@@ -396,8 +396,13 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
         this.websocket.close();
     }
 
+    /*
+     * Format and send a weechat message
+     *
+     * @returns the angular promise
+     */
     var sendMessage = function(message) {
-        send(weeChat.Protocol.formatInput({
+        return send(weeChat.Protocol.formatInput({
             buffer: models.getActiveBuffer()['fullName'],
             data: message
         }));
