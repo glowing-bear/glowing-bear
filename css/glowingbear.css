@@ -287,23 +287,6 @@ input[type=text], input[type=password], .badge {
     #bufferlines td.prefix:after {
         content: ">";
     }
-    .nav li.bufferfilter {
-        margin-top: 2px;
-        height: 47px;
-    }
-    .nav li form, .nav li form input {
-        height: 100%;
-    }
-    .nav-stacked li {
-        float: left;
-    }
-    .nav-stacked li a {
-        min-width: 80px;
-        padding: 15px;
-    }
-    .hide-mobile {
-        display: none;
-    }
 }
 .color-light-green {
     color: chartreuse;
