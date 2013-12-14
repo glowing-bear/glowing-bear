@@ -251,6 +251,9 @@ input[type=text], input[type=password], .badge {
     background-color: #181818;
 }
 @media (max-width: 968px) {
+    #topbar .title {
+        left: 36px;
+    }
     #sidebar, #bufferlines, #nicklist {
         position: relative;
         min-height: 0;
@@ -264,10 +267,32 @@ input[type=text], input[type=password], .badge {
         text-align: center;
     }
     #bufferlines {
-        padding-bottom: 55px; /* navbar fixed bottom */
+        padding-bottom: 38px; /* navbar fixed bottom */
     }
     .navbar-fixed-bottom {
-        margin: 0 5px 0 5px;
+        margin: 0;
+    }
+    .navbar {
+        min-height: 0%;
+    }
+    #bufferlines td.time {
+        display: inline;
+        padding-right: 0;
+    }
+    #bufferlines td.prefix {
+        display: inline;
+        padding-right: 0;
+        border: 0;
+    }
+    #bufferlines td.message {
+        padding-left: 0;
+        display: inline;
+    }
+    #bufferlines td.prefix:before {
+        content: "<";
+    }
+    #bufferlines td.prefix:after {
+        content: ">";
     }
 }
 .color-light-green {
