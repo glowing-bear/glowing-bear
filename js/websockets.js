@@ -63,11 +63,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         var bufferMessage = message['objects'][0]['content'][0];
         var buffer = new models.Buffer(bufferMessage);
         models.addBuffer(buffer);
-        if ($rootScope.waitForQueryWindow === buffer.fullName) {
-            // We're waiting for a query window
-            models.setActiveBuffer(buffer.id);
-            $rootScope.waitForQueryWindow = "";
-        }
+        models.setActiveBuffer(buffer.id);
     }
 
     var handleBufferTitleChanged = function(message) {
@@ -554,7 +550,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         buffName = buffName.substring(0, buffName.lastIndexOf('.')) + '.' + nick;
 
         if (!$scope.setActiveBuffer(buffName, 'fullName')) {
-            $rootScope.waitForQueryWindow = buffName;
             connection.sendMessage('/query ' + nick);
         }
     }
