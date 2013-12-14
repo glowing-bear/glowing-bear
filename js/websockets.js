@@ -751,9 +751,11 @@ weechat.directive('inputBar', function() {
                              models) {
 
             // Focuses itself when active buffer is changed
+            /*
             $rootScope.$on('activeBufferChanged', function() {
                 angular.element('#sendMessage').focus();
             });
+            */
 
             $scope.completeNick = function() {
                 // input DOM node
