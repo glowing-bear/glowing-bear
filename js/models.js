@@ -323,12 +323,27 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
      * Deactivates the previous current buffer.
      *
      * @param bufferId id of the new active buffer
-     * @return undefined
+     * @return true on success, false if buffer was not found
      */
-    this.setActiveBuffer = function(bufferId) {
+    this.setActiveBuffer = function(bufferId, key) {
+        if (typeof(key) === 'undefined') {
+            key = 'id';
+        }
 
         var previousBuffer = this.getActiveBuffer();
         
+        activeBuffer = _.find(this.model['buffers'], function(buffer) {
+            if (buffer[key] == bufferId) {
+                return buffer;
+            }
+        });
+
+        if (typeof(activeBuffer) === 'undefined') {
+            // Buffer not found, undo assignment
+            activeBuffer = previousBuffer;
+            return false;
+        }
+
         if (previousBuffer) {
             // turn off the active status for the previous buffer
             previousBuffer.active = false;
@@ -336,18 +351,13 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             previousBuffer.lastSeen = previousBuffer.lines.length-1;
         }
 
-        activeBuffer = _.find(this.model['buffers'], function(buffer) {
-            if (buffer['id'] == bufferId) {
-                return buffer;
-            }
-        });
-
         activeBuffer.active = true;
         activeBuffer.unread = 0;
         activeBuffer.notification = 0;
 
         $rootScope.$emit('activeBufferChanged');
         $rootScope.$emit('notificationChanged');
+        return true;
     }
 
     /*

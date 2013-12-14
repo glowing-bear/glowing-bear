@@ -63,6 +63,8 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         var bufferMessage = message['objects'][0]['content'][0];
         var buffer = new models.Buffer(bufferMessage);
         models.addBuffer(buffer);
+        // Change to the new buffer
+        models.setActiveBuffer(buffer.id);
     }
 
     var handleBufferTitleChanged = function(message) {
@@ -540,9 +542,18 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $rootScope.predicate = $scope.orderbyserver ? 'serverSortKey' : 'number';
 
-    $scope.setActiveBuffer = function(key) {
-        models.setActiveBuffer(key);
+    $scope.setActiveBuffer = function(bufferId, key) {
+        return models.setActiveBuffer(bufferId, key);
     };
+
+    $scope.openQuery = function(nick) {
+        var buffName = models.getActiveBuffer()['fullName'];
+        buffName = buffName.substring(0, buffName.lastIndexOf('.')) + '.' + nick;
+
+        if (!$scope.setActiveBuffer(buffName, 'fullName')) {
+            connection.sendMessage('/query ' + nick);
+        }
+    }
 
     $rootScope.scrollToBottom = function() {
         // FIXME doesn't work if the settimeout runs without a short delay

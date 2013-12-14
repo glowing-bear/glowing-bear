@@ -246,7 +246,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
       <div id="bufferlines" class="monospace" ng-class="{'withnicklist': showNicklist}">
         <div id="nicklist" ng-show="showNicklist" class="vertical-line-left">
           <ul class="nicklistgroup list-unstyled" ng-repeat="group in activeBuffer().nicklist">
-            <li class="" ng-repeat="nick in group.nicks|orderBy:'name'">
+            <li class="" ng-repeat="nick in group.nicks|orderBy:'name'" ng-click="openQuery(nick.name)">
               <a ng-click="nickAction(nick)"><span ng-class="nick.prefixClasses">{{nick.prefix}}</span><span ng-class="nick.nameClasses">{{nick.name}}</span></a>
             </li>
           </ul>
