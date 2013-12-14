@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title ng-bind-template="WeeChat {{ pageTitle}}"></title>
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link rel="shortcut icon" type="image/png" href="img/favicon.png" >
@@ -262,7 +262,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
             <a href="#" ng-click="setActiveBuffer(content.id)" title="{{ content.fullName }}">
               <span class="badge pull-right" ng-hide="content.notification" ng-if="content.unread" ng-bind="content.unread"></span>
               <span class="badge pull-right danger" ng-show="content.notification" ng-bind="content.notification"></span>
-              {{ content.indentedName(predicate) }}<span ng-hide="content.shortName">{{ content.fullName }}</span>
+              <span class="hide-mobile">{{ content.indentedName(predicate) }}</span>{{ content.shortName }}<span ng-hide="content.shortName">{{ content.fullName }}</span>
             </a>
           </li>
         </ul>

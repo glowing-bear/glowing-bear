@@ -76,6 +76,7 @@ td.prefix {
 }
 td.message {
     word-wrap: break-word;
+    word-break: break-word;
     vertical-align: top;
     width: 100%;
     padding-left: 5px;
@@ -86,15 +87,6 @@ hr {
 }
 .text {
     white-space: pre-wrap;
-}
-/* Lastly, apply responsive CSS fixes as necessary */
-@media (max-width: 767px) {
-    #footer {
-        margin-left: -20px;
-        margin-right: -20px;
-        padding-left: 20px;
-        padding-right: 20px;
-    }
 }
 
 body {
@@ -268,6 +260,7 @@ input[type=text], input[type=password], .badge {
     }
     #bufferlines {
         padding-bottom: 38px; /* navbar fixed bottom */
+        top: 10px;
     }
     .navbar-fixed-bottom {
         margin: 0;
@@ -293,6 +286,23 @@ input[type=text], input[type=password], .badge {
     }
     #bufferlines td.prefix:after {
         content: ">";
+    }
+    .nav li.bufferfilter {
+        margin-top: 2px;
+        height: 47px;
+    }
+    .nav li form, .nav li form input {
+        height: 100%;
+    }
+    .nav-stacked li {
+        float: left;
+    }
+    .nav-stacked li a {
+        min-width: 80px;
+        padding: 15px;
+    }
+    .hide-mobile {
+        display: none;
     }
 }
 .color-light-green {
