@@ -224,8 +224,8 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
         var cbId = getCurrentCallBackId();
 
         callbacks[cbId] = {
-            time: new Date(),
-            cb: defer
+            time: new Date,
+            cb: defer,
         };
 
         defer.id = cbId;
