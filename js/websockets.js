@@ -44,7 +44,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
                     $rootScope.$emit('notificationChanged');
                 }
 
-                if(buffer.notify!=0 && message.highlight || _.contains(message.tags, 'notify_private') ) {
+                if(buffer.notify !== 0 && message.highlight || _.contains(message.tags, 'notify_private') ) {
                     buffer.notification++;
                     $rootScope.createHighlight(buffer, message);
                     $rootScope.$emit('notificationChanged');
@@ -99,7 +99,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
      * Handle answers to hotlist request
      */
     var handleHotlistInfo = function(message) {
-        if (message.objects.length == 0) {
+        if (message.objects.length === 0) {
             return;
         }
         var hotlist = message.objects[0].content;
@@ -148,7 +148,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
             var d = n._diff;
             if(n.group == 1) {
                 group = n.name;
-                if(group==undefined) {
+                if(group === undefined) {
                     var g = new models.NickGroup(n);
                     buffer.nicklist[group] = g;
                     group = g.name;
@@ -224,7 +224,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
         var cbId = getCurrentCallBackId();
 
         callbacks[cbId] = {
-            time: new Date,
+            time: new Date(),
             cb: defer,
         };
 
@@ -316,7 +316,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
                     var buffer = new models.Buffer(bufferInfos[i]);
                     models.addBuffer(buffer);
                     // Switch to first buffer on startup
-                    if (i == 0) {
+                    if (i === 0) {
                         models.setActiveBuffer(buffer.id);
                     }
                 }
@@ -438,6 +438,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     }
 
+
     $rootScope.countWatchers = function () { 
         var root = $(document.getElementsByTagName('body'));
         var watchers = [];
@@ -458,14 +459,14 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         console.log(watchers.length);
     };
 
-    if(window.webkitNotifications != undefined) {
-        if (window.webkitNotifications.checkPermission() == 0) { // 0 is PERMISSION_ALLOWED
-            $log.info('Notification permission status:', window.webkitNotifications.checkPermission() == 0);
+    if(window.webkitNotifications !== undefined) {
+        if (window.webkitNotifications.checkPermission() === 0) { // 0 is PERMISSION_ALLOWED
+            $log.info('Notification permission status:', window.webkitNotifications.checkPermission() === 0);
             window.webkitNotifications.requestPermission();
         }
     }
     // Check for firefox & app installed
-    if(navigator.mozApps != undefined) {
+    if(navigator.mozApps !== undefined) {
         navigator.mozApps.getSelf().onsuccess = function _onAppReady(evt) {
             var app = evt.target.result;
             if(app) {
@@ -550,10 +551,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Save setting for channel ordering
     $store.bind($scope, "orderbyserver", false);
     // Save setting for displaying embeds in rootscope so it can be used from service
-    $rootScope.visible = $scope.noembed == false;
+    $rootScope.visible = $scope.noembed === false;
     // Watch model and update show setting when it changes
     $scope.$watch('noembed', function() {
-        $rootScope.visible = $scope.noembed == false;
+        $rootScope.visible = $scope.noembed === false;
     });
     // Watch model and update channel sorting when it changes
     $scope.$watch('orderbyserver', function() {
@@ -605,7 +606,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         connection.disconnect();
     };
     $scope.install = function() {
-        if(navigator.mozApps != undefined) {
+        if(navigator.mozApps !== undefined) {
             var request = navigator.mozApps.install('http://torhve.github.io/glowing-bear/manifest.webapp');
             request.onsuccess = function () {
                 $scope.isinstalled = true;
@@ -629,7 +630,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $rootScope.createHighlight = function(buffer, message) {
         var messages = "";
         message.content.forEach(function(part) {
-            if (part.text != undefined)
+            if (part.text !== undefined)
                 messages += part.text + " ";
         });
 
@@ -649,7 +650,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $scope.hasUnread = function(buffer) {
         // if search is set, return every buffer 
-        if($scope.search && $scope.search != "") {
+        if($scope.search && $scope.search !== "") {
             return true;
         }
         if($scope.onlyUnread) {
