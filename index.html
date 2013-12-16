@@ -152,6 +152,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
             <div class="brand">
               <img alt="brand" src="img/favicon.png" title="Connected to {{ host }}:{{ port}}">
             </div>
+            <button ng-show="debugMode" ng-click="countWatchers()">Count Watchers</button>
             <div class="title" ng-bind-html="activeBuffer().title | linky:'_blank'"></div>
             <div class="actions pull-right vertical-line-left">
               <div class="dropdown pull-left">
@@ -216,6 +217,16 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
                         <label>
                           <input type="checkbox" ng-model="orderbyserver">
                           Order channels by server
+                        </label>
+                      </div>
+                    </form>
+                  </li>
+                  <li class="">
+                    <form class="form-inline" role="form">
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" ng-model="debugMode">
+                          Debug Mode
                         </label>
                       </div>
                     </form>
