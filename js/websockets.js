@@ -17,7 +17,7 @@ weechat.filter('toArray', function () {
 weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootScope, models, plugins) {
 
     var handleBufferClosing = function(message) {
-        var bufferMessage = message['objects'][0]['content'][0];
+        var bufferMessage = message.objects[0].content[0];
         var buffer = new models.Buffer(bufferMessage);
         models.closeBuffer(buffer);
     };
@@ -54,33 +54,33 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
     };
 
     var handleBufferLineAdded = function(message) {
-        message['objects'][0]['content'].forEach(function(l) {
+        message.objects[0].content.forEach(function(l) {
             handleLine(l, false);
         });
     };
 
     var handleBufferOpened = function(message) {
-        var bufferMessage = message['objects'][0]['content'][0];
+        var bufferMessage = message.objects[0].content[0];
         var buffer = new models.Buffer(bufferMessage);
         models.addBuffer(buffer);
         models.setActiveBuffer(buffer.id);
     };
 
     var handleBufferTitleChanged = function(message) {
-        var obj = message['objects'][0]['content'][0];
-        var buffer = obj['pointers'][0];
+        var obj = message.objects[0].content[0];
+        var buffer = obj.pointers[0];
         var old = models.getBuffer(buffer);
-        old.fullName = obj['full_name'];
-        old.title = obj['title'];
-        old.number = obj['number'];
+        old.fullName = obj.full_name;
+        old.title = obj.title;
+        old.number = obj.number;
     };
 
     var handleBufferRenamed = function(message) {
-        var obj = message['objects'][0]['content'][0];
-        var buffer = obj['pointers'][0];
+        var obj = message.objects[0].content[0];
+        var buffer = obj.pointers[0];
         var old = models.getBuffer(buffer);
-        old.fullName = obj['full_name'];
-        old.shortName = obj['short_name'];
+        old.fullName = obj.full_name;
+        old.shortName = obj.short_name;
     };
 
     /*
@@ -89,7 +89,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
      * (lineinfo) messages are specified by this client. It is request after bufinfo completes
      */
     var handleLineInfo = function(message) {
-        var lines = message['objects'][0]['content'].reverse();
+        var lines = message.objects[0].content.reverse();
         lines.forEach(function(l) {
             handleLine(l, true);
         });
@@ -102,7 +102,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         if (message.objects.length == 0) {
             return;
         }
-        var hotlist = message['objects'][0]['content'];
+        var hotlist = message.objects[0].content;
         hotlist.forEach(function(l) {
             var buffer = models.getBuffer(l.buffer);
             // 1 is message
@@ -123,7 +123,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
      * Handle nicklist event
      */
     var handleNicklist = function(message) {
-        var nicklist = message['objects'][0]['content'];
+        var nicklist = message.objects[0].content;
         var group = 'root';
         nicklist.forEach(function(n) {
             var buffer = models.getBuffer(n.pointers[0]);
@@ -141,11 +141,11 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
      * Handle nicklist diff event
      */
     var handleNicklistDiff = function(message) {
-        var nicklist = message['objects'][0]['content'];
+        var nicklist = message.objects[0].content;
         var group;
         nicklist.forEach(function(n) {
             var buffer = models.getBuffer(n.pointers[0]);
-            var d = n['_diff'];
+            var d = n._diff;
             if(n.group == 1) {
                 group = n.name;
                 if(group==undefined) {
@@ -169,8 +169,8 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
 
     var handleEvent = function(event) {
 
-        if (_.has(eventHandlers, event['id'])) {
-            eventHandlers[event['id']](event);
+        if (_.has(eventHandlers, event.id)) {
+            eventHandlers[event.id](event);
         }
 
     };
@@ -310,7 +310,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
                     keys: ['local_variables,notify,number,full_name,short_name,title']
                 })
             ).then(function(bufinfo) {
-                var bufferInfos = bufinfo['objects'][0]['content'];
+                var bufferInfos = bufinfo.objects[0].content;
                 // buffers objects
                 for (var i = 0; i < bufferInfos.length ; i++) {
                     var buffer = new models.Buffer(bufferInfos[i]);
@@ -367,10 +367,10 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
 
         websocket.onmessage = function (evt) {
             message = protocol.parse(evt.data);
-            if (_.has(callbacks, message['id'])) {
-                var promise = callbacks[message['id']];
+            if (_.has(callbacks, message.id)) {
+                var promise = callbacks[message.id];
                 promise.cb.resolve(message);
-                delete(callbacks[message['id']]);
+                delete(callbacks[message.id]);
             } else {
                 handlers.handleEvent(message);
             }
@@ -404,7 +404,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
      */
     var sendMessage = function(message) {
         return send(weeChat.Protocol.formatInput({
-            buffer: models.getActiveBuffer()['fullName'],
+            buffer: models.getActiveBuffer().fullName,
             data: message
         }));
     };
@@ -567,7 +567,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.openQuery = function(nick) {
-        var buffName = models.getActiveBuffer()['fullName'];
+        var buffName = models.getActiveBuffer().fullName;
         buffName = buffName.substring(0, buffName.lastIndexOf('.')) + '.' + nick;
 
         if (!$scope.setActiveBuffer(buffName, 'fullName')) {
