@@ -11,7 +11,7 @@ weechat.filter('toArray', function () {
         return Object.keys(obj).map(function (key) {
             return Object.defineProperty(obj[key], '$key', {__proto__: null, value: key});
         });
-    }
+    };
 });
 
 weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootScope, models, plugins) {
@@ -20,7 +20,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         var bufferMessage = message['objects'][0]['content'][0];
         var buffer = new models.Buffer(bufferMessage);
         models.closeBuffer(buffer);
-    }
+    };
 
     var handleLine = function(line, initial) {
         var message = new models.BufferLine(line);
@@ -51,20 +51,20 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
                 }
             }
         }
-    }
+    };
 
     var handleBufferLineAdded = function(message) {
         message['objects'][0]['content'].forEach(function(l) {
             handleLine(l, false);
         });
-    }
+    };
 
     var handleBufferOpened = function(message) {
         var bufferMessage = message['objects'][0]['content'][0];
         var buffer = new models.Buffer(bufferMessage);
         models.addBuffer(buffer);
         models.setActiveBuffer(buffer.id);
-    }
+    };
 
     var handleBufferTitleChanged = function(message) {
         var obj = message['objects'][0]['content'][0];
@@ -73,7 +73,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         old.fullName = obj['full_name'];
         old.title = obj['title'];
         old.number = obj['number'];
-    }
+    };
 
     var handleBufferRenamed = function(message) {
         var obj = message['objects'][0]['content'][0];
@@ -81,7 +81,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         var old = models.getBuffer(buffer);
         old.fullName = obj['full_name'];
         old.shortName = obj['short_name'];
-    }
+    };
 
     /*
      * Handle answers to (lineinfo) messages
@@ -93,7 +93,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         lines.forEach(function(l) {
             handleLine(l, true);
         });
-    }
+    };
 
     /*
      * Handle answers to hotlist request
@@ -117,7 +117,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
             var unreadSum = _.reduce(l.count, function(memo, num){ return memo + num; }, 0);
             buffer.lastSeen = buffer.lines.length - 1 - unreadSum;
         });
-    }
+    };
 
     /*
      * Handle nicklist event
@@ -136,7 +136,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
                 buffer.addNick(group, nick);
             }
         });
-    }
+    };
     /*
      * Handle nicklist diff event
      */
@@ -165,7 +165,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
                 }
             }
         });
-    }
+    };
 
     var handleEvent = function(event) {
 
@@ -173,7 +173,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
             eventHandlers[event['id']](event);
         }
 
-    }
+    };
 
     var eventHandlers = {
         _buffer_closing: handleBufferClosing,
@@ -183,14 +183,14 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         _buffer_renamed: handleBufferRenamed,
         _nicklist: handleNicklist,
         _nicklist_diff: handleNicklistDiff
-    }
+    };
 
     return {
         handleEvent: handleEvent,
         handleLineInfo: handleLineInfo,
         handleHotlistInfo: handleHotlistInfo,
         handleNicklist: handleNicklist
-    }
+    };
 
 }]);
 
@@ -198,7 +198,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
     protocol = new weeChat.Protocol();
     var websocket = null;
 
-    var callbacks = {}
+    var callbacks = {};
     var currentCallBackId = 0;
 
     /*
@@ -213,7 +213,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
         }
 
         return currentCallBackId;
-    }
+    };
 
     /*
      * Create a callback, adds it to the callback list
@@ -226,12 +226,12 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
         callbacks[cbId] = {
             time: new Date,
             cb: defer,
-        }
+        };
 
-        defer.id = cbId
+        defer.id = cbId;
 
         return defer;
-    }
+    };
 
     /*
      * Fails every currently subscribed callback for the
@@ -244,7 +244,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
             callbacks[i].cb.reject(reason);
         }
 
-    }
+    };
 
     /* Send a message to the websocket and returns a promise.
      * See: http://docs.angularjs.org/api/ng.$q
@@ -257,7 +257,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
         var cb = createCallback(message);
         websocket.send("(" + cb.id + ") " + message);
         return cb.promise;
-    }
+    };
 
     /*
      * Send all messages to the websocket and returns a promise that is resolved
@@ -271,7 +271,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
         for(i in messages) {
             var promise = send(messages[i]);
             promises.push(promise);
-        };
+        }
         return $q.all(promises);
     };
 
@@ -279,7 +279,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
     var connect = function (host, port, passwd, ssl) {
         var proto = ssl ? 'wss':'ws';
         websocket = new WebSocket(proto+"://" + host + ':' + port + "/weechat");
-        websocket.binaryType = "arraybuffer"
+        websocket.binaryType = "arraybuffer";
 
         websocket.onopen = function (evt) {
 
@@ -347,26 +347,26 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
                 weeChat.Protocol.formatNicklist({
                 })
             ).then(function(nicklist) {
-                handlers.handleNicklist(nicklist)
+                handlers.handleNicklist(nicklist);
             });
 
             send(
                 weeChat.Protocol.formatSync({})
-            )
+            );
 
             $rootScope.connected = true;
 
-        }
+        };
 
         websocket.onclose = function (evt) {
             $log.info("Disconnected from relay");
             $rootScope.connected = false;
             failCallbacks('disconnection');
             $rootScope.$apply();
-        }
+        };
 
         websocket.onmessage = function (evt) {
-	    message = protocol.parse(evt.data)
+            message = protocol.parse(evt.data);
             if (_.has(callbacks, message['id'])) {
                 var promise = callbacks[message['id']];
                 promise.cb.resolve(message);
@@ -376,7 +376,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
             }
             $rootScope.commands.push("RECV: " + evt.data + " TYPE:" + evt.type) ;
             $rootScope.$apply();
-        }
+        };
 
         websocket.onerror = function (evt) {
             // on error it means the connection problem
@@ -387,15 +387,15 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
                 $rootScope.errorMessage = true;
             }
             $log.error("Relay error " + evt.data);
-        }
+        };
 
         this.websocket = websocket;
-    }
+    };
 
     var disconnect = function() {
         /* TODO: Send protocol disconnect */
         this.websocket.close();
-    }
+    };
 
     /*
      * Format and send a weechat message
@@ -407,14 +407,14 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
             buffer: models.getActiveBuffer()['fullName'],
             data: message
         }));
-    }
+    };
 
     var sendCoreCommand = function(command) {
         send(weeChat.Protocol.formatInput({
             buffer: 'core.weechat',
             data: command
         }));
-    }
+    };
 
 
     return {
@@ -423,7 +423,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
         disconnect: disconnect,
         sendMessage: sendMessage,
         sendCoreCommand: sendCoreCommand
-    }
+    };
 }]);
 
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', function ($rootScope, $scope, $store, $timeout, $log, models, connection, testService) {
@@ -473,7 +473,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             }else {
                 $scope.isinstalled = false;
             }
-        } 
+        };
     }else {
         $scope.isinstalled = false;
     }
@@ -517,13 +517,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     });
 
     $scope.buffers = models.model.buffers;
-    $scope.activeBuffer = models.getActiveBuffer
+    $scope.activeBuffer = models.getActiveBuffer;
 
-    $rootScope.commands = []
+    $rootScope.commands = [];
 
     $rootScope.models = models;
 
-    $rootScope.buffer = []
+    $rootScope.buffer = [];
 
     $rootScope.iterCandidate = null;
 
@@ -573,7 +573,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if (!$scope.setActiveBuffer(buffName, 'fullName')) {
             connection.sendMessage('/query ' + nick);
         }
-    }
+    };
 
     $rootScope.scrollToBottom = function() {
         // FIXME doesn't work if the settimeout runs without a short delay
@@ -589,21 +589,21 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                     bl.scrollTop = sVal;
                 }
             }
-        }
+        };
         // Here be scrolling dragons
         $timeout(scroll);
         $timeout(scroll, 100);
         $timeout(scroll, 300);
         $timeout(scroll, 500);
-    }
+    };
 
 
     $scope.connect = function() {
         connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl);
-    }
+    };
     $scope.disconnect = function() {
         connection.disconnect();
-    }
+    };
     $scope.install = function() {
         if(navigator.mozApps != undefined) {
             var request = navigator.mozApps.install('http://torhve.github.io/glowing-bear/manifest.webapp');
@@ -622,7 +622,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }else{
             alert('Sorry. Only supported in Firefox v26+');
         }
-    }
+    };
 
 
     /* Function gets called from bufferLineAdded code if user should be notified */
@@ -641,8 +641,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         var notification = new Notification(title, {body:content, icon:'img/favicon.png'});
         // Cancel notification automatically
         notification.onshow = function() {
-            setTimeout(function() { notification.close() }, timeout);
-        }
+            setTimeout(function() { 
+                notification.close();
+            }, timeout);
+        };
     };
 
     $scope.hasUnread = function(buffer) {
@@ -682,7 +684,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             return false;
         }
         return true;
-    }
+    };
 
     $rootScope.switchToActivityBuffer = function() {
         // Find next buffer with activity and switch to it
@@ -696,7 +698,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 break;
             }
         }
-    }
+    };
 
 
     $scope.handleKeyPress = function($event) {
@@ -714,7 +716,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             // TODO Switch to first matching buffer and reset query
             $scope.search = '';
         }
-    }
+    };
 
     // Prevent user from accidentally leaving the page
     window.onbeforeunload = function(event) {
@@ -775,14 +777,14 @@ weechat.directive('inputBar', function() {
                 // update current caret position
                 inputNode.focus();
                 inputNode.setSelectionRange(nickComp.caretPos, nickComp.caretPos);
-            }
+            };
 
 
             // Send the message to the websocket
             $scope.sendMessage = function() {
                 connection.sendMessage($scope.command);
                 $scope.command = "";
-            }
+            };
 
             // Handle key presses in the input bar
             $scope.handleKeyPress = function($event) {
@@ -857,9 +859,9 @@ weechat.directive('inputBar', function() {
                     return true;
                 }
 
-            }
+            };
 
         }
 
-    }
+    };
 });
