@@ -120,7 +120,7 @@
             type: 'weechat',
             name: 'default'
         };
-    }
+    };
 
     /**
      * Gets the default attributes.
@@ -137,7 +137,7 @@
                 'underline': false
             }
         };
-    }
+    };
     
     /**
      * Gets the default style (default colors and attributes).
@@ -150,7 +150,7 @@
             bgColor: WeeChatProtocol._getDefaultColor(),
             attrs: WeeChatProtocol._getDefaultAttributes()
         };
-    }
+    };
 
     /**
      * Clones a color object.
@@ -166,7 +166,7 @@
         }
 
         return clone;
-    }
+    };
 
     /**
      * Clones an attributes object.
@@ -184,7 +184,7 @@
         }
 
         return clone;
-    }
+    };
 
     /**
      * Gets the name of an attribute from its character.
@@ -212,7 +212,7 @@
         }
 
         return null;
-    }
+    };
 
 
     /**
@@ -239,7 +239,7 @@
         }
 
         return attrs;
-    }
+    };
 
     /**
      * Gets a single color from a string representing its index (WeeChat and
@@ -267,7 +267,7 @@
                 name: parseInt(codeStr).toString()
             };
         }
-    }
+    };
 
     /**
      * Gets colors and attributes of text element.
@@ -436,7 +436,7 @@
         });
         
         return ret;
-    }
+    };
 
     /**
      * Transforms a raw text into an array of text elements with integrated
@@ -471,7 +471,7 @@
         var curAttrsOnlyFalseOverrides = true;
         
         return parts.map(function(p) {
-            if (p.length == 0) {
+            if (p.length === 0) {
                 return null;
             }
             var firstCharCode = p.charCodeAt(0);
@@ -533,7 +533,7 @@
             curSpecialToken = null;
 
             // if text is empty, don't bother returning it
-            if (text.length == 0) {
+            if (text.length === 0) {
                 return null;
             }
 
@@ -1194,4 +1194,4 @@
 
     exports.Protocol = WeeChatProtocol;
 })();
-})(typeof exports === "undefined" ? this.weeChat = {} : exports)
+})(typeof exports === "undefined" ? this.weeChat = {} : exports);
