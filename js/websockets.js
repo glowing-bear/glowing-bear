@@ -240,7 +240,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
      * @param reason reason for failure
      */
     failCallbacks = function(reason) {
-        for(i in callbacks) {
+        for(var i in callbacks) {
             callbacks[i].cb.reject(reason);
         }
 
@@ -268,7 +268,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
      */
     var sendAll = function(messages) {
         var promises = [];
-        for(i in messages) {
+        for(var i in messages) {
             var promise = send(messages[i]);
             promises.push(promise);
         }
@@ -689,7 +689,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $rootScope.switchToActivityBuffer = function() {
         // Find next buffer with activity and switch to it
-        for(i in $scope.buffers) {
+        for(var i in $scope.buffers) {
             var buffer = $scope.buffers[i];
             if(buffer.notification > 0) {
                 $scope.setActiveBuffer(buffer.id);
