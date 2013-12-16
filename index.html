@@ -20,6 +20,7 @@
     <script type="text/javascript" src="js/websockets.js"></script>
     <script type="text/javascript" src="js/models.js"></script>
     <script type="text/javascript" src="js/plugins.js"></script>
+    <script type="text/javascript" src="js/bindonce.js"></script>
     <script type="text/javascript" src="js/favico-0.3.0.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   </head>
@@ -263,25 +264,25 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
           </ul>
         </div>
         <table>
-          <tbody ng-repeat="bufferline in (bufferlines = activeBuffer().lines)">
+          <tbody bindonce ng-repeat="bufferline in (bufferlines = activeBuffer().lines)">
             <tr class="bufferline">
-              <td ng-hide="notimestamp" class="time">
-                <span class="date" ng-class="{'repeated-time': bufferline.shortTime==bufferlines[$index-1].shortTime}">
-                  <span class="cof-chat_time cob-chat_time coa-chat_time">{{ bufferline.date | date:'HH' }}</span><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time">{{ bufferline.date | date:'mm' }}</span>
+              <td bo-hide="notimestamp" class="time">
+                <span class="date" bo-class="{'repeated-time': bufferline.shortTime==bufferlines[$index-1].shortTime}">
+                  <span class="cof-chat_time cob-chat_time coa-chat_time" bo-text="bufferline.date|date:'HH'"></span><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time" bo-text="bufferline.date|date:'mm'">{{ bufferline.date | date:'mm' }}</span>
                 </span>
               </td>
-              <td class="prefix"><span ng-repeat="part in bufferline.prefix" ng-class="{{ part.classes }}">{{ part.text }}</span></td>
+              <td class="prefix"><span bindonce ng-repeat="part in bufferline.prefix" bo-class="part.classes" bo-html="part.text"></span></td>
               <td class="message">
-                <span ng-repeat="part in bufferline.content" class="text" ng-class="{{ part.classes }}" ng-bind-html="part.text|linky:'_blank'"></span>
+                <span bindonce ng-repeat="part in bufferline.content" class="text" bo-class="part.classes" bo-html="part.text|linky:'_blank'"></span>
 
-                <div ng-repeat="metadata in bufferline.metadata">
-                  <div ng-show="metadata.visible">
-                    <button class="btn btn-primary pull-right" ng-click="metadata.visible = false">Hide {{ metadata.name }}</button>
-                    <div ng-bind-html="metadata.content"></div>
+                <div bindonce ng-repeat="metadata in bufferline.metadata">
+                  <div bo-show="metadata.visible">
+                    <button class="btn btn-primary pull-right" bo-click="metadata.visible = false" bo-text="'Hide ' + metadata.name">Hide {{ metadata.name }}</button>
+                    <div bo-html="metadata.content"></div>
 
                   </div>
-                  <div ng-hide="metadata.visible">
-                    <button class="btn pull-right" ng-class="{'btn-warning': metadata.nsfw, 'btn-primary': !metadata.nsfw}" ng-click="metadata.visible = true">Show {{ metadata.name }}</button>
+                  <div bo-hide="metadata.visible">
+                    <button class="btn pull-right" bo-class="{'btn-warning': metadata.nsfw, 'btn-primary': !metadata.nsfw}" ng-click="metadata.visible = true">Show {{ metadata.name }}</button>
                   </div>
                 </div>
               </td>
