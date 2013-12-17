@@ -205,7 +205,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
      * Returns the current callback id
      */
     var getCurrentCallBackId = function() {
-        
+
         currentCallBackId += 1;
 
         if (currentCallBackId > 1000) {
@@ -439,22 +439,22 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     }
 
 
-    $rootScope.countWatchers = function () { 
+    $rootScope.countWatchers = function () {
         var root = $(document.getElementsByTagName('body'));
         var watchers = [];
-    
+
         var f = function (element) {
             if (element.data().hasOwnProperty('$scope')) {
                 angular.forEach(element.data().$scope.$$watchers, function (watcher) {
                     watchers.push(watcher);
                 });
             }
-        
+
             angular.forEach(element.children(), function (childElement) {
                 f($(childElement));
             });
         };
-    
+
         f(root);
         console.log(watchers.length);
     };
@@ -489,13 +489,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // we will send a /buffer bufferName command every time
         // the user switches a buffer. This will ensure that notifications
         // are cleared in the buffer the user switches to
-        if($scope.hotlistsync && ab.fullName) { 
+        if($scope.hotlistsync && ab.fullName) {
             connection.sendCoreCommand('/buffer ' + ab.fullName);
         }
 
         // Clear search term on buffer change
         $scope.search = '';
-        
+
         // Check if we should show nicklist or not
         $scope.showNicklist = $scope.updateShowNicklist();
     });
@@ -545,9 +545,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Save setting for syncing hotlist
     $store.bind($scope, "hotlistsync", true);
     // Save setting for displaying nicklist
-    $store.bind($scope, "nonicklist", false); 
+    $store.bind($scope, "nonicklist", false);
     // Save setting for displaying embeds
-    $store.bind($scope, "noembed", false); 
+    $store.bind($scope, "noembed", false);
     // Save setting for channel ordering
     $store.bind($scope, "orderbyserver", false);
     // Save setting for displaying embeds in rootscope so it can be used from service
@@ -642,14 +642,14 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         var notification = new Notification(title, {body:content, icon:'img/favicon.png'});
         // Cancel notification automatically
         notification.onshow = function() {
-            setTimeout(function() { 
+            setTimeout(function() {
                 notification.close();
             }, timeout);
         };
     };
 
     $scope.hasUnread = function(buffer) {
-        // if search is set, return every buffer 
+        // if search is set, return every buffer
         if($scope.search && $scope.search !== "") {
             return true;
         }
@@ -668,7 +668,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $scope.showNicklist = $scope.updateShowNicklist();
     });
     $scope.showNicklist = false;
-    // Utility function that template can use to check if nicklist should 
+    // Utility function that template can use to check if nicklist should
     // be displayed for current buffer or not
     // is called on buffer switch
     $scope.updateShowNicklist = function() {
@@ -681,7 +681,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             return false;
         }
         // Use flat nicklist to check if empty
-        if(ab.flatNicklist().length === 0) { 
+        if(ab.flatNicklist().length === 0) {
             return false;
         }
         return true;
@@ -725,7 +725,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 }]
 );
 
-weechat.config(['$routeProvider', 
+weechat.config(['$routeProvider',
 
     function($routeProvider) {
         $routeProvider.when('/', {
@@ -791,7 +791,7 @@ weechat.directive('inputBar', function() {
                 if (!$rootScope.connected) {
                     return true;
                 }
-                
+
                 // Support different browser quirks
                 var code = $event.keyCode ? $event.keyCode : $event.charCode;
 

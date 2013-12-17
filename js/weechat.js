@@ -138,7 +138,7 @@
             }
         };
     };
-    
+
     /**
      * Gets the default style (default colors and attributes).
      *
@@ -290,7 +290,7 @@
                 fn: function(m) {
                     var ret = {};
                     var optionCode = parseInt(m[1]);
-                    
+
                     if (optionCode > 43) {
                         // should never happen
                         return {
@@ -309,7 +309,7 @@
                         name: optionName,
                         override: {}
                     };
-                    
+
                     return ret;
                 }
             },
@@ -335,7 +335,7 @@
                     var ret = {
                         bgColor: null
                     };
-                    
+
                     if (m[2]) {
                         ret.attrs = WeeChatProtocol._attrsFromStr(m[1]);
                         ret.fgColor = WeeChatProtocol._getColorObj(m[2]);
@@ -343,7 +343,7 @@
                         ret.attrs = WeeChatProtocol._attrsFromStr(m[3]);
                         ret.fgColor = WeeChatProtocol._getColorObj(m[4]);
                     }
-                    
+
                     return ret;
                 }
             },
@@ -369,7 +369,7 @@
                 regex: /^\*(?:([\x01\x02\x03\x04*!\/_|]*)(\d{2})|@([\x01\x02\x03\x04*!\/_|]*)(\d{5})),(\d{2}|@\d{5})/,
                 fn: function(m) {
                     var ret = {};
-                    
+
                     if (m[2]) {
                         ret.attrs = WeeChatProtocol._attrsFromStr(m[1]);
                         ret.fgColor = WeeChatProtocol._getColorObj(m[2]);
@@ -378,7 +378,7 @@
                         ret.fgColor = WeeChatProtocol._getColorObj(m[4]);
                     }
                     ret.bgColor = WeeChatProtocol._getColorObj(m[5]);
-                    
+
                     return ret;
                 }
             },
@@ -401,7 +401,7 @@
                 regex: /^E/,
                 fn: function(m) {
                     var ret = {};
-                    
+
                     ret.fgColor = {
                         type: 'option',
                         name: 'emphasis'
@@ -411,12 +411,12 @@
                         name: 'emphasis',
                         override: {}
                     };
-                    
+
                     return ret;
                 }
             }
         ];
-        
+
         // parse
         var ret = {
             fgColor: null,
@@ -431,10 +431,10 @@
                 ret.text = txt.substring(m[0].length);
                 return true;
             }
-            
+
             return false;
         });
-        
+
         return ret;
     };
 
@@ -469,7 +469,7 @@
         var curAttrs = WeeChatProtocol._getDefaultAttributes();
         var curSpecialToken = null;
         var curAttrsOnlyFalseOverrides = true;
-        
+
         return parts.map(function(p) {
             if (p.length === 0) {
                 return null;

@@ -1,6 +1,6 @@
 
 var ls = angular.module('localStorage',[]);
- 
+
 ls.factory("$store",function($parse){
     /**
      * Global Vars
@@ -110,4 +110,3 @@ ls.factory("$store",function($parse){
     };
     return publicMethods;
 });
-

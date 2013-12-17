@@ -18,12 +18,12 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var local_variables = message.local_vars;
         var notify = 3 // Default 3 == message
         var lines = []
-        var nicklist = {} 
+        var nicklist = {}
         var flatnicklist = []
         var history = []
         var historyPos = 0;
         var active = false
-        var notification = 0 
+        var notification = 0
         var unread = 0
         var lastSeen = -1
         var serverSortKey = fullName.replace(/^irc.server.(\w+)/, "irc.$1");
@@ -44,7 +44,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
 
         /*
          * Adds a line to this buffer
-         * 
+         *
          * @param line the BufferLine object
          * @return undefined
          */
@@ -91,7 +91,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
 
         /*
          * Maintain a cached version of a flat sorted nicklist
-         * 
+         *
          */
         var getFlatNicklist = function() {
             var newlist = [];
@@ -99,7 +99,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
                 _.each(nickGroup.nicks, function(nickObj) {
                     newlist.push(nickObj.name);
                 });
-            }); 
+            });
             newlist.sort(function(a, b) {
                 return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
             });
@@ -181,7 +181,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         }
 
     }
-    
+
     /*
      * BufferLine class
      */
@@ -331,13 +331,13 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             nicks: nicks
         }
     }
-          
+
 
     var BufferList = []
     activeBuffer = null;
     unreads = 0;
     notifications = 0;
-    
+
     this.model = { 'buffers': {} }
 
     /*
@@ -387,7 +387,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         }
 
         var previousBuffer = this.getActiveBuffer();
-        
+
         activeBuffer = _.find(this.model.buffers, function(buffer) {
             if (buffer[key] == bufferId) {
                 return buffer;

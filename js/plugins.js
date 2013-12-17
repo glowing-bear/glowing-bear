@@ -11,7 +11,7 @@ plugins = angular.module('plugins', []);
  * that parses a string and return any additional content.
  */
 var Plugin = function(contentForMessage) {
-    
+
     return {
         contentForMessage: contentForMessage,
         exclusive: false,
@@ -35,7 +35,7 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
      * Defines the plugin manager object
      */
     var PluginManagerObject = function() {
-        
+
         var plugins = [];
 
         /*
