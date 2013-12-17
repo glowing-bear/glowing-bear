@@ -782,7 +782,7 @@ weechat.directive('inputBar', function() {
             // Send the message to the websocket
             $scope.sendMessage = function() {
                 connection.sendMessage($scope.command);
-                $scope.command = "";
+                $scope.command = models.getActiveBuffer().addToHistory($scope.command);  // log to buffer history
             };
 
             // Handle key presses in the input bar
@@ -858,6 +858,17 @@ weechat.directive('inputBar', function() {
                     return true;
                 }
 
+                // Arrow up -> go up in history
+                if (code == 38) {
+                    $scope.command = models.getActiveBuffer().getHistoryUp($scope.command);
+                    return true;
+                }
+
+                // Arrow down -> go down in history
+                if (code == 40) {
+                    $scope.command = models.getActiveBuffer().getHistoryDown($scope.command);
+                    return true;
+                }
             };
 
         }
