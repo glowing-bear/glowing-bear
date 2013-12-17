@@ -63,7 +63,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
          * Deletes a nick from nicklist
          */
         var delNick = function(group, nick) {
-            var group = nicklist[group];
+            group = nicklist[group];
             group.nicks = _.filter(group.nicks, function(n) { return n.name != nick.name;});
             flatnicklist = getFlatNicklist();
             /*
@@ -79,7 +79,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
          * Updates a nick in nicklist
          */
         var updateNick = function(group, nick) {
-            var group = nicklist[group];
+            group = nicklist[group];
             for(i in group.nicks) {
                 if(group.nicks[i].name == nick.name) {
                     group.nicks[i] = nick;

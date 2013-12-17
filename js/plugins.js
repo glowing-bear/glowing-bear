@@ -60,13 +60,13 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
 
                 var nsfw = false;
                 if (message.text.match(nsfwRegexp)) {
-                    var nsfw = true;
+                    nsfw = true;
                     visible = false;
                 }
 
                 var pluginContent = plugins[i].contentForMessage(message.text);
                 if (pluginContent) {
-                    var pluginContent = {'visible': visible,
+                    pluginContent = {'visible': visible,
                                          'content': $sce.trustAsHtml(pluginContent),
                                          'nsfw': nsfw,
                                          'name': plugins[i].name };
@@ -205,7 +205,7 @@ plugins.factory('userPlugins', function() {
         var content = null;
 
         if (url) {
-            var url = url[0]; /* Actually parse one url per message */
+            url = url[0]; /* Actually parse one url per message */
             if (url.match(/png$|gif$|jpg$|jpeg$/)) {
 
                 /* A fukung.net URL may end by an image extension but is not a direct link. */

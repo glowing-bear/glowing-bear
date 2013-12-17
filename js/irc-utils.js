@@ -122,10 +122,11 @@ var IrcUtils = {
 
         // iterating nicks at the beginning?
         var m = beforeCaret.match(new RegExp('^([a-zA-Z0-9_\\\\\\[\\]{}^`|-]+)' + suf + ' $'));
+        var newNick = null;
         if (m) {
             if (doIterate) {
                 // try iterating
-                var newNick = IrcUtils._nextNick(iterCandidate, m[1], searchNickList);
+                newNick = IrcUtils._nextNick(iterCandidate, m[1], searchNickList);
                 beforeCaret = newNick + suf + ' ';
                 return {
                     text: beforeCaret + afterCaret,
@@ -143,7 +144,7 @@ var IrcUtils = {
         m = beforeCaret.match(/^([a-zA-Z0-9_\\\[\]{}^`|-]+)$/);
         if (m) {
             // try completing
-            var newNick = IrcUtils._completeSingleNick(m[1], searchNickList);
+            newNick = IrcUtils._completeSingleNick(m[1], searchNickList);
             if (newNick === null) {
                 // no match
                 return ret;
@@ -166,7 +167,7 @@ var IrcUtils = {
         if (m) {
             if (doIterate) {
                 // try iterating
-                var newNick = IrcUtils._nextNick(iterCandidate, m[2], searchNickList);
+                newNick = IrcUtils._nextNick(iterCandidate, m[2], searchNickList);
                 beforeCaret = m[1] + newNick + ' ';
                 return {
                     text: beforeCaret + afterCaret,
@@ -184,7 +185,7 @@ var IrcUtils = {
         m = beforeCaret.match(/^(.* )([a-zA-Z0-9_\\\[\]{}^`|-]+)$/);
         if (m) {
             // try completing
-            var newNick = IrcUtils._completeSingleNick(m[2], searchNickList);
+            newNick = IrcUtils._completeSingleNick(m[2], searchNickList);
             if (newNick === null) {
                 // no match
                 return ret;
