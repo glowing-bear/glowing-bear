@@ -1,3 +1,9 @@
+/* highlight messages */
+.highlight {
+    color: yellow;
+    font-weight: bold;
+}
+
 /* style options, foreground */
 .cof-separator {
     color: #68b5d4;
