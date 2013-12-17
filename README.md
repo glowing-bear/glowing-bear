@@ -19,7 +19,7 @@ Contributing to glowing-bear
 We use Bower to manage dependencies:
 
 	$ npm install -r bower
-	$ bower install bower.json
+	$ bower install
 	
 The files have to be served from a web server. It's as simple as running this command in the glowing-bear directory:
 
