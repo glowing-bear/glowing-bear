@@ -725,6 +725,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 }]
 );
 
+break_build = true;;
+
 weechat.config(['$routeProvider',
 
     function($routeProvider) {
