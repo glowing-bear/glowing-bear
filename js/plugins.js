@@ -16,8 +16,8 @@ var Plugin = function(contentForMessage) {
         contentForMessage: contentForMessage,
         exclusive: false,
         name: "additional content"
-    }
-}
+    };
+};
 
 /*
  * This service provides access to the plugin manager
@@ -47,7 +47,7 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
             for (var i = 0; i < userPlugins.length; i++) {
                 plugins.push(userPlugins[i]);
             };
-        }
+        };
 
         /*
          * Iterates through all the registered plugins
@@ -69,7 +69,7 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
                     var pluginContent = {'visible': visible,
                                          'content': $sce.trustAsHtml(pluginContent),
                                          'nsfw': nsfw,
-                                         'name': plugins[i].name }
+                                         'name': plugins[i].name };
 
                     message.metadata.push(pluginContent);
 
@@ -81,13 +81,13 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
             }
 
             return message;
-        }
+        };
 
         return {
             registerPlugins: registerPlugins,
             contentForMessage: contentForMessage
-        }
-    }
+        };
+    };
 
     // Instanciates and registers the plugin manager.
     this.PluginManager = new PluginManagerObject();
@@ -134,7 +134,7 @@ plugins.factory('userPlugins', function() {
         ret += addMatch(message.match(/open.spotify.com\/track\/([a-zA-Z-0-9]{22})/g));
         return ret;
     });
-    spotifyPlugin.name = 'Spotify track'
+    spotifyPlugin.name = 'Spotify track';
 
     /*
      * YouTube Embedded Player
@@ -210,7 +210,7 @@ plugins.factory('userPlugins', function() {
 
                 /* A fukung.net URL may end by an image extension but is not a direct link. */
                 if (url.indexOf("fukung.net/v/") != -1) {
-                    url = url.replace(/.*\//, "http://media.fukung.net/imgs/")
+                    url = url.replace(/.*\//, "http://media.fukung.net/imgs/");
                 }
 
                 content = '<a target="_blank" href="'+url+'"><img class="embed" src="' + url + '"></a>';
@@ -268,5 +268,5 @@ plugins.factory('userPlugins', function() {
 
     return {
         plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin]
-    }
+    };
 });

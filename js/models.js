@@ -10,22 +10,22 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
      */
     this.Buffer = function(message) {
         // weechat properties
-        var fullName = message.full_name
-        var shortName = message.short_name
-        var title = message.title
-        var number = message.number
-        var pointer = message.pointers[0]
+        var fullName = message.full_name;
+        var shortName = message.short_name;
+        var title = message.title;
+        var number = message.number;
+        var pointer = message.pointers[0];
         var local_variables = message.local_vars;
-        var notify = 3 // Default 3 == message
-        var lines = []
-        var nicklist = {}
-        var flatnicklist = []
-        var history = []
+        var notify = 3; // Default 3 == message
+        var lines = [];
+        var nicklist = {};
+        var flatnicklist = [];
+        var history = [];
         var historyPos = 0;
-        var active = false
-        var notification = 0
-        var unread = 0
-        var lastSeen = -1
+        var active = false;
+        var notification = 0;
+        var unread = 0;
+        var lastSeen = -1;
         var serverSortKey = fullName.replace(/^irc.server.(\w+)/, "irc.$1");
 
         var indent = function(predicate) {
@@ -35,7 +35,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             } else {
                 return "";
             }
-        }
+        };
 
         // Buffer opened message does not include notify level
         if( message.notify != undefined ) {
@@ -50,7 +50,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
          */
         var addLine = function(line) {
             lines.push(line);
-        }
+        };
 
         /*
          * Adds a nick to nicklist
@@ -58,13 +58,13 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var addNick = function(group, nick) {
             nicklist[group].nicks.push(nick);
             flatnicklist = getFlatNicklist();
-        }
+        };
         /*
          * Deletes a nick from nicklist
          */
         var delNick = function(group, nick) {
             var group = nicklist[group];
-            group.nicks = _.filter(group.nicks, function(n) { return n.name != nick.name});
+            group.nicks = _.filter(group.nicks, function(n) { return n.name != nick.name;});
             flatnicklist = getFlatNicklist();
             /*
             for(i in group.nicks) {
@@ -74,7 +74,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
                 }
             }
             */
-        }
+        };
         /*
          * Updates a nick in nicklist
          */
@@ -87,7 +87,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
                 }
             }
             flatnicklist = getFlatNicklist();
-        }
+        };
 
         /*
          * Maintain a cached version of a flat sorted nicklist
@@ -104,11 +104,11 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
                 return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
             });
             return newlist;
-        }
+        };
 
         var flatNicklist = function() {
             return flatnicklist;
-        }
+        };
 
         var addToHistory = function(line) {
             var result = "";
@@ -119,7 +119,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             history.push(line);
             historyPos = history.length;  // Go to end of history
             return result;
-        }
+        };
 
         var getHistoryUp = function(currentLine) {
             if (historyPos >= history.length) {
@@ -135,7 +135,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
                 var line = history[historyPos];
                 return line;
             }
-        }
+        };
 
         var getHistoryDown = function(currentLine) {
             if (historyPos < 0 || historyPos >= history.length) {
@@ -152,7 +152,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
                     return history[historyPos];
                 }
             }
-        }
+        };
 
         return {
             id: pointer,
@@ -178,9 +178,9 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             addToHistory: addToHistory,
             getHistoryUp: getHistoryUp,
             getHistoryDown: getHistoryDown
-        }
+        };
 
-    }
+    };
 
     /*
      * BufferLine class
@@ -259,9 +259,9 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             displayed: displayed,
             text: rtext,
 
-        }
+        };
 
-    }
+    };
 
     function nickGetColorClasses(nickMsg, propName) {
         if (propName in nickMsg && nickMsg[propName] && nickMsg[propName].length > 0) {
@@ -315,8 +315,8 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             name: name,
             prefixClasses: colorClasses.prefix,
             nameClasses: colorClasses.name
-        }
-    }
+        };
+    };
     /*
      * Nicklist Group class
      */
@@ -329,16 +329,16 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             name: name,
             visible: visible,
             nicks: nicks
-        }
-    }
+        };
+    };
 
 
-    var BufferList = []
+    var BufferList = [];
     activeBuffer = null;
     unreads = 0;
     notifications = 0;
 
-    this.model = { 'buffers': {} }
+    this.model = { 'buffers': {} };
 
     /*
      * Adds a buffer to the list
@@ -352,7 +352,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             activeBuffer = buffer.id;
         }
         this.model.buffers[buffer.id] = buffer;
-    }
+    };
 
     this.getBufferByIndex  = function(index) {
         var i = 0;
@@ -363,7 +363,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             }
         }
 
-    }
+    };
 
     /*
      * Returns the current active buffer
@@ -372,7 +372,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
      */
     this.getActiveBuffer = function() {
         return activeBuffer;
-    }
+    };
 
     /*
      * Sets the buffer specifiee by bufferId as active.
@@ -414,14 +414,14 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         $rootScope.$emit('activeBufferChanged');
         $rootScope.$emit('notificationChanged');
         return true;
-    }
+    };
 
     /*
      * Returns the buffer list
      */
     this.getBuffers = function() {
         return BufferList;
-    }
+    };
 
     /*
      * Returns a specific buffer object
@@ -435,7 +435,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
                 return buffer;
             }
         });
-    }
+    };
 
     /*
      * Closes a weechat buffer. Sets the first buffer
@@ -451,5 +451,5 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             this.setActiveBuffer(firstBuffer);
         }
         delete(this.model.buffers[bufferId.id]);
-    }
+    };
 }]);
