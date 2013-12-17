@@ -20,6 +20,8 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var lines = []
         var nicklist = {} 
         var flatnicklist = []
+        var history = []
+        var historyPos = 0;
         var active = false
         var notification = 0 
         var unread = 0
@@ -108,6 +110,50 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             return flatnicklist;
         }
 
+        var addToHistory = function(line) {
+            var result = "";
+            if (historyPos != history.length) {
+                // Pop cached line from history. Occurs if we submit something from history
+                result = history.pop();
+            }
+            history.push(line);
+            historyPos = history.length;  // Go to end of history
+            return result;
+        }
+
+        var getHistoryUp = function(currentLine) {
+            if (historyPos >= history.length) {
+                // cache current line in history
+                history.push(currentLine);
+            }
+            if (historyPos <= 0 || historyPos >= history.length) {
+                // Can't go up from first message or from out-of-bounds index
+                return currentLine;
+            } else {
+                // Go up in history
+                historyPos--;
+                var line = history[historyPos];
+                return line;
+            }
+        }
+
+        var getHistoryDown = function(currentLine) {
+            if (historyPos < 0 || historyPos >= history.length) {
+                // Can't go down from out of bounds or last message
+                return currentLine;
+            } else {
+                historyPos++;
+
+                if (history.length > 0 && historyPos == (history.length-1)) {
+                    // return cached line and remove from cache
+                    return history.pop();
+                } else {
+                    // Go down in history
+                    return history[historyPos];
+                }
+            }
+        }
+
         return {
             id: pointer,
             fullName: fullName,
@@ -127,7 +173,11 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             updateNick: updateNick,
             flatNicklist: flatNicklist,
             serverSortKey: serverSortKey,
-            indent: indent
+            indent: indent,
+            history: history,
+            addToHistory: addToHistory,
+            getHistoryUp: getHistoryUp,
+            getHistoryDown: getHistoryDown
         }
 
     }
