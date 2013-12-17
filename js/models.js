@@ -38,7 +38,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         };
 
         // Buffer opened message does not include notify level
-        if( message.notify != undefined ) {
+        if( message.notify !== undefined ) {
             notify = message.notify;
         }
 
@@ -244,7 +244,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         }
 
         var rtext = "";
-        if(content[0] != undefined) {
+        if(content[0] !== undefined) {
             rtext = content[0].text;
         }
 

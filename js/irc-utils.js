@@ -33,7 +33,7 @@ var IrcUtils = {
         var foundNick = null;
 
         nickList.some(function(nick) {
-            if (nick.toLowerCase().search(candidate.toLowerCase()) == 0) {
+            if (nick.toLowerCase().search(candidate.toLowerCase()) === 0) {
                 // found!
                 foundNick = nick;
                 return true;
@@ -62,7 +62,7 @@ var IrcUtils = {
         // collect matching nicks
         for (var i = 0; i < nickList.length; ++i) {
             var lcNick = nickList[i].toLowerCase();
-            if (lcNick.search(lcIterCandidate) == 0) {
+            if (lcNick.search(lcIterCandidate) === 0) {
                 matchingNicks.push(nickList[i]);
                 if (lcCurrentNick == lcNick) {
                     at = matchingNicks.length - 1;
@@ -73,7 +73,7 @@ var IrcUtils = {
             }
         }
 
-        if (at == null || matchingNicks.length == 0) {
+        if (at === null || matchingNicks.length === 0) {
             return currentNick;
         } else {
             ++at;
