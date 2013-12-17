@@ -10,12 +10,12 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
      */
     this.Buffer = function(message) {
         // weechat properties
-        var fullName = message['full_name']
-        var shortName = message['short_name']
-        var title = message['title']
-        var number = message['number']
-        var pointer = message['pointers'][0]
-        var local_variables = message['local_vars'];
+        var fullName = message.full_name
+        var shortName = message.short_name
+        var title = message.title
+        var number = message.number
+        var pointer = message.pointers[0]
+        var local_variables = message.local_vars;
         var notify = 3 // Default 3 == message
         var lines = []
         var nicklist = {} 
@@ -38,8 +38,8 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         }
 
         // Buffer opened message does not include notify level
-        if( message['notify'] != undefined ) {
-            notify = message['notify'];
+        if( message.notify != undefined ) {
+            notify = message.notify;
         }
 
         /*
@@ -186,8 +186,8 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
      * BufferLine class
      */
     this.BufferLine = function(message) {
-        var buffer = message['buffer'];
-        var date = message['date'];
+        var buffer = message.buffer;
+        var date = message.date;
         var shortTime = $filter('date')(date, 'HH:mm');
 
         function addClasses(textElements) {
@@ -228,13 +228,13 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         }
 
 
-        var prefix = weeChat.Protocol.rawText2Rich(message['prefix']);
+        var prefix = weeChat.Protocol.rawText2Rich(message.prefix);
         addClasses(prefix);
 
-        var tags_array = message['tags_array'];
-        var displayed = message['displayed'];
-        var highlight = message['highlight'];
-        var content = weeChat.Protocol.rawText2Rich(message['message']);
+        var tags_array = message.tags_array;
+        var displayed = message.displayed;
+        var highlight = message.highlight;
+        var content = weeChat.Protocol.rawText2Rich(message.message);
         addClasses(content);
 
         if (highlight) {
@@ -245,7 +245,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
 
         var rtext = "";
         if(content[0] != undefined) {
-            rtext = content[0]['text'];
+            rtext = content[0].text;
         }
 
        return {
@@ -304,9 +304,9 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
      * Nick class
      */
     this.Nick = function(message) {
-        var prefix = message['prefix'];
-        var visible = message['visible'];
-        var name = message['name'];
+        var prefix = message.prefix;
+        var visible = message.visible;
+        var name = message.name;
         var colorClasses = nickGetClasses(message);
 
         return {
@@ -321,8 +321,8 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
      * Nicklist Group class
      */
     this.NickGroup = function(message) {
-        var name = message['name'];
-        var visible = message['visible'];
+        var name = message.name;
+        var visible = message.visible;
         var nicks = [];
 
         return {
@@ -388,7 +388,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
 
         var previousBuffer = this.getActiveBuffer();
         
-        activeBuffer = _.find(this.model['buffers'], function(buffer) {
+        activeBuffer = _.find(this.model.buffers, function(buffer) {
             if (buffer[key] == bufferId) {
                 return buffer;
             }
@@ -430,8 +430,8 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
      * @return the buffer object
      */
     this.getBuffer = function(bufferId) {
-        return _.find(this.model['buffers'], function(buffer) {
-            if (buffer['id'] == bufferId) {
+        return _.find(this.model.buffers, function(buffer) {
+            if (buffer.id == bufferId) {
                 return buffer;
             }
         });
@@ -445,11 +445,11 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
      * @return undefined
      */
     this.closeBuffer = function(bufferId) {
-        var wasActive = this.model['buffers'][bufferId.id].active;
+        var wasActive = this.model.buffers[bufferId.id].active;
         if(wasActive) {
-            var firstBuffer = _.keys(this.model['buffers'])[0];
+            var firstBuffer = _.keys(this.model.buffers)[0];
             this.setActiveBuffer(firstBuffer);
         }
-        delete(this.model['buffers'][bufferId.id]);
+        delete(this.model.buffers[bufferId.id]);
     }
 }]);
