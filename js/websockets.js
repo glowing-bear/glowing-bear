@@ -9,7 +9,7 @@ weechat.filter('toArray', function () {
         }
 
         return Object.keys(obj).map(function (key) {
-            return Object.defineProperty(obj[key], '$key', {__proto__: null, value: key});
+            return Object.defineProperty(obj[key], '$key', { value: key });
         });
     };
 });
@@ -281,7 +281,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
         websocket = new WebSocket(proto+"://" + host + ':' + port + "/weechat");
         websocket.binaryType = "arraybuffer";
 
-        websocket.onopen = function (evt) {
+        websocket.onopen = function () {
 
             $log.info("Connected to relay");
 
@@ -299,7 +299,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
                 })
             ]).then(
                 null,
-                function(error) {
+                function() {
                     $rootScope.passwordError = true;
                 }
             );
@@ -358,7 +358,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
 
         };
 
-        websocket.onclose = function (evt) {
+        websocket.onclose = function () {
             $log.info("Disconnected from relay");
             $rootScope.connected = false;
             failCallbacks('disconnection');
@@ -426,7 +426,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
     };
 }]);
 
-weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', function ($rootScope, $scope, $store, $timeout, $log, models, connection, testService) {
+weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', function ($rootScope, $scope, $store, $timeout, $log, models, connection) {
     if(window.Notification) {
         // Request notification permission
         Notification.requestPermission(function (status) {
@@ -702,8 +702,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
 
-    $scope.handleKeyPress = function($event) {
-    };
     $scope.handleSearchBoxKey = function($event) {
         // Support different browser quirks
         var code = $event.keyCode ? $event.keyCode : $event.charCode;
