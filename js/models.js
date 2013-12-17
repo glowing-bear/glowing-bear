@@ -257,7 +257,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             tags: tags_array,
             highlight: highlight,
             displayed: displayed,
-            text: rtext,
+            text: rtext
 
         };
 

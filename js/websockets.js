@@ -225,7 +225,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
 
         callbacks[cbId] = {
             time: new Date(),
-            cb: defer,
+            cb: defer
         };
 
         defer.id = cbId;
@@ -295,7 +295,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
                 }),
 
                 weeChat.Protocol.formatInfo({
-                    name: 'version',
+                    name: 'version'
                 })
             ]).then(
                 null,
@@ -511,7 +511,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             $scope.favico = new Favico({
                 animation:'none',
                 bgColor : '#5CB85C',
-                textColor : '#ff0',
+                textColor : '#ff0'
             });
             $scope.favico.badge(unread);
         }
@@ -730,7 +730,7 @@ weechat.config(['$routeProvider',
     function($routeProvider) {
         $routeProvider.when('/', {
             templateUrl: 'index.html',
-            controller: 'WeechatCtrl',
+            controller: 'WeechatCtrl'
         });
     }
 ]);

@@ -46,7 +46,7 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
         var registerPlugins = function(userPlugins) {
             for (var i = 0; i < userPlugins.length; i++) {
                 plugins.push(userPlugins[i]);
-            };
+            }
         };
 
         /*

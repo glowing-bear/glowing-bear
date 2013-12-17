@@ -1058,7 +1058,7 @@
 
             return {
                 length: len,
-                compression: comp,
+                compression: comp
             };
         },
 
@@ -1083,7 +1083,7 @@
             if (type) {
                 return {
                     type: type,
-                    content: self._runType(type),
+                    content: self._runType(type)
                 };
             }
         },
@@ -1185,7 +1185,7 @@
             var msg = {
                 header: header,
                 id: id,
-                objects: objects,
+                objects: objects
             };
 
             return msg;
