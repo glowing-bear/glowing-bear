@@ -123,7 +123,7 @@ plugins.factory('userPlugins', function() {
     var spotifyPlugin = new Plugin(function(message) {
         var addMatch = function(match) {
             var ret = '';
-            for(i in match) {
+            for(var i in match) {
                 var id = match[i].substr(match[i].length-22, match[i].length);
                 ret += '<iframe src="//embed.spotify.com/?uri=spotify:track:'+id+'" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>';
             }

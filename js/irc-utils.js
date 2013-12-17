@@ -122,6 +122,7 @@ var IrcUtils = {
 
         // iterating nicks at the beginning?
         var m = beforeCaret.match(new RegExp('^([a-zA-Z0-9_\\\\\\[\\]{}^`|-]+)' + suf + ' $'));
+
         var newNick = null;
         if (m) {
             if (doIterate) {

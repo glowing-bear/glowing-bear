@@ -80,7 +80,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
          */
         var updateNick = function(group, nick) {
             group = nicklist[group];
-            for(i in group.nicks) {
+            for(var i in group.nicks) {
                 if(group.nicks[i].name == nick.name) {
                     group.nicks[i] = nick;
                     break;
