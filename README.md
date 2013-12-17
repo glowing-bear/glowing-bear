@@ -1,4 +1,4 @@
-A web client for WeeChat
+A web client for WeeChat [![Build Status](http://travis-ci.org/cormier/glowing-bear.png)](http://travis-ci.org/cormier/glowing-bear)
 ========================
 
 Required Weechat version: 0.4.2
