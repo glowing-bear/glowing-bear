@@ -187,6 +187,12 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var content = weeChat.Protocol.rawText2Rich(message['message']);
         addClasses(content);
 
+        if (highlight) {
+            prefix.forEach(function(textEl) {
+                textEl.classes.push('highlight');
+            });
+        }
+
         var rtext = "";
         if(content[0] != undefined) {
             rtext = content[0]['text'];
