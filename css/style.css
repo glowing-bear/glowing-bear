@@ -1,9 +1,3 @@
-/* highlight messages */
-.highlight {
-    color: yellow;
-    font-weight: bold;
-}
-
 /* style options, foreground */
 .cof-separator {
     color: #68b5d4;
@@ -1935,4 +1929,10 @@
     font-weight: normal;
     font-style: normal;
     text-decoration: none;
+}
+
+/* highlight messages */
+.highlight {
+    color: yellow;
+    font-weight: bold;
 }
