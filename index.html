@@ -163,7 +163,9 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
     <div class="content" ng-show="connected">
       <div id="topbar" class="horizontal-line">
             <div class="brand">
-              <img alt="brand" src="img/favicon.png" title="Connected to {{ host }}:{{ port}}">
+              <a href="#" data-target="#sidebar" data-toggle="collapse">
+                <img alt="brand" src="img/favicon.png" title="Connected to {{ host }}:{{ port}}">
+              </a>
             </div>
             <button ng-show="debugMode" ng-click="countWatchers()">Count Watchers</button>
             <div class="title" ng-bind-html="activeBuffer().title | linky:'_blank'"></div>
@@ -251,7 +253,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
               </a>
             </div>
       </div>
-      <div id="sidebar" class="vertical-line">
+      <div id="sidebar" class="vertical-line collapse in">
         <ul class="nav nav-pills nav-stacked">
           <li class="bufferfilter">
             <form role="form">

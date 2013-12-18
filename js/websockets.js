@@ -552,6 +552,16 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "orderbyserver", false);
     // Save setting for displaying embeds in rootscope so it can be used from service
     $rootScope.visible = $scope.noembed === false;
+
+    // If we are on mobile chhange some defaults
+    // We use 968 px as the cutoff, which should match the value in glowingbear.css
+    if(document.body.clientWidth < 968) {
+        $scope.nonicklist = true;
+        $scope.noembed = true;
+        $scope.notimestamp = true;
+    }
+
+
     // Watch model and update show setting when it changes
     $scope.$watch('noembed', function() {
         $rootScope.visible = $scope.noembed === false;
@@ -564,6 +574,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $rootScope.predicate = $scope.orderbyserver ? 'serverSortKey' : 'number';
 
     $scope.setActiveBuffer = function(bufferId, key) {
+        // If we are on mobile we need to collapse the menu on sidebar clicks
+        // We use 968 px as the cutoff, which should match the value in glowingbear.css
+        if(document.body.clientWidth<968) {
+            $('#sidebar').collapse();
+        }
         return models.setActiveBuffer(bufferId, key);
     };
 
