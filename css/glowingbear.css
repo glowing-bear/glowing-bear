@@ -146,6 +146,7 @@ input[type=text], input[type=password], .badge {
     font-size: larger;
     position: fixed;
     right: 0;
+    background: #282828;
 }
 #topbar .actions > * {
     padding-left: 5px;
