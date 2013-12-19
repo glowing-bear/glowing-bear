@@ -55,7 +55,7 @@
                       <input type="text" class="form-control monospace" id="port" ng-model="port" placeholder="9001">
                     </div>
                     <div class="alert alert-danger" ng-show="passwordError">
-                      Error wrong password
+                      Error: wrong password
                     </div>
                     <label class="control-label" for="password">WeeChat relay password</label> 
                     <input type="password" class="form-control monospace" id="password" ng-model="password" placeholder="Password">
@@ -93,14 +93,14 @@
             <div id="collapseTwo" class="panel-collapse collapse">
               <div class="panel-body">
                 <h3>Configuring the relay</h3>
-                <div>To start using, please enable relay in your WeeChat client:
+                <div>To start using glowing bear, please enable the relay plugin in your WeeChat client:
 <pre>
 /set relay.network.password yourpassword
 /relay add weechat 9001
 </pre>
-                <span class="label label-warning">WeeChat version 0.4.2 or higher is required.</span><br>
-                The communication goes directly between your browser and your weechat in clear text.
-                Connection settings are saved between sessions, including password, in your own browser.
+                <span class="label label-danger">WeeChat version 0.4.2 or higher is required.</span><br>
+                The communication goes directly between your browser and your WeeChat relay in plain text. Check the instructions below for help on setting up encrypted communication.
+                Connection settings, including your password, are saved locally in your own browser between sessions.
 
                 <br>
                 <h3>Shortcuts</h3>
@@ -125,15 +125,15 @@
             </div>
             <div id="collapseThree" class="panel-collapse collapse">
               <div class="panel-body">
-                If you check the encryption box, communication between browser and WeeChat will be encrypted.<br>
-                <strong>Note</strong>: Due to a <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">bug</a> encryption will not work in Firefox. You must also first visit the URL https://weechathost:relayport/ to accept the certificate</p>
-                If you want to use encrypted session you first have to set up the relay using SSL like this:
+                If you check the encryption box, the communication between browser and WeeChat will be encrypted.<br>
+                <strong>Note</strong>: Due to a <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">bug</a> encryption will not work in Firefox. Unless you are using a certificate trusted by your browser, you must also first visit the URL https://weechathost:relayport/ to accept the certificate.</p>
+                If you want to use an encrypted session you first have to set up the relay using SSL. It is easiest to use a self-signed certificate, which you can create like this:
 <pre>
 $ mkdir -p ~/.weechat/ssl
 $ cd ~/.weechat/ssl
 $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out relay.pem
 </pre>
-                If WeeChat is already running, you can reload the certificate and private key with command:
+                If WeeChat is already running, you can reload the certificate and private key with these commands:
 <pre>
 /relay sslcertkey
 /relay add ssl.weechat 8000
@@ -151,7 +151,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
             </div>
             <div id="collapseFour" class="panel-collapse collapse">
               <div class="panel-body">
-                <p>If you have a very new Firefox you can install the frontend as an app. Click the button to install.</p>
+                <p>If you have a very recent version of Firefox you can install the frontend as an app. Click the button to install.</p>
                 <button class="btn btn-lg btn-primary" ng-click="install()">Install app <i class="glyphicon glyphicon-chevron-right"></i></button>
               </div>
             </div>
