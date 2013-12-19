@@ -11,19 +11,4 @@ To use the web interface you first need to set a relay and a password:
 Then you can point your browser to the
 [Glowing Bear](http://cormier.github.io/glowing-bear) !
 
-Contributing to glowing-bear
-----------------------------
-
-### 1. Setup your environment
-
-We use Bower to manage dependencies:
-
-	$ npm install -r bower
-	$ bower install
-	
-The files have to be served from a web server. It's as simple as running this command in the glowing-bear directory:
-
-	$ python -m SimpleHTTPServer
-
-For any information don't hesitate and join us on **#glowing-bear** on **freenode**!
-
+Interested in contributing or simply want to talk about the project? Join us on **#glowing-bear** on **freenode**!
