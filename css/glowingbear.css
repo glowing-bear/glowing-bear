@@ -121,6 +121,9 @@ input[type=text], input[type=password], .badge {
     z-index: 2;
     line-height: 35px;
     white-space: nowrap;
+-webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+   -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+        box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
 }
 #topbar .brand {
     float: left;
@@ -138,9 +141,14 @@ input[type=text], input[type=password], .badge {
 #topbar .actions {
     margin-left: 5px;
     padding-left: 5px;
+    margin-right: 5px;
+    padding-right: 5px;
+    font-size: larger;
     position: fixed;
     right: 0;
-    background: #282828;
+}
+#topbar .actions > * {
+    padding-left: 5px;
 }
 #topbar .dropdown-menu form {
     padding-left: 6px;
@@ -222,7 +230,7 @@ input[type=text], input[type=password], .badge {
 
 #bufferlines {
     position: relative;
-    height: 99%;
+    height: 98%;
     overflow-y: auto;
     margin-left: 145px;    /* sidebar */
     width: auto;

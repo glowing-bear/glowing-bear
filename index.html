@@ -161,7 +161,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
       </div>
     </div>
     <div class="content" ng-show="connected">
-      <div id="topbar" class="horizontal-line">
+      <div id="topbar" class="">
             <div class="brand">
               <a href="#" data-target="#sidebar" data-toggle="collapse">
                 <img alt="brand" src="img/favicon.png" title="Connected to {{ host }}:{{ port}}">
@@ -171,9 +171,8 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
             <div class="title" ng-bind-html="activeBuffer().title | linky:'_blank'"></div>
             <div class="actions pull-right vertical-line-left">
               <div class="dropdown pull-left">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <i class="glyphicon glyphicon-cog"></i>
-                  <span class="caret"></span>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Options menu">
+                  <i class="glyphicon glyphicon-cog"></i> 
                 </a>
                 <ul class="dropdown-menu pull-right">
                   <li class="">
@@ -248,8 +247,8 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
                   </li>
                 </ul>
               </div>
-              <a ng-click="disconnect()">
-                <i class="glyphicon glyphicon-remove"></i>
+              <a ng-click="disconnect()" title="Disconnect from WeeChat">
+                <i class="glyphicon glyphicon-remove"></i> 
               </a>
             </div>
       </div>
