@@ -276,7 +276,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
     };
 
     // Takes care of the connection and websocket hooks
-    var connect = function (host, port, passwd, ssl) {
+    var connect = function (host, port, passwd, ssl, compression) {
         var proto = ssl ? 'wss':'ws';
         websocket = new WebSocket(proto+"://" + host + ':' + port + "/weechat");
         websocket.binaryType = "arraybuffer";
@@ -291,7 +291,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
             sendAll([
                 weeChat.Protocol.formatInit({
                     password: passwd,
-                    compression: 'off'
+                    compression: compression ? 'zlib' : 'off'
                 }),
 
                 weeChat.Protocol.formatInfo({
@@ -532,6 +532,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "port", "9001");
     $store.bind($scope, "proto", "weechat");
     $store.bind($scope, "ssl", false);
+    $store.bind($scope, "compression", false);
     $store.bind($scope, "lines", "40");
     $store.bind($scope, "savepassword", false);
     if($scope.savepassword) {
@@ -600,7 +601,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
 
     $scope.connect = function() {
-        connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl);
+        connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl, $scope.compression);
     };
     $scope.disconnect = function() {
         connection.disconnect();
