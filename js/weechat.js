@@ -630,7 +630,7 @@
     WeeChatProtocol.formatInit = function(params) {
         var defaultParams = {
             password: null,
-            compression: 'off'
+            compression: 'zlib'
         };
         var keys = [];
         var parts = [];
