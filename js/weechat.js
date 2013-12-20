@@ -576,7 +576,7 @@
     WeeChatProtocol._uia2s = function(uia) {
         var str = [];
 
-        for (var c = 0; c < uia.length; c++) {
+        for (var c = 0; c < uia.length && uia[c] !== 0; c++) {
             str.push(String.fromCharCode(uia[c]));
         }
 
@@ -1174,6 +1174,15 @@
             this._dataAt = 0;
 
             var header = this._getHeader();
+
+            if (header.compression) {
+                var raw = new Uint8Array(data, 5);  // skip first five bytes (header, 4B size, 1B compression flag)
+                var inflate = new Zlib.Inflate(raw);
+                var plain = inflate.decompress();
+                this._setData(plain.buffer);
+                this._dataAt = 0;  // reset position in data, as the header is not part of the decompressed data
+            }
+
             var id = this._getId();
             var objects = [];
             var object = this._getObject();
