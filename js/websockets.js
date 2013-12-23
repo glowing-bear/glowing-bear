@@ -35,7 +35,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
             }
 
             if (buffer.active) {
-                $rootScope.scrollToBottom();
+                $rootScope.scrollWithBuffer();
             }
 
             if (!initial && !buffer.active) {
@@ -480,7 +480,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     }
 
     $rootScope.$on('activeBufferChanged', function() {
-        $rootScope.scrollToBottom();
+        $rootScope.scrollWithBuffer();
 
         var ab = models.getActiveBuffer();
         $rootScope.pageTitle = ab.shortName + ' | ' + ab.title;
@@ -577,13 +577,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     };
 
-    $rootScope.scrollToBottom = function() {
+    $rootScope.scrollWithBuffer = function() {
         // FIXME doesn't work if the settimeout runs without a short delay
         var scroll = function() {
             var bl = document.getElementById('bufferlines');
             var sTop = bl.scrollTop;
             var sVal = bl.scrollHeight - bl.clientHeight;
-            if(sTop < sVal) {
+            if(sTop == sVal) {
                 bl.scrollTop = sVal;
             }
         };
