@@ -311,3 +311,8 @@ li.notification {
 img.embed {
   max-height: 300px;
 }
+
+
+table.notimestamp td.time {
+    display: none;
+}
