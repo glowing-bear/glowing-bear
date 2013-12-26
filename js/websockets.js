@@ -551,7 +551,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "noembed", false);
     // Save setting for channel ordering
     $store.bind($scope, "orderbyserver", false);
-    // Save setting for displaying embeds in rootscope so it can be used from service
+    // Save setting for displaying embeds in rootScope so it can be used from service
     $rootScope.visible = $scope.noembed === false;
     // Watch model and update show setting when it changes
     $scope.$watch('noembed', function() {
