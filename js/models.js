@@ -28,12 +28,12 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var lastSeen = -1;
         var serverSortKey = fullName.replace(/^irc.server.(\w+)/, "irc.$1");
 
-        var indent = function(predicate) {
+        var indentedName = function(predicate) {
             if( predicate == "serverSortKey" && fullName.match(/^irc./) && !fullName.match(/^irc.server./) ) {
                 // indent channel
-                return "    "; // four protected spaces
+                return "    " + shortName; // four protected spaces
             } else {
-                return "";
+                return shortName;
             }
         };
 
@@ -173,7 +173,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             updateNick: updateNick,
             flatNicklist: flatNicklist,
             serverSortKey: serverSortKey,
-            indent: indent,
+            indentedName: indentedName,
             history: history,
             addToHistory: addToHistory,
             getHistoryUp: getHistoryUp,

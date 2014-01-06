@@ -260,9 +260,9 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
           </li>
           <li class="buffer" ng-class="{'active': content.active }" ng-repeat="(key, content) in buffers | toArray | filter:{fullName:search} | filter:hasUnread | orderBy:predicate">
             <a href="#" ng-click="setActiveBuffer(content.id)" title="{{ content.fullName }}">
-                <span class="badge pull-right" ng-hide="content.notification" ng-if="content.unread" ng-bind="content.unread"></span>
+              <span class="badge pull-right" ng-hide="content.notification" ng-if="content.unread" ng-bind="content.unread"></span>
               <span class="badge pull-right danger" ng-show="content.notification" ng-bind="content.notification"></span>
-              {{ content.indent(predicate) }}{{ content.shortName }}<span ng-hide="content.shortName">{{ content.fullName }}</span>
+              {{ content.indentedName(predicate) }}<span ng-hide="content.shortName">{{ content.fullName }}</span>
             </a>
           </li>
         </ul>
@@ -270,8 +270,8 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
       <div id="bufferlines" class="monospace" ng-class="{'withnicklist': showNicklist}">
         <div id="nicklist" ng-show="showNicklist" class="vertical-line-left">
           <ul class="nicklistgroup list-unstyled" ng-repeat="group in activeBuffer().nicklist">
-            <li class="" ng-repeat="nick in group.nicks|orderBy:'name'" ng-click="openQuery(nick.name)">
-              <a ng-click="nickAction(nick)"><span ng-class="nick.prefixClasses">{{nick.prefix}}</span><span ng-class="nick.nameClasses">{{nick.name}}</span></a>
+            <li bindonce class="" ng-repeat="nick in group.nicks|orderBy:'name'" ng-click="openQuery(nick.name)">
+              <a ng-click="nickAction(nick)"><span bo-class="nick.prefixClasses" bo-text="nick.prefix"></span><span bo-class="nick.nameClasses" bo-text="nick.name"></span></a>
             </li>
           </ul>
         </div>
@@ -280,7 +280,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
             <tr class="bufferline">
               <td bo-hide="notimestamp" class="time">
                 <span class="date" bo-class="{'repeated-time': bufferline.shortTime==bufferlines[$index-1].shortTime}">
-                  <span class="cof-chat_time cob-chat_time coa-chat_time" bo-text="bufferline.date|date:'HH'"></span><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time" bo-text="bufferline.date|date:'mm'">{{ bufferline.date | date:'mm' }}</span>
+                  <span class="cof-chat_time cob-chat_time coa-chat_time" bo-text="bufferline.date|date:'HH'"></span><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time" bo-text="bufferline.date|date:'mm'"></span>
                 </span>
               </td>
               <td class="prefix"><span bindonce ng-repeat="part in bufferline.prefix" bo-class="part.classes" bo-html="part.text"></span></td>
