@@ -35,7 +35,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
             }
 
             if (buffer.active) {
-                $rootScope.scrollToBottom();
+                $rootScope.scrollWithBuffer();
             }
 
             if (!initial && !buffer.active) {
@@ -480,7 +480,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     }
 
     $rootScope.$on('activeBufferChanged', function() {
-        $rootScope.scrollToBottom();
+        $rootScope.scrollWithBuffer(true);
 
         var ab = models.getActiveBuffer();
         $rootScope.pageTitle = ab.shortName + ' | ' + ab.title;
@@ -576,18 +576,23 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     };
 
-    $rootScope.scrollToBottom = function() {
-        // FIXME doesn't work if the settimeout runs without a short delay
+    $rootScope.scrollWithBuffer = function(nonIncremental) {
+        // First, get scrolling status *before* modification
+        // This is required to determine where we were in the buffer pre-change
+        var bl = document.getElementById('bufferlines');
+        var sVal = bl.scrollHeight - bl.clientHeight;
+
         var scroll = function() {
-            var readmarker = document.getElementById('readmarker');
-            if(readmarker) {
-                readmarker.scrollIntoView();
-            }else{
-                var bl = document.getElementById('bufferlines');
-                var sTop = bl.scrollTop;
-                var sVal = bl.scrollHeight - bl.clientHeight;
-                if(sTop < sVal) {
-                    bl.scrollTop = sVal;
+            var sTop = bl.scrollTop;
+            // Determine if we want to scroll at all
+            if (nonIncremental && sTop < sVal || sTop == sVal) {
+                var readmarker = document.getElementById('readmarker');
+                if(nonIncremental && readmarker) {
+                    // Switching channels, scroll to read marker
+                    readmarker.scrollIntoView();
+                } else {
+                    // New message, scroll with buffer (i.e. to bottom)
+                    bl.scrollTop = bl.scrollHeight - bl.clientHeight;
                 }
             }
         };
