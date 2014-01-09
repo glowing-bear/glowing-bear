@@ -147,7 +147,7 @@ plugins.factory('userPlugins', function() {
         var match = message.match(regExp);
         if (match && match[7].length==11){
             var token = match[7];
-            var embedurl = "http://www.youtube.com/embed/" + token + "?html5=1&iv_load_policy=3&modestbranding=1&rel=0&showinfo=0";
+            var embedurl = "https://www.youtube.com/embed/" + token + "?html5=1&iv_load_policy=3&modestbranding=1&rel=0&showinfo=0";
             return '<iframe width="560" height="315" src="'+ embedurl + '" frameborder="0" allowfullscreen frameborder="0"></iframe>';
         }
 
