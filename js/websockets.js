@@ -500,14 +500,14 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $scope.showNicklist = $scope.updateShowNicklist();
     });
     $rootScope.$on('notificationChanged', function() {
-        var notifications = _.reduce(models.model.buffers, function(memo, num) { return (memo||0) + num.notification;});
+        var notifications = _.reduce(models.model.buffers, function(memo, num) { return (parseInt(memo)||0) + num.notification;});
         if (notifications > 0 ) {
             $scope.favico = new Favico({
                 animation:'none'
             });
             $scope.favico.badge(notifications);
         }else {
-            var unread = _.reduce(models.model.buffers, function(memo, num) { return (memo||0) + num.unread;});
+            var unread = _.reduce(models.model.buffers, function(memo, num) { return (parseInt(memo)||0) + num.unread;});
             $scope.favico = new Favico({
                 animation:'none',
                 bgColor : '#5CB85C',
