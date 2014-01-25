@@ -76,6 +76,7 @@ td.prefix {
 }
 td.message {
     word-wrap: break-word;
+    word-break: break-word;
     vertical-align: top;
     width: 100%;
     padding-left: 5px;
@@ -86,15 +87,6 @@ hr {
 }
 .text {
     white-space: pre-wrap;
-}
-/* Lastly, apply responsive CSS fixes as necessary */
-@media (max-width: 767px) {
-    #footer {
-        margin-left: -20px;
-        margin-right: -20px;
-        padding-left: 20px;
-        padding-right: 20px;
-    }
 }
 
 body {
@@ -124,19 +116,22 @@ input[type=text], input[type=password], .badge {
 #topbar {
     position: fixed;
     width: 100%;
-    height: 25px;
-    max-height: 25px;
-    z-index: 1;
-    line-height: 25px;
+    height: 35px;
+    max-height: 35px;
+    z-index: 2;
+    line-height: 35px;
     white-space: nowrap;
+-webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+   -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+        box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
 }
 #topbar .brand {
     float: left;
-    height: 25px;
+    height: 35px;
     padding-left: 5px;
 }
     #topbar .brand img {
-        height: 25px;
+        height: 32px;
     }
 #topbar .title {
     position: fixed;
@@ -146,9 +141,15 @@ input[type=text], input[type=password], .badge {
 #topbar .actions {
     margin-left: 5px;
     padding-left: 5px;
+    margin-right: 5px;
+    padding-right: 5px;
+    font-size: larger;
     position: fixed;
     right: 0;
     background: #282828;
+}
+#topbar .actions > * {
+    padding-left: 5px;
 }
 #topbar .dropdown-menu form {
     padding-left: 6px;
@@ -163,8 +164,9 @@ input[type=text], input[type=password], .badge {
     width: 140px;
     min-height: 100%;
     height: 100%;
-    overflow: auto;
-    padding-top: 35px; /* topbar */
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-top: 35px; /* topbar */
     font-size: smaller;
   }
 #sidebar form {
@@ -183,7 +185,7 @@ input[type=text], input[type=password], .badge {
     overflow-x: hidden;
     right: 0;
     top: 0;
-    padding-top: 25px; 
+    padding-top: 35px; 
     padding-left: 5px;
     padding-bottom: 35px;
 }
@@ -229,11 +231,11 @@ input[type=text], input[type=password], .badge {
 
 #bufferlines {
     position: relative;
-    height: 99%;
+    height: 98%;
     overflow-y: auto;
     margin-left: 145px;    /* sidebar */
     width: auto;
-    top: 25px; /* topbar */
+    top: 35px; /* topbar */
     padding-bottom: 10px;
     margin-right: -5px;
 }
@@ -251,7 +253,19 @@ input[type=text], input[type=password], .badge {
     background-color: #181818;
 }
 @media (max-width: 968px) {
-    #sidebar, #bufferlines, #nicklist {
+    #sidebar {
+        font-size: normal;
+        z-index: 1;
+        width: 60%;
+    }
+    #sidebar.in, #sidebar.collapsing {
+        -webkit-box-shadow: 0px 0px 120px #000;
+                box-shadow: 0px 0px 120px #000;
+    }
+    #topbar .title {
+        left: 40px;
+    }
+    #bufferlines, #nicklist {
         position: relative;
         min-height: 0;
         margin-left: 0;
@@ -259,15 +273,38 @@ input[type=text], input[type=password], .badge {
         max-width: 100%;
         border: 0;
     }
-    #sidebar, #nicklist {
+    #nicklist {
         width: 100%;
         text-align: center;
     }
     #bufferlines {
-        padding-bottom: 55px; /* navbar fixed bottom */
+        padding-bottom: 38px; /* navbar fixed bottom */
+        top: 10px;
     }
     .navbar-fixed-bottom {
-        margin: 0 5px 0 5px;
+        margin: 0;
+    }
+    .navbar {
+        min-height: 0%;
+    }
+    #bufferlines td.time {
+        display: inline;
+        padding-right: 0;
+    }
+    #bufferlines td.prefix {
+        display: inline;
+        padding-right: 0;
+        border: 0;
+    }
+    #bufferlines td.message {
+        padding-left: 0;
+        display: inline;
+    }
+    #bufferlines td.prefix:before {
+        content: "<";
+    }
+    #bufferlines td.prefix:after {
+        content: ">";
     }
 }
 .color-light-green {

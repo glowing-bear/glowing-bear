@@ -3,16 +3,20 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <title ng-bind-template="WeeChat {{ pageTitle}}"></title>
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link rel="shortcut icon" sizes="128x128" href="img/weechat_logo_128x128.png">
+    <link rel="apple-touch-icon" sizes="128x128" href="img/weechat_logo_128x128.png">
     <link rel="shortcut icon" type="image/png" href="img/favicon.png" >
     <link href="css/style.css" rel="stylesheet" media="screen">
     <link href="css/glowingbear.css" rel="stylesheet" media="screen">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular-route.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular-sanitize.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-route.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-sanitize.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
     <script type="text/javascript" src="3rdparty/inflate.min.js"></script>
     <script type="text/javascript" src="js/localstorage.js"></script>
@@ -23,7 +27,7 @@
     <script type="text/javascript" src="js/plugins.js"></script>
     <script type="text/javascript" src="3rdparty/bindonce.js"></script>
     <script type="text/javascript" src="3rdparty/favico-0.3.0.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
   </head>
   <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)">
     <div ng-hide="connected" class="container">
@@ -35,7 +39,7 @@
         </small>
       </h2>
         <div class="alert alert-danger" ng-show="errorMessage">
-          <strong>Oh no!</strong> We cannot connect!
+          <strong>Connection error</strong> The client was unable to connect to the WeeChat relay 
         </div>
         <div class="panel-group" id="accordion">
           <div class="panel">
@@ -161,17 +165,18 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
       </div>
     </div>
     <div class="content" ng-show="connected">
-      <div id="topbar" class="horizontal-line">
+      <div id="topbar" class="">
             <div class="brand">
-              <img alt="brand" src="img/favicon.png" title="Connected to {{ host }}:{{ port}}">
+              <a href="#" data-target="#sidebar" data-toggle="collapse">
+                <img alt="brand" src="img/favicon.png" title="Connected to {{ host }}:{{ port}}">
+              </a>
             </div>
             <button ng-show="debugMode" ng-click="countWatchers()">Count Watchers</button>
             <div class="title" ng-bind-html="activeBuffer().title | linky:'_blank'"></div>
             <div class="actions pull-right vertical-line-left">
               <div class="dropdown pull-left">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <i class="glyphicon glyphicon-cog"></i>
-                  <span class="caret"></span>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Options menu">
+                  <i class="glyphicon glyphicon-cog"></i> 
                 </a>
                 <ul class="dropdown-menu pull-right">
                   <li class="">
@@ -246,12 +251,12 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
                   </li>
                 </ul>
               </div>
-              <a ng-click="disconnect()">
-                <i class="glyphicon glyphicon-remove"></i>
+              <a ng-click="disconnect()" title="Disconnect from WeeChat">
+                <i class="glyphicon glyphicon-remove"></i> 
               </a>
             </div>
       </div>
-      <div id="sidebar" class="vertical-line">
+      <div id="sidebar" class="vertical-line collapse in">
         <ul class="nav nav-pills nav-stacked">
           <li class="bufferfilter">
             <form role="form">

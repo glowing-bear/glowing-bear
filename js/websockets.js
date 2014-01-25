@@ -224,8 +224,8 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
         var cbId = getCurrentCallBackId();
 
         callbacks[cbId] = {
-            time: new Date(),
-            cb: defer
+            time: new Date,
+            cb: defer,
         };
 
         defer.id = cbId;
@@ -500,14 +500,14 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $scope.showNicklist = $scope.updateShowNicklist();
     });
     $rootScope.$on('notificationChanged', function() {
-        var notifications = _.reduce(models.model.buffers, function(memo, num) { return (memo||0) + num.notification;});
+        var notifications = _.reduce(models.model.buffers, function(memo, num) { return (parseInt(memo)||0) + num.notification;});
         if (notifications > 0 ) {
             $scope.favico = new Favico({
                 animation:'none'
             });
             $scope.favico.badge(notifications);
         }else {
-            var unread = _.reduce(models.model.buffers, function(memo, num) { return (memo||0) + num.unread;});
+            var unread = _.reduce(models.model.buffers, function(memo, num) { return (parseInt(memo)||0) + num.unread;});
             $scope.favico = new Favico({
                 animation:'none',
                 bgColor : '#5CB85C',
@@ -552,6 +552,16 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "orderbyserver", false);
     // Save setting for displaying embeds in rootscope so it can be used from service
     $rootScope.visible = $scope.noembed === false;
+
+    // If we are on mobile chhange some defaults
+    // We use 968 px as the cutoff, which should match the value in glowingbear.css
+    if(document.body.clientWidth < 968) {
+        $scope.nonicklist = true;
+        $scope.noembed = true;
+        $scope.notimestamp = true;
+    }
+
+
     // Watch model and update show setting when it changes
     $scope.$watch('noembed', function() {
         $rootScope.visible = $scope.noembed === false;
@@ -564,6 +574,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $rootScope.predicate = $scope.orderbyserver ? 'serverSortKey' : 'number';
 
     $scope.setActiveBuffer = function(bufferId, key) {
+        // If we are on mobile we need to collapse the menu on sidebar clicks
+        // We use 968 px as the cutoff, which should match the value in glowingbear.css
+        if(document.body.clientWidth<968) {
+            $('#sidebar').collapse();
+        }
         return models.setActiveBuffer(bufferId, key);
     };
 
@@ -751,9 +766,11 @@ weechat.directive('inputBar', function() {
                              models) {
 
             // Focuses itself when active buffer is changed
+            /*
             $rootScope.$on('activeBufferChanged', function() {
                 angular.element('#sendMessage').focus();
             });
+            */
 
             $scope.completeNick = function() {
                 // input DOM node
