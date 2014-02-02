@@ -27,15 +27,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var unread = 0;
         var lastSeen = -1;
         var serverSortKey = fullName.replace(/^irc.server.(\w+)/, "irc.$1");
-
-        var indentedName = function(predicate) {
-            if( predicate == "serverSortKey" && fullName.match(/^irc./) && !fullName.match(/^irc.server./) ) {
-                // indent channel
-                return "    " + shortName; // four protected spaces
-            } else {
-                return shortName;
-            }
-        };
+        var indent = (fullName.match(/^irc./) && !fullName.match(/^irc.server./));
 
         // Buffer opened message does not include notify level
         if( message.notify !== undefined ) {
@@ -173,7 +165,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             updateNick: updateNick,
             flatNicklist: flatNicklist,
             serverSortKey: serverSortKey,
-            indentedName: indentedName,
+            indent: indent,
             history: history,
             addToHistory: addToHistory,
             getHistoryUp: getHistoryUp,

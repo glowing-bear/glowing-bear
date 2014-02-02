@@ -176,6 +176,11 @@ input[type=text], input[type=password], .badge {
     border-radius: 0;
     margin-right: -15px;
 }
+
+#sidebar ul.indented li.indent span.buffername {
+    padding-left: 10px;
+}
+
 #nicklist {
     position: fixed;
     width: 100px;
