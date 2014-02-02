@@ -499,21 +499,25 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Check if we should show nicklist or not
         $scope.showNicklist = $scope.updateShowNicklist();
     });
+    $scope.favico = new Favico({animation: 'none'});
     $rootScope.$on('notificationChanged', function() {
         var notifications = _.reduce(models.model.buffers, function(memo, num) { return (parseInt(memo)||0) + num.notification;});
-        if (notifications > 0 ) {
-            $scope.favico = new Favico({
-                animation:'none'
+        if (typeof(notifications) !== 'number') return;
+        if (notifications > 0) {
+            $scope.favico.badge(notifications, {
+                    bgColor: '#d00',
+                    textColor: '#fff'
             });
-            $scope.favico.badge(notifications);
-        }else {
+        } else {
             var unread = _.reduce(models.model.buffers, function(memo, num) { return (parseInt(memo)||0) + num.unread;});
-            $scope.favico = new Favico({
-                animation:'none',
-                bgColor : '#5CB85C',
-                textColor : '#ff0'
-            });
-            $scope.favico.badge(unread);
+            if (unread === 0) {
+                $scope.favico.reset();
+            } else {
+                $scope.favico.badge(unread, {
+                    bgColor: '#5CB85C',
+                    textColor: '#ff0'
+                });
+            }
         }
     });
 
