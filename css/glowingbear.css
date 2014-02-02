@@ -133,6 +133,12 @@ input[type=text], input[type=password], .badge {
     #topbar .brand img {
         height: 32px;
     }
+    #topbar .brand button {
+        position: absolute;
+        line-height: 15px;
+        font-size: 9pt;
+        margin-left: 10px
+    }
 #topbar .title {
     position: fixed;
     left: 145px; /* sidebar */
