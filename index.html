@@ -256,7 +256,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
               </a>
             </div>
       </div>
-      <div id="sidebar" class="vertical-line collapse in">
+      <div bindonce id="sidebar" class="vertical-line collapse in">
         <ul class="nav nav-pills nav-stacked" ng-class="{'indented': (predicate === 'serverSortKey')}">
           <li class="bufferfilter">
             <form role="form">
@@ -272,34 +272,34 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
           </li>
         </ul>
       </div>
-      <div id="bufferlines" class="monospace" ng-class="{'withnicklist': showNicklist}">
+      <div bindonce id="bufferlines" class="monospace" ng-class="{'withnicklist': showNicklist}">
         <div id="nicklist" ng-show="showNicklist" class="vertical-line-left">
           <ul class="nicklistgroup list-unstyled" ng-repeat="group in activeBuffer().nicklist">
-            <li bindonce class="" ng-repeat="nick in group.nicks|orderBy:'name'" ng-click="openQuery(nick.name)">
+            <li class="" ng-repeat="nick in group.nicks|orderBy:'name'" ng-click="openQuery(nick.name)">
               <a ng-click="nickAction(nick)"><span bo-class="nick.prefixClasses" bo-text="nick.prefix"></span><span bo-class="nick.nameClasses" bo-text="nick.name"></span></a>
             </li>
           </ul>
         </div>
         <table>
-          <tbody bindonce ng-repeat="bufferline in (bufferlines = activeBuffer().lines)">
+          <tbody ng-repeat="bufferline in (bufferlines = activeBuffer().lines)">
             <tr class="bufferline">
               <td bo-hide="notimestamp" class="time">
                 <span class="date" bo-class="{'repeated-time': bufferline.shortTime==bufferlines[$index-1].shortTime}">
                   <span class="cof-chat_time cob-chat_time coa-chat_time" bo-text="bufferline.date|date:'HH'"></span><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time" bo-text="bufferline.date|date:'mm'"></span>
                 </span>
               </td>
-              <td class="prefix"><span bindonce ng-repeat="part in bufferline.prefix" bo-class="part.classes" bo-html="part.text"></span></td>
+              <td class="prefix"><span ng-repeat="part in bufferline.prefix" bo-class="part.classes" bo-html="part.text"></span></td>
               <td class="message">
-                <span bindonce ng-repeat="part in bufferline.content" class="text" bo-class="part.classes" bo-html="part.text|linky:'_blank'"></span>
+                <span ng-repeat="part in bufferline.content" class="text" bo-class="part.classes" bo-html="part.text|linky:'_blank'"></span>
 
-                <div bindonce ng-repeat="metadata in bufferline.metadata">
+                <div ng-repeat="metadata in bufferline.metadata">
                   <div ng-show="metadata.visible">
-                    <button bindonce class="btn btn-primary pull-right" ng-click="metadata.visible = false">Hide {{ metadata.name }}</button>
+                    <button class="btn btn-primary pull-right" ng-click="metadata.visible = false">Hide {{ metadata.name }}</button>
                     <div ng-bind-html="metadata.content"></div>
 
                   </div>
                   <div ng-hide="metadata.visible">
-                    <button bindonce class="btn pull-right" bo-class="{'btn-warning': metadata.nsfw, 'btn-primary': !metadata.nsfw}" ng-click="metadata.visible = true">Show {{ metadata.name }}</button>
+                    <button class="btn pull-right" bo-class="{'btn-warning': metadata.nsfw, 'btn-primary': !metadata.nsfw}" ng-click="metadata.visible = true">Show {{ metadata.name }}</button>
                   </div>
                 </div>
               </td>
