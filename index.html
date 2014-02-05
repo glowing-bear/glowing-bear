@@ -290,18 +290,18 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
               </td>
               <td class="prefix"><span ng-repeat="part in bufferline.prefix" bo-class="part.classes" bo-html="part.text"></span></td>
               <td class="message">
-                <span ng-repeat="part in bufferline.content" class="text" bo-class="part.classes" bo-html="part.text|linky:'_blank'"></span>
-
                 <div ng-repeat="metadata in bufferline.metadata">
                   <div ng-show="metadata.visible">
-                    <button class="btn btn-primary pull-right" ng-click="metadata.visible = false">Hide {{ metadata.name }}</button>
+                    <button class="btn btn-primary btn-sm pull-right" ng-click="metadata.visible = false">Hide {{ metadata.name }}</button>
                     <div ng-bind-html="metadata.content"></div>
 
                   </div>
                   <div ng-hide="metadata.visible">
-                    <button class="btn pull-right" bo-class="{'btn-warning': metadata.nsfw, 'btn-primary': !metadata.nsfw}" ng-click="metadata.visible = true">Show {{ metadata.name }}</button>
+                    <button class="btn btn-sm pull-right" bo-class="{'btn-warning': metadata.nsfw, 'btn-primary': !metadata.nsfw}" ng-click="metadata.visible = true">Show {{ metadata.name }}</button>
                   </div>
                 </div>
+                <span ng-repeat="part in bufferline.content" class="text" bo-class="part.classes" bo-html="part.text|linky:'_blank'"></span>
+
               </td>
             </tr>
             <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
