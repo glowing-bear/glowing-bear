@@ -713,8 +713,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $rootScope.switchToActivityBuffer = function() {
         // Find next buffer with activity and switch to it
-        for(var i in $scope.buffers) {
-            var buffer = $scope.buffers[i];
+        var sortedBuffers = _.sortBy($scope.buffers, 'number');
+        for(var i in sortedBuffers) {
+            var buffer = sortedBuffers[i];
             if(buffer.notification > 0) {
                 $scope.setActiveBuffer(buffer.id);
                 break;
