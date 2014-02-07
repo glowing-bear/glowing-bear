@@ -762,6 +762,20 @@ weechat.config(['$routeProvider',
     }
 ]);
 
+
+weechat.directive('plugin', function() {
+    
+    return {
+        templateUrl: 'directives/plugin.html',
+
+        scope: {
+            data: '=data',
+        },
+    }
+
+});
+
+
 weechat.directive('inputBar', function() {
 
     return {
