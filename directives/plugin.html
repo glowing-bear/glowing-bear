@@ -1,17 +1,18 @@
-<div ng-show="data.visible">
+<div ng-show="plugin.visible">
   <button class="btn btn-primary btn-sm pull-right"
-          ng-click="data.visible = false">
-    Hide {{ data.name }}
+          ng-click="hideContent()">
+    Hide {{ plugin.name }}
   </button>
-  <div ng-bind-html="data.content"></div>
+
+  <div ng-bind-html="displayedContent"></div>
 </div>
 
-<div ng-hide="data.visible">
+<div ng-hide="plugin.visible">
   <button class="btn btn-sm pull-right"
           bo-class="{
-                    'btn-warning': data.nsfw,
-                    'btn-primary': !data.nsfw}"
-          ng-click="data.visible = true">
-          Show {{ data.name }}
+                    'btn-warning': plugin.nsfw,
+                    'btn-primary': !plugin.nsfw}"
+          ng-click="showContent()">
+          Show {{ plugin.name }}
   </button>
 </div>

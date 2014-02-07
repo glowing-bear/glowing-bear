@@ -764,13 +764,38 @@ weechat.config(['$routeProvider',
 
 
 weechat.directive('plugin', function() {
-    
+    /*
+     * Plugin directive
+     * Shows additional plugin content
+     */
     return {
         templateUrl: 'directives/plugin.html',
 
         scope: {
-            data: '=data',
+            plugin: '=data',
         },
+
+        controller: function($scope) {
+
+            $scope.displayedContent = "";
+
+            $scope.hideContent = function() {
+                $scope.plugin.visible = false;
+            }
+
+            $scope.showContent = function() {
+                /*
+                 * Shows the plugin content.
+                 * displayedContent is bound to the DOM.
+                 * Actual plugin content is only fetched when
+                 * content is shown.
+                 */
+                $scope.displayedContent = $scope.plugin.content;
+                $scope.plugin.visible = true;
+            }
+
+        }
+
     }
 
 });
