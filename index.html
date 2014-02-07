@@ -291,7 +291,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
               <td class="prefix"><span ng-repeat="part in bufferline.prefix" bo-class="part.classes" bo-html="part.text"></span></td>
               <td class="message">
                 <div ng-repeat="metadata in bufferline.metadata">
-                  <div plugin data="metadata">allo</div>
+                  <div plugin data="metadata"></div>
                 </div>
                 <span ng-repeat="part in bufferline.content" class="text" bo-class="part.classes" bo-html="part.text|linky:'_blank'"></span>
 
