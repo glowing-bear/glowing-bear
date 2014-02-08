@@ -25,7 +25,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
     var handleLine = function(line, initial) {
         var message = new models.BufferLine(line);
         // Only react to line if its displayed
-        if(message.displayed) {
+        if (message.displayed) {
             var buffer = models.getBuffer(message.buffer);
             message = plugins.PluginManager.contentForMessage(message, $rootScope.visible);
             buffer.addLine(message);
@@ -39,12 +39,12 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
             }
 
             if (!initial && !buffer.active) {
-                if (buffer.notify>1 && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
+                if (buffer.notify > 1 && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
                     buffer.unread++;
                     $rootScope.$emit('notificationChanged');
                 }
 
-                if(buffer.notify !== 0 && message.highlight || _.contains(message.tags, 'notify_private') ) {
+                if ((buffer.notify !== 0 && message.highlight) || _.contains(message.tags, 'notify_private')) {
                     buffer.notification++;
                     $rootScope.createHighlight(buffer, message);
                     $rootScope.$emit('notificationChanged');
@@ -114,7 +114,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
             /* Since there is unread messages, we can guess
             * what the last read line is and update it accordingly
             */
-            var unreadSum = _.reduce(l.count, function(memo, num){ return memo + num; }, 0);
+            var unreadSum = _.reduce(l.count, function(memo, num) { return memo + num; }, 0);
             buffer.lastSeen = buffer.lines.length - 1 - unreadSum;
         });
     };
@@ -127,11 +127,11 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         var group = 'root';
         nicklist.forEach(function(n) {
             var buffer = models.getBuffer(n.pointers[0]);
-            if(n.group == 1) {
+            if (n.group === 1) {
                 var g = new models.NickGroup(n);
                 group = g.name;
                 buffer.nicklist[group] = g;
-            }else{
+            } else {
                 var nick = new models.Nick(n);
                 buffer.addNick(group, nick);
             }
@@ -146,33 +146,24 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         nicklist.forEach(function(n) {
             var buffer = models.getBuffer(n.pointers[0]);
             var d = n._diff;
-            if(n.group == 1) {
+            if (n.group === 1) {
                 group = n.name;
-                if(group === undefined) {
+                if (group === undefined) {
                     var g = new models.NickGroup(n);
                     buffer.nicklist[group] = g;
                     group = g.name;
                 }
-            }
-            else {
+            } else {
                 var nick = new models.Nick(n);
-                if(d == 43) { // +
+                if (d === 43) { // +
                     buffer.addNick(group, nick);
-                }else if (d == 45) { // -
+                } else if (d === 45) { // -
                     buffer.delNick(group, nick);
-                }else if (d == 42) { // *
+                } else if (d === 42) { // *
                     buffer.updateNick(group, nick);
                 }
             }
         });
-    };
-
-    var handleEvent = function(event) {
-
-        if (_.has(eventHandlers, event.id)) {
-            eventHandlers[event.id](event);
-        }
-
     };
 
     var eventHandlers = {
@@ -183,6 +174,12 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         _buffer_renamed: handleBufferRenamed,
         _nicklist: handleNicklist,
         _nicklist_diff: handleNicklistDiff
+    };
+
+    var handleEvent = function(event) {
+        if (_.has(eventHandlers, event.id)) {
+            eventHandlers[event.id](event);
+        }
     };
 
     return {
@@ -225,7 +222,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
 
         callbacks[cbId] = {
             time: new Date(),
-            cb: defer,
+            cb: defer
         };
 
         defer.id = cbId;
@@ -240,7 +237,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
      * @param reason reason for failure
      */
     failCallbacks = function(reason) {
-        for(var i in callbacks) {
+        for (var i in callbacks) {
             callbacks[i].cb.reject(reason);
         }
 
@@ -268,7 +265,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
      */
     var sendAll = function(messages) {
         var promises = [];
-        for(var i in messages) {
+        for (var i in messages) {
             var promise = send(messages[i]);
             promises.push(promise);
         }
@@ -277,8 +274,8 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
 
     // Takes care of the connection and websocket hooks
     var connect = function (host, port, passwd, ssl, noCompression) {
-        var proto = ssl ? 'wss':'ws';
-        websocket = new WebSocket(proto+"://" + host + ':' + port + "/weechat");
+        var proto = ssl ? 'wss' : 'ws';
+        websocket = new WebSocket(proto + "://" + host + ':' + port + "/weechat");
         websocket.binaryType = "arraybuffer";
 
         websocket.onopen = function () {
@@ -374,7 +371,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
             } else {
                 handlers.handleEvent(message);
             }
-            $rootScope.commands.push("RECV: " + evt.data + " TYPE:" + evt.type) ;
+            $rootScope.commands.push("RECV: " + evt.data + " TYPE:" + evt.type);
             $rootScope.$apply();
         };
 
@@ -382,7 +379,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
             // on error it means the connection problem
             // come from the relay not from the password.
 
-            if (evt.type == "error" && websocket.readyState != 1) {
+            if (evt.type === "error" && websocket.readyState !== 1) {
                 failCallbacks('error');
                 $rootScope.errorMessage = true;
             }
@@ -427,7 +424,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
 }]);
 
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', function ($rootScope, $scope, $store, $timeout, $log, models, connection) {
-    if(window.Notification) {
+    if (window.Notification) {
         // Request notification permission
         Notification.requestPermission(function (status) {
             $log.info('Notification permission status:',status);
@@ -459,23 +456,23 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         console.log(watchers.length);
     };
 
-    if(window.webkitNotifications !== undefined) {
+    if (window.webkitNotifications !== undefined) {
         if (window.webkitNotifications.checkPermission() === 0) { // 0 is PERMISSION_ALLOWED
             $log.info('Notification permission status:', window.webkitNotifications.checkPermission() === 0);
             window.webkitNotifications.requestPermission();
         }
     }
     // Check for firefox & app installed
-    if(navigator.mozApps !== undefined) {
+    if (navigator.mozApps !== undefined) {
         navigator.mozApps.getSelf().onsuccess = function _onAppReady(evt) {
             var app = evt.target.result;
-            if(app) {
+            if (app) {
                 $scope.isinstalled = true;
-            }else {
+            } else {
                 $scope.isinstalled = false;
             }
         };
-    }else {
+    } else {
         $scope.isinstalled = false;
     }
 
@@ -489,7 +486,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // we will send a /buffer bufferName command every time
         // the user switches a buffer. This will ensure that notifications
         // are cleared in the buffer the user switches to
-        if($scope.hotlistsync && ab.fullName) {
+        if ($scope.hotlistsync && ab.fullName) {
             connection.sendCoreCommand('/buffer ' + ab.fullName);
         }
 
@@ -502,7 +499,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.favico = new Favico({animation: 'none'});
     $rootScope.$on('notificationChanged', function() {
         var notifications = _.reduce(models.model.buffers, function(memo, num) { return (parseInt(memo)||0) + num.notification;});
-        if (typeof(notifications) !== 'number') return;
+        if (typeof notifications !== 'number') {
+            return;
+        }
         if (notifications > 0) {
             $scope.favico.badge(notifications, {
                     bgColor: '#d00',
@@ -538,7 +537,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "ssl", false);
     $store.bind($scope, "lines", "40");
     $store.bind($scope, "savepassword", false);
-    if($scope.savepassword) {
+    if ($scope.savepassword) {
         $store.bind($scope, "password", "");
     }
 
@@ -559,7 +558,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     // If we are on mobile chhange some defaults
     // We use 968 px as the cutoff, which should match the value in glowingbear.css
-    if(document.body.clientWidth < 968) {
+    if (document.body.clientWidth < 968) {
         $scope.nonicklist = true;
         $scope.noembed = true;
         $scope.notimestamp = true;
@@ -580,7 +579,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.setActiveBuffer = function(bufferId, key) {
         // If we are on mobile we need to collapse the menu on sidebar clicks
         // We use 968 px as the cutoff, which should match the value in glowingbear.css
-        if(document.body.clientWidth<968) {
+        if (document.body.clientWidth < 968) {
             $('#sidebar').collapse();
         }
         return models.setActiveBuffer(bufferId, key);
@@ -606,9 +605,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             // Determine if we want to scroll at all
             // Give the check 3 pixels of slack so you don't have to hit
             // the exact spot. This fixes a bug in some browsers
-            if (nonIncremental && sTop < sVal || (sTop - sVal < 3)) {
+            if ((nonIncremental && sTop < sVal) || (sTop - sVal < 3)) {
                 var readmarker = document.getElementById('readmarker');
-                if(nonIncremental && readmarker) {
+                if (nonIncremental && readmarker) {
                     // Switching channels, scroll to read marker
                     readmarker.scrollIntoView();
                 } else {
@@ -632,7 +631,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         connection.disconnect();
     };
     $scope.install = function() {
-        if(navigator.mozApps !== undefined) {
+        if (navigator.mozApps !== undefined) {
             var request = navigator.mozApps.install('http://torhve.github.io/glowing-bear/manifest.webapp');
             request.onsuccess = function () {
                 $scope.isinstalled = true;
@@ -646,7 +645,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 // Display the error information from the DOMError object
                 alert('Install failed, error: ' + this.error.name);
             };
-        }else{
+        } else {
             alert('Sorry. Only supported in Firefox v26+');
         }
     };
@@ -656,8 +655,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $rootScope.createHighlight = function(buffer, message) {
         var messages = "";
         message.content.forEach(function(part) {
-            if (part.text !== undefined)
+            if (part.text !== undefined) {
                 messages += part.text + " ";
+            }
         });
 
         var title = buffer.fullName;
@@ -676,12 +676,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $scope.hasUnread = function(buffer) {
         // if search is set, return every buffer
-        if($scope.search && $scope.search !== "") {
+        if ($scope.search && $scope.search !== "") {
             return true;
         }
-        if($scope.onlyUnread) {
+        if ($scope.onlyUnread) {
             // Always show current buffer in list
-            if (models.getActiveBuffer() == buffer) {
+            if (models.getActiveBuffer() === buffer) {
                 return true;
             }
             return buffer.unread > 0 || buffer.notification > 0;
@@ -699,15 +699,15 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // is called on buffer switch
     $scope.updateShowNicklist = function() {
         var ab = models.getActiveBuffer();
-        if(!ab) {
+        if (!ab) {
             return false;
         }
         // Check if option no nicklist is set
-        if($scope.nonicklist) {
+        if ($scope.nonicklist) {
             return false;
         }
         // Use flat nicklist to check if empty
-        if(ab.flatNicklist().length === 0) {
+        if (ab.flatNicklist().length === 0) {
             return false;
         }
         return true;
@@ -716,12 +716,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $rootScope.switchToActivityBuffer = function() {
         // Find next buffer with activity and switch to it
         var sortedBuffers = _.sortBy($scope.buffers, 'number');
-        for(var i in sortedBuffers) {
+        for (var i in sortedBuffers) {
             var buffer = sortedBuffers[i];
-            if(buffer.notification > 0) {
+            if (buffer.notification > 0) {
                 $scope.setActiveBuffer(buffer.id);
                 break;
-            }else if(buffer.unread > 0) {
+            } else if(buffer.unread > 0) {
                 $scope.setActiveBuffer(buffer.id);
                 break;
             }
@@ -733,11 +733,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Support different browser quirks
         var code = $event.keyCode ? $event.keyCode : $event.charCode;
         // Handle escape
-        if(code == 27) {
+        if (code === 27) {
             $event.preventDefault();
             $scope.search = '';
         } // Handle enter
-        else if (code == 13) {
+        else if (code === 13) {
             $event.preventDefault();
             // TODO Switch to first matching buffer and reset query
             $scope.search = '';
@@ -781,7 +781,7 @@ weechat.directive('plugin', function() {
 
             $scope.hideContent = function() {
                 $scope.plugin.visible = false;
-            }
+            };
 
             $scope.showContent = function() {
                 /*
@@ -792,11 +792,11 @@ weechat.directive('plugin', function() {
                  */
                 $scope.displayedContent = $scope.plugin.content;
                 $scope.plugin.visible = true;
-            }
+            };
 
         }
 
-    }
+    };
 
 });
 
@@ -869,7 +869,7 @@ weechat.directive('inputBar', function() {
 
                 // Left Alt+[0-9] -> jump to buffer
                 if ($event.altKey && !$event.ctrlKey && (code > 47 && code < 58)) {
-                    if (code == 48) {
+                    if (code === 48) {
                         code = 58;
                     }
 
@@ -882,7 +882,7 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Tab -> nick completion
-                if (code == 9 && !$event.altKey && !$event.ctrlKey) {
+                if (code === 9 && !$event.altKey && !$event.ctrlKey) {
                     $event.preventDefault();
                     $scope.iterCandidate = tmpIterCandidate;
                     $scope.completeNick();
@@ -890,21 +890,21 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Left Alt+n -> toggle nicklist
-                if ($event.altKey && !$event.ctrlKey && code == 78) {
+                if ($event.altKey && !$event.ctrlKey && code === 78) {
                     $event.preventDefault();
                     $scope.nonicklist = !$scope.nonicklist;
                     return true;
                 }
 
                 // Alt+A -> switch to buffer with activity
-                if ($event.altKey && (code == 97 || code == 65)) {
+                if ($event.altKey && (code === 97 || code === 65)) {
                     $event.preventDefault();
                     $scope.switchToActivityBuffer();
                     return true;
                 }
 
                 // Alt+L -> focus on input bar
-                if ($event.altKey && (code == 76 || code == 108)) {
+                if ($event.altKey && (code === 76 || code === 108)) {
                     $event.preventDefault();
                     var inputNode = document.getElementById('sendMessage');
                     inputNode.focus();
@@ -913,27 +913,27 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Escape -> disconnect
-                if (code == 27) {
+                if (code === 27) {
                     $event.preventDefault();
                     connection.disconnect();
                     return true;
                 }
 
                 // Ctrl+G -> focus on buffer filter input
-                if ($event.ctrlKey && (code == 103 || code == 71)) {
+                if ($event.ctrlKey && (code === 103 || code === 71)) {
                     $event.preventDefault();
                     document.getElementById('bufferFilter').focus();
                     return true;
                 }
 
                 // Arrow up -> go up in history
-                if (code == 38) {
+                if (code === 38) {
                     $scope.command = models.getActiveBuffer().getHistoryUp($scope.command);
                     return true;
                 }
 
                 // Arrow down -> go down in history
-                if (code == 40) {
+                if (code === 40) {
                     $scope.command = models.getActiveBuffer().getHistoryDown($scope.command);
                     return true;
                 }
