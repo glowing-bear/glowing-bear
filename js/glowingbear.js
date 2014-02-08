@@ -300,7 +300,9 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
             ]).then(
                 null,
                 function() {
-                    $rootScope.passwordError = true;
+                    // Connection got closed, lets check if we ever was connected successfully
+                    if(!$rootScope.waseverconnected)
+                        $rootScope.passwordError = true;
                 }
             );
 
@@ -366,6 +368,10 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
         };
 
         websocket.onmessage = function (evt) {
+            // If we recieve a message from WeeChat it means that
+            // password was OK. Store that result and check for it
+            // in the failure handler.
+            $rootScope.waseverconnected = true;
             message = protocol.parse(evt.data);
             if (_.has(callbacks, message.id)) {
                 var promise = callbacks[message.id];
@@ -374,7 +380,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
             } else {
                 handlers.handleEvent(message);
             }
-            $rootScope.commands.push("RECV: " + evt.data + " TYPE:" + evt.type) ;
+            //$rootScope.commands.push("RECV: " + evt.data + " TYPE:" + evt.type) ;
             $rootScope.$apply();
         };
 
@@ -393,8 +399,8 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
     };
 
     var disconnect = function() {
-        /* TODO: Send protocol disconnect */
-        this.websocket.close();
+        send(weeChat.Protocol.formatQuit());
+        //this.websocket.close();
     };
 
     /*
@@ -524,7 +530,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.buffers = models.model.buffers;
     $scope.activeBuffer = models.getActiveBuffer;
 
-    $rootScope.commands = [];
+    $rootScope.waseverconnected = false;
+
+    //$rootScope.commands = [];
 
     $rootScope.models = models;
 
