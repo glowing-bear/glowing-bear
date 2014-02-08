@@ -30,7 +30,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var indent = (fullName.match(/^irc./) && !fullName.match(/^irc.server./));
 
         // Buffer opened message does not include notify level
-        if( message.notify !== undefined ) {
+        if (message.notify !== undefined) {
             notify = message.notify;
         }
 
@@ -59,8 +59,8 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             group.nicks = _.filter(group.nicks, function(n) { return n.name != nick.name;});
             flatnicklist = getFlatNicklist();
             /*
-            for(i in group.nicks) {
-                if(group.nicks[i].name == nick.name) {
+            for (i in group.nicks) {
+                if (group.nicks[i].name == nick.name) {
                     delete group.nicks[i];
                     break;
                 }
@@ -236,7 +236,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         }
 
         var rtext = "";
-        if(content[0] !== undefined) {
+        if (content[0] !== undefined) {
             rtext = content[0].text;
         }
 
@@ -438,7 +438,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
      */
     this.closeBuffer = function(bufferId) {
         var wasActive = this.model.buffers[bufferId.id].active;
-        if(wasActive) {
+        if (wasActive) {
             var firstBuffer = _.keys(this.model.buffers)[0];
             this.setActiveBuffer(firstBuffer);
         }
