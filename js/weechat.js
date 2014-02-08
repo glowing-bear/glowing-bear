@@ -226,16 +226,14 @@
 
         for (var i = 0; i < str.length; ++i) {
             var ch = str.charAt(i);
-            if (ch == '|') {
+            if (ch === '|') {
                 // means keep attributes, so unchanged
                 return null;
             }
             var attrName = WeeChatProtocol._attrNameFromChar(ch);
-            if (attrName === null) {
-                // ignore invalid attribute
-                continue;
+            if (attrName !== null) {
+                attrs.override[attrName] = true;
             }
-            attrs.override[attrName] = true;
         }
 
         return attrs;
@@ -249,7 +247,7 @@
      * @return Color object
      */
     WeeChatProtocol._getColorObj = function(str) {
-        if (str.length == 2) {
+        if (str.length === 2) {
             var code = parseInt(str);
             if (code > 16) {
                 // should never happen
@@ -452,7 +450,7 @@
         var parts = rawText.split(/(\x19|\x1a|\x1b|\x1c)/);
 
         // no colors/attributes
-        if (parts.length == 1) {
+        if (parts.length === 1) {
             return [
                 {
                     attrs: WeeChatProtocol._getDefaultAttributes(),
@@ -479,11 +477,11 @@
 
             if (firstCharCode >= 0x19 && firstCharCode <= 0x1c) {
                 // special token
-                if (firstCharCode == 0x1c) {
+                if (firstCharCode === 0x1c) {
                     // always reset colors
                     curFgColor = WeeChatProtocol._getDefaultColor();
                     curBgColor = WeeChatProtocol._getDefaultColor();
-                    if (curSpecialToken != 0x19) {
+                    if (curSpecialToken !== 0x19) {
                         // also reset attributes
                         curAttrs = WeeChatProtocol._getDefaultAttributes();
                     }
@@ -493,7 +491,7 @@
             }
 
             var text = p;
-            if (curSpecialToken == 0x19) {
+            if (curSpecialToken === 0x19) {
                 // get new style
                 var style = WeeChatProtocol._getStyle(p);
 
@@ -514,12 +512,12 @@
 
                 // set plain text
                 text = style.text;
-            } else if (curSpecialToken == 0x1a || curSpecialToken == 0x1b) {
+            } else if (curSpecialToken === 0x1a || curSpecialToken === 0x1b) {
                 // set/reset attribute
-                var orideVal = (curSpecialToken == 0x1a);
+                var orideVal = (curSpecialToken === 0x1a);
 
                 // set attribute override if we don't have to keep all of them
-                if (firstChar != '|') {
+                if (firstChar !== '|') {
                     var orideName = WeeChatProtocol._attrNameFromChar(firstChar);
                     if (orideName) {
                         // known attribute

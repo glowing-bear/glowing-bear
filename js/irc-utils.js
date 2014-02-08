@@ -64,7 +64,7 @@ var IrcUtils = {
             var lcNick = nickList[i].toLowerCase();
             if (lcNick.search(lcIterCandidate) === 0) {
                 matchingNicks.push(nickList[i]);
-                if (lcCurrentNick == lcNick) {
+                if (lcCurrentNick === lcNick) {
                     at = matchingNicks.length - 1;
                 }
             } else if (matchingNicks.length > 0) {
@@ -77,7 +77,7 @@ var IrcUtils = {
             return currentNick;
         } else {
             ++at;
-            if (at == matchingNicks.length) {
+            if (at === matchingNicks.length) {
                 // cycle
                 at = 0;
             }
@@ -151,7 +151,7 @@ var IrcUtils = {
                 return ret;
             }
             beforeCaret = newNick + suf + ' ';
-            if (afterCaret[0] == ' ') {
+            if (afterCaret[0] === ' ') {
                 // swallow first space after caret if any
                 afterCaret = afterCaret.substring(1);
             }
@@ -192,7 +192,7 @@ var IrcUtils = {
                 return ret;
             }
             beforeCaret = m[1] + newNick + ' ';
-            if (afterCaret[0] == ' ') {
+            if (afterCaret[0] === ' ') {
                 // swallow first space after caret if any
                 afterCaret = afterCaret.substring(1);
             }

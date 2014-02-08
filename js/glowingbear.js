@@ -127,7 +127,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         var group = 'root';
         nicklist.forEach(function(n) {
             var buffer = models.getBuffer(n.pointers[0]);
-            if(n.group == 1) {
+            if (n.group === 1) {
                 var g = new models.NickGroup(n);
                 group = g.name;
                 buffer.nicklist[group] = g;
@@ -146,7 +146,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         nicklist.forEach(function(n) {
             var buffer = models.getBuffer(n.pointers[0]);
             var d = n._diff;
-            if(n.group == 1) {
+            if (n.group === 1) {
                 group = n.name;
                 if (group === undefined) {
                     var g = new models.NickGroup(n);
@@ -155,23 +155,15 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
                 }
             } else {
                 var nick = new models.Nick(n);
-                if(d == 43) { // +
+                if (d === 43) { // +
                     buffer.addNick(group, nick);
-                }else if (d == 45) { // -
+                } else if (d === 45) { // -
                     buffer.delNick(group, nick);
-                }else if (d == 42) { // *
+                } else if (d === 42) { // *
                     buffer.updateNick(group, nick);
                 }
             }
         });
-    };
-
-    var handleEvent = function(event) {
-
-        if (_.has(eventHandlers, event.id)) {
-            eventHandlers[event.id](event);
-        }
-
     };
 
     var eventHandlers = {
@@ -182,6 +174,12 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         _buffer_renamed: handleBufferRenamed,
         _nicklist: handleNicklist,
         _nicklist_diff: handleNicklistDiff
+    };
+
+    var handleEvent = function(event) {
+        if (_.has(eventHandlers, event.id)) {
+            eventHandlers[event.id](event);
+        }
     };
 
     return {
@@ -381,7 +379,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
             // on error it means the connection problem
             // come from the relay not from the password.
 
-            if (evt.type == "error" && websocket.readyState != 1) {
+            if (evt.type === "error" && websocket.readyState !== 1) {
                 failCallbacks('error');
                 $rootScope.errorMessage = true;
             }
@@ -501,7 +499,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.favico = new Favico({animation: 'none'});
     $rootScope.$on('notificationChanged', function() {
         var notifications = _.reduce(models.model.buffers, function(memo, num) { return (parseInt(memo)||0) + num.notification;});
-        if (typeof(notifications) !== 'number') return;
+        if (typeof notifications !== 'number') {
+            return;
+        }
         if (notifications > 0) {
             $scope.favico.badge(notifications, {
                     bgColor: '#d00',
@@ -681,7 +681,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
         if ($scope.onlyUnread) {
             // Always show current buffer in list
-            if (models.getActiveBuffer() == buffer) {
+            if (models.getActiveBuffer() === buffer) {
                 return true;
             }
             return buffer.unread > 0 || buffer.notification > 0;
@@ -733,11 +733,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Support different browser quirks
         var code = $event.keyCode ? $event.keyCode : $event.charCode;
         // Handle escape
-        if(code == 27) {
+        if (code === 27) {
             $event.preventDefault();
             $scope.search = '';
         } // Handle enter
-        else if (code == 13) {
+        else if (code === 13) {
             $event.preventDefault();
             // TODO Switch to first matching buffer and reset query
             $scope.search = '';
@@ -869,7 +869,7 @@ weechat.directive('inputBar', function() {
 
                 // Left Alt+[0-9] -> jump to buffer
                 if ($event.altKey && !$event.ctrlKey && (code > 47 && code < 58)) {
-                    if (code == 48) {
+                    if (code === 48) {
                         code = 58;
                     }
 
@@ -882,7 +882,7 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Tab -> nick completion
-                if (code == 9 && !$event.altKey && !$event.ctrlKey) {
+                if (code === 9 && !$event.altKey && !$event.ctrlKey) {
                     $event.preventDefault();
                     $scope.iterCandidate = tmpIterCandidate;
                     $scope.completeNick();
@@ -890,21 +890,21 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Left Alt+n -> toggle nicklist
-                if ($event.altKey && !$event.ctrlKey && code == 78) {
+                if ($event.altKey && !$event.ctrlKey && code === 78) {
                     $event.preventDefault();
                     $scope.nonicklist = !$scope.nonicklist;
                     return true;
                 }
 
                 // Alt+A -> switch to buffer with activity
-                if ($event.altKey && (code == 97 || code == 65)) {
+                if ($event.altKey && (code === 97 || code === 65)) {
                     $event.preventDefault();
                     $scope.switchToActivityBuffer();
                     return true;
                 }
 
                 // Alt+L -> focus on input bar
-                if ($event.altKey && (code == 76 || code == 108)) {
+                if ($event.altKey && (code === 76 || code === 108)) {
                     $event.preventDefault();
                     var inputNode = document.getElementById('sendMessage');
                     inputNode.focus();
@@ -913,27 +913,27 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Escape -> disconnect
-                if (code == 27) {
+                if (code === 27) {
                     $event.preventDefault();
                     connection.disconnect();
                     return true;
                 }
 
                 // Ctrl+G -> focus on buffer filter input
-                if ($event.ctrlKey && (code == 103 || code == 71)) {
+                if ($event.ctrlKey && (code === 103 || code === 71)) {
                     $event.preventDefault();
                     document.getElementById('bufferFilter').focus();
                     return true;
                 }
 
                 // Arrow up -> go up in history
-                if (code == 38) {
+                if (code === 38) {
                     $scope.command = models.getActiveBuffer().getHistoryUp($scope.command);
                     return true;
                 }
 
                 // Arrow down -> go down in history
-                if (code == 40) {
+                if (code === 40) {
                     $scope.command = models.getActiveBuffer().getHistoryDown($scope.command);
                     return true;
                 }

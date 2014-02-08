@@ -56,7 +56,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
          */
         var delNick = function(group, nick) {
             group = nicklist[group];
-            group.nicks = _.filter(group.nicks, function(n) { return n.name != nick.name;});
+            group.nicks = _.filter(group.nicks, function(n) { return n.name !== nick.name;});
             flatnicklist = getFlatNicklist();
             /*
             for (i in group.nicks) {
@@ -73,7 +73,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var updateNick = function(group, nick) {
             group = nicklist[group];
             for(var i in group.nicks) {
-                if(group.nicks[i].name == nick.name) {
+                if (group.nicks[i].name === nick.name) {
                     group.nicks[i] = nick;
                     break;
                 }
@@ -104,7 +104,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
 
         var addToHistory = function(line) {
             var result = "";
-            if (historyPos != history.length) {
+            if (historyPos !== history.length) {
                 // Pop cached line from history. Occurs if we submit something from history
                 result = history.pop();
             }
@@ -340,7 +340,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
      */
     this.addBuffer = function(buffer) {
         BufferList[buffer.id] = buffer;
-        if (BufferList.length == 1) {
+        if (BufferList.length === 1) {
             activeBuffer = buffer.id;
         }
         this.model.buffers[buffer.id] = buffer;
@@ -350,7 +350,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var i = 0;
 
         for (var v in BufferList) {
-            if (index == ++i) {
+            if (index === ++i) {
                 return BufferList[v];
             }
         }
@@ -374,19 +374,19 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
      * @return true on success, false if buffer was not found
      */
     this.setActiveBuffer = function(bufferId, key) {
-        if (typeof(key) === 'undefined') {
+        if (key === undefined) {
             key = 'id';
         }
 
         var previousBuffer = this.getActiveBuffer();
 
         activeBuffer = _.find(this.model.buffers, function(buffer) {
-            if (buffer[key] == bufferId) {
+            if (buffer[key] === bufferId) {
                 return buffer;
             }
         });
 
-        if (typeof(activeBuffer) === 'undefined') {
+        if (activeBuffer === undefined) {
             // Buffer not found, undo assignment
             activeBuffer = previousBuffer;
             return false;
@@ -423,7 +423,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
      */
     this.getBuffer = function(bufferId) {
         return _.find(this.model.buffers, function(buffer) {
-            if (buffer.id == bufferId) {
+            if (buffer.id === bufferId) {
                 return buffer;
             }
         });
