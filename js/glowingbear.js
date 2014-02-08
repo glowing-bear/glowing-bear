@@ -1,4 +1,4 @@
-var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'plugins', 'ngSanitize', 'pasvaz.bindonce']);
+var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'plugins', 'ngSanitize', 'ngWebsockets', 'pasvaz.bindonce']);
 
 weechat.filter('toArray', function () {
     'use strict';
@@ -176,6 +176,14 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         _nicklist_diff: handleNicklistDiff
     };
 
+    $rootScope.$on('onMessage', function(event, message) {
+
+        if (_.has(eventHandlers, message.id)) {
+           
+            eventHandlers[message.id](message);
+        }
+    });
+
     var handleEvent = function(event) {
         if (_.has(eventHandlers, event.id)) {
             eventHandlers[event.id](event);
@@ -191,101 +199,25 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
 
 }]);
 
-weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers', 'models', function($q, $rootScope, $log, storage, handlers, models) {
+weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers', 'models', 'conn', function($q, $rootScope, $log, storage, handlers, models, conn) {
     protocol = new weeChat.Protocol();
-    var websocket = null;
 
-    var callbacks = {};
-    var currentCallBackId = 0;
 
-    /*
-     * Returns the current callback id
-     */
-    var getCurrentCallBackId = function() {
-
-        currentCallBackId += 1;
-
-        if (currentCallBackId > 1000) {
-            currentCallBackId = 0;
-        }
-
-        return currentCallBackId;
-    };
-
-    /*
-     * Create a callback, adds it to the callback list
-     * and return it.
-     */
-    var createCallback = function() {
-        var defer = $q.defer();
-        var cbId = getCurrentCallBackId();
-
-        callbacks[cbId] = {
-            time: new Date(),
-            cb: defer
-        };
-
-        defer.id = cbId;
-
-        return defer;
-    };
-
-    /*
-     * Fails every currently subscribed callback for the
-     * given reason
-     *
-     * @param reason reason for failure
-     */
-    failCallbacks = function(reason) {
-        for (var i in callbacks) {
-            callbacks[i].cb.reject(reason);
-        }
-
-    };
-
-    /* Send a message to the websocket and returns a promise.
-     * See: http://docs.angularjs.org/api/ng.$q
-     *
-     * @param message message to send
-     * @returns a promise
-     */
-    var send = function(message) {
-        message.replace(/[\r\n]+$/g, "").split("\n");
-        var cb = createCallback(message);
-        websocket.send("(" + cb.id + ") " + message);
-        return cb.promise;
-    };
-
-    /*
-     * Send all messages to the websocket and returns a promise that is resolved
-     * when all message are resolved.
-     *
-     * @param messages list of messages
-     * @returns a promise
-     */
-    var sendAll = function(messages) {
-        var promises = [];
-        for (var i in messages) {
-            var promise = send(messages[i]);
-            promises.push(promise);
-        }
-        return $q.all(promises);
-    };
 
     // Takes care of the connection and websocket hooks
     var connect = function (host, port, passwd, ssl, noCompression) {
         var proto = ssl ? 'wss' : 'ws';
-        websocket = new WebSocket(proto + "://" + host + ':' + port + "/weechat");
-        websocket.binaryType = "arraybuffer";
+        var url = proto + "://" + host + ":" + port + "/weechat";
+        var binaryType = "arraybuffer";
 
-        websocket.onopen = function () {
+        var onopen = function () {
 
             $log.info("Connected to relay");
 
             // First command asks for the password and issues
             // a version command. If it fails, it means the we
             // did not provide the proper password.
-            sendAll([
+            conn.sendAll([
                 weeChat.Protocol.formatInit({
                     password: passwd,
                     compression: noCompression ? 'off' : 'zlib'
@@ -301,7 +233,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
                 }
             );
 
-            send(
+            conn.send(
                 weeChat.Protocol.formatHdata({
                     path: 'buffer:gui_buffers(*)',
                     keys: ['local_variables,notify,number,full_name,short_name,title']
@@ -321,7 +253,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
 
 
             // Send all the other commands required for initialization
-            send(
+            conn.send(
                 weeChat.Protocol.formatHdata({
                     path: "buffer:gui_buffers(*)/own_lines/last_line(-"+storage.get('lines')+")/data",
                     keys: []
@@ -330,7 +262,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
                 handlers.handleLineInfo(lineinfo);
             });
 
-            send(
+            conn.send(
                 weeChat.Protocol.formatHdata({
                     path: "hotlist:gui_hotlist(*)",
                     keys: []
@@ -340,14 +272,14 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
             });
 
 
-            send(
+            conn.send(
                 weeChat.Protocol.formatNicklist({
                 })
             ).then(function(nicklist) {
                 handlers.handleNicklist(nicklist);
             });
 
-            send(
+            conn.send(
                 weeChat.Protocol.formatSync({})
             );
 
@@ -355,14 +287,16 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
 
         };
 
-        websocket.onclose = function () {
+
+
+        var onclose = function () {
             $log.info("Disconnected from relay");
             $rootScope.connected = false;
             failCallbacks('disconnection');
             $rootScope.$apply();
         };
 
-        websocket.onmessage = function (evt) {
+        var onmessage = function (evt) {
             message = protocol.parse(evt.data);
             if (_.has(callbacks, message.id)) {
                 var promise = callbacks[message.id];
@@ -375,23 +309,36 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
             $rootScope.$apply();
         };
 
-        websocket.onerror = function (evt) {
+        var onerror = function (evt) {
             // on error it means the connection problem
             // come from the relay not from the password.
 
-            if (evt.type === "error" && websocket.readyState !== 1) {
+            if (evt.type === "error" && this.readyState !== 1) {
                 failCallbacks('error');
                 $rootScope.errorMessage = true;
             }
             $log.error("Relay error " + evt.data);
         };
 
-        this.websocket = websocket;
+        protocol.setId = function(id, message) {
+            return '(' + id + ') ' + message;
+        }
+
+        conn.connect(url, 
+                     protocol,
+                     {
+                         'binaryType': "arraybuffer",
+                         'onopen': onopen,
+                         'onclose': onclose,
+                         'onmessage': onmessage,
+                         'onerror': onerror,
+                     })
+
     };
 
     var disconnect = function() {
         /* TODO: Send protocol disconnect */
-        this.websocket.close();
+        conn.disconnect();
     };
 
     /*
@@ -400,14 +347,14 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
      * @returns the angular promise
      */
     var sendMessage = function(message) {
-        return send(weeChat.Protocol.formatInput({
+        conn.send(weeChat.Protocol.formatInput({
             buffer: models.getActiveBuffer().fullName,
             data: message
         }));
     };
 
     var sendCoreCommand = function(command) {
-        send(weeChat.Protocol.formatInput({
+        conn.send(weeChat.Protocol.formatInput({
             buffer: 'core.weechat',
             data: command
         }));
@@ -415,7 +362,7 @@ weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers',
 
 
     return {
-        send: send,
+//        send: send,
         connect: connect,
         disconnect: disconnect,
         sendMessage: sendMessage,
