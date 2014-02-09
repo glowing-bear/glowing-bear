@@ -199,10 +199,21 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
 
 }]);
 
-weechat.factory('connection', ['$q', '$rootScope', '$log', '$store', 'handlers', 'models', 'conn', function($q, $rootScope, $log, storage, handlers, models, conn) {
+weechat.factory('connection',
+                ['$rootScope',
+                 '$log',
+                 '$store',
+                 'handlers',
+                 'models',
+                 'conn',
+                 function($rootScope,
+                          $log,
+                          storage,
+                          handlers,
+                          models,
+                          conn) {
+
     protocol = new weeChat.Protocol();
-
-
 
     // Takes care of the connection and websocket hooks
     var connect = function (host, port, passwd, ssl, noCompression) {
