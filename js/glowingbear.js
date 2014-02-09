@@ -296,23 +296,28 @@ weechat.factory('connection',
 
         };
 
-
         var onclose = function () {
+            /*
+             * Handles websocket disconnection
+             */
             $log.info("Disconnected from relay");
-            $rootScope.connected = false;
+
             failCallbacks('disconnection');
+            $rootScope.connected = false;
             $rootScope.$apply();
         };
 
         var onerror = function (evt) {
-            // on error it means the connection problem
-            // come from the relay not from the password.
+            /*
+             * Handles cases when connection issues come from
+             * the relay.
+             */
+            $log.error("Relay error" + evt.data);
 
             if (evt.type === "error" && this.readyState !== 1) {
                 failCallbacks('error');
                 $rootScope.errorMessage = true;
             }
-            $log.error("Relay error " + evt.data);
         };
 
         protocol.setId = function(id, message) {
