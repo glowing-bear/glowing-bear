@@ -205,13 +205,13 @@ weechat.factory('connection',
                  '$store',
                  'handlers',
                  'models',
-                 'conn',
+                 'ngWebsockets',
                  function($rootScope,
                           $log,
                           storage,
                           handlers,
                           models,
-                          conn) {
+                          ngWebsockets) {
 
     protocol = new weeChat.Protocol();
 
@@ -228,7 +228,7 @@ weechat.factory('connection',
             // First command asks for the password and issues
             // a version command. If it fails, it means the we
             // did not provide the proper password.
-            conn.sendAll([
+            ngWebsockets.sendAll([
                 weeChat.Protocol.formatInit({
                     password: passwd,
                     compression: noCompression ? 'off' : 'zlib'
@@ -244,7 +244,7 @@ weechat.factory('connection',
                 }
             );
 
-            conn.send(
+            ngWebsockets.send(
                 weeChat.Protocol.formatHdata({
                     path: 'buffer:gui_buffers(*)',
                     keys: ['local_variables,notify,number,full_name,short_name,title']
@@ -263,7 +263,7 @@ weechat.factory('connection',
             });
 
             // Send all the other commands required for initialization
-            conn.send(
+            ngWebsockets.send(
                 weeChat.Protocol.formatHdata({
                     path: "buffer:gui_buffers(*)/own_lines/last_line(-"+storage.get('lines')+")/data",
                     keys: []
@@ -272,7 +272,7 @@ weechat.factory('connection',
                 handlers.handleLineInfo(lineinfo);
             });
 
-            conn.send(
+            ngWebsockets.send(
                 weeChat.Protocol.formatHdata({
                     path: "hotlist:gui_hotlist(*)",
                     keys: []
@@ -281,14 +281,14 @@ weechat.factory('connection',
                 handlers.handleHotlistInfo(hotlist);
             });
 
-            conn.send(
+            ngWebsockets.send(
                 weeChat.Protocol.formatNicklist({
                 })
             ).then(function(nicklist) {
                 handlers.handleNicklist(nicklist);
             });
 
-            conn.send(
+            ngWebsockets.send(
                 weeChat.Protocol.formatSync({})
             );
 
@@ -315,12 +315,11 @@ weechat.factory('connection',
             $log.error("Relay error " + evt.data);
         };
 
-
         protocol.setId = function(id, message) {
             return '(' + id + ') ' + message;
         }
 
-        conn.connect(url, 
+        ngWebsockets.connect(url, 
                      protocol,
                      {
                          'binaryType': "arraybuffer",
@@ -334,7 +333,7 @@ weechat.factory('connection',
 
     var disconnect = function() {
         /* TODO: Send protocol disconnect */
-        conn.disconnect();
+        ngWebsockets.disconnect();
     };
 
     /*
@@ -343,14 +342,14 @@ weechat.factory('connection',
      * @returns the angular promise
      */
     var sendMessage = function(message) {
-        conn.send(weeChat.Protocol.formatInput({
+        ngWebsockets.send(weeChat.Protocol.formatInput({
             buffer: models.getActiveBuffer().fullName,
             data: message
         }));
     };
 
     var sendCoreCommand = function(command) {
-        conn.send(weeChat.Protocol.formatInput({
+        ngWebsockets.send(weeChat.Protocol.formatInput({
             buffer: 'core.weechat',
             data: command
         }));

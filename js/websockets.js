@@ -1,12 +1,13 @@
 var websockets = angular.module('ngWebsockets', []);
 
-websockets.factory('conn',
+websockets.factory('ngWebsockets',
                    ['$rootScope','$q',
 function($rootScope, $q) {
                         
+
+    this.protocol = null;
     
     var ws = null;
-    this.protocol = null;
     var callbacks = {};
     var currentCallBackId = 0;
 
