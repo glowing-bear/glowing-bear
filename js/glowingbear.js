@@ -262,7 +262,6 @@ weechat.factory('connection',
                 }
             });
 
-
             // Send all the other commands required for initialization
             conn.send(
                 weeChat.Protocol.formatHdata({
@@ -282,7 +281,6 @@ weechat.factory('connection',
                 handlers.handleHotlistInfo(hotlist);
             });
 
-
             conn.send(
                 weeChat.Protocol.formatNicklist({
                 })
@@ -299,24 +297,10 @@ weechat.factory('connection',
         };
 
 
-
         var onclose = function () {
             $log.info("Disconnected from relay");
             $rootScope.connected = false;
             failCallbacks('disconnection');
-            $rootScope.$apply();
-        };
-
-        var onmessage = function (evt) {
-            message = protocol.parse(evt.data);
-            if (_.has(callbacks, message.id)) {
-                var promise = callbacks[message.id];
-                promise.cb.resolve(message);
-                delete(callbacks[message.id]);
-            } else {
-                handlers.handleEvent(message);
-            }
-            $rootScope.commands.push("RECV: " + evt.data + " TYPE:" + evt.type);
             $rootScope.$apply();
         };
 
@@ -330,6 +314,7 @@ weechat.factory('connection',
             }
             $log.error("Relay error " + evt.data);
         };
+
 
         protocol.setId = function(id, message) {
             return '(' + id + ') ' + message;
