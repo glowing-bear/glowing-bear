@@ -715,6 +715,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Prevent user from accidentally leaving the page
     window.onbeforeunload = function(event) {
         event.preventDefault();
+        $scope.favico.reset();
     };
 
 }]
