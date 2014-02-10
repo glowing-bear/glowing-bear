@@ -535,7 +535,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "port", "9001");
     $store.bind($scope, "proto", "weechat");
     $store.bind($scope, "ssl", false);
-    $store.bind($scope, "lines", "40");
     $store.bind($scope, "savepassword", false);
     if ($scope.savepassword) {
         $store.bind($scope, "password", "");
@@ -593,6 +592,15 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             connection.sendMessage('/query ' + nick);
         }
     };
+
+
+    // Calculate number of lines to fetch
+    $scope.lines = function() {
+        var lineHeight = document.querySelector(".bufferline").clientHeight;
+        // I would have used document.querySelector("#bufferlines").clientHeight and added 5 to the total result, but that provides incorrect values on mobile
+        var areaHeight = document.body.clientHeight;
+        return Math.ceil(areaHeight/lineHeight);
+    }();
 
     $rootScope.loadingLines = false;
     $scope.fetchMoreLines = function() {

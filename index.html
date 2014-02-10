@@ -245,16 +245,6 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
                       </div>
                     </form>
                   </li>
-                  <li class="">
-                    <form class="form-inline" role="form">
-                      <div class="checkbox">
-                        <label>
-                          &nbsp;&nbsp;lines fetched initially
-                          <input type="text" ng-model="lines" class="input-sm col-md-3">
-                        </label>
-                      </div>
-                    </form>
-                  </li>
                 </ul>
               </div>
               <a ng-click="disconnect()" title="Disconnect from WeeChat">
@@ -289,8 +279,12 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
         <table ng-class="{'notimestamp':notimestamp}">
           <tbody>
             <tr class="bufferline">
-              <a class="fetchmorelines" ng-click="fetchMoreLines()" ng-hide="loadingLines">Fetch more lines</a>
-              <span ng-show="loadingLines">Fetching more lines...</span>
+              <td class="time"><span class="date"> </span></td>
+              <td class="prefix"> </td>
+              <td class="message">
+                <a class="fetchmorelines" ng-click="fetchMoreLines()" ng-hide="loadingLines">Fetch more lines</a>
+                <span ng-show="loadingLines">Fetching more lines...</span>
+              </td>
             </tr>
           </tbody>
           <tbody ng-repeat="bufferline in (bufferlines = activeBuffer().lines)">
