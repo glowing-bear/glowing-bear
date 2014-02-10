@@ -288,16 +288,6 @@ function($rootScope,
             // Send all the other commands required for initialization
             ngWebsockets.send(
                 weeChat.Protocol.formatHdata({
-                    path: "buffer:gui_buffers(*)/own_lines/last_line(-"+storage.get('lines')+")/data",
-                    keys: []
-                })
-            ).then(function(lineinfo) {
-                handlers.handleLineInfo(lineinfo);
-                $rootScope.scrollWithBuffer(true);
-            });
-
-            ngWebsockets.send(
-                weeChat.Protocol.formatHdata({
                     path: "hotlist:gui_hotlist(*)",
                     keys: []
                 })
@@ -384,11 +374,9 @@ function($rootScope,
         }));
     };
 
-    var getMoreLines = function(numLines) {
+    var fetchMoreLines = function(numLines) {
         var buffer = models.getActiveBuffer();
-        if (numLines === undefined) {
-            var numLines = Math.max(40, buffer.requestedLines * 2);
-        }
+        numLines = Math.max(numLines, buffer.requestedLines * 2);
 
         $rootScope.loadingLines = true;
         ngWebsockets.send(
@@ -415,7 +403,7 @@ function($rootScope,
         disconnect: disconnect,
         sendMessage: sendMessage,
         sendCoreCommand: sendCoreCommand,
-        getMoreLines: getMoreLines
+        fetchMoreLines: fetchMoreLines
     };
 }]);
 
@@ -476,6 +464,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $rootScope.scrollWithBuffer(true);
 
         var ab = models.getActiveBuffer();
+        if (ab.requestedLines < $scope.lines) {
+            // buffer has not been loaded
+            // some messages may be present if they arrived after we connected
+            $scope.fetchMoreLines($scope.lines);
+        }
         $rootScope.pageTitle = ab.shortName + ' | ' + ab.title;
 
         // If user wants to sync hotlist with weechat
@@ -591,8 +584,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $rootScope.loadingLines = false;
-    $scope.fetchMoreLines = function(numLines) {
-        connection.getMoreLines(numLines);
+    $scope.fetchMoreLines = function() {
+        connection.fetchMoreLines($scope.lines);
     }
 
     $rootScope.scrollWithBuffer = function(nonIncremental) {
