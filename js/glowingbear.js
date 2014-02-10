@@ -22,7 +22,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         models.closeBuffer(buffer);
     };
 
-    var handleLine = function(line, initial) {
+    var handleLine = function(line, initial, loadingMoreLines) {
         var message = new models.BufferLine(line);
         var buffer = models.getBuffer(message.buffer);
         buffer.requestedLines++;
@@ -35,7 +35,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
                 buffer.lastSeen++;
             }
 
-            if (buffer.active) {
+            if (buffer.active && !initial && !loadingMoreLines) {
                 $rootScope.scrollWithBuffer();
             }
 
@@ -89,11 +89,11 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
      *
      * (lineinfo) messages are specified by this client. It is request after bufinfo completes
      */
-    var handleLineInfo = function(message, initial) {
+    var handleLineInfo = function(message, initial, loadingMoreLines) {
         var lines = message.objects[0].content.reverse();
         if (initial === undefined) initial = true;
         lines.forEach(function(l) {
-            handleLine(l, initial);
+            handleLine(l, initial, loadingMoreLines);
         });
     };
 
@@ -293,6 +293,7 @@ function($rootScope,
                 })
             ).then(function(lineinfo) {
                 handlers.handleLineInfo(lineinfo);
+                $rootScope.scrollWithBuffer(true);
             });
 
             ngWebsockets.send(
@@ -400,9 +401,10 @@ function($rootScope,
             var oldLength = buffer.lines.length;
             buffer.lines.length = 0;
             buffer.requestedLines = 0;
-            handlers.handleLineInfo(lineinfo, false);
+            handlers.handleLineInfo(lineinfo, false, true);
             buffer.lastSeen = buffer.lines.length - oldLength - 1;
             $rootScope.loadingLines = false;
+            $rootScope.scrollWithBuffer(true);
         });
     }
 
@@ -608,7 +610,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 var readmarker = document.getElementById('readmarker');
                 if (nonIncremental && readmarker) {
                     // Switching channels, scroll to read marker
-                    readmarker.scrollIntoView();
+                    readmarker.scrollIntoViewIfNeeded();
                 } else {
                     // New message, scroll with buffer (i.e. to bottom)
                     bl.scrollTop = bl.scrollHeight - bl.clientHeight;
