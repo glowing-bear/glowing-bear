@@ -390,7 +390,14 @@ function($rootScope,
             buffer.lines.length = 0;
             buffer.requestedLines = 0;
             handlers.handleLineInfo(lineinfo, false, true);
-            buffer.lastSeen = buffer.lines.length - oldLength - 1;
+            if (oldLength > 0) {
+                // We're not initially loading lines into the buffer.
+                // Set the read marker to the beginning of the newly loaded lines
+                buffer.lastSeen = buffer.lines.length - oldLength - 1;
+            } else {
+                // Initial buffer open, set correct read marker position
+                buffer.lastSeen += buffer.lines.length;
+            }
             $rootScope.loadingLines = false;
             $rootScope.scrollWithBuffer(true);
         });
