@@ -290,7 +290,6 @@ input[type=text], input[type=password], .badge {
     }
     #bufferlines {
         padding-bottom: 38px; /* navbar fixed bottom */
-        top: 10px;
     }
     .navbar-fixed-bottom {
         margin: 0;
