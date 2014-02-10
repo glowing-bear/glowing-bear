@@ -12,6 +12,7 @@
       "http://torhve.github.io/glowing-bear/"
     ],
     "launch": {
+      "container": "panel",
       "web_url": "http://torhve.github.io/glowing-bear/"
     }
   },
