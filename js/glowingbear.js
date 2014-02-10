@@ -801,6 +801,15 @@ weechat.directive('plugin', function() {
                  */
                 $scope.displayedContent = $scope.plugin.content;
                 $scope.plugin.visible = true;
+
+                // Scroll embed content into view
+                var elems = $("." + $scope.plugin.$$hashKey);
+                if (elems.length == 1) {
+                    var scroll = function() {
+                        elems[0].scrollIntoViewIfNeeded();
+                    };
+                    setTimeout(scroll, 100);
+                }
             };
 
         }
