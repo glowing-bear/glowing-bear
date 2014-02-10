@@ -583,7 +583,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // If we are on mobile we need to collapse the menu on sidebar clicks
         // We use 968 px as the cutoff, which should match the value in glowingbear.css
         if (document.body.clientWidth < 968) {
-            $('#sidebar').collapse();
+            document.querySelector('#sidebar').collapse();
         }
         return models.setActiveBuffer(bufferId, key);
     };
