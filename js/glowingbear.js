@@ -206,16 +206,38 @@ weechat.factory('connection',
                  'handlers',
                  'models',
                  'ngWebsockets',
-                 function($rootScope,
-                          $log,
-                          storage,
-                          handlers,
-                          models,
-                          ngWebsockets) {
-
+function($rootScope,
+         $log,
+         storage,
+         handlers,
+         models,
+         ngWebsockets) {
+    
     protocol = new weeChat.Protocol();
 
     // Takes care of the connection and websocket hooks
+
+    var _formatForWs = function(message) {
+        /*
+         * Formats a weechat message to be sent over
+         * the websocket.
+         */
+        message.replace(/[\r\n]+$/g, "").split("\n");
+        return message;
+    };
+
+    var _send = function(message) {
+        return ngWebsockets.send(_formatForWs(message));
+    };
+
+    var _sendAll = function(messages) {
+        for (var i in messages) {
+            messages[i] = _formatForWs(messages[i]);
+        }
+        return ngWebsockets.sendAll(messages);
+    };
+
+
     var connect = function (host, port, passwd, ssl, noCompression) {
         var proto = ssl ? 'wss' : 'ws';
         var url = proto + "://" + host + ":" + port + "/weechat";
