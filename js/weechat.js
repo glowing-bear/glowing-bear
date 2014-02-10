@@ -604,7 +604,7 @@
      */
     WeeChatProtocol.setId = function(id, command) {
         return '(' + id + ') ' + command;
-    }
+    };
 
     /**
      * Formats a command.

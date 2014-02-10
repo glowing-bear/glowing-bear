@@ -96,21 +96,20 @@ function($rootScope, $q) {
         /*
          * Receives a message on the websocket
          */
-        var message = protocol.parse(evt.data)
+        var message = protocol.parse(evt.data);
         if (_.has(callbacks, message.id)) {
             // see if it's bound to one of the callbacks
             var promise = callbacks[message.id];
-            promise.cb.resolve(message)
+            promise.cb.resolve(message);
             delete(callbacks[message.id]);
         } else {
             // otherwise emit it
-            $rootScope.$emit('onMessage', message)
-            //handlers.handleEvent(message);
+            $rootScope.$emit('onMessage', message);
         }
         $rootScope.commands.push("RECV: " + evt.data + " TYPE:" + evt.type);
         $rootScope.$apply();
 
-    }
+    };
 
     var connect = function(url,
                            protocol,
@@ -123,16 +122,17 @@ function($rootScope, $q) {
         }
 
         ws.onmessage = onmessage;
-    }
+    };
 
     var disconnect = function() {
         ws.close();
-    }
+    };
 
     return {
         send: send,
         sendAll: sendAll,
         connect: connect,
         disconnect: disconnect
-    }
+    };
+
 }]);

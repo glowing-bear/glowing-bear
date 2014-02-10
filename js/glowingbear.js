@@ -241,7 +241,6 @@ function($rootScope,
     var connect = function (host, port, passwd, ssl, noCompression) {
         var proto = ssl ? 'wss' : 'ws';
         var url = proto + "://" + host + ":" + port + "/weechat";
-        var binaryType = "arraybuffer";
 
         var onopen = function () {
 
@@ -344,7 +343,7 @@ function($rootScope,
 
         protocol.setId = function(id, message) {
             return '(' + id + ') ' + message;
-        }
+        };
 
         ngWebsockets.connect(url, 
                      protocol,
@@ -354,7 +353,7 @@ function($rootScope,
                          'onclose': onclose,
                          'onmessage': onmessage,
                          'onerror': onerror,
-                     })
+                     });
 
     };
 
