@@ -376,11 +376,15 @@ function($rootScope,
 
     var fetchMoreLines = function(numLines) {
         var buffer = models.getActiveBuffer();
+        // Calculate number of lines to fetch, at least as many as the parameter
         numLines = Math.max(numLines, buffer.requestedLines * 2);
 
+        // Indicator that we are loading lines, hides "load more lines" link
         $rootScope.loadingLines = true;
+        // Send hdata request to fetch lines for this particular buffer
         ngWebsockets.send(
             weeChat.Protocol.formatHdata({
+                // "0x" is important, otherwise it won't work
                 path: "buffer:0x" + buffer.id + "/own_lines/last_line(-" + numLines + ")/data",
                 keys: []
             })
@@ -390,6 +394,7 @@ function($rootScope,
             buffer.lines.length = 0;
             buffer.requestedLines = 0;
             handlers.handleLineInfo(lineinfo, false, true);
+
             if (oldLength > 0) {
                 // We're not initially loading lines into the buffer.
                 // Set the read marker to the beginning of the newly loaded lines
@@ -399,13 +404,13 @@ function($rootScope,
                 buffer.lastSeen += buffer.lines.length;
             }
             $rootScope.loadingLines = false;
+            // Scroll read marker to the center of the screen
             $rootScope.scrollWithBuffer(true);
         });
-    }
+    };
 
 
     return {
-//        send: send,
         connect: connect,
         disconnect: disconnect,
         sendMessage: sendMessage,
@@ -472,8 +477,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         var ab = models.getActiveBuffer();
         if (ab.requestedLines < $scope.lines) {
-            // buffer has not been loaded
-            // some messages may be present if they arrived after we connected
+            // buffer has not been loaded, but some lines may already be present if they arrived after we connected
             $scope.fetchMoreLines($scope.lines);
         }
         $rootScope.pageTitle = ab.shortName + ' | ' + ab.title;
@@ -593,7 +597,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $rootScope.loadingLines = false;
     $scope.fetchMoreLines = function() {
         connection.fetchMoreLines($scope.lines);
-    }
+    };
 
     $rootScope.scrollWithBuffer = function(nonIncremental) {
         // First, get scrolling status *before* modification
