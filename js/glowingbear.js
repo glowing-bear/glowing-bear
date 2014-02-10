@@ -24,9 +24,10 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
 
     var handleLine = function(line, initial) {
         var message = new models.BufferLine(line);
+        var buffer = models.getBuffer(message.buffer);
+        buffer.requestedLines++;
         // Only react to line if its displayed
         if (message.displayed) {
-            var buffer = models.getBuffer(message.buffer);
             message = plugins.PluginManager.contentForMessage(message, $rootScope.visible);
             buffer.addLine(message);
 
@@ -88,10 +89,11 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
      *
      * (lineinfo) messages are specified by this client. It is request after bufinfo completes
      */
-    var handleLineInfo = function(message) {
+    var handleLineInfo = function(message, initial) {
         var lines = message.objects[0].content.reverse();
+        if (initial === undefined) initial = true;
         lines.forEach(function(l) {
-            handleLine(l, true);
+            handleLine(l, initial);
         });
     };
 
@@ -381,13 +383,37 @@ function($rootScope,
         }));
     };
 
+    var getMoreLines = function(numLines) {
+        var buffer = models.getActiveBuffer();
+        if (numLines === undefined) {
+            var numLines = Math.max(40, buffer.requestedLines * 2);
+        }
+
+        $rootScope.loadingLines = true;
+        ngWebsockets.send(
+            weeChat.Protocol.formatHdata({
+                path: "buffer:0x" + buffer.id + "/own_lines/last_line(-" + numLines + ")/data",
+                keys: []
+            })
+        ).then(function(lineinfo) {
+            // delete old lines and add new ones
+            var oldLength = buffer.lines.length;
+            buffer.lines.length = 0;
+            buffer.requestedLines = 0;
+            handlers.handleLineInfo(lineinfo, false);
+            buffer.lastSeen = buffer.lines.length - oldLength - 1;
+            $rootScope.loadingLines = false;
+        });
+    }
+
 
     return {
 //        send: send,
         connect: connect,
         disconnect: disconnect,
         sendMessage: sendMessage,
-        sendCoreCommand: sendCoreCommand
+        sendCoreCommand: sendCoreCommand,
+        getMoreLines: getMoreLines
     };
 }]);
 
@@ -561,6 +587,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             connection.sendMessage('/query ' + nick);
         }
     };
+
+    $rootScope.loadingLines = false;
+    $scope.fetchMoreLines = function(numLines) {
+        connection.getMoreLines(numLines);
+    }
 
     $rootScope.scrollWithBuffer = function(nonIncremental) {
         // First, get scrolling status *before* modification

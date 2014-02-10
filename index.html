@@ -282,6 +282,12 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
           </ul>
         </div>
         <table ng-class="{'notimestamp':notimestamp}">
+          <tbody>
+            <tr class="bufferline">
+              <a class="fetchmorelines" ng-click="fetchMoreLines()" ng-hide="loadingLines">Fetch more lines</a>
+              <span ng-show="loadingLines">Fetching more lines...</span>
+            </tr>
+          </tbody>
           <tbody ng-repeat="bufferline in (bufferlines = activeBuffer().lines)">
             <tr class="bufferline">
               <td class="time">
