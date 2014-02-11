@@ -78,11 +78,6 @@
                       </label>
                     </div>
                   </div>
-                  <div class="form-group">
-                    <label class="control-label" for="port">Lines</label>
-                    <input type="text" class="form-control monospace" id="lines" ng-model="lines" placeholder="40">
-                    <p class="help-block">Enter number of lines to sync from WeeChat on connect</p>
-                  </div>
                   <button class="btn btn-lg btn-primary" ng-click="connect()">Connect <i class="glyphicon glyphicon-chevron-right"></i></button>
                 </form>
               </div>
@@ -282,6 +277,16 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
           </ul>
         </div>
         <table ng-class="{'notimestamp':notimestamp}">
+          <tbody>
+            <tr class="bufferline">
+              <td class="time"><span class="date"> </span></td>
+              <td class="prefix"> </td>
+              <td class="message">
+                <a class="fetchmorelines" ng-click="fetchMoreLines()" ng-hide="loadingLines">Fetch more lines</a>
+                <span ng-show="loadingLines">Fetching more lines...</span>
+              </td>
+            </tr>
+          </tbody>
           <tbody ng-repeat="bufferline in (bufferlines = activeBuffer().lines)">
             <tr class="bufferline">
               <td class="time">

@@ -22,11 +22,12 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         models.closeBuffer(buffer);
     };
 
-    var handleLine = function(line, initial) {
+    var handleLine = function(line, initial, loadingMoreLines) {
         var message = new models.BufferLine(line);
+        var buffer = models.getBuffer(message.buffer);
+        buffer.requestedLines++;
         // Only react to line if its displayed
         if (message.displayed) {
-            var buffer = models.getBuffer(message.buffer);
             message = plugins.PluginManager.contentForMessage(message, $rootScope.visible);
             buffer.addLine(message);
 
@@ -34,7 +35,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
                 buffer.lastSeen++;
             }
 
-            if (buffer.active) {
+            if (buffer.active && !initial && !loadingMoreLines) {
                 $rootScope.scrollWithBuffer();
             }
 
@@ -88,10 +89,11 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
      *
      * (lineinfo) messages are specified by this client. It is request after bufinfo completes
      */
-    var handleLineInfo = function(message) {
+    var handleLineInfo = function(message, initial, loadingMoreLines) {
         var lines = message.objects[0].content.reverse();
+        if (initial === undefined) initial = true;
         lines.forEach(function(l) {
-            handleLine(l, true);
+            handleLine(l, initial, loadingMoreLines);
         });
     };
 
@@ -286,15 +288,6 @@ function($rootScope,
             // Send all the other commands required for initialization
             ngWebsockets.send(
                 weeChat.Protocol.formatHdata({
-                    path: "buffer:gui_buffers(*)/own_lines/last_line(-"+storage.get('lines')+")/data",
-                    keys: []
-                })
-            ).then(function(lineinfo) {
-                handlers.handleLineInfo(lineinfo);
-            });
-
-            ngWebsockets.send(
-                weeChat.Protocol.formatHdata({
                     path: "hotlist:gui_hotlist(*)",
                     keys: []
                 })
@@ -381,13 +374,48 @@ function($rootScope,
         }));
     };
 
+    var fetchMoreLines = function(numLines) {
+        var buffer = models.getActiveBuffer();
+        // Calculate number of lines to fetch, at least as many as the parameter
+        numLines = Math.max(numLines, buffer.requestedLines * 2);
+
+        // Indicator that we are loading lines, hides "load more lines" link
+        $rootScope.loadingLines = true;
+        // Send hdata request to fetch lines for this particular buffer
+        ngWebsockets.send(
+            weeChat.Protocol.formatHdata({
+                // "0x" is important, otherwise it won't work
+                path: "buffer:0x" + buffer.id + "/own_lines/last_line(-" + numLines + ")/data",
+                keys: []
+            })
+        ).then(function(lineinfo) {
+            // delete old lines and add new ones
+            var oldLength = buffer.lines.length;
+            buffer.lines.length = 0;
+            buffer.requestedLines = 0;
+            handlers.handleLineInfo(lineinfo, false, true);
+
+            if (oldLength > 0) {
+                // We're not initially loading lines into the buffer.
+                // Set the read marker to the beginning of the newly loaded lines
+                buffer.lastSeen = buffer.lines.length - oldLength - 1;
+            } else {
+                // Initial buffer open, set correct read marker position
+                buffer.lastSeen += buffer.lines.length;
+            }
+            $rootScope.loadingLines = false;
+            // Scroll read marker to the center of the screen
+            $rootScope.scrollWithBuffer(true);
+        });
+    };
+
 
     return {
-//        send: send,
         connect: connect,
         disconnect: disconnect,
         sendMessage: sendMessage,
-        sendCoreCommand: sendCoreCommand
+        sendCoreCommand: sendCoreCommand,
+        fetchMoreLines: fetchMoreLines
     };
 }]);
 
@@ -448,6 +476,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $rootScope.scrollWithBuffer(true);
 
         var ab = models.getActiveBuffer();
+        if (ab.requestedLines < $scope.lines) {
+            // buffer has not been loaded, but some lines may already be present if they arrived after we connected
+            $scope.fetchMoreLines($scope.lines);
+        }
         $rootScope.pageTitle = ab.shortName + ' | ' + ab.title;
 
         // If user wants to sync hotlist with weechat
@@ -503,7 +535,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "port", "9001");
     $store.bind($scope, "proto", "weechat");
     $store.bind($scope, "ssl", false);
-    $store.bind($scope, "lines", "40");
     $store.bind($scope, "savepassword", false);
     if ($scope.savepassword) {
         $store.bind($scope, "password", "");
@@ -562,6 +593,20 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     };
 
+
+    // Calculate number of lines to fetch
+    $scope.lines = function() {
+        var lineHeight = document.querySelector(".bufferline").clientHeight;
+        // I would have used document.querySelector("#bufferlines").clientHeight and added 5 to the total result, but that provides incorrect values on mobile
+        var areaHeight = document.body.clientHeight;
+        return Math.ceil(areaHeight/lineHeight);
+    }();
+
+    $rootScope.loadingLines = false;
+    $scope.fetchMoreLines = function() {
+        connection.fetchMoreLines($scope.lines);
+    };
+
     $rootScope.scrollWithBuffer = function(nonIncremental) {
         // First, get scrolling status *before* modification
         // This is required to determine where we were in the buffer pre-change
@@ -577,7 +622,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 var readmarker = document.getElementById('readmarker');
                 if (nonIncremental && readmarker) {
                     // Switching channels, scroll to read marker
-                    readmarker.scrollIntoView();
+                    readmarker.scrollIntoViewIfNeeded();
                 } else {
                     // New message, scroll with buffer (i.e. to bottom)
                     bl.scrollTop = bl.scrollHeight - bl.clientHeight;

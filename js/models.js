@@ -18,6 +18,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var local_variables = message.local_vars;
         var notify = 3; // Default 3 == message
         var lines = [];
+        var requestedLines = 0;
         var nicklist = {};
         var flatnicklist = [];
         var history = [];
@@ -153,6 +154,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             number: number,
             title: title,
             lines: lines,
+            requestedLines: requestedLines,
             addLine: addLine,
             lastSeen: lastSeen,
             unread: unread,
