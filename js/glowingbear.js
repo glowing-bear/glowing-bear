@@ -619,10 +619,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             // Give the check 3 pixels of slack so you don't have to hit
             // the exact spot. This fixes a bug in some browsers
             if ((nonIncremental && sTop < sVal) || (sTop - sVal < 3)) {
-                var readmarker = document.getElementById('readmarker');
+                var readmarker = document.querySelector(".readmarker");
                 if (nonIncremental && readmarker) {
                     // Switching channels, scroll to read marker
-                    readmarker.scrollIntoViewIfNeeded();
+                    bl.scrollTop = readmarker.offsetTop - readmarker.parentElement.scrollHeight + readmarker.scrollHeight;
                 } else {
                     // New message, scroll with buffer (i.e. to bottom)
                     bl.scrollTop = bl.scrollHeight - bl.clientHeight;
