@@ -395,14 +395,9 @@ function($rootScope,
             buffer.requestedLines = 0;
             handlers.handleLineInfo(lineinfo, false, true);
 
-            if (oldLength > 0) {
-                // We're not initially loading lines into the buffer.
-                // Set the read marker to the beginning of the newly loaded lines
-                buffer.lastSeen = buffer.lines.length - oldLength - 1;
-            } else {
-                // Initial buffer open, set correct read marker position
-                buffer.lastSeen += buffer.lines.length;
-            }
+            // Advance read marker by number of newly loaded lines
+            buffer.lastSeen += buffer.lines.length - oldLength;
+
             $rootScope.loadingLines = false;
             // Scroll read marker to the center of the screen
             $rootScope.scrollWithBuffer(true);
@@ -618,7 +613,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             // Determine if we want to scroll at all
             // Give the check 3 pixels of slack so you don't have to hit
             // the exact spot. This fixes a bug in some browsers
-            if ((nonIncremental && sTop < sVal) || (sTop - sVal < 3)) {
+            if ((nonIncremental && sTop < sVal) || (Math.abs(sTop - sVal) < 3)) {
                 var readmarker = document.querySelector(".readmarker");
                 if (nonIncremental && readmarker) {
                     // Switching channels, scroll to read marker
