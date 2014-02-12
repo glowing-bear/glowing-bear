@@ -127,14 +127,14 @@
             <div id="collapseThree" class="panel-collapse collapse">
               <div class="panel-body">
                 If you check the encryption box, the communication between browser and WeeChat will be encrypted.<br>
-                <strong>Note</strong>: Due to a <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">bug</a> encryption will not work in Firefox. Unless you are using a certificate trusted by your browser, you must also first visit the URL https://weechathost:relayport/ to accept the certificate.</p>
-                If you want to use an encrypted session you first have to set up the relay using SSL. It is easiest to use a self-signed certificate, which you can create like this:
+                <strong>Note</strong>: Due to a <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">bug</a> encryption will not work in Firefox. Unless you are using a certificate trusted by your browser, you must also first visit the URL https://weechathost:relayport/ to mark the certificate as trusted.</p>
+                If you want to use an encrypted session you first have to set up the relay to use SSL. It is easiest to use a self-signed certificate, which you can create like this:
 <pre>
 $ mkdir -p ~/.weechat/ssl
 $ cd ~/.weechat/ssl
-$ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out relay.pem
+$ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out relay.pem
 </pre>
-                If WeeChat is already running, you can reload the certificate and private key with these commands:
+                If WeeChat is already running, you can reload the certificate and private key and set up an encrypted relay on port 8000 with these commands:
 <pre>
 /relay sslcertkey
 /relay add ssl.weechat 8000
@@ -152,7 +152,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
             </div>
             <div id="collapseFour" class="panel-collapse collapse">
               <div class="panel-body">
-                <p>If you have a very recent version of Firefox you can install the frontend as an app. Click the button to install.</p>
+                <p>If you have a recent version of Firefox you can install glowing bear as an app. Click the button to install.</p>
                 <button class="btn btn-lg btn-primary" ng-click="install()">Install app <i class="glyphicon glyphicon-chevron-right"></i></button>
               </div>
             </div>
