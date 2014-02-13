@@ -36,11 +36,11 @@
         <img alt="logo" src="img/favicon.png">
         glowing bear
         <small>
-          WeeChat web frontend 
+          WeeChat web frontend
         </small>
       </h2>
         <div class="alert alert-danger" ng-show="errorMessage">
-          <strong>Connection error</strong> The client was unable to connect to the WeeChat relay 
+          <strong>Connection error</strong> The client was unable to connect to the WeeChat relay
         </div>
         <div class="panel-group" id="accordion">
           <div class="panel">
@@ -63,17 +63,17 @@
                     <div class="alert alert-danger" ng-show="passwordError">
                       Error: wrong password
                     </div>
-                    <label class="control-label" for="password">WeeChat relay password</label> 
+                    <label class="control-label" for="password">WeeChat relay password</label>
                     <input type="password" class="form-control monospace" id="password" ng-model="password" placeholder="Password">
                     <div class="checkbox">
-                      <label>
-                          <input type="checkbox" class="checkbox" id="savepassword" ng-model="savepassword">
+                      <label class="control-label" for="savepassword">
+                          <input type="checkbox" id="savepassword" ng-model="savepassword">
                           Save password in your browser
                       </label>
                     </div>
                     <div class="checkbox">
-                      <label class="control-label " for="ssl">
-                        <input type="checkbox" class="" id="ssl" ng-model="ssl">
+                      <label class="control-label" for="ssl">
+                        <input type="checkbox" id="ssl" ng-model="ssl">
                         Encryption. Read instructions for help
                       </label>
                     </div>
@@ -102,7 +102,6 @@
                 <span class="label label-danger">WeeChat version 0.4.2 or higher is required.</span><br>
                 The communication goes directly between your browser and your WeeChat relay in plain text. Check the instructions below for help on setting up encrypted communication.
                 Connection settings, including your password, are saved locally in your own browser between sessions.
-
                 <br>
                 <h3>Shortcuts</h3>
                 Glowing Bear has a few shortcuts:
@@ -127,14 +126,14 @@
             <div id="collapseThree" class="panel-collapse collapse">
               <div class="panel-body">
                 If you check the encryption box, the communication between browser and WeeChat will be encrypted.<br>
-                <strong>Note</strong>: Due to a <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">bug</a> encryption will not work in Firefox. Unless you are using a certificate trusted by your browser, you must also first visit the URL https://weechathost:relayport/ to accept the certificate.</p>
-                If you want to use an encrypted session you first have to set up the relay using SSL. It is easiest to use a self-signed certificate, which you can create like this:
+                <strong>Note</strong>: Due to a <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">bug</a> encryption will not work in Firefox. Unless you are using a certificate trusted by your browser, you must also first visit the URL https://weechathost:relayport/ to mark the certificate as trusted.</p>
+                If you want to use an encrypted session you first have to set up the relay to use SSL. It is easiest to use a self-signed certificate, which you can create like this:
 <pre>
 $ mkdir -p ~/.weechat/ssl
 $ cd ~/.weechat/ssl
-$ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out relay.pem
+$ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out relay.pem
 </pre>
-                If WeeChat is already running, you can reload the certificate and private key with these commands:
+                If WeeChat is already running, you can reload the certificate and private key and set up an encrypted relay on port 8000 with these commands:
 <pre>
 /relay sslcertkey
 /relay add ssl.weechat 8000
@@ -152,8 +151,23 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
             </div>
             <div id="collapseFour" class="panel-collapse collapse">
               <div class="panel-body">
-                <p>If you have a very recent version of Firefox you can install the frontend as an app. Click the button to install.</p>
+                <p>If you have a recent version of Firefox you can install glowing bear as an app. Click the button to install.</p>
                 <button class="btn btn-lg btn-primary" ng-click="install()">Install app <i class="glyphicon glyphicon-chevron-right"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
+                  Get involved
+                </a>
+              </h4>
+            </div>
+            <div id="collapseFive" class="panel-collapse collapse">
+              <div class="panel-body">
+                <p>Glowing bear is built by a small group of developers in their free time. As we're always trying to improve it, we would love getting your feedback and help. If that sounds like something you might enjoy, check out our <a href="https://github.com/cormier/glowing-bear">project page</a> on GitHub!</p>
+                <p>If you're interested in contributing or simply want to say hello, head over to <strong>#glowing-bear</strong> on <strong>freenode!</strong> We won't bite, promise (-ish).</p>
               </div>
             </div>
           </div>
@@ -161,96 +175,96 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
       </div>
     </div>
     <div class="content" ng-show="connected">
-      <div id="topbar" class="">
-            <div class="brand">
-              <a href="#" data-target="#sidebar" data-toggle="collapse">
-                <img alt="brand" src="img/favicon.png" title="Connected to {{ host }}:{{ port}}">
-              </a>
-              <button ng-show="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
-            </div>
-            <div class="title" ng-bind-html="activeBuffer().title | linky:'_blank'"></div>
-            <div class="actions pull-right vertical-line-left">
-              <div class="dropdown pull-left">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Options menu">
-                  <i class="glyphicon glyphicon-cog"></i> 
-                </a>
-                <ul class="dropdown-menu pull-right">
-                  <li class="">
-                    <form class="form-inline" role="form">
-                      <div class="checkbox">
-                        <label>
-                          <input type="checkbox" ng-model="onlyUnread">
-                          Only show unread
-                        </label>
-                      </div>
-                    </form>
-                  </li>
-                  <li class="">
-                    <form class="form-inline" role="form">
-                      <div class="checkbox">
-                        <label>
-                          <input type="checkbox" ng-model="notimestamp">
-                          Hide timestamps 
-                        </label>
-                      </div>
-                    </form>
-                  </li>
-                  <li class="">
-                    <form class="form-inline" role="form">
-                      <div class="checkbox">
-                        <label>
-                          <input type="checkbox" ng-model="noembed">
-                           Hide embedded content by default 
-                        </label>
-                      </div>
-                    </form>
-                  </li>
-                  <li class="">
-                    <form class="form-inline" role="form">
-                      <div class="checkbox">
-                        <label>
-                          <input type="checkbox" ng-model="hotlistsync">
-                          Sync hotlist with WeeChat
-                        </label>
-                      </div>
-                    </form>
-                  </li>
-                  <li class="">
-                    <form class="form-inline" role="form">
-                      <div class="checkbox">
-                        <label>
-                          <input type="checkbox" ng-model="nonicklist">
-                          Hide nicklist
-                        </label>
-                      </div>
-                    </form>
-                  </li>
-                  <li class="">
-                    <form class="form-inline" role="form">
-                      <div class="checkbox">
-                        <label>
-                          <input type="checkbox" ng-model="orderbyserver">
-                          Order channels by server
-                        </label>
-                      </div>
-                    </form>
-                  </li>
-                  <li class="">
-                    <form class="form-inline" role="form">
-                      <div class="checkbox">
-                        <label>
-                          <input type="checkbox" ng-model="debugMode">
-                          Debug Mode
-                        </label>
-                      </div>
-                    </form>
-                  </li>
-                </ul>
-              </div>
-              <a ng-click="disconnect()" title="Disconnect from WeeChat">
-                <i class="glyphicon glyphicon-remove"></i> 
-              </a>
-            </div>
+      <div id="topbar">
+        <div class="brand">
+          <a href="#" data-target="#sidebar" data-toggle="collapse">
+            <img alt="brand" src="img/favicon.png" title="Connected to {{ host }}:{{ port}}">
+          </a>
+          <button ng-show="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
+        </div>
+        <div class="title" ng-bind-html="activeBuffer().title | linky:'_blank'"></div>
+        <div class="actions pull-right vertical-line-left">
+          <div class="dropdown pull-left">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Options menu">
+              <i class="glyphicon glyphicon-cog"></i>
+            </a>
+            <ul class="dropdown-menu pull-right">
+              <li>
+                <form class="form-inline" role="form">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="onlyUnread">
+                      Only show unread
+                    </label>
+                  </div>
+                </form>
+              </li>
+              <li>
+                <form class="form-inline" role="form">
+                  <div class="checkbox">
+                    <label
+                      <input type="checkbox" ng-model="notimestamp">
+                      Hide timestamps
+                    </label>
+                  </div>
+                </form>
+              </li>
+              <li>
+                <form class="form-inline" role="form">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="noembed">
+                       Hide embedded content by default
+                    </label>
+                  </div>
+                </form>
+              </li>
+              <li>
+                <form class="form-inline" role="form">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="hotlistsync">
+                      Sync hotlist with WeeChat
+                    </label>
+                  </div>
+                </form>
+              </li>
+              <li>
+                <form class="form-inline" role="form">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="nonicklist">
+                      Hide nicklist
+                    </label>
+                  </div>
+                </form>
+              </li>
+              <li>
+                <form class="form-inline" role="form">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="orderbyserver">
+                      Order channels by server
+                    </label>
+                  </div>
+                </form>
+              </li>
+              <li>
+                <form class="form-inline" role="form">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="debugMode">
+                      Debug Mode
+                    </label>
+                  </div>
+                </form>
+              </li>
+            </ul>
+          </div>
+          <a ng-click="disconnect()" title="Disconnect from WeeChat">
+            <i class="glyphicon glyphicon-remove"></i>
+          </a>
+        </div>
       </div>
       <div bindonce id="sidebar" class="vertical-line collapse in">
         <ul class="nav nav-pills nav-stacked" ng-class="{'indented': (predicate === 'serverSortKey')}">
@@ -271,7 +285,7 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
       <div bindonce id="bufferlines" class="monospace" ng-class="{'withnicklist': showNicklist}">
         <div id="nicklist" ng-show="showNicklist" class="vertical-line-left">
           <ul class="nicklistgroup list-unstyled" ng-repeat="group in activeBuffer().nicklist">
-            <li class="" ng-repeat="nick in group.nicks|orderBy:'name'" ng-click="openQuery(nick.name)">
+            <li ng-repeat="nick in group.nicks|orderBy:'name'" ng-click="openQuery(nick.name)">
               <a ng-click="nickAction(nick)"><span bo-class="nick.prefixClasses" bo-text="nick.prefix"></span><span bo-class="nick.nameClasses" bo-text="nick.name"></span></a>
             </li>
           </ul>
@@ -300,7 +314,6 @@ $ openssl req -nodes -newkey rsa:2048 -keyout relay.pem -x509 -days 365 -out rel
                   <div plugin data="metadata"></div>
                 </div>
                 <span ng-repeat="part in bufferline.content" class="text" bo-class="part.classes" bo-html="part.text|linky:'_blank'"></span>
-
               </td>
             </tr>
             <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
