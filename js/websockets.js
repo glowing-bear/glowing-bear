@@ -106,7 +106,7 @@ function($rootScope, $q) {
             // otherwise emit it
             $rootScope.$emit('onMessage', message);
         }
-        $rootScope.commands.push("RECV: " + evt.data + " TYPE:" + evt.type);
+
         $rootScope.$apply();
     };
 

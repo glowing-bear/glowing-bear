@@ -263,7 +263,9 @@ function($rootScope,
             ]).then(
                 null,
                 function() {
-                    $rootScope.passwordError = true;
+                    // Connection got closed, lets check if we ever was connected successfully
+                    if(!$rootScope.waseverconnected)
+                        $rootScope.passwordError = true;
                 }
             );
 
@@ -310,12 +312,19 @@ function($rootScope,
 
         };
 
+        var onmessage = function(event) {
+            // If we recieve a message from WeeChat it means that
+            // password was OK. Store that result and check for it
+            // in the failure handler.
+            $rootScope.waseverconnected = true;
+        }
+
+
         var onclose = function () {
             /*
              * Handles websocket disconnection
              */
             $log.info("Disconnected from relay");
-
             failCallbacks('disconnection');
             $rootScope.connected = false;
             $rootScope.$apply();
@@ -345,6 +354,7 @@ function($rootScope,
                          'binaryType': "arraybuffer",
                          'onopen': onopen,
                          'onclose': onclose,
+                         'onmessage': onmessage,
                          'onerror': onerror,
                      });
 
@@ -518,7 +528,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.buffers = models.model.buffers;
     $scope.activeBuffer = models.getActiveBuffer;
 
-    $rootScope.commands = [];
+    $rootScope.waseverconnected = false;
 
     $rootScope.models = models;
 
