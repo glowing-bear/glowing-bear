@@ -228,12 +228,14 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
 weechat.factory('connection',
                 ['$rootScope',
                  '$log',
+                 '$location',
                  '$store',
                  'handlers',
                  'models',
                  'ngWebsockets',
 function($rootScope,
          $log,
+         $location,
          storage,
          handlers,
          models,
@@ -333,6 +335,7 @@ function($rootScope,
             );
 
             $rootScope.connected = true;
+            $location.path('/connected');
 
         };
 
@@ -821,7 +824,10 @@ weechat.config(['$routeProvider',
 
     function($routeProvider) {
         $routeProvider.when('/', {
-            templateUrl: 'index.html',
+            templateUrl: 'templates/index.html',
+            controller: 'indexCtrl'
+        }).otherwise({
+            templateUrl: 'templates/glowingbear.html',
             controller: 'WeechatCtrl'
         });
     }
