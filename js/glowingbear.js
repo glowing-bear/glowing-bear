@@ -317,7 +317,7 @@ function($rootScope,
             // password was OK. Store that result and check for it
             // in the failure handler.
             $rootScope.waseverconnected = true;
-        }
+        };
 
 
         var onclose = function () {
