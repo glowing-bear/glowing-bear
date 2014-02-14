@@ -108,7 +108,6 @@ function($rootScope, $q) {
         }
         $rootScope.commands.push("RECV: " + evt.data + " TYPE:" + evt.type);
         $rootScope.$apply();
-
     };
 
     var connect = function(url,
@@ -121,7 +120,14 @@ function($rootScope, $q) {
             ws[property] = properties[property];
         }
 
-        ws.onmessage = onmessage;
+        if ('onmessage' in properties) {
+            ws.onmessage = function(event) {
+                properties['onmessage'](event);
+                onmessage(event);
+            }
+        } else {
+            ws.onmessage = onmessage;
+        }
     };
 
     var disconnect = function() {

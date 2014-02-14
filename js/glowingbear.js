@@ -338,13 +338,13 @@ function($rootScope,
             return '(' + id + ') ' + message;
         };
 
+
         ngWebsockets.connect(url, 
                      protocol,
                      {
                          'binaryType': "arraybuffer",
                          'onopen': onopen,
                          'onclose': onclose,
-                         'onmessage': onmessage,
                          'onerror': onerror,
                      });
 
