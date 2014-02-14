@@ -361,8 +361,7 @@ function($rootScope,
     };
 
     var disconnect = function() {
-        /* TODO: Send protocol disconnect */
-        ngWebsockets.disconnect();
+        ngWebsockets.send(weeChat.Protocol.formatQuit());
     };
 
     /*
