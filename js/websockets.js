@@ -122,9 +122,9 @@ function($rootScope, $q) {
 
         if ('onmessage' in properties) {
             ws.onmessage = function(event) {
-                properties['onmessage'](event);
+                properties.onmessage(event);
                 onmessage(event);
-            }
+            };
         } else {
             ws.onmessage = onmessage;
         }
