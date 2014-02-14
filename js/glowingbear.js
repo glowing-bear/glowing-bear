@@ -84,6 +84,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
     };
 
     var handleBufferOpened = function(message) {
+        console.log(message);
         var bufferMessage = message.objects[0].content[0];
         var buffer = new models.Buffer(bufferMessage);
         models.addBuffer(buffer);
@@ -446,6 +447,39 @@ function($rootScope,
     };
 }]);
 
+weechat.controller('indexCtrl', 
+                   ['$rootScope',
+                    '$scope',
+                    '$store',
+                    'connection',
+
+  function($rootScope,
+           $scope,
+           $store,
+           connection) {
+      
+    $store.bind($scope, "host", "localhost");
+    $store.bind($scope, "port", "9001");
+    $store.bind($scope, "proto", "weechat");
+    $store.bind($scope, "ssl", false);
+    $store.bind($scope, "savepassword", false);
+
+    if ($scope.savepassword) {
+        $store.bind($scope, "password", "");
+    }
+
+      $scope.connect = function() {
+        connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl);
+    };
+
+      $scope.disconnect = function() {
+        connection.disconnect();
+      };
+      
+  }
+                   ]);
+
+
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', function ($rootScope, $scope, $store, $timeout, $log, models, connection) {
     if (window.Notification) {
         // Request notification permission
@@ -558,15 +592,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $rootScope.iterCandidate = null;
 
-    $store.bind($scope, "host", "localhost");
-    $store.bind($scope, "port", "9001");
-    $store.bind($scope, "proto", "weechat");
-    $store.bind($scope, "ssl", false);
-    $store.bind($scope, "savepassword", false);
-    if ($scope.savepassword) {
-        $store.bind($scope, "password", "");
-    }
-
     // Save setting for displaying only buffers with unread messages
     $store.bind($scope, "onlyUnread", false);
     // Save setting for not showing timestamp
@@ -663,12 +688,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
 
-    $scope.connect = function() {
-        connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl);
-    };
-    $scope.disconnect = function() {
-        connection.disconnect();
-    };
+
     $scope.install = function() {
         if (navigator.mozApps !== undefined) {
             var request = navigator.mozApps.install('http://torhve.github.io/glowing-bear/manifest.webapp');
