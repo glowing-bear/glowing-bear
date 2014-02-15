@@ -183,7 +183,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </a>
           <button ng-show="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
         </div>
-        <div class="title" ng-bind-html="activeBuffer().title | linky:'_blank'"></div>
+        <div class="title" ng-bind-html="activeBuffer().title | twitterLinky:'_blank'"></div>
         <div class="actions pull-right vertical-line-left">
           <div class="dropdown pull-left">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Options menu">
@@ -314,7 +314,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                 <div ng-repeat="metadata in bufferline.metadata">
                   <div plugin data="metadata"></div>
                 </div>
-                <span ng-repeat="part in bufferline.content" class="text" bo-class="part.classes" bo-html="part.text|linky:'_blank'"></span>
+                <span ng-repeat="part in bufferline.content" class="text" bo-class="part.classes" bo-html="part.text|twitterLinky:'_blank'"></span>
               </td>
             </tr>
             <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
