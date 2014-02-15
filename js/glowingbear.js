@@ -813,8 +813,10 @@ weechat.directive('plugin', function() {
 
                 // Scroll embed content into view
                 var scroll = function() {
-                    var embed = document.querySelector("." + $scope.plugin.$$hashKey);
-                    embed.scrollIntoViewIfNeeded();
+                    var embed = document.querySelector(".embed_" + $scope.plugin.$$hashKey);
+                    if (embed) {
+                        embed.scrollIntoViewIfNeeded();
+                    }
                 };
                 setTimeout(scroll, 100);
             };
