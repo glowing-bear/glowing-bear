@@ -14,6 +14,31 @@ weechat.filter('toArray', function () {
     };
 });
 
+weechat.filter('twitterLinky', ['$filter',
+    function($filter) {
+    'use strict';
+
+    return function(text, target) {
+        if (!text) return text;
+
+        // Apply regular linky
+        var replacedText = $filter('linky')(text, target);
+
+        // Parse the target attribute (this is only for the twitter specific links, all others are handled by linky)
+        var targetAttribute = '';
+        if (angular.isDefined(target)) {
+            targetAttribute = ' target="' + target + '"';
+        }
+
+        var mentionPattern = /(^|\s)\@([a-z0-9_]{1,15})/gmi;  // twitter handles are alphanum and 1-15 characters
+        var hashtagPattern = /(^|\s)(#|&#65283;)([0-9a-z_]*[a-z_]+([a-z0-9_]|&#[0-9a-f]+;)*)/gmi;  // allow unicode escape sequences added by linky -- this is not optimal, but it works well.
+        replacedText = replacedText.replace(mentionPattern, '$1<a href="https://twitter.com/$2"' + targetAttribute + '>@$2</a>');
+        replacedText = replacedText.replace(hashtagPattern, '$1<a href="https://twitter.com/search?q=%23$3"' + targetAttribute + '>$2$3</a>');
+        return replacedText;
+    };
+    }
+]);
+
 weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootScope, models, plugins) {
 
     var handleBufferClosing = function(message) {
