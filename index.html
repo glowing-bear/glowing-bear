@@ -13,6 +13,7 @@
     <link rel="shortcut icon" type="image/png" href="img/favicon.png" >
     <link href="css/style.css" rel="stylesheet" media="screen">
     <link href="css/glowingbear.css" rel="stylesheet" media="screen">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-route.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-sanitize.min.js"></script>
@@ -202,7 +203,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
               <li>
                 <form class="form-inline" role="form">
                   <div class="checkbox">
-                    <label
+                    <label>
                       <input type="checkbox" ng-model="notimestamp">
                       Hide timestamps
                     </label>
