@@ -113,7 +113,7 @@
         </form>
       </li>
       <li class="buffer" ng-class="{'active': content.active, 'indent': content.indent }" ng-repeat="(key, content) in buffers | toArray | filter:{fullName:search} | filter:hasUnread | orderBy:predicate">
-        <a href="#" ng-click="setActiveBuffer(content.id)" title="{{ content.fullName }}">
+        <a href="#/{{content.fullName}}" ng-click="setActiveBuffer(content.id)" title="{{ content.fullName }}">
           <span class="badge pull-right" ng-hide="content.notification" ng-if="content.unread" ng-bind="content.unread"></span>
           <span class="badge pull-right danger" ng-show="content.notification" ng-bind="content.notification"></span>
           <span class="buffername">{{ content.shortName }}</span><span ng-hide="content.shortName">{{ content.fullName }}</span>

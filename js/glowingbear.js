@@ -309,7 +309,14 @@ function($rootScope,
                     // Switch to first buffer on startup
                     if (i === 0) {
                         models.setActiveBuffer(buffer.id);
+                        // Set setActiveBuffer emits a signal (activeBufferChanged)
+                        // The $rootScope.$on('activeBuffer...' should take care of
+                        // changing the buffer. However, and for a reason that I ignore
+                        // this signal is not sent on initialization
+                        $rootScope.connected = true;
+                        $location.path(buffer.fullName);
                     }
+
                 }
             });
 
@@ -333,9 +340,6 @@ function($rootScope,
             ngWebsockets.send(
                 weeChat.Protocol.formatSync({})
             );
-
-            $rootScope.connected = true;
-            $location.path('/connected');
 
         };
 
