@@ -26,67 +26,82 @@
           <li>
             <form class="form-inline" role="form">
               <div class="checkbox">
-                <label>
-                  <input type="checkbox" ng-model="notimestamp">
-                  Hide timestamps
-                </label>
-              </div>
-            </form>
-          </li>
-          <li>
-            <form class="form-inline" role="form">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" ng-model="noembed">
-                  Hide embedded content by default
-                </label>
-              </div>
-            </form>
-          </li>
-          <li>
-            <form class="form-inline" role="form">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" ng-model="hotlistsync">
-                  Sync hotlist with WeeChat
-                </label>
-              </div>
-            </form>
-          </li>
-          <li>
-            <form class="form-inline" role="form">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" ng-model="nonicklist">
-                  Hide nicklist
-                </label>
-              </div>
-            </form>
-          </li>
-          <li>
-            <form class="form-inline" role="form">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" ng-model="orderbyserver">
-                  Order channels by server
-                </label>
-              </div>
-            </form>
-          </li>
-          <li>
-            <form class="form-inline" role="form">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" ng-model="debugMode">
-                  Debug Mode
-                </label>
-              </div>
-            </form>
-          </li>
-        </ul>
-      </div>
-      <a ng-click="disconnect()" title="Disconnect from WeeChat">
-        <i class="glyphicon glyphicon-remove"></i>
+                <label
+                   <input type="checkbox" ng-model="notimestamp">
+                   Hide timestamps
+</label>
+</div>
+</form>
+</li>
+<li>
+  <form class="form-inline" role="form">
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="noembed">
+        Hide embedded content by default
+      </label>
+    </div>
+  </form>
+</li>
+<li>
+  <form class="form-inline" role="form">
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="hotlistsync">
+        Sync hotlist with WeeChat
+      </label>
+    </div>
+  </form>
+</li>
+<li>
+  <form class="form-inline" role="form">
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="nonicklist">
+        Hide nicklist
+      </label>
+    </div>
+  </form>
+</li>
+<li>
+  <form class="form-inline" role="form">
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="orderbyserver">
+        Order channels by server
+      </label>
+    </div>
+  </form>
+</li>
+<li>
+  <form class="form-inline" role="form">
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="debugMode">
+        Debug Mode
+      </label>
+    </div>
+  </form>
+</li>
+</ul>
+</div>
+<a ng-click="disconnect()" title="Disconnect from WeeChat">
+  <i class="glyphicon glyphicon-remove"></i>
+</a>
+</div>
+</div>
+<div bindonce id="sidebar" class="vertical-line collapse in">
+  <ul class="nav nav-pills nav-stacked" ng-class="{'indented': (predicate === 'serverSortKey')}">
+    <li class="bufferfilter">
+      <form role="form">
+        <input class="form-control monospace" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="Search">
+      </form>
+    </li>
+    <li class="buffer" ng-class="{'active': content.active, 'indent': content.indent }" ng-repeat="(key, content) in buffers | toArray | filter:{fullName:search} | filter:hasUnread | orderBy:predicate">
+      <a href="#/{{content.fullName}}" ng-click="setActiveBuffer(content.id)" title="{{ content.fullName }}">
+        <span class="badge pull-right" ng-hide="content.notification" ng-if="content.unread" ng-bind="content.unread"></span>
+        <span class="badge pull-right danger" ng-show="content.notification" ng-bind="content.notification"></span>
+        <span class="buffername">{{ content.shortName }}</span><span ng-hide="content.shortName">{{ content.fullName }}</span>
       </a>
     </div>
   </div>
