@@ -536,7 +536,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $scope.isinstalled = false;
     }
 
-    $rootScope.$on('activeBufferChanged', function() {
+    $rootScope.$on('activeBufferChanged', function(signal,
+                                                   activeBuffer) {
         $rootScope.scrollWithBuffer(true);
 
         var ab = models.getActiveBuffer();

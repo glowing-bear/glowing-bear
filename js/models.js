@@ -405,7 +405,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         activeBuffer.unread = 0;
         activeBuffer.notification = 0;
 
-        $rootScope.$emit('activeBufferChanged');
+        $rootScope.$emit('activeBufferChanged', activeBuffer);
         $rootScope.$emit('notificationChanged');
         return true;
     };
