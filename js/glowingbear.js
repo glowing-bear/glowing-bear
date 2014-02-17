@@ -738,7 +738,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             if (buffer.notification > 0) {
                 $scope.setActiveBuffer(buffer.id);
                 break;
-            } else if(buffer.unread > 0) {
+            }
+        }
+        for (var i in sortedBuffers) {
+            var buffer = sortedBuffers[i];
+            if(buffer.unread > 0) {
                 $scope.setActiveBuffer(buffer.id);
                 break;
             }
