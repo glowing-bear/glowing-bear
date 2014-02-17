@@ -14,6 +14,26 @@ weechat.filter('toArray', function () {
     };
 });
 
+weechat.filter('irclinky', ['$filter', function($filter) {
+    'use strict';
+    return function(text, target) {
+        if (!text) {
+            return text;
+        }
+
+        var linkiedText = $filter('linky')(text, target);
+
+        // This regex should be accurate enough. Theoretically, a bunch of other characters is allowed as well
+        // (ASCII except for NULL, BELL, CR, LF, ' ', ',', and ':') and a channel could in theory start with
+        // \![A-Z0-9]{5} and then have up to 45 other characters. I doubt anyone uses that.
+        var channelRegex = /(^|\s)([#&+][a-z0-9-_]{1,49})/gmi;
+        // This is SUPER nasty, but ng-click does not work inside a filter, as the markup has to be $compiled first, which is not possible in filter afaik.
+        // Therefore, get the scope, fire the method, and $apply. Yuck. I sincerely hope someone finds a better way of doing this.
+        linkiedText = linkiedText.replace(channelRegex, '$1<a href="#" onclick="var $scope = angular.element(event.target).scope(); $scope.openBuffer(\'$2\'); $scope.$apply();">$2</a>');
+        return linkiedText;
+    };
+}]);
+
 weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootScope, models, plugins) {
 
     var handleBufferClosing = function(message) {
@@ -588,12 +608,16 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         return models.setActiveBuffer(bufferId, key);
     };
 
-    $scope.openQuery = function(nick) {
-        var buffName = models.getActiveBuffer().fullName;
-        buffName = buffName.substring(0, buffName.lastIndexOf('.')) + '.' + nick;
+    $scope.openBuffer = function(bufferName) {
+        var fullName = models.getActiveBuffer().fullName;
+        fullName = fullName.substring(0, fullName.lastIndexOf('.') + 1) + bufferName;  // substitute the last part
 
-        if (!$scope.setActiveBuffer(buffName, 'fullName')) {
-            connection.sendMessage('/query ' + nick);
+        if (!$scope.setActiveBuffer(fullName, 'fullName')) {
+            var command = 'join';
+            if (['#', '&', '+', '!'].indexOf(bufferName.charAt(0)) < 0) {  // these are the characters a channel name can start with (RFC 2813-2813)
+                command = 'query';
+            }
+            connection.sendMessage('/' + command + ' ' + bufferName);
         }
     };
 
