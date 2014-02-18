@@ -572,13 +572,12 @@
      * @return Decoded string
      */
     WeeChatProtocol._uia2s = function(uia) {
-        var str = [];
+        if(!uia.length || uia[0] === 0) return "";
 
-        for (var c = 0; c < uia.length && uia[c] !== 0; c++) {
-            str.push(String.fromCharCode(uia[c]));
-        }
+        var encodedString = String.fromCharCode.apply(null, uia),
+            decodedString = decodeURIComponent(escape(encodedString));
 
-        return decodeURIComponent(escape(str.join('')));
+        return decodedString;
     };
 
     /**
