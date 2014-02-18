@@ -272,16 +272,23 @@ function($rootScope,
 
             // Helper methods for initialization commands
             var _initializeConnection = function(passwd) {
-                return ngWebsockets.sendAll([
+
+                // This is not the proper way to do this.
+                // WeeChat does not send a confirmation for the init.
+                // Until it does, We need to "assume" that formatInit
+                // will be received before formatInfo
+                ngWebsockets.send(
                     weeChat.Protocol.formatInit({
                         password: passwd,
                         compression: noCompression ? 'off' : 'zlib'
-                    }),
+                    })
+                );
 
+                return ngWebsockets.send(
                     weeChat.Protocol.formatInfo({
                         name: 'version'
                     })
-                ])
+                );
             };
 
             var _requestHotlist = function() {
