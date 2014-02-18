@@ -269,21 +269,56 @@ function($rootScope,
 
         var onopen = function () {
 
+            var _initializeConnection = function(passwd) {
+                return ngWebsockets.sendAll([
+                    weeChat.Protocol.formatInit({
+                        password: passwd,
+                        compression: noCompression ? 'off' : 'zlib'
+                    }),
+
+                    weeChat.Protocol.formatInfo({
+                        name: 'version'
+                    })
+                ])
+            };
+
+            var _requestHotlist = function() {
+                return ngWebsockets.send(
+                    weeChat.Protocol.formatHdata({
+                        path: "hotlist:gui_hotlist(*)",
+                        keys: []
+                    })
+                );
+            };
+
+            var _requestNicklist = function() {
+                return ngWebsockets.send(
+                    weeChat.Protocol.formatNicklist({
+                    })
+                );
+            };
+
+            var _requestBufferInfos = function() {
+                return ngWebsockets.send(
+                    weeChat.Protocol.formatHdata({
+                        path: 'buffer:gui_buffers(*)',
+                        keys: ['local_variables,notify,number,full_name,short_name,title']
+                    })
+                );
+            };
+
+            var _requestSync = function() {
+                return ngWebsockets.send(
+                    weeChat.Protocol.formatSync({})
+                );
+            };
+
             $log.info("Connected to relay");
 
             // First command asks for the password and issues
             // a version command. If it fails, it means the we
             // did not provide the proper password.
-            ngWebsockets.sendAll([
-                weeChat.Protocol.formatInit({
-                    password: passwd,
-                    compression: noCompression ? 'off' : 'zlib'
-                }),
-
-                weeChat.Protocol.formatInfo({
-                    name: 'version'
-                })
-            ]).then(
+            _initializeConnection(passwd).then(
                 null,
                 function() {
                     // Connection got closed, lets check if we ever was connected successfully
@@ -292,12 +327,7 @@ function($rootScope,
                 }
             );
 
-            ngWebsockets.send(
-                weeChat.Protocol.formatHdata({
-                    path: 'buffer:gui_buffers(*)',
-                    keys: ['local_variables,notify,number,full_name,short_name,title']
-                })
-            ).then(function(bufinfo) {
+            _requestBufferInfos().then(function(bufinfo) {
                 var bufferInfos = bufinfo.objects[0].content;
                 // buffers objects
                 for (var i = 0; i < bufferInfos.length ; i++) {
@@ -311,25 +341,15 @@ function($rootScope,
             });
 
             // Send all the other commands required for initialization
-            ngWebsockets.send(
-                weeChat.Protocol.formatHdata({
-                    path: "hotlist:gui_hotlist(*)",
-                    keys: []
-                })
-            ).then(function(hotlist) {
+            _requestHotlist().then(function(hotlist) {
                 handlers.handleHotlistInfo(hotlist);
             });
 
-            ngWebsockets.send(
-                weeChat.Protocol.formatNicklist({
-                })
-            ).then(function(nicklist) {
+            _requestNicklist().then(function(nicklist) {
                 handlers.handleNicklist(nicklist);
             });
 
-            ngWebsockets.send(
-                weeChat.Protocol.formatSync({})
-            );
+            _requestSync();
 
             $rootScope.connected = true;
 
