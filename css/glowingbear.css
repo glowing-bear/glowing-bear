@@ -267,7 +267,7 @@ input[type=text], input[type=password], .badge {
     #sidebar {
         font-size: normal;
         z-index: 1;
-        width: 60%;
+        width: 0;
     }
     #sidebar.in, #sidebar.collapsing {
         -webkit-box-shadow: 0px 0px 120px #000;
