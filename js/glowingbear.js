@@ -269,6 +269,8 @@ function($rootScope,
 
         var onopen = function () {
 
+
+            // Helper methods for initialization commands
             var _initializeConnection = function(passwd) {
                 return ngWebsockets.sendAll([
                     weeChat.Protocol.formatInit({
@@ -313,45 +315,45 @@ function($rootScope,
                 );
             };
 
-            $log.info("Connected to relay");
 
             // First command asks for the password and issues
             // a version command. If it fails, it means the we
             // did not provide the proper password.
             _initializeConnection(passwd).then(
-                null,
+                function() {
+                    // Connection is successful
+                    // Send all the other commands required for initialization
+                    _requestBufferInfos().then(function(bufinfo) {
+                        var bufferInfos = bufinfo.objects[0].content;
+                        // buffers objects
+                        for (var i = 0; i < bufferInfos.length ; i++) {
+                            var buffer = new models.Buffer(bufferInfos[i]);
+                            models.addBuffer(buffer);
+                            // Switch to first buffer on startup
+                            if (i === 0) {
+                                models.setActiveBuffer(buffer.id);
+                            }
+                        }
+                    });
+
+                    _requestHotlist().then(function(hotlist) {
+                        handlers.handleHotlistInfo(hotlist);
+                    });
+
+                    _requestNicklist().then(function(nicklist) {
+                        handlers.handleNicklist(nicklist);
+                    });
+
+                    _requestSync();
+                    $log.info("Connected to relay");
+                    $rootScope.connected = true;
+                },
                 function() {
                     // Connection got closed, lets check if we ever was connected successfully
                     if(!$rootScope.waseverconnected)
                         $rootScope.passwordError = true;
                 }
             );
-
-            _requestBufferInfos().then(function(bufinfo) {
-                var bufferInfos = bufinfo.objects[0].content;
-                // buffers objects
-                for (var i = 0; i < bufferInfos.length ; i++) {
-                    var buffer = new models.Buffer(bufferInfos[i]);
-                    models.addBuffer(buffer);
-                    // Switch to first buffer on startup
-                    if (i === 0) {
-                        models.setActiveBuffer(buffer.id);
-                    }
-                }
-            });
-
-            // Send all the other commands required for initialization
-            _requestHotlist().then(function(hotlist) {
-                handlers.handleHotlistInfo(hotlist);
-            });
-
-            _requestNicklist().then(function(nicklist) {
-                handlers.handleNicklist(nicklist);
-            });
-
-            _requestSync();
-
-            $rootScope.connected = true;
 
         };
 
