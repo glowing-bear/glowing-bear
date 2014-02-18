@@ -114,7 +114,9 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
      */
     var handleLineInfo = function(message, initial, loadingMoreLines) {
         var lines = message.objects[0].content.reverse();
-        if (initial === undefined) initial = true;
+        if (initial === undefined) {
+            initial = true;
+        }
         lines.forEach(function(l) {
             handleLine(l, initial, loadingMoreLines);
         });
@@ -202,9 +204,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
     };
 
     $rootScope.$on('onMessage', function(event, message) {
-
         if (_.has(eventHandlers, message.id)) {
-           
             eventHandlers[message.id](message);
         }
     });
@@ -237,7 +237,7 @@ function($rootScope,
          handlers,
          models,
          ngWebsockets) {
-    
+
     protocol = new weeChat.Protocol();
 
     // Takes care of the connection and websocket hooks
@@ -272,7 +272,6 @@ function($rootScope,
 
             // Helper methods for initialization commands
             var _initializeConnection = function(passwd) {
-
                 // This is not the proper way to do this.
                 // WeeChat does not send a confirmation for the init.
                 // Until it does, We need to "assume" that formatInit
@@ -357,8 +356,9 @@ function($rootScope,
                 },
                 function() {
                     // Connection got closed, lets check if we ever was connected successfully
-                    if(!$rootScope.waseverconnected)
+                    if (!$rootScope.waseverconnected) {
                         $rootScope.passwordError = true;
+                    }
                 }
             );
 
@@ -400,7 +400,7 @@ function($rootScope,
         };
 
 
-        ngWebsockets.connect(url, 
+        ngWebsockets.connect(url,
                      protocol,
                      {
                          'binaryType': "arraybuffer",
@@ -484,7 +484,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 Notification.permission = status;
             }
         });
-
     }
 
 
@@ -552,7 +551,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Check if we should show nicklist or not
         $scope.showNicklist = $scope.updateShowNicklist();
     });
+
     $scope.favico = new Favico({animation: 'none'});
+
     $rootScope.$on('notificationChanged', function() {
         var notifications = _.reduce(models.model.buffers, function(memo, num) { return (parseInt(memo)||0) + num.notification;});
         if (typeof notifications !== 'number') {
@@ -785,6 +786,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Find next buffer with activity and switch to it
         var sortedBuffers = _.sortBy($scope.buffers, 'number');
         var i, buffer;
+        // Try to find buffer with notification
         for (i in sortedBuffers) {
             buffer = sortedBuffers[i];
             if (buffer.notification > 0) {
@@ -792,9 +794,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 break;
             }
         }
+        // No notifications, find first buffer with unread lines instead
         for (i in sortedBuffers) {
             buffer = sortedBuffers[i];
-            if(buffer.unread > 0) {
+            if (buffer.unread > 0) {
                 $scope.setActiveBuffer(buffer.id);
                 break;
             }
@@ -827,7 +830,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 );
 
 weechat.config(['$routeProvider',
-
     function($routeProvider) {
         $routeProvider.when('/', {
             templateUrl: 'index.html',
@@ -876,11 +878,8 @@ weechat.directive('plugin', function() {
                 };
                 setTimeout(scroll, 100);
             };
-
         }
-
     };
-
 });
 
 
@@ -1021,8 +1020,6 @@ weechat.directive('inputBar', function() {
                     return true;
                 }
             };
-
         }
-
     };
 });
