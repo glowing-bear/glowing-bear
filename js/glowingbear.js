@@ -26,7 +26,10 @@ weechat.filter('irclinky', ['$filter', function($filter) {
         // This regex should be accurate enough. Theoretically, a bunch of other characters is allowed as well
         // (ASCII except for NULL, BELL, CR, LF, ' ', ',', and ':') and a channel could in theory start with
         // \![A-Z0-9]{5} and then have up to 45 other characters. I doubt anyone uses that.
-        var channelRegex = /(^|\s)([#&+][a-z0-9-_]{1,49})/gmi;
+        // Not matching channels beginning with an "&" here because that would also match HTML encoded chars
+        // (e.g. &#41; -- if someone feels like modifying the regex to match these channels, but not the HTML
+        // character codes, please feel free to fix this)
+        var channelRegex = /(^|\s)([#+][a-z0-9-_]{1,49})/gmi;
         // This is SUPER nasty, but ng-click does not work inside a filter, as the markup has to be $compiled first, which is not possible in filter afaik.
         // Therefore, get the scope, fire the method, and $apply. Yuck. I sincerely hope someone finds a better way of doing this.
         linkiedText = linkiedText.replace(channelRegex, '$1<a href="#" onclick="var $scope = angular.element(event.target).scope(); $scope.openBuffer(\'$2\'); $scope.$apply();">$2</a>');
