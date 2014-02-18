@@ -272,73 +272,101 @@ function($rootScope,
 
         var onopen = function () {
 
-            $log.info("Connected to relay");
+
+            // Helper methods for initialization commands
+            var _initializeConnection = function(passwd) {
+
+                // This is not the proper way to do this.
+                // WeeChat does not send a confirmation for the init.
+                // Until it does, We need to "assume" that formatInit
+                // will be received before formatInfo
+                ngWebsockets.send(
+                    weeChat.Protocol.formatInit({
+                        password: passwd,
+                        compression: noCompression ? 'off' : 'zlib'
+                    })
+                );
+
+                return ngWebsockets.send(
+                    weeChat.Protocol.formatInfo({
+                        name: 'version'
+                    })
+                );
+            };
+
+            var _requestHotlist = function() {
+                return ngWebsockets.send(
+                    weeChat.Protocol.formatHdata({
+                        path: "hotlist:gui_hotlist(*)",
+                        keys: []
+                    })
+                );
+            };
+
+            var _requestNicklist = function() {
+                return ngWebsockets.send(
+                    weeChat.Protocol.formatNicklist({
+                    })
+                );
+            };
+
+            var _requestBufferInfos = function() {
+                return ngWebsockets.send(
+                    weeChat.Protocol.formatHdata({
+                        path: 'buffer:gui_buffers(*)',
+                        keys: ['local_variables,notify,number,full_name,short_name,title']
+                    })
+                );
+            };
+
+            var _requestSync = function() {
+                return ngWebsockets.send(
+                    weeChat.Protocol.formatSync({})
+                );
+            };
+
 
             // First command asks for the password and issues
             // a version command. If it fails, it means the we
             // did not provide the proper password.
-            ngWebsockets.sendAll([
-                weeChat.Protocol.formatInit({
-                    password: passwd,
-                    compression: noCompression ? 'off' : 'zlib'
-                }),
+            _initializeConnection(passwd).then(
+                function() {
+                    // Connection is successful
+                    // Send all the other commands required for initialization
+                    _requestBufferInfos().then(function(bufinfo) {
+                        var bufferInfos = bufinfo.objects[0].content;
+                        // buffers objects
+                        for (var i = 0; i < bufferInfos.length ; i++) {
+                            var buffer = new models.Buffer(bufferInfos[i]);
+                            models.addBuffer(buffer);
+                            // Switch to first buffer on startup
+                            if (i === 0) {
+                                models.setActiveBuffer(buffer.id);
+                                $location.path(buffer.fullName);
+                            }
+                        }
+                    });
 
-                weeChat.Protocol.formatInfo({
-                    name: 'version'
-                })
-            ]).then(
-                null,
+                    _requestHotlist().then(function(hotlist) {
+                        handlers.handleHotlistInfo(hotlist);
+                    });
+
+                    _requestNicklist().then(function(nicklist) {
+                        handlers.handleNicklist(nicklist);
+                    });
+
+                    _requestSync();
+
+                    $rootScope.connected = true;
+
+
+
+                },
                 function() {
                     // Connection got closed, lets check if we ever was connected successfully
                     if(!$rootScope.waseverconnected)
                         $rootScope.passwordError = true;
                 }
-            );
-
-            ngWebsockets.send(
-                weeChat.Protocol.formatHdata({
-                    path: 'buffer:gui_buffers(*)',
-                    keys: ['local_variables,notify,number,full_name,short_name,title']
-                })
-            ).then(function(bufinfo) {
-                var bufferInfos = bufinfo.objects[0].content;
-                // buffers objects
-                for (var i = 0; i < bufferInfos.length ; i++) {
-                    var buffer = new models.Buffer(bufferInfos[i]);
-                    models.addBuffer(buffer);
-                    // Switch to first buffer on startup
-                    if (i === 0) {
-                        models.setActiveBuffer(buffer.id);
-                        // Set setActiveBuffer emits a signal (activeBufferChanged)
-                        // The $rootScope.$on('activeBuffer...' should take care of
-                        // changing the buffer. However, and for a reason that I ignore
-                        // this signal is not sent on initialization
-                        $rootScope.connected = true;
-                        $location.path(buffer.fullName);
-                    }
-
-                }
-            });
-
-            // Send all the other commands required for initialization
-            ngWebsockets.send(
-                weeChat.Protocol.formatHdata({
-                    path: "hotlist:gui_hotlist(*)",
-                    keys: []
-                })
-            ).then(function(hotlist) {
-                handlers.handleHotlistInfo(hotlist);
-            });
-
-            ngWebsockets.send(
-                weeChat.Protocol.formatNicklist({
-                })
-            ).then(function(nicklist) {
-                handlers.handleNicklist(nicklist);
-            });
-
-            ngWebsockets.send(
-                weeChat.Protocol.formatSync({})
             );
 
         };
