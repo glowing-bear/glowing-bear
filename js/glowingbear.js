@@ -1,4 +1,4 @@
-var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'plugins', 'ngSanitize', 'ngWebsockets', 'pasvaz.bindonce']);
+var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'plugins', 'ngSanitize', 'ngWebsockets', 'pasvaz.bindonce', 'ngTouch']);
 
 weechat.filter('toArray', function () {
     'use strict';
@@ -486,6 +486,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         });
     }
 
+    var mobile_cutoff = 968;
 
     $rootScope.countWatchers = function () {
         var root = $(document.getElementsByTagName('body'));
@@ -614,12 +615,34 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     // If we are on mobile chhange some defaults
     // We use 968 px as the cutoff, which should match the value in glowingbear.css
-    if (document.body.clientWidth < 968) {
+    if (document.body.clientWidth < mobile_cutoff) {
         $scope.nonicklist = true;
         $scope.noembed = true;
         $scope.notimestamp = true;
     }
 
+    // Open and close panels while on mobile devices through swiping
+    $scope.swipeSidebar = function() { 
+        if (document.body.clientWidth < mobile_cutoff) {
+            $('#sidebar').collapse('toggle');
+        }
+    };
+    
+    $scope.openNick = function() {
+        if (document.body.clientWidth < mobile_cutoff) {
+            if($scope.nonicklist) { 
+                $scope.nonicklist = false;
+            } 
+        }
+    };
+
+    $scope.closeNick = function() {
+        if (document.body.clientWidth < mobile_cutoff) {
+            if(!$scope.nonicklist) { 
+                $scope.nonicklist = true;
+            } 
+        }
+    };
 
     // Watch model and update show setting when it changes
     $scope.$watch('noembed', function() {
@@ -633,6 +656,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $rootScope.predicate = $scope.orderbyserver ? 'serverSortKey' : 'number';
 
     $scope.setActiveBuffer = function(bufferId, key) {
+        // If we are on mobile we need to collapse the menu on sidebar clicks
+        // We use 968 px as the cutoff, which should match the value in glowingbear.css
+        if (document.body.clientWidth < mobile_cutoff) {
+            $('#sidebar').collapse('toggle');
+        }
         return models.setActiveBuffer(bufferId, key);
     };
 
