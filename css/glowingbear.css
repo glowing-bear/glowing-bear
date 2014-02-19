@@ -19,28 +19,28 @@ body {
     height: 25px;
 }
 .horizontal-line {
--webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
-   -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
-        box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+    -webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+    -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+    box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
     border-bottom: 1px solid #121212;
 }
 .vertical-line {
--webkit-box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
-   -moz-box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
-        box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
-        border-right: 1px solid #121212;
+    -webkit-box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
+    -moz-box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
+    box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
+    border-right: 1px solid #121212;
 }
 .vertical-line-left {
--webkit-box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
-   -moz-box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
-        box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
-        border-left: 1px solid #121212;
+    -webkit-box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
+    -moz-box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
+    box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
+    border-left: 1px solid #121212;
 }
 .panel-group .panel-heading + .panel-collapse .panel-body {
--webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
-   -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
-        box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
-        border-top: 1px solid #121212;
+    -webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
+    -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
+    box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
+    border-top: 1px solid #121212;
 }
 
 table {
@@ -104,7 +104,7 @@ input#sendMessage {
     border-radius: 0;
 }
 .panel input, .panel .input-group {
-  max-width: 300px;
+    max-width: 300px;
 }
 input[type=text], input[type=password], .badge {
     border: 0;
@@ -121,24 +121,24 @@ input[type=text], input[type=password], .badge {
     z-index: 2;
     line-height: 35px;
     white-space: nowrap;
--webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
-   -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
-        box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+    -webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+    -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+    box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
 }
 #topbar .brand {
     float: left;
     height: 35px;
     padding-left: 5px;
 }
-    #topbar .brand img {
-        height: 32px;
-    }
-    #topbar .brand button {
-        position: absolute;
-        line-height: 15px;
-        font-size: 9pt;
-        margin-left: 10px
-    }
+#topbar .brand img {
+    height: 32px;
+}
+#topbar .brand button {
+    position: absolute;
+    line-height: 15px;
+    font-size: 9pt;
+    margin-left: 10px
+}
 #topbar .title {
     position: fixed;
     left: 145px; /* sidebar */
@@ -174,7 +174,7 @@ input[type=text], input[type=password], .badge {
     overflow-x: hidden;
     margin-top: 35px; /* topbar */
     font-size: smaller;
-  }
+}
 #sidebar form {
 }
 
@@ -277,8 +277,8 @@ input[type=text], input[type=password], .badge {
     color: #ddd;
 }
 .alert-danger {
-  border-color: #121212;
-  color: black;
+    border-color: #121212;
+    color: black;
 }
 
 li.notification {
@@ -303,7 +303,7 @@ li.notification {
 }
 
 img.embed {
-  max-height: 300px;
+    max-height: 300px;
 }
 
 
@@ -363,8 +363,7 @@ table.notimestamp td.time {
     }
 
     #bufferlines {
-        padding-bottom: 38px;
-     /* navbar fixed bottom */;
+        padding-bottom: 38px; /* navbar fixed bottom */;
     }
 
     .navbar-fixed-bottom {

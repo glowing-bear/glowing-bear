@@ -620,17 +620,16 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $scope.noembed = true;
         $scope.notimestamp = true;
     }
+
     // Open and close panels while on mobile devices through swiping
     $scope.swipeSidebar = function() { 
-
-        if (document.body.clientWidth < 968) {
+        if (document.body.clientWidth < mobile_cutoff) {
             $('#sidebar').collapse('toggle');
         }
     };
     
-    
     $scope.openNick = function() {
-        if (document.body.clientWidth < 968) {
+        if (document.body.clientWidth < mobile_cutoff) {
             if($scope.nonicklist) { 
                 $scope.nonicklist = false;
             } 
@@ -638,7 +637,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.closeNick = function() {
-        if (document.body.clientWidth < 968) {
+        if (document.body.clientWidth < mobile_cutoff) {
             if(!$scope.nonicklist) { 
                 $scope.nonicklist = true;
             } 
