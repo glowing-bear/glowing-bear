@@ -328,9 +328,8 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
 
 
     var BufferList = [];
-    activeBuffer = null;
-    unreads = 0;
-    notifications = 0;
+    var activeBuffer = null;
+    var previousBuffer = null;
 
     this.model = { 'buffers': {} };
 
@@ -343,7 +342,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
     this.addBuffer = function(buffer) {
         BufferList[buffer.id] = buffer;
         if (BufferList.length === 1) {
-            activeBuffer = buffer.id;
+            activeBuffer = buffer;
         }
         this.model.buffers[buffer.id] = buffer;
     };
@@ -369,6 +368,15 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
     };
 
     /*
+     * Returns the previous current active buffer
+     *
+     * @return previous buffer object
+     */
+    this.getPreviousBuffer = function() {
+        return previousBuffer;
+    };
+
+    /*
      * Sets the buffer specifiee by bufferId as active.
      * Deactivates the previous current buffer.
      *
@@ -380,7 +388,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             key = 'id';
         }
 
-        var previousBuffer = this.getActiveBuffer();
+        previousBuffer = this.getActiveBuffer();
 
         activeBuffer = _.find(this.model.buffers, function(buffer) {
             if (buffer[key] === bufferId) {
