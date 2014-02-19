@@ -238,8 +238,8 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         }
 
         var rtext = "";
-        if (content[0] !== undefined) {
-            rtext = content[0].text;
+        for (var i = 0; i < content.length; ++i) {
+            rtext += content[i].text;
         }
 
        return {
