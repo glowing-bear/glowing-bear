@@ -23,13 +23,12 @@ weechat.filter('irclinky', ['$filter', function($filter) {
 
         var linkiedText = $filter('linky')(text, target);
 
-        // This regex should be accurate enough. Theoretically, a bunch of other characters is allowed as well
-        // (ASCII except for NULL, BELL, CR, LF, ' ', ',', and ':') and a channel could in theory start with
-        // \![A-Z0-9]{5} and then have up to 45 other characters. I doubt anyone uses that.
-        // Not matching channels beginning with an "&" here because that would also match HTML encoded chars
-        // (e.g. &#41; -- if someone feels like modifying the regex to match these channels, but not the HTML
-        // character codes, please feel free to fix this)
-        var channelRegex = /(^|\s)([#+][a-z0-9-_]{1,49})/gmi;
+        // This regex in no way matches all IRC channel names (they could begin with a +, an &, or an exclamation
+        // mark followed by 5 alphanumeric characters, and are bounded in length by 50).
+        // However, it matches all *common* IRC channels while trying to minimise false positives. "#1" is much
+        // more likely to be "number 1" than "IRC channel #1".
+        // Thus, we only match channels beginning with a # and having at least one letter in them.
+        var channelRegex = /(^|\s)(#[a-z0-9-_]*[a-z][a-z0-9-_]*)/gmi;
         // This is SUPER nasty, but ng-click does not work inside a filter, as the markup has to be $compiled first, which is not possible in filter afaik.
         // Therefore, get the scope, fire the method, and $apply. Yuck. I sincerely hope someone finds a better way of doing this.
         linkiedText = linkiedText.replace(channelRegex, '$1<a href="#" onclick="var $scope = angular.element(event.target).scope(); $scope.openBuffer(\'$2\'); $scope.$apply();">$2</a>');
