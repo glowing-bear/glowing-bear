@@ -328,10 +328,8 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
 
 
     var BufferList = [];
-    activeBuffer = null;
-    previousBuffer = null;
-    unreads = 0;
-    notifications = 0;
+    var activeBuffer = null;
+    var previousBuffer = null;
 
     this.model = { 'buffers': {} };
 
@@ -344,7 +342,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
     this.addBuffer = function(buffer) {
         BufferList[buffer.id] = buffer;
         if (BufferList.length === 1) {
-            activeBuffer = buffer.id;
+            activeBuffer = buffer;
         }
         this.model.buffers[buffer.id] = buffer;
     };
