@@ -968,6 +968,16 @@ weechat.directive('inputBar', function() {
                     return true;
                 }
 
+                // Alt+< -> switch to previous buffer
+                if ($event.altKey && code === 60) {
+                    var previousBuffer = models.getPreviousBuffer();
+                    if (previousBuffer) {
+                        models.setActiveBuffer(previousBuffer.id);
+                        $event.preventDefault();
+                        return true;
+                    }
+                }
+
                 // Escape -> disconnect
                 if (code === 27) {
                     $event.preventDefault();
