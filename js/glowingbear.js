@@ -543,6 +543,24 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         return count;
     };
 
+    $rootScope.updateTitle = function() {
+        var unreadFragment = '';
+        var notifications = $rootScope.unreadCount('notification');
+        if (notifications > 0) {
+            // New notifications deserve an exclamation mark
+            unreadFragment = '(' + notifications + '!) ';
+        } else {
+            // No notifications, look for unread messages instead
+            var unread = $rootScope.unreadCount('unread');
+            if (unread > 0) {
+                unreadFragment = '(' + unread + ') ';
+            }
+        }
+
+        var activeBuffer = models.getActiveBuffer();
+        $rootScope.pageTitle = unreadFragment + activeBuffer.shortName + ' | ' + activeBuffer.title;
+    };
+
     $scope.updateFavico = function() {
         var notifications = $rootScope.unreadCount('notification');
         if (notifications > 0) {
@@ -571,7 +589,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             // buffer has not been loaded, but some lines may already be present if they arrived after we connected
             $scope.fetchMoreLines($scope.lines);
         }
-        $rootScope.pageTitle = ab.shortName + ' | ' + ab.title;
+        $rootScope.updateTitle(ab);
 
         // If user wants to sync hotlist with weechat
         // we will send a /buffer bufferName command every time
@@ -591,6 +609,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.favico = new Favico({animation: 'none'});
 
     $rootScope.$on('notificationChanged', function() {
+        $rootScope.updateTitle();
+
         if ($scope.useFavico && $scope.favico) {
             $scope.updateFavico();
         }
