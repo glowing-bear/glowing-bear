@@ -507,12 +507,16 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         console.log(watchers.length);
     };
 
-    if (window.webkitNotifications !== undefined) {
-        if (window.webkitNotifications.checkPermission() === 0) { // 0 is PERMISSION_ALLOWED
-            $log.info('Notification permission status:', window.webkitNotifications.checkPermission() === 0);
-            window.webkitNotifications.requestPermission();
+    $scope.requestWebkitNotificationPermission = function() {
+        if (window.webkitNotifications !== undefined) {
+            var havePermission = window.webkitNotifications.checkPermission();
+            if (havePermission !== 0) { // 0 is PERMISSION_ALLOWED
+                $log.info('Notification permission status:', havePermission === 0);
+                window.webkitNotifications.requestPermission();
+            }
         }
-    }
+    };
+
     // Check for firefox & app installed
     if (navigator.mozApps !== undefined) {
         navigator.mozApps.getSelf().onsuccess = function _onAppReady(evt) {
@@ -721,6 +725,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
 
     $scope.connect = function() {
+        $scope.requestWebkitNotificationPermission();
         connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl);
     };
     $scope.disconnect = function() {
@@ -749,24 +754,33 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     /* Function gets called from bufferLineAdded code if user should be notified */
     $rootScope.createHighlight = function(buffer, message) {
-        var messages = "";
-        message.content.forEach(function(part) {
-            if (part.text !== undefined) {
-                messages += part.text + " ";
-            }
+        var title = '';
+        if (buffer.shortName.charAt(0) === '#') {
+            title = 'Highlight in ';
+        } else {
+            title = 'Private message from ';
+        }
+        title += buffer.shortName;
+        title += buffer.fullName.replace(/irc.([^\.]+)\..+/, " ($1)");
+
+        var notification = new Notification(title, {
+            body: message.text,
+            icon: 'img/favicon.png'
         });
 
-        var title = buffer.fullName;
-        var content = messages;
-
-        var timeout = 15*1000;
-        $log.info('Displaying notification:buffer:',buffer,',message:',message,',with timeout:',timeout);
-        var notification = new Notification(title, {body:content, icon:'img/favicon.png'});
         // Cancel notification automatically
+        var timeout = 15*1000;
         notification.onshow = function() {
             setTimeout(function() {
                 notification.close();
             }, timeout);
+        };
+
+        // Click takes the user to the buffer
+        notification.onclick = function() {
+            models.setActiveBuffer(buffer.id);
+            window.focus();
+            notification.close();
         };
     };
 
