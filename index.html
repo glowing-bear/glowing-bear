@@ -259,6 +259,16 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                 <form class="form-inline" role="form">
                   <div class="checkbox">
                     <label>
+                      <input type="checkbox" ng-model="useFavico">
+                      Display unread count in favicon
+                    </label>
+                  </div>
+                </form>
+              </li>
+              <li>
+                <form class="form-inline" role="form">
+                  <div class="checkbox">
+                    <label>
                       <input type="checkbox" ng-model="debugMode">
                       Debug Mode
                     </label>

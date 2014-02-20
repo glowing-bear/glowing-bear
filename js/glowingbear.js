@@ -527,6 +527,42 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $scope.isinstalled = false;
     }
 
+    // Reduce buffers with "+" operation over a key. Mostly useful for unread/notification counts.
+    $rootScope.unreadCount = function(type) {
+        if (!type) {
+            type = "unread";
+        }
+
+        // Do this the old-fashioned way with iterating over the keys, as underscore proved to be error-prone
+        var keys = Object.keys(models.model.buffers);
+        var count = 0;
+        for (var key in keys) {
+            count += models.model.buffers[keys[key]][type];
+        }
+
+        return count;
+    };
+
+    $scope.updateFavico = function() {
+        var notifications = $rootScope.unreadCount('notification');
+        if (notifications > 0) {
+            $scope.favico.badge(notifications, {
+                    bgColor: '#d00',
+                    textColor: '#fff'
+            });
+        } else {
+            var unread = $rootScope.unreadCount('unread');
+            if (unread === 0) {
+                $scope.favico.reset();
+            } else {
+                $scope.favico.badge(unread, {
+                    bgColor: '#5CB85C',
+                    textColor: '#ff0'
+                });
+            }
+        }
+    };
+
     $rootScope.$on('activeBufferChanged', function() {
         $rootScope.scrollWithBuffer(true);
 
@@ -555,25 +591,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.favico = new Favico({animation: 'none'});
 
     $rootScope.$on('notificationChanged', function() {
-        var notifications = _.reduce(models.model.buffers, function(memo, num) { return (parseInt(memo)||0) + num.notification;});
-        if (typeof notifications !== 'number') {
-            return;
-        }
-        if (notifications > 0) {
-            $scope.favico.badge(notifications, {
-                    bgColor: '#d00',
-                    textColor: '#fff'
-            });
-        } else {
-            var unread = _.reduce(models.model.buffers, function(memo, num) { return (parseInt(memo)||0) + num.unread;});
-            if (unread === 0) {
-                $scope.favico.reset();
-            } else {
-                $scope.favico.badge(unread, {
-                    bgColor: '#5CB85C',
-                    textColor: '#ff0'
-                });
-            }
+        if ($scope.useFavico && $scope.favico) {
+            $scope.updateFavico();
         }
     });
 
@@ -609,6 +628,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "noembed", false);
     // Save setting for channel ordering
     $store.bind($scope, "orderbyserver", false);
+    // Save setting for updating favicon
+    $store.bind($scope, "useFavico", true);
     // Save setting for displaying embeds in rootScope so it can be used from service
     $rootScope.visible = $scope.noembed === false;
 
@@ -650,6 +671,18 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Watch model and update channel sorting when it changes
     $scope.$watch('orderbyserver', function() {
         $rootScope.predicate = $scope.orderbyserver ? 'serverSortKey' : 'number';
+    });
+
+    $scope.$watch('useFavico', function() {
+        // this check is necessary as this is called on page load, too
+        if (!$rootScope.connected) {
+            return;
+        }
+        if ($scope.useFavico) {
+            $scope.updateFavico();
+        } else {
+            $scope.favico.reset();
+        }
     });
 
     $rootScope.predicate = $scope.orderbyserver ? 'serverSortKey' : 'number';
