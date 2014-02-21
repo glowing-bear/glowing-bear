@@ -426,6 +426,14 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
     };
 
     /*
+     * Reinitializes the model
+     */
+    this.reinitialize = function() {
+        BufferList = [];
+        this.model.buffers = {};
+    };
+
+    /*
      * Returns a specific buffer object
      *
      * @param bufferId id of the buffer
