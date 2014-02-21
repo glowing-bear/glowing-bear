@@ -378,6 +378,7 @@ function($rootScope,
             $log.info("Disconnected from relay");
             failCallbacks('disconnection');
             $rootScope.connected = false;
+            $rootScope.$emit('relayDisconnect');
             $rootScope.$apply();
         };
 
@@ -578,6 +579,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     });
 
     $scope.buffers = models.model.buffers;
+
+    $rootScope.$on('relayDisconnect', function() {
+        models.reinitialize();
+    });
+
     $scope.activeBuffer = models.getActiveBuffer;
 
     $rootScope.waseverconnected = false;
