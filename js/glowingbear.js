@@ -856,7 +856,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         } // Handle enter
         else if (code === 13) {
             $event.preventDefault();
-            // TODO Switch to first matching buffer and reset query
+            if ($scope.filteredBuffers.length > 0) {
+                models.setActiveBuffer($scope.filteredBuffers[0].id);
+            }
             $scope.search = '';
         }
     };
@@ -1056,8 +1058,8 @@ weechat.directive('inputBar', function() {
                     return true;
                 }
 
-                // Ctrl+G -> focus on buffer filter input
-                if ($event.ctrlKey && (code === 103 || code === 71)) {
+                // Alt+G -> focus on buffer filter input
+                if ($event.altKey && (code === 103 || code === 71)) {
                     $event.preventDefault();
                     document.getElementById('bufferFilter').focus();
                     return true;
