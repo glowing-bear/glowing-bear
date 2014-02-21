@@ -1056,8 +1056,8 @@ weechat.directive('inputBar', function() {
                     return true;
                 }
 
-                // Ctrl+G -> focus on buffer filter input
-                if ($event.ctrlKey && (code === 103 || code === 71)) {
+                // Alt+G -> focus on buffer filter input
+                if ($event.altKey && (code === 103 || code === 71)) {
                     $event.preventDefault();
                     document.getElementById('bufferFilter').focus();
                     return true;
