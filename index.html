@@ -18,6 +18,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-route.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-sanitize.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-touch.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-animate.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
     <script type="text/javascript" src="3rdparty/inflate.min.js"></script>
     <script type="text/javascript" src="js/localstorage.js"></script>
@@ -183,7 +184,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
     <div class="content" ng-show="connected">
       <div id="topbar">
         <div class="brand">
-          <a href="#" data-target="#sidebar" data-toggle="collapse">
+          <a href="#" ng-click="swipeSidebar()">
             <img alt="brand" src="img/favicon.png" title="Connected to {{ host }}:{{ port}}">
           </a>
           <button ng-show="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
@@ -272,7 +273,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </a>
         </div>
       </div>
-      <div bindonce id="sidebar" ng-swipe-left="swipeSidebar()" class="vertical-line collapse in">
+      <div bindonce id="sidebar" ng-show="showSidebar" ng-swipe-left="swipeSidebar()" class="vertical-line">
         <ul class="nav nav-pills nav-stacked" ng-class="{'indented': (predicate === 'serverSortKey')}">
           <li class="bufferfilter">
             <form role="form">
