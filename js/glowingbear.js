@@ -629,16 +629,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Open and close panels while on mobile devices through swiping
     $scope.swipeSidebar = function() { 
         $scope.showSidebar = !$scope.showSidebar;
-        // remove or add margin if big screen
-        if (document.body.clientWidth > mobile_cutoff) {
-            if($scope.showSidebar) {
-                $('#bufferlines').css('margin-left','145px');
-                $('.navbar-fixed-bottom').css('margin-left','145px');
-            }else{
-                $('#bufferlines').css('margin-left','0');
-                $('.navbar-fixed-bottom').css('margin-left','0');
-            }
-        }
     };
     
     $scope.openNick = function() {

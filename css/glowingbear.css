@@ -256,7 +256,6 @@ input[type=text], input[type=password], .badge {
     position: relative;
     height: 98%;
     overflow-y: auto;
-    margin-left: 145px;    /* sidebar */
     width: auto;
     top: 35px; /* topbar */
     padding-bottom: 10px;
@@ -266,6 +265,9 @@ input[type=text], input[type=password], .badge {
 }
 .withnicklist {
     margin-right: 100px !important; /* nicklist */
+}
+.withsidebar {
+    margin-left: 145px;    /* sidebar */
 }
 #bufferlines .btn {
     font-family: sans-serif;
