@@ -548,17 +548,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         var notifications = $rootScope.unreadCount('notification');
         if (notifications > 0) {
             // New notifications deserve an exclamation mark
-            unreadFragment = '(' + notifications + '!) ';
+            $rootScope.notificationStatus = '(' + notifications + ') ';
         } else {
-            // No notifications, look for unread messages instead
-            var unread = $rootScope.unreadCount('unread');
-            if (unread > 0) {
-                unreadFragment = '(' + unread + ') ';
-            }
+            $rootScope.notificationStatus = '';
         }
 
         var activeBuffer = models.getActiveBuffer();
-        $rootScope.pageTitle = unreadFragment + activeBuffer.shortName + ' | ' + activeBuffer.title;
+        $rootScope.pageTitle = activeBuffer.shortName + ' | ' + activeBuffer.title;
     };
 
     $scope.updateFavico = function() {
