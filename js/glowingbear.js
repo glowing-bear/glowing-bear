@@ -887,7 +887,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             buffer = sortedBuffers[i];
             if (buffer.notification > 0) {
                 $scope.setActiveBuffer(buffer.id);
-                break;
+                return;  // return instead of break so that the second for loop isn't executed
             }
         }
         // No notifications, find first buffer with unread lines instead
@@ -895,7 +895,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             buffer = sortedBuffers[i];
             if (buffer.unread > 0) {
                 $scope.setActiveBuffer(buffer.id);
-                break;
+                return;
             }
         }
     };
