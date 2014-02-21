@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <title ng-bind-template="WeeChat {{ pageTitle}}"></title>
+    <title ng-bind-template="{{ notificationStatus }}WeeChat {{ pageTitle}}"></title>
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link rel="shortcut icon" sizes="128x128" href="img/weechat_logo_128x128.png">
     <link rel="apple-touch-icon" sizes="128x128" href="img/weechat_logo_128x128.png">
@@ -252,6 +252,16 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                     <label>
                       <input type="checkbox" ng-model="orderbyserver">
                       Order channels by server
+                    </label>
+                  </div>
+                </form>
+              </li>
+              <li>
+                <form class="form-inline" role="form">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="useFavico">
+                      Display unread count in favicon
                     </label>
                   </div>
                 </form>
