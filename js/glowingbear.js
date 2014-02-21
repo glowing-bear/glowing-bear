@@ -856,7 +856,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         } // Handle enter
         else if (code === 13) {
             $event.preventDefault();
-            // TODO Switch to first matching buffer and reset query
+            if ($scope.filteredBuffers.length > 0) {
+                models.setActiveBuffer($scope.filteredBuffers[0].id);
+            }
             $scope.search = '';
         }
     };
