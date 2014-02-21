@@ -1,4 +1,4 @@
-var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'plugins', 'ngSanitize', 'ngWebsockets', 'pasvaz.bindonce', 'ngTouch']);
+var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'plugins', 'ngSanitize', 'ngWebsockets', 'pasvaz.bindonce', 'ngTouch', 'ngAnimate']);
 
 weechat.filter('toArray', function () {
     'use strict';
@@ -581,6 +581,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     });
 
+    $scope.showSidebar = true;
+
     $scope.buffers = models.model.buffers;
     $scope.activeBuffer = models.getActiveBuffer;
 
@@ -626,9 +628,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     // Open and close panels while on mobile devices through swiping
     $scope.swipeSidebar = function() { 
-        if (document.body.clientWidth < mobile_cutoff) {
-            $('#sidebar').collapse('toggle');
-        }
+        $scope.showSidebar = !$scope.showSidebar;
     };
     
     $scope.openNick = function() {
@@ -662,7 +662,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // If we are on mobile we need to collapse the menu on sidebar clicks
         // We use 968 px as the cutoff, which should match the value in glowingbear.css
         if (document.body.clientWidth < mobile_cutoff) {
-            $('#sidebar').collapse('toggle');
+            $scope.showSidebar = false;
         }
         return models.setActiveBuffer(bufferId, key);
     };

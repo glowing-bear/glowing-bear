@@ -174,8 +174,16 @@ input[type=text], input[type=password], .badge {
     overflow-x: hidden;
     margin-top: 35px; /* topbar */
     font-size: smaller;
+    -webkit-transition:0.35s ease all;
+    transition:0.35s ease all;
 }
 #sidebar form {
+}
+#sidebar.ng-hide-add, #sidebar.ng-hide-remove {
+  /* this needs to be here to make it visible during the animation
+     since the .ng-hide class is already on the element rendering
+     it as hidden. */
+  display:block!important;
 }
 
 #sidebar .badge {
@@ -185,6 +193,10 @@ input[type=text], input[type=password], .badge {
 
 #sidebar ul.indented li.indent span.buffername {
     padding-left: 10px;
+}
+
+#sidebar.ng-hide {
+  width: 0;
 }
 
 #nicklist {
@@ -244,14 +256,18 @@ input[type=text], input[type=password], .badge {
     position: relative;
     height: 98%;
     overflow-y: auto;
-    margin-left: 145px;    /* sidebar */
     width: auto;
     top: 35px; /* topbar */
     padding-bottom: 10px;
     margin-right: -5px;
+    -webkit-transition:0.35s ease all;
+    transition:0.35s ease all;
 }
 .withnicklist {
     margin-right: 100px !important; /* nicklist */
+}
+.withsidebar {
+    margin-left: 145px;    /* sidebar */
 }
 #bufferlines .btn {
     font-family: sans-serif;
@@ -259,6 +275,8 @@ input[type=text], input[type=password], .badge {
 
 .navbar-fixed-bottom {
     margin: 0 5px 0 145px; /* sidebar */
+    -webkit-transition:0.35s ease all;
+    transition:0.35s ease all;
 }
 .navbar-inverse {
     background-color: #181818;
@@ -310,7 +328,6 @@ img.embed {
 table.notimestamp td.time {
     display: none;
 }
-
 
 /* */
 /* Mobile layout */

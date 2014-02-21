@@ -18,6 +18,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-route.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-sanitize.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-touch.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-animate.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
     <script type="text/javascript" src="3rdparty/inflate.min.js"></script>
     <script type="text/javascript" src="js/localstorage.js"></script>
@@ -183,7 +184,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
     <div class="content" ng-show="connected">
       <div id="topbar">
         <div class="brand">
-          <a href="#" data-target="#sidebar" data-toggle="collapse">
+          <a href="#" ng-click="swipeSidebar()">
             <img alt="brand" src="img/favicon.png" title="Connected to {{ host }}:{{ port}}">
           </a>
           <button ng-show="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
@@ -272,7 +273,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </a>
         </div>
       </div>
-      <div bindonce id="sidebar" ng-swipe-left="swipeSidebar()" class="vertical-line collapse in">
+      <div bindonce id="sidebar" ng-show="showSidebar" ng-swipe-left="swipeSidebar()" class="vertical-line">
         <ul class="nav nav-pills nav-stacked" ng-class="{'indented': (predicate === 'serverSortKey')}">
           <li class="bufferfilter">
             <form role="form">
@@ -288,7 +289,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </li>
         </ul>
       </div>
-      <div bindonce id="bufferlines" class="monospace" ng-class="{'withnicklist': showNicklist}">
+      <div bindonce id="bufferlines" class="monospace" ng-class="{'withnicklist': showNicklist, 'withsidebar': showSidebar}">
         <div id="nicklist" ng-show="showNicklist" ng-swipe-right="closeNick()" class="vertical-line-left">
           <ul class="nicklistgroup list-unstyled" ng-repeat="group in activeBuffer().nicklist">
             <li ng-repeat="nick in group.nicks|orderBy:'name'" ng-click="openBuffer(nick.name)">
@@ -333,7 +334,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
       <div class="push"></div>
     </div>
     <div id="footer" ng-show="connected">
-      <div class="navbar navbar-inverse navbar-fixed-bottom" ng-class="{'withnicklist': showNicklist}">
+      <div class="navbar navbar-inverse navbar-fixed-bottom" ng-class="{'withnicklist': showNicklist, 'withsidebar': showSidebar}">
         <div input-bar></div>
     </div>
   </body>
