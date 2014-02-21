@@ -98,7 +98,7 @@ ls.factory("$store",function($parse){
              */
             bind: function ($scope, key, def) {
                 def = def || '';
-                if (!publicMethods.get(key)) {
+                if (publicMethods.get(key) === undefined) {
                     publicMethods.set(key, def);
                 }
                 $parse(key).assign($scope, publicMethods.get(key));
