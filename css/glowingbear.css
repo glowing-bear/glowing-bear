@@ -378,6 +378,11 @@ table.notimestamp td.time {
         min-height: 0%;
     }
 
+    #bufferlines {
+        height: 100%;
+        padding-bottom: 0;
+    }
+
     #bufferlines td.time {
         display: inline;
         padding-right: 0;
