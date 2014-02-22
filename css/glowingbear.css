@@ -342,6 +342,14 @@ table.notimestamp td.time {
         left: 40px;
     }
 
+    #topbar .actions {
+        line-height: 30px;
+        font-size: 30px;
+        margin-right: 0;
+        height: 32px;
+        padding-top: 3px;
+    }
+
     #bufferlines, #nicklist {
         position: relative;
         min-height: 0;
@@ -392,5 +400,10 @@ table.notimestamp td.time {
 
     #bufferlines td.prefix:after {
         content: ">";
+    }
+
+    ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
     }
 }
