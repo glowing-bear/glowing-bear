@@ -788,7 +788,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
     $scope.install = function() {
         if (navigator.mozApps !== undefined) {
-            var request = navigator.mozApps.install('http://torhve.github.io/glowing-bear/manifest.webapp');
+            // Find absolute url with trailing '/' or '/index.html' removed
+            var base_url = location.protocol + '//' + location.host +
+                location.pathname.replace(/\/(index\.html)?$/, '');
+            var request = navigator.mozApps.install(base_url + '/manifest.webapp');
             request.onsuccess = function () {
                 $scope.isinstalled = true;
                 // Save the App object that is returned
