@@ -346,12 +346,12 @@ table.notimestamp td.time {
         position: relative;
         min-height: 0;
         margin-left: 0;
-        height: auto;
         max-width: 100%;
         border: 0;
     }
 
     #nicklist {
+        height: auto;
         width: 160px;
         text-align: center;
         -webkit-box-shadow: 0px 0px 120px #000;
@@ -360,10 +360,6 @@ table.notimestamp td.time {
         margin-top: 10px;
         background: #282828;
         bottom: 0px;
-    }
-
-    #bufferlines {
-        padding-bottom: 38px; /* navbar fixed bottom */;
     }
 
     .navbar-fixed-bottom {
