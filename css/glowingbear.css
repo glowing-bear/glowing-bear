@@ -172,7 +172,8 @@ input[type=text], input[type=password], .badge {
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    margin-top: 35px; /* topbar */
+    padding-top: 35px; /* topbar */
+    padding-bottom: 1px; /* need to force a padding here */
     font-size: smaller;
     -webkit-transition:0.35s ease all;
     transition:0.35s ease all;
@@ -345,8 +346,10 @@ table.notimestamp td.time {
         font-size: normal;
         z-index: 1;
         bottom: 0px;
-        width: 60%;
+        width: auto;
+        max-width: 60%;
         top: 0px;
+        padding-bottom: 35px;
     }
 
     #sidebar.in, #sidebar.collapsing {
