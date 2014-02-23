@@ -19,28 +19,28 @@ body {
     height: 25px;
 }
 .horizontal-line {
--webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
-   -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
-        box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+    -webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+    -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+    box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
     border-bottom: 1px solid #121212;
 }
 .vertical-line {
--webkit-box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
-   -moz-box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
-        box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
-        border-right: 1px solid #121212;
+    -webkit-box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
+    -moz-box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
+    box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
+    border-right: 1px solid #121212;
 }
 .vertical-line-left {
--webkit-box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
-   -moz-box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
-        box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
-        border-left: 1px solid #121212;
+    -webkit-box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
+    -moz-box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
+    box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
+    border-left: 1px solid #121212;
 }
 .panel-group .panel-heading + .panel-collapse .panel-body {
--webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
-   -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
-        box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
-        border-top: 1px solid #121212;
+    -webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
+    -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
+    box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
+    border-top: 1px solid #121212;
 }
 
 table {
@@ -104,7 +104,7 @@ input#sendMessage {
     border-radius: 0;
 }
 .panel input, .panel .input-group {
-  max-width: 300px;
+    max-width: 300px;
 }
 input[type=text], input[type=password], .badge {
     border: 0;
@@ -121,24 +121,24 @@ input[type=text], input[type=password], .badge {
     z-index: 2;
     line-height: 35px;
     white-space: nowrap;
--webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
-   -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
-        box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+    -webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+    -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+    box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
 }
 #topbar .brand {
     float: left;
     height: 35px;
     padding-left: 5px;
 }
-    #topbar .brand img {
-        height: 32px;
-    }
-    #topbar .brand button {
-        position: absolute;
-        line-height: 15px;
-        font-size: 9pt;
-        margin-left: 10px
-    }
+#topbar .brand img {
+    height: 32px;
+}
+#topbar .brand button {
+    position: absolute;
+    line-height: 15px;
+    font-size: 9pt;
+    margin-left: 10px
+}
 #topbar .title {
     position: fixed;
     left: 145px; /* sidebar */
@@ -174,8 +174,16 @@ input[type=text], input[type=password], .badge {
     overflow-x: hidden;
     margin-top: 35px; /* topbar */
     font-size: smaller;
-  }
+    -webkit-transition:0.35s ease all;
+    transition:0.35s ease all;
+}
 #sidebar form {
+}
+#sidebar.ng-hide-add, #sidebar.ng-hide-remove {
+  /* this needs to be here to make it visible during the animation
+     since the .ng-hide class is already on the element rendering
+     it as hidden. */
+  display:block!important;
 }
 
 #sidebar .badge {
@@ -185,6 +193,10 @@ input[type=text], input[type=password], .badge {
 
 #sidebar ul.indented li.indent span.buffername {
     padding-left: 10px;
+}
+
+#sidebar.ng-hide {
+  width: 0;
 }
 
 #nicklist {
@@ -244,14 +256,18 @@ input[type=text], input[type=password], .badge {
     position: relative;
     height: 98%;
     overflow-y: auto;
-    margin-left: 145px;    /* sidebar */
     width: auto;
     top: 35px; /* topbar */
     padding-bottom: 10px;
     margin-right: -5px;
+    -webkit-transition:0.35s ease all;
+    transition:0.35s ease all;
 }
 .withnicklist {
     margin-right: 100px !important; /* nicklist */
+}
+.withsidebar {
+    margin-left: 145px;    /* sidebar */
 }
 #bufferlines .btn {
     font-family: sans-serif;
@@ -259,64 +275,13 @@ input[type=text], input[type=password], .badge {
 
 .navbar-fixed-bottom {
     margin: 0 5px 0 145px; /* sidebar */
+    -webkit-transition:0.35s ease all;
+    transition:0.35s ease all;
 }
 .navbar-inverse {
     background-color: #181818;
 }
-@media (max-width: 968px) {
-    #sidebar {
-        font-size: normal;
-        z-index: 1;
-        width: 0;
-    }
-    #sidebar.in, #sidebar.collapsing {
-        -webkit-box-shadow: 0px 0px 120px #000;
-                box-shadow: 0px 0px 120px #000;
-    }
-    #topbar .title {
-        left: 40px;
-    }
-    #bufferlines, #nicklist {
-        position: relative;
-        min-height: 0;
-        margin-left: 0;
-        height: auto;
-        max-width: 100%;
-        border: 0;
-    }
-    #nicklist {
-        width: 100%;
-        text-align: center;
-    }
-    #bufferlines {
-        padding-bottom: 38px; /* navbar fixed bottom */
-    }
-    .navbar-fixed-bottom {
-        margin: 0;
-    }
-    .navbar {
-        min-height: 0%;
-    }
-    #bufferlines td.time {
-        display: inline;
-        padding-right: 0;
-    }
-    #bufferlines td.prefix {
-        display: inline;
-        padding-right: 0;
-        border: 0;
-    }
-    #bufferlines td.message {
-        padding-left: 0;
-        display: inline;
-    }
-    #bufferlines td.prefix:before {
-        content: "<";
-    }
-    #bufferlines td.prefix:after {
-        content: ">";
-    }
-}
+
 .color-light-green {
     color: chartreuse;
 }
@@ -330,8 +295,8 @@ input[type=text], input[type=password], .badge {
     color: #ddd;
 }
 .alert-danger {
-  border-color: #121212;
-  color: black;
+    border-color: #121212;
+    color: black;
 }
 
 li.notification {
@@ -356,10 +321,112 @@ li.notification {
 }
 
 img.embed {
-  max-height: 300px;
+    max-height: 300px;
 }
 
 
 table.notimestamp td.time {
     display: none;
+}
+
+/* */
+/* Mobile layout */
+/* */
+@media (max-width: 968px) {
+    .message span {
+        color: #C7C7C7;
+    }
+
+    .bufferline {
+        line-height: 25px;
+    }
+
+    #sidebar {
+        font-size: normal;
+        z-index: 1;
+        bottom: 0px;
+        width: 60%;
+        top: 0px;
+    }
+
+    #sidebar.in, #sidebar.collapsing {
+        -webkit-box-shadow: 0px 0px 120px #000;
+        box-shadow: 0px 0px 120px #000;
+        bottom: 0px;
+    }
+
+    #topbar .title {
+        left: 40px;
+    }
+
+    #topbar .actions {
+        line-height: 30px;
+        font-size: 30px;
+        margin-right: 0;
+        height: 32px;
+        padding-top: 3px;
+    }
+
+    #bufferlines, #nicklist {
+        position: relative;
+        min-height: 0;
+        margin-left: 0;
+        max-width: 100%;
+        border: 0;
+    }
+
+    #nicklist {
+        height: auto;
+        width: auto;
+        padding: 35px 7px 35px 10px;
+        text-align: center;
+        -webkit-box-shadow: 0px 0px 120px #000;
+        box-shadow: 0px 0px 120px #000;
+        position: fixed;
+        margin-top: 10px;
+        background: #282828;
+        bottom: 0px;
+    }
+
+    .navbar-fixed-bottom {
+        margin: 0;
+    }
+
+    .navbar {
+        min-height: 0%;
+    }
+
+    #bufferlines {
+        height: 100%;
+        padding-bottom: 0;
+    }
+
+    #bufferlines td.time {
+        display: inline;
+        padding-right: 0;
+    }
+
+    #bufferlines td.prefix {
+        display: inline;
+        padding-right: 0;
+        border: 0;
+    }
+
+    #bufferlines td.message {
+        padding-left: 0;
+        display: inline;
+    }
+
+    #bufferlines td.prefix:before {
+        content: "<";
+    }
+
+    #bufferlines td.prefix:after {
+        content: ">";
+    }
+
+    ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+    }
 }
