@@ -995,6 +995,7 @@ weechat.directive('inputBar', function() {
         templateUrl: 'directives/input.html',
         controller: function($rootScope,
                              $scope,
+                             $element,
                              connection,
                              models) {
 
@@ -1005,6 +1006,13 @@ weechat.directive('inputBar', function() {
             });
             */
 
+
+            /*
+             * Returns the input element
+             */
+            $scope.getInputNode = function() {
+                return $element.find('input')[0];
+            };
             $scope.completeNick = function() {
                 // input DOM node
                 var inputNode = document.getElementById('sendMessage');
