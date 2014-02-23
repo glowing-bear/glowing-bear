@@ -1013,9 +1013,10 @@ weechat.directive('inputBar', function() {
             $scope.getInputNode = function() {
                 return $element.find('input')[0];
             };
+
             $scope.completeNick = function() {
                 // input DOM node
-                var inputNode = document.getElementById('sendMessage');
+                var inputNode = $scope.getInputNode();
 
                 // get current input
                 var inputText = inputNode.value;
@@ -1034,7 +1035,7 @@ weechat.directive('inputBar', function() {
                 $scope.iterCandidate = nickComp.iterCandidate;
 
                 // update current input
-                $scope.command = nickComp.text;
+                inputNode.value = nickComp.text;
 
                 // update current caret position
                 inputNode.focus();
@@ -1044,8 +1045,11 @@ weechat.directive('inputBar', function() {
 
             // Send the message to the websocket
             $scope.sendMessage = function() {
-                connection.sendMessage($scope.command);
-                $scope.command = models.getActiveBuffer().addToHistory($scope.command);  // log to buffer history
+
+                var input = $scope.getInputNode();
+                connection.sendMessage(input.value);
+                models.getActiveBuffer().addToHistory(input.value);  // log to buffer history
+                input.value = '';
             };
 
             // Handle key presses in the input bar
@@ -1054,6 +1058,8 @@ weechat.directive('inputBar', function() {
                 if (!$rootScope.connected) {
                     return true;
                 }
+
+                var inputNode = $scope.getInputNode();
 
                 // Support different browser quirks
                 var code = $event.keyCode ? $event.keyCode : $event.charCode;
@@ -1101,7 +1107,6 @@ weechat.directive('inputBar', function() {
                 // Alt+L -> focus on input bar
                 if ($event.altKey && (code === 76 || code === 108)) {
                     $event.preventDefault();
-                    var inputNode = document.getElementById('sendMessage');
                     inputNode.focus();
                     inputNode.setSelectionRange(inputNode.value.length, inputNode.value.length);
                     return true;
@@ -1133,13 +1138,13 @@ weechat.directive('inputBar', function() {
 
                 // Arrow up -> go up in history
                 if (code === 38) {
-                    $scope.command = models.getActiveBuffer().getHistoryUp($scope.command);
+                    inputNode.value = models.getActiveBuffer().getHistoryUp(inputNode.value);
                     return true;
                 }
 
                 // Arrow down -> go down in history
                 if (code === 40) {
-                    $scope.command = models.getActiveBuffer().getHistoryDown($scope.command);
+                    inputNode.value = models.getActiveBuffer().getHistoryDown(inputNode.value);
                     return true;
                 }
             };
