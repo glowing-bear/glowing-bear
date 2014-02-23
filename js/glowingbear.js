@@ -1,4 +1,4 @@
-var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'plugins', 'ngSanitize', 'ngWebsockets', 'pasvaz.bindonce']);
+var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'plugins', 'ngSanitize', 'ngWebsockets', 'pasvaz.bindonce', 'ngTouch', 'ngAnimate']);
 
 weechat.filter('toArray', function () {
     'use strict';
@@ -23,13 +23,12 @@ weechat.filter('irclinky', ['$filter', function($filter) {
 
         var linkiedText = $filter('linky')(text, target);
 
-        // This regex should be accurate enough. Theoretically, a bunch of other characters is allowed as well
-        // (ASCII except for NULL, BELL, CR, LF, ' ', ',', and ':') and a channel could in theory start with
-        // \![A-Z0-9]{5} and then have up to 45 other characters. I doubt anyone uses that.
-        // Not matching channels beginning with an "&" here because that would also match HTML encoded chars
-        // (e.g. &#41; -- if someone feels like modifying the regex to match these channels, but not the HTML
-        // character codes, please feel free to fix this)
-        var channelRegex = /(^|\s)([#+][a-z0-9-_]{1,49})/gmi;
+        // This regex in no way matches all IRC channel names (they could begin with a +, an &, or an exclamation
+        // mark followed by 5 alphanumeric characters, and are bounded in length by 50).
+        // However, it matches all *common* IRC channels while trying to minimise false positives. "#1" is much
+        // more likely to be "number 1" than "IRC channel #1".
+        // Thus, we only match channels beginning with a # and having at least one letter in them.
+        var channelRegex = /(^|\s)(#[a-z0-9-_]*[a-z][a-z0-9-_]*)/gmi;
         // This is SUPER nasty, but ng-click does not work inside a filter, as the markup has to be $compiled first, which is not possible in filter afaik.
         // Therefore, get the scope, fire the method, and $apply. Yuck. I sincerely hope someone finds a better way of doing this.
         linkiedText = linkiedText.replace(channelRegex, '$1<a href="#" onclick="var $scope = angular.element(event.target).scope(); $scope.openBuffer(\'$2\'); $scope.$apply();">$2</a>');
@@ -114,7 +113,9 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
      */
     var handleLineInfo = function(message, initial, loadingMoreLines) {
         var lines = message.objects[0].content.reverse();
-        if (initial === undefined) initial = true;
+        if (initial === undefined) {
+            initial = true;
+        }
         lines.forEach(function(l) {
             handleLine(l, initial, loadingMoreLines);
         });
@@ -202,9 +203,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
     };
 
     $rootScope.$on('onMessage', function(event, message) {
-
         if (_.has(eventHandlers, message.id)) {
-           
             eventHandlers[message.id](message);
         }
     });
@@ -237,7 +236,7 @@ function($rootScope,
          handlers,
          models,
          ngWebsockets) {
-    
+
     protocol = new weeChat.Protocol();
 
     // Takes care of the connection and websocket hooks
@@ -272,7 +271,6 @@ function($rootScope,
 
             // Helper methods for initialization commands
             var _initializeConnection = function(passwd) {
-
                 // This is not the proper way to do this.
                 // WeeChat does not send a confirmation for the init.
                 // Until it does, We need to "assume" that formatInit
@@ -357,8 +355,9 @@ function($rootScope,
                 },
                 function() {
                     // Connection got closed, lets check if we ever was connected successfully
-                    if(!$rootScope.waseverconnected)
+                    if (!$rootScope.waseverconnected) {
                         $rootScope.passwordError = true;
+                    }
                 }
             );
 
@@ -379,6 +378,7 @@ function($rootScope,
             $log.info("Disconnected from relay");
             failCallbacks('disconnection');
             $rootScope.connected = false;
+            $rootScope.$emit('relayDisconnect');
             $rootScope.$apply();
         };
 
@@ -400,7 +400,7 @@ function($rootScope,
         };
 
 
-        ngWebsockets.connect(url, 
+        ngWebsockets.connect(url,
                      protocol,
                      {
                          'binaryType': "arraybuffer",
@@ -484,9 +484,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 Notification.permission = status;
             }
         });
-
     }
 
+    var mobile_cutoff = 968;
 
     $rootScope.countWatchers = function () {
         var root = $(document.getElementsByTagName('body'));
@@ -508,12 +508,16 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         console.log(watchers.length);
     };
 
-    if (window.webkitNotifications !== undefined) {
-        if (window.webkitNotifications.checkPermission() === 0) { // 0 is PERMISSION_ALLOWED
-            $log.info('Notification permission status:', window.webkitNotifications.checkPermission() === 0);
-            window.webkitNotifications.requestPermission();
+    $scope.requestWebkitNotificationPermission = function() {
+        if (window.webkitNotifications !== undefined) {
+            var havePermission = window.webkitNotifications.checkPermission();
+            if (havePermission !== 0) { // 0 is PERMISSION_ALLOWED
+                $log.info('Notification permission status:', havePermission === 0);
+                window.webkitNotifications.requestPermission();
+            }
         }
-    }
+    };
+
     // Check for firefox & app installed
     if (navigator.mozApps !== undefined) {
         navigator.mozApps.getSelf().onsuccess = function _onAppReady(evt) {
@@ -528,6 +532,56 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $scope.isinstalled = false;
     }
 
+    // Reduce buffers with "+" operation over a key. Mostly useful for unread/notification counts.
+    $rootScope.unreadCount = function(type) {
+        if (!type) {
+            type = "unread";
+        }
+
+        // Do this the old-fashioned way with iterating over the keys, as underscore proved to be error-prone
+        var keys = Object.keys(models.model.buffers);
+        var count = 0;
+        for (var key in keys) {
+            count += models.model.buffers[keys[key]][type];
+        }
+
+        return count;
+    };
+
+    $rootScope.updateTitle = function() {
+        var unreadFragment = '';
+        var notifications = $rootScope.unreadCount('notification');
+        if (notifications > 0) {
+            // New notifications deserve an exclamation mark
+            $rootScope.notificationStatus = '(' + notifications + ') ';
+        } else {
+            $rootScope.notificationStatus = '';
+        }
+
+        var activeBuffer = models.getActiveBuffer();
+        $rootScope.pageTitle = activeBuffer.shortName + ' | ' + activeBuffer.title;
+    };
+
+    $scope.updateFavico = function() {
+        var notifications = $rootScope.unreadCount('notification');
+        if (notifications > 0) {
+            $scope.favico.badge(notifications, {
+                    bgColor: '#d00',
+                    textColor: '#fff'
+            });
+        } else {
+            var unread = $rootScope.unreadCount('unread');
+            if (unread === 0) {
+                $scope.favico.reset();
+            } else {
+                $scope.favico.badge(unread, {
+                    bgColor: '#5CB85C',
+                    textColor: '#ff0'
+                });
+            }
+        }
+    };
+
     $rootScope.$on('activeBufferChanged', function() {
         $rootScope.scrollWithBuffer(true);
 
@@ -536,7 +590,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             // buffer has not been loaded, but some lines may already be present if they arrived after we connected
             $scope.fetchMoreLines($scope.lines);
         }
-        $rootScope.pageTitle = ab.shortName + ' | ' + ab.title;
+        $rootScope.updateTitle(ab);
 
         // If user wants to sync hotlist with weechat
         // we will send a /buffer bufferName command every time
@@ -552,31 +606,25 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Check if we should show nicklist or not
         $scope.showNicklist = $scope.updateShowNicklist();
     });
+
     $scope.favico = new Favico({animation: 'none'});
+
     $rootScope.$on('notificationChanged', function() {
-        var notifications = _.reduce(models.model.buffers, function(memo, num) { return (parseInt(memo)||0) + num.notification;});
-        if (typeof notifications !== 'number') {
-            return;
-        }
-        if (notifications > 0) {
-            $scope.favico.badge(notifications, {
-                    bgColor: '#d00',
-                    textColor: '#fff'
-            });
-        } else {
-            var unread = _.reduce(models.model.buffers, function(memo, num) { return (parseInt(memo)||0) + num.unread;});
-            if (unread === 0) {
-                $scope.favico.reset();
-            } else {
-                $scope.favico.badge(unread, {
-                    bgColor: '#5CB85C',
-                    textColor: '#ff0'
-                });
-            }
+        $rootScope.updateTitle();
+
+        if ($scope.useFavico && $scope.favico) {
+            $scope.updateFavico();
         }
     });
 
+    $scope.showSidebar = true;
+
     $scope.buffers = models.model.buffers;
+
+    $rootScope.$on('relayDisconnect', function() {
+        models.reinitialize();
+    });
+
     $scope.activeBuffer = models.getActiveBuffer;
 
     $rootScope.waseverconnected = false;
@@ -608,17 +656,39 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "noembed", false);
     // Save setting for channel ordering
     $store.bind($scope, "orderbyserver", false);
+    // Save setting for updating favicon
+    $store.bind($scope, "useFavico", true);
     // Save setting for displaying embeds in rootScope so it can be used from service
     $rootScope.visible = $scope.noembed === false;
 
     // If we are on mobile chhange some defaults
     // We use 968 px as the cutoff, which should match the value in glowingbear.css
-    if (document.body.clientWidth < 968) {
+    if (document.body.clientWidth < mobile_cutoff) {
         $scope.nonicklist = true;
         $scope.noembed = true;
         $scope.notimestamp = true;
     }
 
+    // Open and close panels while on mobile devices through swiping
+    $scope.swipeSidebar = function() { 
+        $scope.showSidebar = !$scope.showSidebar;
+    };
+    
+    $scope.openNick = function() {
+        if (document.body.clientWidth < mobile_cutoff) {
+            if($scope.nonicklist) { 
+                $scope.nonicklist = false;
+            } 
+        }
+    };
+
+    $scope.closeNick = function() {
+        if (document.body.clientWidth < mobile_cutoff) {
+            if(!$scope.nonicklist) { 
+                $scope.nonicklist = true;
+            } 
+        }
+    };
 
     // Watch model and update show setting when it changes
     $scope.$watch('noembed', function() {
@@ -629,9 +699,26 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $rootScope.predicate = $scope.orderbyserver ? 'serverSortKey' : 'number';
     });
 
+    $scope.$watch('useFavico', function() {
+        // this check is necessary as this is called on page load, too
+        if (!$rootScope.connected) {
+            return;
+        }
+        if ($scope.useFavico) {
+            $scope.updateFavico();
+        } else {
+            $scope.favico.reset();
+        }
+    });
+
     $rootScope.predicate = $scope.orderbyserver ? 'serverSortKey' : 'number';
 
     $scope.setActiveBuffer = function(bufferId, key) {
+        // If we are on mobile we need to collapse the menu on sidebar clicks
+        // We use 968 px as the cutoff, which should match the value in glowingbear.css
+        if (document.body.clientWidth < mobile_cutoff) {
+            $scope.showSidebar = false;
+        }
         return models.setActiveBuffer(bufferId, key);
     };
 
@@ -693,6 +780,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
 
     $scope.connect = function() {
+        $scope.requestWebkitNotificationPermission();
         connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl);
     };
     $scope.disconnect = function() {
@@ -700,7 +788,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
     $scope.install = function() {
         if (navigator.mozApps !== undefined) {
-            var request = navigator.mozApps.install('http://torhve.github.io/glowing-bear/manifest.webapp');
+            // Find absolute url with trailing '/' or '/index.html' removed
+            var base_url = location.protocol + '//' + location.host +
+                location.pathname.replace(/\/(index\.html)?$/, '');
+            var request = navigator.mozApps.install(base_url + '/manifest.webapp');
             request.onsuccess = function () {
                 $scope.isinstalled = true;
                 // Save the App object that is returned
@@ -721,24 +812,33 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     /* Function gets called from bufferLineAdded code if user should be notified */
     $rootScope.createHighlight = function(buffer, message) {
-        var messages = "";
-        message.content.forEach(function(part) {
-            if (part.text !== undefined) {
-                messages += part.text + " ";
-            }
+        var title = '';
+        if (['#', '&', '+', '!'].indexOf(buffer.shortName.charAt(0)) < 0) {
+            title = 'Private message from ';
+        } else {
+            title = 'Highlight in ';
+        }
+        title += buffer.shortName;
+        title += buffer.fullName.replace(/irc.([^\.]+)\..+/, " ($1)");
+
+        var notification = new Notification(title, {
+            body: message.text,
+            icon: 'img/favicon.png'
         });
 
-        var title = buffer.fullName;
-        var content = messages;
-
-        var timeout = 15*1000;
-        $log.info('Displaying notification:buffer:',buffer,',message:',message,',with timeout:',timeout);
-        var notification = new Notification(title, {body:content, icon:'img/favicon.png'});
         // Cancel notification automatically
+        var timeout = 15*1000;
         notification.onshow = function() {
             setTimeout(function() {
                 notification.close();
             }, timeout);
+        };
+
+        // Click takes the user to the buffer
+        notification.onclick = function() {
+            models.setActiveBuffer(buffer.id);
+            window.focus();
+            notification.close();
         };
     };
 
@@ -785,18 +885,20 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Find next buffer with activity and switch to it
         var sortedBuffers = _.sortBy($scope.buffers, 'number');
         var i, buffer;
+        // Try to find buffer with notification
         for (i in sortedBuffers) {
             buffer = sortedBuffers[i];
             if (buffer.notification > 0) {
                 $scope.setActiveBuffer(buffer.id);
-                break;
+                return;  // return instead of break so that the second for loop isn't executed
             }
         }
+        // No notifications, find first buffer with unread lines instead
         for (i in sortedBuffers) {
             buffer = sortedBuffers[i];
-            if(buffer.unread > 0) {
+            if (buffer.unread > 0) {
                 $scope.setActiveBuffer(buffer.id);
-                break;
+                return;
             }
         }
     };
@@ -812,14 +914,20 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         } // Handle enter
         else if (code === 13) {
             $event.preventDefault();
-            // TODO Switch to first matching buffer and reset query
+            if ($scope.filteredBuffers.length > 0) {
+                models.setActiveBuffer($scope.filteredBuffers[0].id);
+            }
             $scope.search = '';
         }
     };
 
     // Prevent user from accidentally leaving the page
     window.onbeforeunload = function(event) {
-        event.preventDefault();
+        if ($rootScope.connected) {
+            event.preventDefault();
+            // Chrome requires us to set this or it will not show the dialog
+            event.returnValue = "You have an active connection to your WeeChat relay. Please disconnect using the button in the top-right corner or by pressing the Escape key.";
+        }
         $scope.favico.reset();
     };
 
@@ -827,7 +935,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 );
 
 weechat.config(['$routeProvider',
-
     function($routeProvider) {
         $routeProvider.when('/', {
             templateUrl: 'index.html',
@@ -876,11 +983,8 @@ weechat.directive('plugin', function() {
                 };
                 setTimeout(scroll, 100);
             };
-
         }
-
     };
-
 });
 
 
@@ -995,6 +1099,16 @@ weechat.directive('inputBar', function() {
                     return true;
                 }
 
+                // Alt+< -> switch to previous buffer
+                if ($event.altKey && code === 60) {
+                    var previousBuffer = models.getPreviousBuffer();
+                    if (previousBuffer) {
+                        models.setActiveBuffer(previousBuffer.id);
+                        $event.preventDefault();
+                        return true;
+                    }
+                }
+
                 // Escape -> disconnect
                 if (code === 27) {
                     $event.preventDefault();
@@ -1002,8 +1116,8 @@ weechat.directive('inputBar', function() {
                     return true;
                 }
 
-                // Ctrl+G -> focus on buffer filter input
-                if ($event.ctrlKey && (code === 103 || code === 71)) {
+                // Alt+G -> focus on buffer filter input
+                if ($event.altKey && (code === 103 || code === 71)) {
                     $event.preventDefault();
                     document.getElementById('bufferFilter').focus();
                     return true;
@@ -1021,8 +1135,6 @@ weechat.directive('inputBar', function() {
                     return true;
                 }
             };
-
         }
-
     };
 });
