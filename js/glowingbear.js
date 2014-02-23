@@ -670,8 +670,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     }
 
     // Open and close panels while on mobile devices through swiping
-    $scope.swipeSidebar = function() { 
-        $scope.showSidebar = !$scope.showSidebar;
+    $scope.swipeSidebar = function() {
+        if (document.body.clientWidth < mobile_cutoff) {
+            $scope.showSidebar = !$scope.showSidebar;
+        }
     };
     
     $scope.openNick = function() {
