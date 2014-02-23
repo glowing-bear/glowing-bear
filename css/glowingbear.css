@@ -113,6 +113,14 @@ input[type=text], input[type=password], .badge {
     box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.8) inset;
     background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.3);
 }
+#sendMessage {
+    border: 0;
+    border-radius: 0;
+    color: #ccc;
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.8) inset;
+    background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.3);
+    height:36px;
+}
 #topbar {
     position: fixed;
     width: 100%;
@@ -198,7 +206,6 @@ input[type=text], input[type=password], .badge {
 #sidebar.ng-hide {
   width: 0;
 }
-
 #nicklist {
     position: fixed;
     width: 100px;
