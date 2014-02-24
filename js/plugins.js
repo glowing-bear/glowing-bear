@@ -279,7 +279,7 @@ plugins.factory('userPlugins', function() {
 	}
     });
     asciinemaPlugin.name = "ascii cast";
-    
+
     return {
         plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin]
     };

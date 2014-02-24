@@ -3,10 +3,10 @@ var websockets = angular.module('ngWebsockets', []);
 websockets.factory('ngWebsockets',
                    ['$rootScope','$q',
 function($rootScope, $q) {
-                        
+
 
     this.protocol = null;
-    
+
     var ws = null;
     var callbacks = {};
     var currentCallBackId = 0;
@@ -24,7 +24,7 @@ function($rootScope, $q) {
 
     };
 
-                                
+
     /*
      * Returns the current callback id
      */

@@ -675,20 +675,20 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             $scope.showSidebar = !$scope.showSidebar;
         }
     };
-    
+
     $scope.openNick = function() {
         if (document.body.clientWidth < $scope.mobile_cutoff) {
-            if($scope.nonicklist) { 
+            if($scope.nonicklist) {
                 $scope.nonicklist = false;
-            } 
+            }
         }
     };
 
     $scope.closeNick = function() {
         if (document.body.clientWidth < $scope.mobile_cutoff) {
-            if(!$scope.nonicklist) { 
+            if(!$scope.nonicklist) {
                 $scope.nonicklist = true;
-            } 
+            }
         }
     };
 
