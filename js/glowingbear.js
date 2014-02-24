@@ -44,7 +44,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
         models.closeBuffer(buffer);
     };
 
-    var handleLine = function(line, initial, loadingMoreLines) {
+    var handleLine = function(line, manually) {
         var message = new models.BufferLine(line);
         var buffer = models.getBuffer(message.buffer);
         buffer.requestedLines++;
@@ -53,15 +53,15 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
             message = plugins.PluginManager.contentForMessage(message, $rootScope.visible);
             buffer.addLine(message);
 
-            if (initial) {
+            if (manually) {
                 buffer.lastSeen++;
             }
 
-            if (buffer.active && !initial && !loadingMoreLines) {
+            if (buffer.active && !manually) {
                 $rootScope.scrollWithBuffer();
             }
 
-            if (!initial && !buffer.active) {
+            if (!manually && !buffer.active) {
                 if (buffer.notify > 1 && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
                     buffer.unread++;
                     $rootScope.$emit('notificationChanged');
@@ -111,13 +111,13 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
      *
      * (lineinfo) messages are specified by this client. It is request after bufinfo completes
      */
-    var handleLineInfo = function(message, initial, loadingMoreLines) {
+    var handleLineInfo = function(message, manually) {
         var lines = message.objects[0].content.reverse();
-        if (initial === undefined) {
-            initial = true;
+        if (manually === undefined) {
+            manually = true;
         }
         lines.forEach(function(l) {
-            handleLine(l, initial, loadingMoreLines);
+            handleLine(l, manually);
         });
     };
 
@@ -452,12 +452,21 @@ function($rootScope,
         ).then(function(lineinfo) {
             // delete old lines and add new ones
             var oldLength = buffer.lines.length;
+            var setReadmarker = (buffer.lastSeen >= 0);
             buffer.lines.length = 0;
             buffer.requestedLines = 0;
-            handlers.handleLineInfo(lineinfo, false, true);
+            handlers.handleLineInfo(lineinfo, true);
 
-            // Advance read marker by number of newly loaded lines
-            buffer.lastSeen += buffer.lines.length - oldLength;
+            if (setReadmarker) {
+                // Read marker was somewhere in the old lines - we don't need it any more,
+                // set it to the boundary between old and new. This way, we stay at the exact
+                // same position in the text through the scrollWithBuffer below
+                buffer.lastSeen = buffer.lines.length - oldLength - 1;
+            } else {
+                // We are currently fetching at least some unread lines, so we need to keep
+                // the read marker position correct
+                buffer.lastSeen -= oldLength;
+            }
 
             $rootScope.loadingLines = false;
             // Scroll read marker to the center of the screen
