@@ -1,11 +1,12 @@
+/*jslint browser: true, forin: true, nomen: true, plusplus: true, regexp: true, vars: true, sloppy: true, white: true, maxerr: 999 */
+/*global angular: true, _: true, WebSocket: true */
+
 var websockets = angular.module('ngWebsockets', []);
 
-websockets.factory('ngWebsockets',
-                   ['$rootScope','$q',
-function($rootScope, $q) {
+websockets.factory('ngWebsockets', ['$rootScope', '$q', function ($rootScope, $q) {
 
 
-    this.protocol = null;
+    $rootScope.protocol = null;
 
     var ws = null;
     var callbacks = {};
@@ -17,8 +18,9 @@ function($rootScope, $q) {
      *
      * @param reason reason for failure
      */
-    failCallbacks = function(reason) {
-        for (var i in callbacks) {
+    $rootScope.failCallbacks = function (reason) {
+        var i;
+        for (i in callbacks) {
             callbacks[i].cb.reject(reason);
         }
 
@@ -39,24 +41,6 @@ function($rootScope, $q) {
         return currentCallBackId;
     };
 
-
-    /* Send a message to the websocket and returns a promise.
-     * See: http://docs.angularjs.org/api/ng.$q
-     *
-     * @param message message to send
-     * @returns a promise
-     */
-    var send = function(message) {
-
-        var cb = createCallback(message);
-
-        message = protocol.setId(cb.id,
-                                 message);
-
-        ws.send(message);
-        return cb.promise;
-    };
-
     /*
      * Create a callback, adds it to the callback list
      * and return it.
@@ -75,6 +59,22 @@ function($rootScope, $q) {
         return defer;
     };
 
+    /* Send a message to the websocket and returns a promise.
+     * See: http://docs.angularjs.org/api/ng.$q
+     *
+     * @param message message to send
+     * @returns a promise
+     */
+    var send = function (message) {
+
+        var cb = createCallback(message);
+
+        message = $rootScope.protocol.setId(cb.id, message);
+
+        ws.send(message);
+        return cb.promise;
+    };
+
     /*
      * Send all messages to the websocket and returns a promise that is resolved
      * when all message are resolved.
@@ -84,8 +84,9 @@ function($rootScope, $q) {
      */
     var sendAll = function(messages) {
         var promises = [];
-        for (var i in messages) {
-            var promise = send(messages[i]);
+        var i, promise;
+        for (i in messages) {
+            promise = send(messages[i]);
             promises.push(promise);
         }
         return $q.all(promises);
@@ -96,12 +97,12 @@ function($rootScope, $q) {
         /*
          * Receives a message on the websocket
          */
-        var message = protocol.parse(evt.data);
+        var message = $rootScope.protocol.parse(evt.data);
         if (_.has(callbacks, message.id)) {
             // see if it's bound to one of the callbacks
             var promise = callbacks[message.id];
             promise.cb.resolve(message);
-            delete(callbacks[message.id]);
+            delete callbacks[message.id];
         } else {
             // otherwise emit it
             $rootScope.$emit('onMessage', message);
@@ -110,18 +111,17 @@ function($rootScope, $q) {
         $rootScope.$apply();
     };
 
-    var connect = function(url,
-                           protocol,
-                           properties) {
-
+    var connect = function (url, protocol, properties) {
         ws = new WebSocket(url);
-        protocol = protocol;
-        for (var property in properties) {
+        $rootScope.protocol = protocol;
+
+        var property;
+        for (property in properties) {
             ws[property] = properties[property];
         }
 
-        if ('onmessage' in properties) {
-            ws.onmessage = function(event) {
+        if (properties.hasOwnProperty('onmessage')) {
+            ws.onmessage = function (event) {
                 properties.onmessage(event);
                 onmessage(event);
             };

@@ -1,12 +1,14 @@
+/*jslint browser: true, forin: true, nomen: true, plusplus: true, regexp: true, vars: true, sloppy: true, white: true, maxerr: 999 */
+/*global angular: true, $: true */
 
-var ls = angular.module('localStorage',[]);
+var ls = angular.module('localStorage', []);
 
-ls.factory("$store",function($parse){
+ls.factory("$store",function($parse) {
     /**
      * Global Vars
      */
     var storage = (typeof window.localStorage === 'undefined') ? undefined : window.localStorage,
-        supported = !(typeof storage == 'undefined' || typeof window.JSON == 'undefined');
+        supported = !(typeof storage === 'undefined' || typeof window.JSON === 'undefined');
 
     var privateMethods = {
         /**
@@ -18,13 +20,13 @@ ls.factory("$store",function($parse){
             var val;
             try {
                 val = JSON.parse(res);
-                if (val === undefined){
+                if (val === undefined) {
                     val = res;
                 }
-                if (val === 'true'){
+                if (val === 'true') {
                     val = true;
                 }
-                if (val === 'false'){
+                if (val === 'false') {
                     val = false;
                 }
                 if (parseFloat(val) === val && !angular.isObject(val)) {
@@ -44,7 +46,7 @@ ls.factory("$store",function($parse){
          * @returns {*} - will return whatever it is you've stored in the local storage
          */
         set: function(key,value){
-            if (!supported){
+            if (!supported) {
                 try {
                     $.cookie(key, value);
                     return value;
@@ -53,7 +55,7 @@ ls.factory("$store",function($parse){
                 }
             }
             var saver = JSON.stringify(value);
-             storage.setItem(key, saver);
+            storage.setItem(key, saver);
             return privateMethods.parseValue(saver);
         },
         /**
@@ -61,8 +63,8 @@ ls.factory("$store",function($parse){
          * @param key - the string that you set as accessor for the pair
          * @returns {*} - Object,String,Float,Boolean depending on what you stored
          */
-        get: function(key){
-            if (!supported){
+        get: function(key) {
+            if (!supported) {
                 try {
                     return privateMethods.parseValue($.cookie(key));
                 } catch(e){
@@ -78,7 +80,7 @@ ls.factory("$store",function($parse){
          * @returns {boolean} - if everything went as planned
          */
         remove: function(key) {
-            if (!supported){
+            if (!supported) {
                 try {
                     $.cookie(key, null);
                     return true;
@@ -90,23 +92,23 @@ ls.factory("$store",function($parse){
             return true;
         },
         /**
-             * Bind - let's you directly bind a localStorage value to a $scope variable
-             * @param $scope - the current scope you want the variable available in
-             * @param key - the name of the variable you are binding
-             * @param def - the default value (OPTIONAL)
-             * @returns {*} - returns whatever the stored value is
-             */
-            bind: function ($scope, key, def) {
-                def = def || '';
-                if (publicMethods.get(key) === undefined) {
-                    publicMethods.set(key, def);
-                }
-                $parse(key).assign($scope, publicMethods.get(key));
-                $scope.$watch(key, function (val) {
-                    publicMethods.set(key, val);
-                }, true);
-                return publicMethods.get(key);
+         * Bind - let's you directly bind a localStorage value to a $scope variable
+         * @param $scope - the current scope you want the variable available in
+         * @param key - the name of the variable you are binding
+         * @param def - the default value (OPTIONAL)
+         * @returns {*} - returns whatever the stored value is
+         */
+        bind: function ($scope, key, def) {
+            def = def || '';
+            if (publicMethods.get(key) === undefined) {
+                publicMethods.set(key, def);
             }
+            $parse(key).assign($scope, publicMethods.get(key));
+            $scope.$watch(key, function (val) {
+                publicMethods.set(key, val);
+            }, true);
+            return publicMethods.get(key);
+        }
     };
     return publicMethods;
 });

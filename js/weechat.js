@@ -1,4 +1,7 @@
-(function(exports) {// http://weechat.org/files/doc/devel/weechat_dev.en.html#color_codes_in_strings
+/*jslint browser: true, bitwise: true, forin: true, nomen: true, plusplus: true, regexp: true, vars: true, sloppy: true, white: true, maxerr: 999 */
+/*global Uint8Array: true, Zlib: true */
+
+(function (exports) {// http://weechat.org/files/doc/devel/weechat_dev.en.html#color_codes_in_strings
 
 /**
  * WeeChat protocol handling.
@@ -160,8 +163,9 @@
      */
     WeeChatProtocol._cloneColor = function(color) {
         var clone = {};
+        var key;
 
-        for (var key in color) {
+        for (key in color) {
             clone[key] = color[key];
         }
 
@@ -179,7 +183,8 @@
 
         clone.name = attrs.name;
         clone.override = {};
-        for (var attr in attrs.override) {
+        var attr;
+        for (attr in attrs.override) {
             clone.override[attr] = attrs.override[attr];
         }
 
@@ -224,13 +229,14 @@
     WeeChatProtocol._attrsFromStr = function(str) {
         var attrs = WeeChatProtocol._getDefaultAttributes();
 
-        for (var i = 0; i < str.length; ++i) {
-            var ch = str.charAt(i);
+        var i, ch, attrName;
+        for (i = 0; i < str.length; ++i) {
+            ch = str.charAt(i);
             if (ch === '|') {
                 // means keep attributes, so unchanged
                 return null;
             }
-            var attrName = WeeChatProtocol._attrNameFromChar(ch);
+            attrName = WeeChatProtocol._attrNameFromChar(ch);
             if (attrName !== null) {
                 attrs.override[attrName] = true;
             }
@@ -540,7 +546,8 @@
              */
             if (curAttrsOnlyFalseOverrides && curAttrs.name === null) {
                 var allReset = true;
-                for (var attr in curAttrs.override) {
+                var attr;
+                for (attr in curAttrs.override) {
                     if (curAttrs.override[attr]) {
                         allReset = false;
                         break;
@@ -572,7 +579,9 @@
      * @return Decoded string
      */
     WeeChatProtocol._uia2s = function(uia) {
-        if(!uia.length || uia[0] === 0) return "";
+        if (!uia.length || uia[0] === 0) {
+            return "";
+        }
 
         var encodedString = String.fromCharCode.apply(null, uia),
             decodedString = decodeURIComponent(escape(encodedString));
@@ -588,7 +597,8 @@
      * @return Merged parameters
      */
     WeeChatProtocol._mergeParams = function(defaults, override) {
-        for (var v in override) {
+        var v;
+        for (v in override) {
             defaults[v] = override[v];
         }
 
@@ -957,7 +967,7 @@
             var objs = [];
             var hpath = this._getString();
 
-            keys = this._getString().split(',');
+            var keys = this._getString().split(',');
             paths = hpath.split('/');
             count = this._getInt();
 
@@ -968,7 +978,7 @@
             function runType() {
                 var tmp = {};
 
-                tmp.pointers = paths.map(function(path) {
+                tmp.pointers = paths.map(function () {
                     return self._getPointer();
                 });
                 keys.forEach(function(key) {
@@ -977,7 +987,8 @@
                 objs.push(tmp);
             }
 
-            for (var i = 0; i < count; i++) {
+            var i;
+            for (i = 0; i < count; i++) {
                 runType();
             }
 
@@ -1111,10 +1122,11 @@
             typeValues = this._getType();
             count = this._getInt();
 
-            for (var i = 0; i < count; ++i) {
-                var key = self._runType(typeKeys);
-                var keyStr = self._objToString(key, typeKeys);
-                var value = self._runType(typeValues);
+            var i, key, keyStr, value;
+            for (i = 0; i < count; ++i) {
+                key = self._runType(typeKeys);
+                keyStr = self._objToString(key, typeKeys);
+                value = self._runType(typeValues);
                 dict[keyStr] = value;
             }
 
@@ -1136,7 +1148,8 @@
             count = this._getInt();
             values = [];
 
-            for (var i = 0; i < count; i++) {
+            var i;
+            for (i = 0; i < count; i++) {
                 values.push(self._runType(type));
             }
 
@@ -1176,7 +1189,7 @@
          * @param data Message data (ArrayBuffer)
          * @return Message value
          */
-        parse: function(data, optionsValues) {
+        parse: function(data) {
             var self = this;
 
             this._setData(data);
@@ -1211,5 +1224,5 @@
     };
 
     exports.Protocol = WeeChatProtocol;
-})();
-})(typeof exports === "undefined" ? this.weeChat = {} : exports);
+}());
+}(typeof exports === "undefined" ? this.weeChat = {} : exports));

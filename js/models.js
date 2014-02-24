@@ -1,3 +1,6 @@
+/*jslint browser: true, forin: true, nomen: true, plusplus: true, regexp: true, vars: true, sloppy: true, white: true, maxerr: 999 */
+/*global angular: true, _: true, weeChat: true */
+
 /*
  * This file contains the weechat models and various
  * helper methods to work with them.
@@ -36,6 +39,23 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         }
 
         /*
+         * Maintain a cached version of a flat sorted nicklist
+         *
+         */
+        var getFlatNicklist = function () {
+            var newlist = [];
+            _.each(nicklist, function (nickGroup) {
+                _.each(nickGroup.nicks, function (nickObj) {
+                    newlist.push(nickObj.name);
+                });
+            });
+            newlist.sort(function (a, b) {
+                return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
+            });
+            return newlist;
+        };
+
+        /*
          * Adds a line to this buffer
          *
          * @param line the BufferLine object
@@ -57,7 +77,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
          */
         var delNick = function(group, nick) {
             group = nicklist[group];
-            group.nicks = _.filter(group.nicks, function(n) { return n.name !== nick.name;});
+            group.nicks = _.filter(group.nicks, function(n) { return n.name !== nick.name; });
             flatnicklist = getFlatNicklist();
             /*
             for (i in group.nicks) {
@@ -73,30 +93,14 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
          */
         var updateNick = function(group, nick) {
             group = nicklist[group];
-            for(var i in group.nicks) {
+            var i;
+            for (i in group.nicks) {
                 if (group.nicks[i].name === nick.name) {
                     group.nicks[i] = nick;
                     break;
                 }
             }
             flatnicklist = getFlatNicklist();
-        };
-
-        /*
-         * Maintain a cached version of a flat sorted nicklist
-         *
-         */
-        var getFlatNicklist = function() {
-            var newlist = [];
-            _.each(nicklist, function(nickGroup) {
-                _.each(nickGroup.nicks, function(nickObj) {
-                    newlist.push(nickObj.name);
-                });
-            });
-            newlist.sort(function(a, b) {
-                return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
-            });
-            return newlist;
         };
 
         var flatNicklist = function() {
@@ -137,7 +141,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             } else {
                 historyPos++;
 
-                if (history.length > 0 && historyPos == (history.length-1)) {
+                if (history.length > 0 && historyPos === (history.length - 1)) {
                     // return cached line and remove from cache
                     return history.pop();
                 } else {
@@ -210,7 +214,8 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
                 if (textEl.attrs.name !== null) {
                     textEl.classes.push('coa-' + textEl.attrs.name);
                 }
-                for (var attr in textEl.attrs.override) {
+                var attr, val;
+                for (attr in textEl.attrs.override) {
                     val = textEl.attrs.override[attr];
                     if (val) {
                         textEl.classes.push('a-' + attr);
@@ -238,11 +243,12 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         }
 
         var rtext = "";
-        for (var i = 0; i < content.length; ++i) {
+        var i;
+        for (i = 0; i < content.length; ++i) {
             rtext += content[i].text;
         }
 
-       return {
+        return {
             prefix: prefix,
             content: content,
             date: date,
@@ -258,7 +264,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
     };
 
     function nickGetColorClasses(nickMsg, propName) {
-        if (propName in nickMsg && nickMsg[propName] && nickMsg[propName].length > 0) {
+        if (nickMsg.hasOwnProperty(propName) && nickMsg[propName] && nickMsg[propName].length > 0) {
             var color = nickMsg[propName];
             if (color.match(/^weechat/)) {
                 // color option
@@ -395,7 +401,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             // turn off the active status for the previous buffer
             previousBuffer.active = false;
             // Save the last line we saw
-            previousBuffer.lastSeen = previousBuffer.lines.length-1;
+            previousBuffer.lastSeen = previousBuffer.lines.length - 1;
         }
 
         activeBuffer.active = true;
@@ -444,6 +450,6 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             var firstBuffer = _.keys(this.model.buffers)[0];
             this.setActiveBuffer(firstBuffer);
         }
-        delete(this.model.buffers[bufferId.id]);
+        delete this.model.buffers[bufferId.id];
     };
 }]);
