@@ -271,12 +271,12 @@ plugins.factory('userPlugins', function() {
      */
     var asciinemaPlugin = new Plugin(function(message) {
 
-	var regexp = /http(s){0,1}:\/\/(www\.){0,1}asciinema.org\/a\/(\d+)/;
-	var match = message.match(regexp);
-	if (match) {
+        var regexp = /http(s){0,1}:\/\/(www\.){0,1}asciinema.org\/a\/(\d+)/;
+        var match = message.match(regexp);
+        if (match) {
             var id = match[3];
             return "<script type='text/javascript' src='https://asciinema.org/a/" + id + ".js' id='asciicast-" + id + "' async></script>";
-	}
+        }
     });
     asciinemaPlugin.name = "ascii cast";
 
