@@ -815,16 +815,19 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     /* Function gets called from bufferLineAdded code if user should be notified */
     $rootScope.createHighlight = function(buffer, message) {
         var title = '';
+        var body = '';
         if (['#', '&', '+', '!'].indexOf(buffer.shortName.charAt(0)) < 0) {
             title = 'Private message from ';
+            body = message.text;
         } else {
             title = 'Highlight in ';
+            body = '<' + message.prefix[0].text + '> ' + message.text;
         }
         title += buffer.shortName;
         title += buffer.fullName.replace(/irc.([^\.]+)\..+/, " ($1)");
 
         var notification = new Notification(title, {
-            body: message.text,
+            body: body,
             icon: 'img/favicon.png'
         });
 
