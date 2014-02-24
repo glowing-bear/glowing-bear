@@ -226,13 +226,11 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
 weechat.factory('connection',
                 ['$rootScope',
                  '$log',
-                 '$store',
                  'handlers',
                  'models',
                  'ngWebsockets',
 function($rootScope,
          $log,
-         storage,
          handlers,
          models,
          ngWebsockets) {
@@ -240,27 +238,6 @@ function($rootScope,
     protocol = new weeChat.Protocol();
 
     // Takes care of the connection and websocket hooks
-
-    var _formatForWs = function(message) {
-        /*
-         * Formats a weechat message to be sent over
-         * the websocket.
-         */
-        message.replace(/[\r\n]+$/g, "").split("\n");
-        return message;
-    };
-
-    var _send = function(message) {
-        return ngWebsockets.send(_formatForWs(message));
-    };
-
-    var _sendAll = function(messages) {
-        for (var i in messages) {
-            messages[i] = _formatForWs(messages[i]);
-        }
-        return ngWebsockets.sendAll(messages);
-    };
-
 
     var connect = function (host, port, passwd, ssl, noCompression) {
         var proto = ssl ? 'wss' : 'ws';
@@ -363,7 +340,7 @@ function($rootScope,
 
         };
 
-        var onmessage = function(event) {
+        var onmessage = function() {
             // If we recieve a message from WeeChat it means that
             // password was OK. Store that result and check for it
             // in the failure handler.
