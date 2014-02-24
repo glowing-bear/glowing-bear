@@ -565,7 +565,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $rootScope.updateTitle = function() {
-        var unreadFragment = '';
         var notifications = $rootScope.unreadCount('notification');
         if (notifications > 0) {
             // New notifications deserve an exclamation mark
