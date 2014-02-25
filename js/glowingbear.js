@@ -463,15 +463,6 @@ function($rootScope,
 
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', function ($rootScope, $scope, $store, $timeout, $log, models, connection) {
 
-    $scope.mobile_cutoff = 968;
-
-    // Focuses itself when active buffer is changed
-    $rootScope.$on('activeBufferChanged', function() {
-        if (document.body.clientWidth >= $scope.mobile_cutoff) {
-            $('#sendMessage').focus();
-        }
-    });
-
     $rootScope.countWatchers = function () {
         var root = $(document.getElementsByTagName('body'));
         var watchers = [];
@@ -490,6 +481,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         f(root);
         console.log(watchers.length);
+    };
+
+
+    $rootScope.isMobileDevice = function() {
+        // TODO don't base detection solely on screen width
+        var mobile_cutoff = 968;
+        return (document.body.clientWidth < mobile_cutoff);
     };
 
 
@@ -605,6 +603,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         // Check if we should show nicklist or not
         $scope.showNicklist = $scope.updateShowNicklist();
+
+        if (!$rootScope.isMobileDevice()) {
+            $('#sendMessage').focus();
+        }
     });
 
     $scope.favico = new Favico({animation: 'none'});
@@ -663,7 +665,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     // If we are on mobile chhange some defaults
     // We use 968 px as the cutoff, which should match the value in glowingbear.css
-    if (document.body.clientWidth < $scope.mobile_cutoff) {
+    if ($rootScope.isMobileDevice()) {
         $scope.nonicklist = true;
         $scope.noembed = true;
         $scope.notimestamp = true;
@@ -671,22 +673,22 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     // Open and close panels while on mobile devices through swiping
     $scope.swipeSidebar = function() {
-        if (document.body.clientWidth < $scope.mobile_cutoff) {
+        if ($rootScope.isMobileDevice()) {
             $scope.showSidebar = !$scope.showSidebar;
         }
     };
 
     $scope.openNick = function() {
-        if (document.body.clientWidth < $scope.mobile_cutoff) {
-            if($scope.nonicklist) {
+        if ($rootScope.isMobileDevice()) {
+            if ($scope.nonicklist) {
                 $scope.nonicklist = false;
             }
         }
     };
 
     $scope.closeNick = function() {
-        if (document.body.clientWidth < $scope.mobile_cutoff) {
-            if(!$scope.nonicklist) {
+        if ($rootScope.isMobileDevice()) {
+            if (!$scope.nonicklist) {
                 $scope.nonicklist = true;
             }
         }
@@ -717,7 +719,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.setActiveBuffer = function(bufferId, key) {
         // If we are on mobile we need to collapse the menu on sidebar clicks
         // We use 968 px as the cutoff, which should match the value in glowingbear.css
-        if (document.body.clientWidth < $scope.mobile_cutoff) {
+        if ($rootScope.isMobileDevice()) {
             $scope.showSidebar = false;
         }
         return models.setActiveBuffer(bufferId, key);
