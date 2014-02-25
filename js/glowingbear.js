@@ -1118,7 +1118,7 @@ weechat.directive('inputBar', function() {
                 // Alt+A -> switch to buffer with activity
                 if ($event.altKey && (code === 97 || code === 65)) {
                     $event.preventDefault();
-                    $scope.switchToActivityBuffer();
+                    $rootScope.switchToActivityBuffer();
                     return true;
                 }
 
