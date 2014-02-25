@@ -497,6 +497,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $scope.mobile_cutoff = 968;
 
+    // Focuses itself when active buffer is changed
+    $rootScope.$on('activeBufferChanged', function() {
+        if (document.body.clientWidth >= $scope.mobile_cutoff) {
+            $('#sendMessage').focus();
+        }
+    });
+
     $rootScope.countWatchers = function () {
         var root = $(document.getElementsByTagName('body'));
         var watchers = [];
@@ -1007,19 +1014,16 @@ weechat.directive('inputBar', function() {
     return {
 
         templateUrl: 'directives/input.html',
+        
+        scope: {
+            inputId: '@inputId',
+        },
+
         controller: function($rootScope,
                              $scope,
                              $element,
                              connection,
                              models) {
-
-            // Focuses itself when active buffer is changed
-            $rootScope.$on('activeBufferChanged', function() {
-                if (document.body.clientWidth >= $scope.mobile_cutoff) {
-                    angular.element('#sendMessage').focus();
-                }
-            });
-
 
             /*
              * Returns the input element
@@ -1067,7 +1071,7 @@ weechat.directive('inputBar', function() {
             };
 
             // Handle key presses in the input bar
-            $scope.handleKeyPress = function($event) {
+            $rootScope.handleKeyPress = function($event) {
                 // don't do anything if not connected
                 if (!$rootScope.connected) {
                     return true;
