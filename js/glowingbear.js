@@ -617,13 +617,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     });
 
-    $scope.showSidebar = true;
-
-    $scope.buffers = models.model.buffers;
-
     $rootScope.$on('relayDisconnect', function() {
         models.reinitialize();
     });
+
+    $scope.showSidebar = true;
+
+    $scope.buffers = models.model.buffers;
 
     $scope.activeBuffer = models.getActiveBuffer;
 
