@@ -462,15 +462,6 @@ function($rootScope,
 }]);
 
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', function ($rootScope, $scope, $store, $timeout, $log, models, connection) {
-    if (window.Notification) {
-        // Request notification permission
-        Notification.requestPermission(function (status) {
-            $log.info('Notification permission status:',status);
-            if (Notification.permission !== status) {
-                Notification.permission = status;
-            }
-        });
-    }
 
     $scope.mobile_cutoff = 968;
 
@@ -501,29 +492,46 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         console.log(watchers.length);
     };
 
-    $scope.requestWebkitNotificationPermission = function() {
+
+    // Ask for permission to display desktop notifications
+    $scope.requestNotificationPermission = function() {
+        // Firefox
+        if (window.Notification) {
+            Notification.requestPermission(function(status) {
+                $log.info('Notification permission status: ', status);
+                if (Notification.permission !== status) {
+                    Notification.permission = status;
+                }
+            });
+        }
+
+        // Webkit
         if (window.webkitNotifications !== undefined) {
             var havePermission = window.webkitNotifications.checkPermission();
             if (havePermission !== 0) { // 0 is PERMISSION_ALLOWED
-                $log.info('Notification permission status:', havePermission === 0);
+                $log.info('Notification permission status: ', havePermission === 0);
                 window.webkitNotifications.requestPermission();
             }
         }
     };
 
-    // Check for firefox & app installed
-    if (navigator.mozApps !== undefined) {
-        navigator.mozApps.getSelf().onsuccess = function _onAppReady(evt) {
-            var app = evt.target.result;
-            if (app) {
-                $scope.isinstalled = true;
-            } else {
-                $scope.isinstalled = false;
-            }
-        };
-    } else {
-        $scope.isinstalled = false;
-    }
+
+    $scope.isinstalled = (function() {
+        // Check for firefox & app installed
+        if (navigator.mozApps !== undefined) {
+            navigator.mozApps.getSelf().onsuccess = function _onAppReady(evt) {
+                var app = evt.target.result;
+                if (app) {
+                    return true;
+                } else {
+                    return false;
+                }
+            };
+        } else {
+            return false;
+        }
+    }());
+
 
     // Reduce buffers with "+" operation over a key. Mostly useful for unread/notification counts.
     $rootScope.unreadCount = function(type) {
@@ -774,7 +782,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
 
     $scope.connect = function() {
-        $scope.requestWebkitNotificationPermission();
+        $scope.requestNotificationPermission();
         connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl);
     };
     $scope.disconnect = function() {
