@@ -53,7 +53,6 @@ var IrcUtils = {
      * @return Next nick (may be the same)
      */
     _nextNick: function(iterCandidate, currentNick, nickList) {
-        var firstInGroup = null;
         var matchingNicks = [];
         var at = null;
         var lcIterCandidate = iterCandidate.toLowerCase();

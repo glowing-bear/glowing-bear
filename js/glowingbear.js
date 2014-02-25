@@ -226,13 +226,11 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
 weechat.factory('connection',
                 ['$rootScope',
                  '$log',
-                 '$store',
                  'handlers',
                  'models',
                  'ngWebsockets',
 function($rootScope,
          $log,
-         storage,
          handlers,
          models,
          ngWebsockets) {
@@ -240,27 +238,6 @@ function($rootScope,
     protocol = new weeChat.Protocol();
 
     // Takes care of the connection and websocket hooks
-
-    var _formatForWs = function(message) {
-        /*
-         * Formats a weechat message to be sent over
-         * the websocket.
-         */
-        message.replace(/[\r\n]+$/g, "").split("\n");
-        return message;
-    };
-
-    var _send = function(message) {
-        return ngWebsockets.send(_formatForWs(message));
-    };
-
-    var _sendAll = function(messages) {
-        for (var i in messages) {
-            messages[i] = _formatForWs(messages[i]);
-        }
-        return ngWebsockets.sendAll(messages);
-    };
-
 
     var connect = function (host, port, passwd, ssl, noCompression) {
         var proto = ssl ? 'wss' : 'ws';
@@ -363,7 +340,7 @@ function($rootScope,
 
         };
 
-        var onmessage = function(event) {
+        var onmessage = function() {
             // If we recieve a message from WeeChat it means that
             // password was OK. Store that result and check for it
             // in the failure handler.
@@ -485,24 +462,6 @@ function($rootScope,
 }]);
 
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', function ($rootScope, $scope, $store, $timeout, $log, models, connection) {
-    if (window.Notification) {
-        // Request notification permission
-        Notification.requestPermission(function (status) {
-            $log.info('Notification permission status:',status);
-            if (Notification.permission !== status) {
-                Notification.permission = status;
-            }
-        });
-    }
-
-    $scope.mobile_cutoff = 968;
-
-    // Focuses itself when active buffer is changed
-    $rootScope.$on('activeBufferChanged', function() {
-        if (document.body.clientWidth >= $scope.mobile_cutoff) {
-            $('#sendMessage').focus();
-        }
-    });
 
     $rootScope.countWatchers = function () {
         var root = $(document.getElementsByTagName('body'));
@@ -524,29 +483,53 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         console.log(watchers.length);
     };
 
-    $scope.requestWebkitNotificationPermission = function() {
+
+    $rootScope.isMobileDevice = function() {
+        // TODO don't base detection solely on screen width
+        var mobile_cutoff = 968;
+        return (document.body.clientWidth < mobile_cutoff);
+    };
+
+
+    // Ask for permission to display desktop notifications
+    $scope.requestNotificationPermission = function() {
+        // Firefox
+        if (window.Notification) {
+            Notification.requestPermission(function(status) {
+                $log.info('Notification permission status: ', status);
+                if (Notification.permission !== status) {
+                    Notification.permission = status;
+                }
+            });
+        }
+
+        // Webkit
         if (window.webkitNotifications !== undefined) {
             var havePermission = window.webkitNotifications.checkPermission();
             if (havePermission !== 0) { // 0 is PERMISSION_ALLOWED
-                $log.info('Notification permission status:', havePermission === 0);
+                $log.info('Notification permission status: ', havePermission === 0);
                 window.webkitNotifications.requestPermission();
             }
         }
     };
 
-    // Check for firefox & app installed
-    if (navigator.mozApps !== undefined) {
-        navigator.mozApps.getSelf().onsuccess = function _onAppReady(evt) {
-            var app = evt.target.result;
-            if (app) {
-                $scope.isinstalled = true;
-            } else {
-                $scope.isinstalled = false;
-            }
-        };
-    } else {
-        $scope.isinstalled = false;
-    }
+
+    $scope.isinstalled = (function() {
+        // Check for firefox & app installed
+        if (navigator.mozApps !== undefined) {
+            navigator.mozApps.getSelf().onsuccess = function _onAppReady(evt) {
+                var app = evt.target.result;
+                if (app) {
+                    return true;
+                } else {
+                    return false;
+                }
+            };
+        } else {
+            return false;
+        }
+    }());
+
 
     // Reduce buffers with "+" operation over a key. Mostly useful for unread/notification counts.
     $rootScope.unreadCount = function(type) {
@@ -565,7 +548,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $rootScope.updateTitle = function() {
-        var unreadFragment = '';
         var notifications = $rootScope.unreadCount('notification');
         if (notifications > 0) {
             // New notifications deserve an exclamation mark
@@ -621,6 +603,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         // Check if we should show nicklist or not
         $scope.showNicklist = $scope.updateShowNicklist();
+
+        if (!$rootScope.isMobileDevice()) {
+            $('#sendMessage').focus();
+        }
     });
 
     $scope.favico = new Favico({animation: 'none'});
@@ -633,13 +619,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     });
 
-    $scope.showSidebar = true;
-
-    $scope.buffers = models.model.buffers;
-
     $rootScope.$on('relayDisconnect', function() {
         models.reinitialize();
     });
+
+    $scope.showSidebar = true;
+
+    $scope.buffers = models.model.buffers;
 
     $scope.activeBuffer = models.getActiveBuffer;
 
@@ -679,7 +665,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     // If we are on mobile chhange some defaults
     // We use 968 px as the cutoff, which should match the value in glowingbear.css
-    if (document.body.clientWidth < $scope.mobile_cutoff) {
+    if ($rootScope.isMobileDevice()) {
         $scope.nonicklist = true;
         $scope.noembed = true;
         $scope.notimestamp = true;
@@ -687,22 +673,22 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     // Open and close panels while on mobile devices through swiping
     $scope.swipeSidebar = function() {
-        if (document.body.clientWidth < $scope.mobile_cutoff) {
+        if ($rootScope.isMobileDevice()) {
             $scope.showSidebar = !$scope.showSidebar;
         }
     };
 
     $scope.openNick = function() {
-        if (document.body.clientWidth < $scope.mobile_cutoff) {
-            if($scope.nonicklist) {
+        if ($rootScope.isMobileDevice()) {
+            if ($scope.nonicklist) {
                 $scope.nonicklist = false;
             }
         }
     };
 
     $scope.closeNick = function() {
-        if (document.body.clientWidth < $scope.mobile_cutoff) {
-            if(!$scope.nonicklist) {
+        if ($rootScope.isMobileDevice()) {
+            if (!$scope.nonicklist) {
                 $scope.nonicklist = true;
             }
         }
@@ -729,12 +715,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     });
 
-    $rootScope.predicate = $scope.orderbyserver ? 'serverSortKey' : 'number';
 
     $scope.setActiveBuffer = function(bufferId, key) {
         // If we are on mobile we need to collapse the menu on sidebar clicks
         // We use 968 px as the cutoff, which should match the value in glowingbear.css
-        if (document.body.clientWidth < $scope.mobile_cutoff) {
+        if ($rootScope.isMobileDevice()) {
             $scope.showSidebar = false;
         }
         return models.setActiveBuffer(bufferId, key);
@@ -798,7 +783,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
 
     $scope.connect = function() {
-        $scope.requestWebkitNotificationPermission();
+        $scope.requestNotificationPermission();
         connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl);
     };
     $scope.disconnect = function() {
