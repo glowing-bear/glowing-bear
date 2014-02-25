@@ -1007,6 +1007,9 @@ weechat.directive('inputBar', function() {
     return {
 
         templateUrl: 'directives/input.html',
+        scope: {
+            inputId: '@inputId',
+        },
         controller: function($rootScope,
                              $scope,
                              $element,
@@ -1067,7 +1070,7 @@ weechat.directive('inputBar', function() {
             };
 
             // Handle key presses in the input bar
-            $scope.handleKeyPress = function($event) {
+            $rootScope.handleKeyPress = function($event) {
                 // don't do anything if not connected
                 if (!$rootScope.connected) {
                     return true;
