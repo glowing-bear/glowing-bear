@@ -1,6 +1,7 @@
 {
   "name": "WeeChat",
   "description": "WeeChat Web frontend",
+  "launch_path": "/glowing-bear/index.html",
   "icons": {
     "128": "/glowing-bear/img/weechat_logo_128x128.png",
     "60": "/glowing-bear/img/weechat_logo_60x60.png",
