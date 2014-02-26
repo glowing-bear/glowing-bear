@@ -42,14 +42,14 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
          * Maintain a cached version of a flat sorted nicklist
          *
          */
-        var getFlatNicklist = function () {
+        var getFlatNicklist = function() {
             var newlist = [];
-            _.each(nicklist, function (nickGroup) {
-                _.each(nickGroup.nicks, function (nickObj) {
+            _.each(nicklist, function(nickGroup) {
+                _.each(nickGroup.nicks, function(nickObj) {
                     newlist.push(nickObj.name);
                 });
             });
-            newlist.sort(function (a, b) {
+            newlist.sort(function(a, b) {
                 return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
             });
             return newlist;

@@ -3,7 +3,7 @@
 
 var websockets = angular.module('ngWebsockets', []);
 
-websockets.factory('ngWebsockets', ['$rootScope', '$q', function ($rootScope, $q) {
+websockets.factory('ngWebsockets', ['$rootScope', '$q', function($rootScope, $q) {
 
 
     $rootScope.protocol = null;
@@ -18,7 +18,7 @@ websockets.factory('ngWebsockets', ['$rootScope', '$q', function ($rootScope, $q
      *
      * @param reason reason for failure
      */
-    $rootScope.failCallbacks = function (reason) {
+    $rootScope.failCallbacks = function(reason) {
         var i;
         for (i in callbacks) {
             callbacks[i].cb.reject(reason);
@@ -65,7 +65,7 @@ websockets.factory('ngWebsockets', ['$rootScope', '$q', function ($rootScope, $q
      * @param message message to send
      * @returns a promise
      */
-    var send = function (message) {
+    var send = function(message) {
 
         var cb = createCallback(message);
 
@@ -93,7 +93,7 @@ websockets.factory('ngWebsockets', ['$rootScope', '$q', function ($rootScope, $q
     };
 
 
-    var onmessage = function (evt) {
+    var onmessage = function(evt) {
         /*
          * Receives a message on the websocket
          */
@@ -111,7 +111,7 @@ websockets.factory('ngWebsockets', ['$rootScope', '$q', function ($rootScope, $q
         $rootScope.$apply();
     };
 
-    var connect = function (url, protocol, properties) {
+    var connect = function(url, protocol, properties) {
         ws = new WebSocket(url);
         $rootScope.protocol = protocol;
 
@@ -121,7 +121,7 @@ websockets.factory('ngWebsockets', ['$rootScope', '$q', function ($rootScope, $q
         }
 
         if (properties.hasOwnProperty('onmessage')) {
-            ws.onmessage = function (event) {
+            ws.onmessage = function(event) {
                 properties.onmessage(event);
                 onmessage(event);
             };

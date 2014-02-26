@@ -1,7 +1,7 @@
 /*jslint browser: true, bitwise: true, forin: true, nomen: true, plusplus: true, regexp: true, vars: true, sloppy: true, white: true, maxerr: 999 */
 /*global Uint8Array: true, Zlib: true */
 
-(function (exports) {// http://weechat.org/files/doc/devel/weechat_dev.en.html#color_codes_in_strings
+(function(exports) {  // http://weechat.org/files/doc/devel/weechat_dev.en.html#color_codes_in_strings
 
 /**
  * WeeChat protocol handling.
@@ -228,7 +228,6 @@
      */
     WeeChatProtocol._attrsFromStr = function(str) {
         var attrs = WeeChatProtocol._getDefaultAttributes();
-
         var i, ch, attrName;
         for (i = 0; i < str.length; ++i) {
             ch = str.charAt(i);
@@ -978,7 +977,7 @@
             function runType() {
                 var tmp = {};
 
-                tmp.pointers = paths.map(function () {
+                tmp.pointers = paths.map(function() {
                     return self._getPointer();
                 });
                 keys.forEach(function(key) {

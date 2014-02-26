@@ -32,7 +32,7 @@ ls.factory("$store",function($parse) {
                 if (parseFloat(val) === val && !angular.isObject(val)) {
                     val = parseFloat(val);
                 }
-            } catch(e){
+            } catch(e) {
                 val = res;
             }
             return val;
@@ -45,12 +45,12 @@ ls.factory("$store",function($parse) {
          * @param value - the value of the localStorage item
          * @returns {*} - will return whatever it is you've stored in the local storage
          */
-        set: function(key,value){
+        set: function(key, value) {
             if (!supported) {
                 try {
                     $.cookie(key, value);
                     return value;
-                } catch(e){
+                } catch(e) {
                     console.log('Local Storage not supported, make sure you have the $.cookie supported.');
                 }
             }
@@ -67,7 +67,7 @@ ls.factory("$store",function($parse) {
             if (!supported) {
                 try {
                     return privateMethods.parseValue($.cookie(key));
-                } catch(e){
+                } catch(e) {
                     return null;
                 }
             }
@@ -84,7 +84,7 @@ ls.factory("$store",function($parse) {
                 try {
                     $.cookie(key, null);
                     return true;
-                } catch(e){
+                } catch(e) {
                     return false;
                 }
             }
@@ -98,13 +98,13 @@ ls.factory("$store",function($parse) {
          * @param def - the default value (OPTIONAL)
          * @returns {*} - returns whatever the stored value is
          */
-        bind: function ($scope, key, def) {
+        bind: function($scope, key, def) {
             def = def || '';
             if (publicMethods.get(key) === undefined) {
                 publicMethods.set(key, def);
             }
             $parse(key).assign($scope, publicMethods.get(key));
-            $scope.$watch(key, function (val) {
+            $scope.$watch(key, function(val) {
                 publicMethods.set(key, val);
             }, true);
             return publicMethods.get(key);
