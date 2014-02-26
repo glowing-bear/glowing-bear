@@ -1077,10 +1077,10 @@ weechat.directive('inputBar', function() {
                         code = 58;
                     }
 
-                    var bufferNumber = code - 48;
-                    var activeBuffer = models.getBufferByIndex(bufferNumber);
-                    if (activeBuffer) {
-                        models.setActiveBuffer(activeBuffer.id);
+                    var bufferNumber = code - 48 - 1 ;
+                    var activeBufferId = Object.keys(models.getBuffers())[bufferNumber];
+                    if (activeBufferId) {
+                        models.setActiveBuffer(activeBufferId);
                         $event.preventDefault();
                     }
                 }

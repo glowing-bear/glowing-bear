@@ -327,7 +327,6 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
     };
 
 
-    var BufferList = [];
     var activeBuffer = null;
     var previousBuffer = null;
 
@@ -340,22 +339,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
      * @return undefined
      */
     this.addBuffer = function(buffer) {
-        BufferList[buffer.id] = buffer;
-        if (BufferList.length === 1) {
-            activeBuffer = buffer;
-        }
         this.model.buffers[buffer.id] = buffer;
-    };
-
-    this.getBufferByIndex  = function(index) {
-        var i = 0;
-
-        for (var v in BufferList) {
-            if (index === ++i) {
-                return BufferList[v];
-            }
-        }
-
     };
 
     /*
@@ -390,11 +374,16 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
 
         previousBuffer = this.getActiveBuffer();
 
-        activeBuffer = _.find(this.model.buffers, function(buffer) {
-            if (buffer[key] === bufferId) {
-                return buffer;
-            }
-        });
+        if (key === 'id') {
+            activeBuffer = this.model.buffers[bufferId];
+        }
+        else { 
+            activeBuffer = _.find(this.model.buffers, function(buffer) {
+                if (buffer[key] === bufferId) {
+                    return buffer;
+                }
+            });
+        }
 
         if (activeBuffer === undefined) {
             // Buffer not found, undo assignment
@@ -422,14 +411,13 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
      * Returns the buffer list
      */
     this.getBuffers = function() {
-        return BufferList;
+        return this.model.buffers;
     };
 
     /*
      * Reinitializes the model
      */
     this.reinitialize = function() {
-        BufferList = [];
         this.model.buffers = {};
     };
 
@@ -440,11 +428,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
      * @return the buffer object
      */
     this.getBuffer = function(bufferId) {
-        return _.find(this.model.buffers, function(buffer) {
-            if (buffer.id === bufferId) {
-                return buffer;
-            }
-        });
+        return this.model.buffers[bufferId];
     };
 
     /*
