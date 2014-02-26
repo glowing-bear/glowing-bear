@@ -195,11 +195,90 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
         </div>
         <div class="title" ng-bind-html="activeBuffer().title | irclinky:'_blank'"></div>
         <div class="actions pull-right vertical-line-left">
-          <div class="dropdown pull-left">
-            <a class="dropdown-toggle" data-toggle="dropdown" title="Options menu">
+          <div class="pull-left">
+            <a class="" data-toggle="modal" data-target="#settingsModal" title="Options menu">
               <i class="glyphicon glyphicon-cog"></i>
             </a>
-            <ul class="dropdown-menu pull-right">
+          </div>
+          <a ng-click="disconnect()" title="Disconnect from WeeChat">
+            <i class="glyphicon glyphicon-remove"></i>
+          </a>
+        </div>
+      </div>
+      <div bindonce id="sidebar" ng-show="showSidebar" ng-swipe-left="swipeSidebar()" class="vertical-line">
+        <ul class="nav nav-pills nav-stacked" ng-class="{'indented': (predicate === 'serverSortKey')}">
+          <li class="bufferfilter">
+            <form role="form">
+              <input class="form-control monospace" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="Search">
+            </form>
+          </li>
+          <li class="buffer" ng-class="{'active': content.active, 'indent': content.indent }" ng-repeat="(key, content) in (filteredBuffers = (buffers | toArray | filter:{fullName:search} | filter:hasUnread | orderBy:predicate))">
+            <a href="#" ng-click="setActiveBuffer(content.id)" title="{{ content.fullName }}">
+              <span class="badge pull-right" ng-hide="content.notification" ng-if="content.unread" ng-bind="content.unread"></span>
+              <span class="badge pull-right danger" ng-show="content.notification" ng-bind="content.notification"></span>
+              <span class="buffername">{{ content.shortName }}</span><span ng-hide="content.shortName">{{ content.fullName }}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div bindonce id="bufferlines" class="monospace" ng-class="{'withnicklist': showNicklist, 'withsidebar': showSidebar}">
+        <div id="nicklist" ng-show="showNicklist" ng-swipe-right="closeNick()" class="vertical-line-left">
+          <ul class="nicklistgroup list-unstyled" ng-repeat="group in activeBuffer().nicklist">
+            <li ng-repeat="nick in group.nicks|orderBy:'name'" ng-click="openBuffer(nick.name)">
+              <a ng-click="nickAction(nick)"><span bo-class="nick.prefixClasses" bo-text="nick.prefix"></span><span bo-class="nick.nameClasses" bo-text="nick.name"></span></a>
+            </li>
+          </ul>
+        </div>
+        <table ng-swipe-right="swipeSidebar()" ng-swipe-left="openNick()" ng-class="{'notimestamp':notimestamp}">
+          <tbody>
+            <tr class="bufferline">
+              <td class="time"><span class="date"> </span></td>
+              <td class="prefix"> </td>
+              <td class="message">
+                <a class="fetchmorelines" ng-click="fetchMoreLines()" ng-hide="loadingLines">Fetch more lines</a>
+                <span ng-show="loadingLines">Fetching more lines...</span>
+              </td>
+            </tr>
+          </tbody>
+          <tbody ng-repeat="bufferline in (bufferlines = activeBuffer().lines)">
+            <tr class="bufferline">
+              <td class="time">
+                <span class="date" bo-class="{'repeated-time': bufferline.shortTime==bufferlines[$index-1].shortTime}">
+                  <span class="cof-chat_time cob-chat_time coa-chat_time" bo-text="bufferline.date|date:'HH'"></span><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time" bo-text="bufferline.date|date:'mm'"></span>
+                </span>
+              </td>
+              <td class="prefix"><span ng-repeat="part in bufferline.prefix" bo-class="part.classes" bo-html="part.text"></span></td>
+              <td class="message">
+                <div ng-repeat="metadata in bufferline.metadata">
+                  <div plugin data="metadata"></div>
+                </div>
+                <span ng-repeat="part in bufferline.content" class="text" bo-class="part.classes" bo-html="part.text|irclinky:'_blank'"></span>
+              </td>
+            </tr>
+            <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
+              <td colspan="3">
+                <hr id="readmarker">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="push"></div>
+    </div>
+    <div id="footer" ng-show="connected">
+      <div class="navbar navbar-inverse navbar-fixed-bottom" ng-class="{'withnicklist': showNicklist, 'withsidebar': showSidebar}">
+        <div input-bar input-id="sendMessage"></div>
+    </div>
+    <div id="settingsModal" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Settings</h4>
+          </div>
+          <div class="modal-body">
+            <p>Settings will be stored in your browser.</p>
+            <ul class="">
               <li>
                 <form class="form-inline" role="form">
                   <div class="checkbox">
@@ -282,74 +361,11 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
               </li>
             </ul>
           </div>
-          <a ng-click="disconnect()" title="Disconnect from WeeChat">
-            <i class="glyphicon glyphicon-remove"></i>
-          </a>
-        </div>
-      </div>
-      <div bindonce id="sidebar" ng-show="showSidebar" ng-swipe-left="swipeSidebar()" class="vertical-line">
-        <ul class="nav nav-pills nav-stacked" ng-class="{'indented': (predicate === 'serverSortKey')}">
-          <li class="bufferfilter">
-            <form role="form">
-              <input class="form-control monospace" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="Search">
-            </form>
-          </li>
-          <li class="buffer" ng-class="{'active': content.active, 'indent': content.indent }" ng-repeat="(key, content) in (filteredBuffers = (buffers | toArray | filter:{fullName:search} | filter:hasUnread | orderBy:predicate))">
-            <a href="#" ng-click="setActiveBuffer(content.id)" title="{{ content.fullName }}">
-              <span class="badge pull-right" ng-hide="content.notification" ng-if="content.unread" ng-bind="content.unread"></span>
-              <span class="badge pull-right danger" ng-show="content.notification" ng-bind="content.notification"></span>
-              <span class="buffername">{{ content.shortName }}</span><span ng-hide="content.shortName">{{ content.fullName }}</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div bindonce id="bufferlines" class="monospace" ng-class="{'withnicklist': showNicklist, 'withsidebar': showSidebar}">
-        <div id="nicklist" ng-show="showNicklist" ng-swipe-right="closeNick()" class="vertical-line-left">
-          <ul class="nicklistgroup list-unstyled" ng-repeat="group in activeBuffer().nicklist">
-            <li ng-repeat="nick in group.nicks|orderBy:'name'" ng-click="openBuffer(nick.name)">
-              <a ng-click="nickAction(nick)"><span bo-class="nick.prefixClasses" bo-text="nick.prefix"></span><span bo-class="nick.nameClasses" bo-text="nick.name"></span></a>
-            </li>
-          </ul>
-        </div>
-        <table ng-swipe-right="swipeSidebar()" ng-swipe-left="openNick()" ng-class="{'notimestamp':notimestamp}">
-          <tbody>
-            <tr class="bufferline">
-              <td class="time"><span class="date"> </span></td>
-              <td class="prefix"> </td>
-              <td class="message">
-                <a class="fetchmorelines" ng-click="fetchMoreLines()" ng-hide="loadingLines">Fetch more lines</a>
-                <span ng-show="loadingLines">Fetching more lines...</span>
-              </td>
-            </tr>
-          </tbody>
-          <tbody ng-repeat="bufferline in (bufferlines = activeBuffer().lines)">
-            <tr class="bufferline">
-              <td class="time">
-                <span class="date" bo-class="{'repeated-time': bufferline.shortTime==bufferlines[$index-1].shortTime}">
-                  <span class="cof-chat_time cob-chat_time coa-chat_time" bo-text="bufferline.date|date:'HH'"></span><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time" bo-text="bufferline.date|date:'mm'"></span>
-                </span>
-              </td>
-              <td class="prefix"><span ng-repeat="part in bufferline.prefix" bo-class="part.classes" bo-html="part.text"></span></td>
-              <td class="message">
-                <div ng-repeat="metadata in bufferline.metadata">
-                  <div plugin data="metadata"></div>
-                </div>
-                <span ng-repeat="part in bufferline.content" class="text" bo-class="part.classes" bo-html="part.text|irclinky:'_blank'"></span>
-              </td>
-            </tr>
-            <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
-              <td colspan="3">
-                <hr id="readmarker">
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="push"></div>
-    </div>
-    <div id="footer" ng-show="connected">
-      <div class="navbar navbar-inverse navbar-fixed-bottom" ng-class="{'withnicklist': showNicklist, 'withsidebar': showSidebar}">
-        <div input-bar input-id="sendMessage"></div>
-    </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
   </body>
 </html>
