@@ -646,30 +646,37 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $store.bind($scope, "password", "");
     }
 
+    // If we are on mobile change some defaults
+    // We use 968 px as the cutoff, which should match the value in glowingbear.css
+    var nonicklist = false;
+    var noembed = false;
+    var notimestamp = false;
+
+    if ($rootScope.isMobileDevice()) {
+        nonicklist = true;
+        noembed = true;
+        notimestamp = true;
+    }
+
+
     // Save setting for displaying only buffers with unread messages
     $store.bind($scope, "onlyUnread", false);
-    // Save setting for not showing timestamp
-    $store.bind($scope, "notimestamp", false);
+
     // Save setting for syncing hotlist
     $store.bind($scope, "hotlistsync", true);
     // Save setting for displaying nicklist
-    $store.bind($scope, "nonicklist", false);
+    $store.bind($scope, "nonicklist", nonicklist);
     // Save setting for displaying embeds
-    $store.bind($scope, "noembed", false);
+    $store.bind($scope, "noembed", noembed);
     // Save setting for channel ordering
     $store.bind($scope, "orderbyserver", false);
     // Save setting for updating favicon
     $store.bind($scope, "useFavico", true);
+    // Save setting for notimestamp
+    $store.bind($scope, "notimestamp", notimestamp);
+
     // Save setting for displaying embeds in rootScope so it can be used from service
     $rootScope.visible = $scope.noembed === false;
-
-    // If we are on mobile chhange some defaults
-    // We use 968 px as the cutoff, which should match the value in glowingbear.css
-    if ($rootScope.isMobileDevice()) {
-        $scope.nonicklist = true;
-        $scope.noembed = true;
-        $scope.notimestamp = true;
-    }
 
     // Open and close panels while on mobile devices through swiping
     $scope.swipeSidebar = function() {
