@@ -1123,7 +1123,7 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Alt+< -> switch to previous buffer
-                if ($event.altKey && code === 60) {
+                if ($event.altKey && (code === 60 || code === 226)) {
                     var previousBuffer = models.getPreviousBuffer();
                     if (previousBuffer) {
                         models.setActiveBuffer(previousBuffer.id);
