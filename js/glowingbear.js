@@ -432,6 +432,10 @@ function($rootScope,
             var setReadmarker = (buffer.lastSeen >= 0);
             buffer.lines.length = 0;
             buffer.requestedLines = 0;
+            // Count number of lines recieved
+            var newLength = lineinfo.objects[0].content.length;
+
+            // Parse the lines
             handlers.handleLineInfo(lineinfo, true);
 
             if (setReadmarker) {
@@ -444,7 +448,14 @@ function($rootScope,
                 // the read marker position correct
                 buffer.lastSeen -= oldLength;
             }
-
+            // We request more lines, but didn't get more. No more lines!
+            if(oldLength === newLength) {
+                $rootScope.noMoreLines = true;
+            }
+            // We requested more lines than we got, no more lines.
+            if(newLength < numLines) {
+                $rootScope.noMoreLines = true;
+            }
             $rootScope.loadingLines = false;
             // Scroll read marker to the center of the screen
             $rootScope.scrollWithBuffer(true);
@@ -582,6 +593,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $rootScope.$on('activeBufferChanged', function() {
         $rootScope.scrollWithBuffer(true);
+
+        // Reset no more lines
+        $rootScope.noMoreLines = false;
 
         var ab = models.getActiveBuffer();
         if (ab.requestedLines < $scope.lines) {
