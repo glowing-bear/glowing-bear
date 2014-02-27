@@ -915,6 +915,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             }
         }
     };
+    // Helper function since the keypress handler is in a different scope
+    $rootScope.toggleNicklist = function() {
+        $scope.nonicklist = !$scope.nonicklist;
+    }
 
 
     $scope.handleSearchBoxKey = function($event) {
@@ -1103,7 +1107,7 @@ weechat.directive('inputBar', function() {
                 // Left Alt+n -> toggle nicklist
                 if ($event.altKey && !$event.ctrlKey && code === 78) {
                     $event.preventDefault();
-                    $scope.nonicklist = !$scope.nonicklist;
+                    $rootScope.toggleNicklist();
                     return true;
                 }
 
