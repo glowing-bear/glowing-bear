@@ -918,7 +918,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Helper function since the keypress handler is in a different scope
     $rootScope.toggleNicklist = function() {
         $scope.nonicklist = !$scope.nonicklist;
-    }
+    };
 
 
     $scope.handleSearchBoxKey = function($event) {
