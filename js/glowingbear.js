@@ -449,11 +449,11 @@ function($rootScope,
                 buffer.lastSeen -= oldLength;
             }
             // We request more lines, but didn't get more. No more lines!
-            if(oldLength === newLength) {
+            if (oldLength === newLength) {
                 $rootScope.noMoreLines = true;
             }
             // We requested more lines than we got, no more lines.
-            if(newLength < numLines) {
+            if (newLength < numLines) {
                 $rootScope.noMoreLines = true;
             }
             $rootScope.loadingLines = false;
