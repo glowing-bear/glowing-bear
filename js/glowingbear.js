@@ -433,7 +433,7 @@ function($rootScope,
             buffer.lines.length = 0;
             buffer.requestedLines = 0;
             // Count number of lines recieved
-            var newLength = lineinfo.objects[0].content.length;
+            var linesReceivedCount = lineinfo.objects[0].content.length;
 
             // Parse the lines
             handlers.handleLineInfo(lineinfo, true);
@@ -449,11 +449,11 @@ function($rootScope,
                 buffer.lastSeen -= oldLength;
             }
             // We request more lines, but didn't get more. No more lines!
-            if (oldLength === newLength) {
+            if (oldLength === buffer.lines.length) {
                 $rootScope.noMoreLines = true;
             }
             // We requested more lines than we got, no more lines.
-            if (newLength < numLines) {
+            if (linesReceivedCount < numLines) {
                 $rootScope.noMoreLines = true;
             }
             $rootScope.loadingLines = false;
