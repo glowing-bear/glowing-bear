@@ -747,12 +747,24 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
 
     // Calculate number of lines to fetch
-    $scope.lines = function() {
+    $scope.calculateNumLines = function() {
         var lineHeight = document.querySelector(".bufferline").clientHeight;
-        // I would have used document.querySelector("#bufferlines").clientHeight and added 5 to the total result, but that provides incorrect values on mobile
-        var areaHeight = document.body.clientHeight;
-        return Math.ceil(areaHeight/lineHeight);
-    }();
+        var areaHeight = document.querySelector("#bufferlines").clientHeight;
+        // Fetch 10 lines more than theoretically needed so that scrolling up will correctly trigger the loading of more lines
+        // Also, some lines might be hidden, so it's probably better to have a bit of buffer there
+        var numLines = Math.ceil(areaHeight/lineHeight + 10);
+        $scope.lines = numLines;
+    };
+    $scope.calculateNumLines();
+
+    // Recalculate number of lines on resize
+    window.addEventListener("resize", _.debounce(function() {
+        // Recalculation fails when not connected
+        if ($rootScope.connected) {
+            $scope.calculateNumLines();
+        }
+    }, 100));
+
 
     $rootScope.loadingLines = false;
     $scope.fetchMoreLines = function() {
