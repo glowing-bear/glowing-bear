@@ -35,6 +35,18 @@ weechat.filter('irclinky', ['$filter', function($filter) {
         return linkiedText;
     };
 }]);
+weechat.directive('whenScrolled', function() {
+    return function(scope, elm, attr) {
+        var raw = elm[0];
+        
+        elm.bind('scroll', function() {
+            if (raw.scrollTop === 0) {
+                scope.$apply(attr.whenScrolled);
+            }
+        });
+    };
+});
+
 
 weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootScope, models, plugins) {
 
@@ -413,6 +425,15 @@ function($rootScope,
     };
 
     var fetchMoreLines = function(numLines) {
+        // We don't want to load twice
+        if ($rootScope.loadingLines) {
+            return;
+        }
+        // We don't have more lines to load
+        if ($rootScope.noMoreLines) {
+            return;
+        }
+
         var buffer = models.getActiveBuffer();
         // Calculate number of lines to fetch, at least as many as the parameter
         numLines = Math.max(numLines, buffer.requestedLines * 2);
