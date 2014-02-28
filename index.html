@@ -221,7 +221,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </li>
         </ul>
       </div>
-      <div bindonce id="bufferlines" class="monospace" ng-class="{'withnicklist': showNicklist, 'withsidebar': showSidebar}">
+      <div bindonce id="bufferlines" when-scrolled="fetchMoreLines()" class="monospace" ng-class="{'withnicklist': showNicklist, 'withsidebar': showSidebar}">
         <div id="nicklist" ng-show="showNicklist" ng-swipe-right="closeNick()" class="vertical-line-left">
           <ul class="nicklistgroup list-unstyled" ng-repeat="group in activeBuffer().nicklist">
             <li ng-repeat="nick in group.nicks|orderBy:'name'" ng-click="openBuffer(nick.name)">
@@ -232,9 +232,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
         <table ng-swipe-right="swipeSidebar()" ng-swipe-left="openNick()" ng-class="{'notimestamp':notimestamp}">
           <tbody>
             <tr class="bufferline">
-              <td class="time"><span class="date"> </span></td>
-              <td class="prefix"> </td>
-              <td class="message">
+              <td ng-hide="noMoreLines" colspan="3">
                 <a class="fetchmorelines" ng-click="fetchMoreLines()" ng-hide="loadingLines">Fetch more lines</a>
                 <span ng-show="loadingLines">Fetching more lines...</span>
               </td>
