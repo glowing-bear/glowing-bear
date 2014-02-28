@@ -212,11 +212,11 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
               <input class="form-control monospace" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="Search">
             </form>
           </li>
-          <li class="buffer" ng-class="{'active': content.active, 'indent': content.indent }" ng-repeat="(key, content) in (filteredBuffers = (buffers | toArray | filter:{fullName:search} | filter:hasUnread | orderBy:predicate))">
-            <a href="#" ng-click="setActiveBuffer(content.id)" title="{{ content.fullName }}">
-              <span class="badge pull-right" ng-hide="content.notification" ng-if="content.unread" ng-bind="content.unread"></span>
-              <span class="badge pull-right danger" ng-show="content.notification" ng-bind="content.notification"></span>
-              <span class="buffername">{{ content.shortName }}</span><span ng-hide="content.shortName">{{ content.fullName }}</span>
+          <li class="buffer" ng-class="{'active': buffer.active, 'indent': buffer.indent }" ng-repeat="(key, buffer) in (filteredBuffers = (buffers | toArray | filter:{fullName:search} | filter:hasUnread | orderBy:predicate))">
+            <a href="#" ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}">
+              <span class="badge pull-right" ng-hide="buffer.notification" ng-if="buffer.unread" ng-bind="buffer.unread"></span>
+              <span class="badge pull-right danger" ng-show="buffer.notification" ng-bind="buffer.notification"></span>
+              <span class="buffername">{{ buffer.shortName }}</span><span ng-hide="buffer.shortName">{{ buffer.fullName }}</span>
             </a>
           </li>
         </ul>
