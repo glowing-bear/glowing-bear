@@ -135,6 +135,7 @@ input[type=text], input[type=password], .badge {
 }
 #topbar .brand img {
     height: 32px;
+    padding: 2px;
 }
 #topbar .brand button {
     position: absolute;
