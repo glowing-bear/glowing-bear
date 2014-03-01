@@ -685,6 +685,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "useFavico", true);
     // Save setting for notimestamp
     $store.bind($scope, "notimestamp", notimestamp);
+    // Save setting for playing sound on notification
+    $store.bind($scope, "soundnotification", false);
 
     // Save setting for displaying embeds in rootScope so it can be used from service
     $rootScope.visible = $scope.noembed === false;
@@ -876,6 +878,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             window.focus();
             notification.close();
         };
+
+        if ($scope.soundnotification) {
+            // TODO fill in a sound file
+            var audioFile = "assets/rickroll";
+            var soundHTML = '<audio autoplay="autoplay"><source src="' + audioFile + '.ogg" type="audio/ogg" /><source src="' + audioFile + '.mp3" type="audio/mpeg" /></audio>';
+            document.getElementById("soundNotification").innerHTML = soundHTML;
+        }
     };
 
     $scope.hasUnread = function(buffer) {
