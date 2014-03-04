@@ -266,6 +266,8 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
     <div id="footer" ng-show="connected">
       <div class="navbar navbar-inverse navbar-fixed-bottom" ng-class="{'withnicklist': showNicklist, 'withsidebar': showSidebar}">
         <div input-bar input-id="sendMessage"></div>
+      </div>
+      <div id="soundNotification"></div>
     </div>
     <div id="settingsModal" class="modal fade">
       <div class="modal-dialog">
@@ -343,6 +345,16 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                     <label>
                       <input type="checkbox" ng-model="useFavico">
                       Display unread count in favicon
+                    </label>
+                  </div>
+                </form>
+              </li>
+              <li>
+                <form class="form-inline" role="form">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="soundnotification">
+                      Play sound on notification
                     </label>
                   </div>
                 </form>
