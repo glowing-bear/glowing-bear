@@ -8,9 +8,9 @@
     <meta name="mobile-web-app-capable" content="yes">
     <title ng-bind-template="{{ notificationStatus }}WeeChat {{ pageTitle}}"></title>
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link rel="shortcut icon" sizes="128x128" href="img/glowing_bear_128x128.png">
-    <link rel="apple-touch-icon" sizes="128x128" href="img/glowing_bear_128x128.png">
-    <link rel="shortcut icon" type="image/png" href="img/favicon.png" >
+    <link rel="shortcut icon" sizes="128x128" href="assets/img/glowing_bear_128x128.png">
+    <link rel="apple-touch-icon" sizes="128x128" href="assets/img/glowing_bear_128x128.png">
+    <link rel="shortcut icon" type="image/png" href="assets/img/favicon.png" >
     <link href="css/style.css" rel="stylesheet" media="screen">
     <link href="css/glowingbear.css" rel="stylesheet" media="screen">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -35,7 +35,7 @@
   <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)">
     <div ng-hide="connected" class="container">
       <h2>
-        <img alt="logo" src="img/favicon.png">
+        <img alt="logo" src="assets/img/favicon.png">
         glowing bear
         <small>
           WeeChat web frontend
@@ -189,7 +189,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
       <div id="topbar">
         <div class="brand">
           <a href="#" ng-click="swipeSidebar()">
-            <img alt="brand" src="img/favicon.png" title="Connected to {{ host }}:{{ port}}">
+            <img alt="brand" src="assets/img/favicon.png" title="Connected to {{ host }}:{{ port}}">
           </a>
           <button ng-show="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
         </div>
