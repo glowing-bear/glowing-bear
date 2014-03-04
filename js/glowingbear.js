@@ -881,7 +881,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         if ($scope.soundnotification) {
             // TODO fill in a sound file
-            var audioFile = "assets/rickroll";
+            var audioFile = "assets/audio/sonar";
             var soundHTML = '<audio autoplay="autoplay"><source src="' + audioFile + '.ogg" type="audio/ogg" /><source src="' + audioFile + '.mp3" type="audio/mpeg" /></audio>';
             document.getElementById("soundNotification").innerHTML = soundHTML;
         }
