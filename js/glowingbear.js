@@ -631,7 +631,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     });
 
     $rootScope.$on('relayDisconnect', function() {
-        models.reinitialize();
+        // this reinitialze just breaks the bufferlist upon reconnection.
+        // Disabled it until it's fully investigated and fixed
+        //models.reinitialize();
     });
 
     $scope.showSidebar = true;
