@@ -61,7 +61,7 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
                 $rootScope.scrollWithBuffer();
             }
 
-            if (!manually && !buffer.active) {
+            if (!manually && (!buffer.active || !$rootScope.isWindowFocused())) {
                 if (buffer.notify > 1 && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
                     buffer.unread++;
                     $rootScope.$emit('notificationChanged');
@@ -542,6 +542,55 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     }());
 
 
+    // Detect page visibility attributes
+    (function() {
+        // Sadly, the page visibility API still has a lot of vendor prefixes
+        if (typeof document.hidden !== "undefined") {  // Chrome >= 33, Firefox >= 18, Opera >= 12.10, Safari >= 7
+            $scope.documentHidden = "hidden";
+            $scope.documentVisibilityChange = "visibilitychange";
+        } else if (typeof document.webkitHidden !== "undefined") {  // 13 <= Chrome < 33
+            $scope.documentHidden = "webkitHidden";
+            $scope.documentVisibilityChange = "webkitvisibilitychange";
+        } else if (typeof document.mozHidden !== "undefined") {  // 10 <= Firefox < 18
+            $scope.documentHidden = "mozHidden";
+            $scope.documentVisibilityChange = "mozvisibilitychange";
+        } else if (typeof document.msHidden !== "undefined") {  // IE >= 10
+            $scope.documentHidden = "msHidden";
+            $scope.documentVisibilityChange = "msvisibilitychange";
+        }
+    })();
+
+
+    $rootScope.isWindowFocused = function() {
+        if (typeof $scope.documentHidden === "undefined") {
+            // Page Visibility API not supported, assume yes
+            return true;
+        } else {
+            var isHidden = document[$scope.documentHidden];
+            return !isHidden;
+        }
+    };
+
+    if (typeof $scope.documentVisibilityChange !== "undefined") {
+        console.log('adding event listener for', $scope.documentVisibilityChange);
+        document.addEventListener($scope.documentVisibilityChange, function() {
+            if (!document[$scope.documentHidden]) {
+                // We just switched back to the glowing-bear window and unread messages may have
+                // accumulated in the active buffer while the window was in the background
+                var buffer = models.getActiveBuffer();
+                buffer.unread = 0;
+                buffer.notification = 0;
+
+                // Trigger title and favico update
+                $rootScope.$emit('notificationChanged');
+
+                // the unread badge in the bufferlist doesn't update if we don't do this
+                $rootScope.$apply();
+            }
+        }, false);
+    }
+
+
     // Reduce buffers with "+" operation over a key. Mostly useful for unread/notification counts.
     $rootScope.unreadCount = function(type) {
         if (!type) {
@@ -634,6 +683,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // this reinitialze just breaks the bufferlist upon reconnection.
         // Disabled it until it's fully investigated and fixed
         //models.reinitialize();
+        $rootScope.$emit('notificationChanged');
     });
 
     $scope.showSidebar = true;
