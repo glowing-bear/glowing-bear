@@ -206,11 +206,14 @@ plugins.factory('userPlugins', function() {
 
         if (url) {
             url = url[0]; /* Actually parse one url per message */
-            if (url.match(/png$|gif$|jpg$|jpeg$/)) {
+            if (url.match(/\.(png|gif|jpg|jpeg)$/)) {
 
                 /* A fukung.net URL may end by an image extension but is not a direct link. */
-                if (url.indexOf("fukung.net/v/") != -1) {
+                if (url.indexOf("^https?://fukung.net/v/") != -1) {
                     url = url.replace(/.*\//, "http://media.fukung.net/imgs/");
+                } else if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
+                    // remove protocol specification to load over https if used by g-b
+                    url = url.replace(/http:/, "");
                 }
 
                 content = '<a target="_blank" href="'+url+'"><img class="embed" src="' + url + '"></a>';
@@ -232,12 +235,12 @@ plugins.factory('userPlugins', function() {
             var url = match[0];
 
             /* SoundCloud http://help.soundcloud.com/customer/portal/articles/247785-what-widgets-can-i-use-from-soundcloud- */
-            if (url.indexOf("soundcloud.com") != -1) {
+            if (url.match(/^https?:\/\/soundcloud.com\//)) {
                 return '<iframe width="100%" height="120" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=' + url + '&amp;color=ff6600&amp;auto_play=false&amp;show_artwork=true"></iframe>';
             }
 
             /* MixCloud */
-            if (url.indexOf("mixcloud.com") != -1) {
+            if (url.match(/^https?:\/\/([a-z]+\.)?mixcloud.com\//)) {
                 return '<iframe width="480" height="60" src="//www.mixcloud.com/widget/iframe/?feed=' + url + '&mini=1&stylecolor=&hide_artwork=&embed_type=widget_standard&hide_tracklist=1&hide_cover=" frameborder="0"></iframe>';
             }
         }
@@ -256,8 +259,7 @@ plugins.factory('userPlugins', function() {
         if (match) {
             var url = match[0];
 
-            /* SoundCloud http://help.soundcloud.com/customer/portal/articles/247785-what-widgets-can-i-use-from-soundcloud- */
-            if (url.match(/google.*maps/)) {
+            if (url.match(/^https?:\/\/maps\.google\./i) || url.match(/^https?:\/\/([^\w]+\.)?google\.[^\w]+\/maps/i)) {
                 return '<iframe width="450" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="' + url + '&output=embed"></iframe>';
             }
         }
@@ -271,7 +273,7 @@ plugins.factory('userPlugins', function() {
      */
     var asciinemaPlugin = new Plugin(function(message) {
 
-        var regexp = /http(s){0,1}:\/\/(www\.){0,1}asciinema.org\/a\/(\d+)/;
+        var regexp = /^https?:\/\/(www\.)?asciinema.org\/a\/(\d+)/;
         var match = message.match(regexp);
         if (match) {
             var id = match[3];
