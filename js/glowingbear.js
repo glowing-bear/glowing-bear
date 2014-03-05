@@ -683,6 +683,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // this reinitialze just breaks the bufferlist upon reconnection.
         // Disabled it until it's fully investigated and fixed
         //models.reinitialize();
+        $rootScope.$emit('notificationChanged');
     });
 
     $scope.showSidebar = true;
