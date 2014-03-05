@@ -856,7 +856,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             body = message.text;
         } else {
             title = 'Highlight in ';
-            body = '<' + message.prefix[0].text + '> ' + message.text;
+            var prefix = '';
+            for (var i = 0; i < message.prefix.length; i++) {
+                prefix += message.prefix[i].text;
+            }
+            body = '<' + prefix + '> ' + message.text;
         }
         title += buffer.shortName;
         title += buffer.fullName.replace(/irc.([^\.]+)\..+/, " ($1)");
