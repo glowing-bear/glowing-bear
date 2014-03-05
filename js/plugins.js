@@ -1,8 +1,11 @@
+/*jslint browser: true, forin: true, nomen: true, plusplus: true, regexp: true, vars: true, sloppy: true, white: true, maxerr: 999 */
+/*global angular: true */
+
 /*
  * This file contains the plugin definitions
  */
 
-plugins = angular.module('plugins', []);
+var plugins = angular.module('plugins', []);
 
 /*
  * Definition of a user provided plugin with sensible default values
@@ -44,7 +47,8 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
          * @param userPlugins user provided plugins
          */
         var registerPlugins = function(userPlugins) {
-            for (var i = 0; i < userPlugins.length; i++) {
+            var i;
+            for (i = 0; i < userPlugins.length; i++) {
                 plugins.push(userPlugins[i]);
             }
         };
@@ -56,15 +60,16 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
         var contentForMessage = function(message, visible) {
 
             message.metadata = [];
-            for (var i = 0; i < plugins.length; i++) {
+            var i, nsfw, pluginContent;
+            for (i = 0; i < plugins.length; i++) {
 
-                var nsfw = false;
+                nsfw = false;
                 if (message.text.match(nsfwRegexp)) {
                     nsfw = true;
                     visible = false;
                 }
 
-                var pluginContent = plugins[i].contentForMessage(message.text);
+                pluginContent = plugins[i].contentForMessage(message.text);
                 if (pluginContent) {
                     pluginContent = {'visible': visible,
                                          'content': $sce.trustAsHtml(pluginContent),
@@ -111,7 +116,7 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
  */
 plugins.factory('userPlugins', function() {
 
-    var urlRegexp = RegExp(/(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/);
+    var urlRegexp = new RegExp(/(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/);
 
     /*
      * Spotify Embedded Player
@@ -123,9 +128,10 @@ plugins.factory('userPlugins', function() {
     var spotifyPlugin = new Plugin(function(message) {
         var addMatch = function(match) {
             var ret = '';
-            for(var i in match) {
-                var id = match[i].substr(match[i].length-22, match[i].length);
-                ret += '<iframe src="//embed.spotify.com/?uri=spotify:track:'+id+'" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>';
+            var i, id;
+            for (i in match) {
+                id = match[i].substr(match[i].length - 22, match[i].length);
+                ret += '<iframe src="//embed.spotify.com/?uri=spotify:track:' + id + '" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>';
             }
             return ret;
         };
@@ -145,10 +151,10 @@ plugins.factory('userPlugins', function() {
 
         var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
         var match = message.match(regExp);
-        if (match && match[7].length==11){
+        if (match && match[7].length === 11) {
             var token = match[7];
             var embedurl = "https://www.youtube.com/embed/" + token + "?html5=1&iv_load_policy=3&modestbranding=1&rel=0&showinfo=0";
-            return '<iframe width="560" height="315" src="'+ embedurl + '" frameborder="0" allowfullscreen frameborder="0"></iframe>';
+            return '<iframe width="560" height="315" src="' + embedurl + '" frameborder="0" allowfullscreen frameborder="0"></iframe>';
         }
 
         return null;
@@ -209,11 +215,11 @@ plugins.factory('userPlugins', function() {
             if (url.match(/png$|gif$|jpg$|jpeg$/)) {
 
                 /* A fukung.net URL may end by an image extension but is not a direct link. */
-                if (url.indexOf("fukung.net/v/") != -1) {
+                if (url.indexOf("fukung.net/v/") !== -1) {
                     url = url.replace(/.*\//, "http://media.fukung.net/imgs/");
                 }
 
-                content = '<a target="_blank" href="'+url+'"><img class="embed" src="' + url + '"></a>';
+                content = '<a target="_blank" href="' + url + '"><img class="embed" src="' + url + '"></a>';
             }
         }
 
@@ -232,12 +238,12 @@ plugins.factory('userPlugins', function() {
             var url = match[0];
 
             /* SoundCloud http://help.soundcloud.com/customer/portal/articles/247785-what-widgets-can-i-use-from-soundcloud- */
-            if (url.indexOf("soundcloud.com") != -1) {
+            if (url.indexOf("soundcloud.com") !== -1) {
                 return '<iframe width="100%" height="120" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=' + url + '&amp;color=ff6600&amp;auto_play=false&amp;show_artwork=true"></iframe>';
             }
 
             /* MixCloud */
-            if (url.indexOf("mixcloud.com") != -1) {
+            if (url.indexOf("mixcloud.com") !== -1) {
                 return '<iframe width="480" height="60" src="//www.mixcloud.com/widget/iframe/?feed=' + url + '&mini=1&stylecolor=&hide_artwork=&embed_type=widget_standard&hide_tracklist=1&hide_cover=" frameborder="0"></iframe>';
             }
         }
