@@ -129,6 +129,14 @@ function($rootScope, $q) {
         } else {
             ws.onmessage = onmessage;
         }
+
+        if ('onclose' in properties) {
+            ws.onclose = function(event) {
+                properties.onclose(event);
+                failCallbacks();
+            }
+        }
+
     };
 
     var disconnect = function() {
