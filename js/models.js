@@ -1,3 +1,4 @@
+"use strict";
 /*
  * This file contains the weechat models and various
  * helper methods to work with them.
@@ -211,7 +212,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
                     textEl.classes.push('coa-' + textEl.attrs.name);
                 }
                 for (var attr in textEl.attrs.override) {
-                    val = textEl.attrs.override[attr];
+                    var val = textEl.attrs.override[attr];
                     if (val) {
                         textEl.classes.push('a-' + attr);
                     } else {

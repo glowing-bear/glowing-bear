@@ -1,3 +1,4 @@
+"use strict";
 var websockets = angular.module('ngWebsockets', []);
 
 websockets.factory('ngWebsockets',
@@ -5,7 +6,7 @@ websockets.factory('ngWebsockets',
 function($rootScope, $q) {
 
 
-    this.protocol = null;
+    var protocol = null;
 
     var ws = null;
     var callbacks = {};
@@ -17,7 +18,7 @@ function($rootScope, $q) {
      *
      * @param reason reason for failure
      */
-    failCallbacks = function(reason) {
+    var failCallbacks = function(reason) {
         for (var i in callbacks) {
             callbacks[i].cb.reject(reason);
         }
@@ -111,11 +112,11 @@ function($rootScope, $q) {
     };
 
     var connect = function(url,
-                           protocol,
+                           theprotocol,
                            properties) {
 
         ws = new WebSocket(url);
-        protocol = protocol;
+        protocol = theprotocol;
         for (var property in properties) {
             ws[property] = properties[property];
         }
@@ -138,6 +139,7 @@ function($rootScope, $q) {
         send: send,
         sendAll: sendAll,
         connect: connect,
+        failCallbacks: failCallbacks,
         disconnect: disconnect
     };
 

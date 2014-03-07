@@ -1,3 +1,4 @@
+'use strict';
 var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'plugins', 'ngSanitize', 'ngWebsockets', 'pasvaz.bindonce', 'ngTouch', 'ngAnimate']);
 
 weechat.filter('toArray', function () {
@@ -235,7 +236,7 @@ function($rootScope,
          models,
          ngWebsockets) {
 
-    protocol = new weeChat.Protocol();
+    var protocol = new weeChat.Protocol();
 
     // Takes care of the connection and websocket hooks
 
@@ -353,7 +354,7 @@ function($rootScope,
              * Handles websocket disconnection
              */
             $log.info("Disconnected from relay");
-            failCallbacks('disconnection');
+            ngWebsockets.failCallbacks('disconnection');
             $rootScope.connected = false;
             $rootScope.$emit('relayDisconnect');
             $rootScope.$apply();
@@ -367,7 +368,7 @@ function($rootScope,
             $log.error("Relay error" + evt.data);
 
             if (evt.type === "error" && this.readyState !== 1) {
-                failCallbacks('error');
+                ngWebsockets.failCallbacks('error');
                 $rootScope.errorMessage = true;
             }
         };
@@ -617,7 +618,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
 
         var activeBuffer = models.getActiveBuffer();
-        $rootScope.pageTitle = activeBuffer.shortName + ' | ' + activeBuffer.title;
+        if(activeBuffer) {
+            $rootScope.pageTitle = activeBuffer.shortName + ' | ' + activeBuffer.title;
+        }
     };
 
     $scope.updateFavico = function() {
