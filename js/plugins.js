@@ -1,8 +1,9 @@
+"use strict";
 /*
  * This file contains the plugin definitions
  */
 
-plugins = angular.module('plugins', []);
+var plugins = angular.module('plugins', []);
 
 /*
  * Definition of a user provided plugin with sensible default values
