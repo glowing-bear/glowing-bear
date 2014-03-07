@@ -139,7 +139,6 @@ function($rootScope, $q) {
         send: send,
         sendAll: sendAll,
         connect: connect,
-        failCallbacks: failCallbacks,
         disconnect: disconnect
     };
 

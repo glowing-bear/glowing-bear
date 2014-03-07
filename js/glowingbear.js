@@ -354,7 +354,6 @@ function($rootScope,
              * Handles websocket disconnection
              */
             $log.info("Disconnected from relay");
-            ngWebsockets.failCallbacks('disconnection');
             $rootScope.connected = false;
             $rootScope.$emit('relayDisconnect');
             $rootScope.$apply();
@@ -368,7 +367,6 @@ function($rootScope,
             $log.error("Relay error" + evt.data);
 
             if (evt.type === "error" && this.readyState !== 1) {
-                ngWebsockets.failCallbacks('error');
                 $rootScope.errorMessage = true;
             }
         };
