@@ -975,8 +975,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if ($scope.nonicklist) {
             return false;
         }
-        // Use flat nicklist to check if empty
-        if (ab.flatNicklist().length === 0) {
+        // Check if nicklist is empty
+        if (ab.isNicklistEmpty()) {
             return false;
         }
         return true;

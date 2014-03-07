@@ -147,6 +147,13 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             }
         };
 
+        var isNicklistEmpty = function() {
+            for (var obj in nicklist) {
+                return false;
+            }
+            return true;
+        };
+
         return {
             id: pointer,
             fullName: fullName,
@@ -171,7 +178,8 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             history: history,
             addToHistory: addToHistory,
             getHistoryUp: getHistoryUp,
-            getHistoryDown: getHistoryDown
+            getHistoryDown: getHistoryDown,
+            isNicklistEmpty: isNicklistEmpty
         };
 
     };
