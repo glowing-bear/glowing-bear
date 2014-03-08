@@ -657,8 +657,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         // Send a request for the nicklist if it hasn't been loaded yet
         if (!ab.nicklistRequested()) {
-            var bufferId = '0x' + ab.id;  // WeeChat needs the 0x prefix
-            connection.requestNicklist(bufferId, function() {
+            connection.requestNicklist(ab.fullName, function() {
                 $scope.showNicklist = $scope.updateShowNicklist();
                 // Scroll after nicklist has been loaded, as it may break long lines
                 $rootScope.scrollWithBuffer(true);
