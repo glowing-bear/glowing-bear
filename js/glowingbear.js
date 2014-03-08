@@ -572,7 +572,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     if (typeof $scope.documentVisibilityChange !== "undefined") {
-        console.log('adding event listener for', $scope.documentVisibilityChange);
         document.addEventListener($scope.documentVisibilityChange, function() {
             if (!document[$scope.documentHidden]) {
                 // We just switched back to the glowing-bear window and unread messages may have
