@@ -649,18 +649,24 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $rootScope.$on('activeBufferChanged', function() {
         var ab = models.getActiveBuffer();
 
-        if (ab.isNicklistEmpty()) {
-            var bufferId = '0x' + ab.id;  // WeeChat needs the 0x prefix
-            connection.requestNicklist(bufferId, function() {
-                $scope.showNicklist = $scope.updateShowNicklist();
-            });
-        }
-
         if (ab.requestedLines < $scope.lines) {
             // buffer has not been loaded, but some lines may already be present if they arrived after we connected
             $scope.fetchMoreLines($scope.lines);
         }
         $rootScope.updateTitle(ab);
+
+        // Send a request for the nicklist if it hasn't been loaded yet
+        if (!ab.nicklistRequested()) {
+            var bufferId = '0x' + ab.id;  // WeeChat needs the 0x prefix
+            connection.requestNicklist(bufferId, function() {
+                $scope.showNicklist = $scope.updateShowNicklist();
+                // Scroll after nicklist has been loaded, as it may break long lines
+                $rootScope.scrollWithBuffer(true);
+            });
+        } else {
+            // Check if we should show nicklist or not
+            $scope.showNicklist = $scope.updateShowNicklist();
+        }
 
         $rootScope.scrollWithBuffer(true);
 
@@ -674,9 +680,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         // Clear search term on buffer change
         $scope.search = '';
-
-        // Check if we should show nicklist or not
-        $scope.showNicklist = $scope.updateShowNicklist();
 
         if (!$rootScope.isMobileDevice()) {
             $('#sendMessage').focus();
