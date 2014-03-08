@@ -275,13 +275,6 @@ function($rootScope,
                 );
             };
 
-            var _requestNicklist = function() {
-                return ngWebsockets.send(
-                    weeChat.Protocol.formatNicklist({
-                    })
-                );
-            };
-
             var _requestBufferInfos = function() {
                 return ngWebsockets.send(
                     weeChat.Protocol.formatHdata({
@@ -320,10 +313,6 @@ function($rootScope,
 
                     _requestHotlist().then(function(hotlist) {
                         handlers.handleHotlistInfo(hotlist);
-                    });
-
-                    _requestNicklist().then(function(nicklist) {
-                        handlers.handleNicklist(nicklist);
                     });
 
                     _requestSync();
@@ -412,6 +401,22 @@ function($rootScope,
         }));
     };
 
+
+    var requestNicklist = function(bufferId, callback) {
+        bufferId = bufferId || null;
+        ngWebsockets.send(
+            weeChat.Protocol.formatNicklist({
+                buffer: bufferId
+            })
+        ).then(function(nicklist) {
+            handlers.handleNicklist(nicklist);
+            if (callback !== undefined) {
+                callback();
+            }
+        });
+    };
+
+
     var fetchMoreLines = function(numLines) {
         var buffer = models.getActiveBuffer();
         // Calculate number of lines to fetch, at least as many as the parameter
@@ -468,7 +473,8 @@ function($rootScope,
         disconnect: disconnect,
         sendMessage: sendMessage,
         sendCoreCommand: sendCoreCommand,
-        fetchMoreLines: fetchMoreLines
+        fetchMoreLines: fetchMoreLines,
+        requestNicklist: requestNicklist
     };
 }]);
 
@@ -640,14 +646,27 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $rootScope.$on('activeBufferChanged', function() {
-        $rootScope.scrollWithBuffer(true);
-
         var ab = models.getActiveBuffer();
+
         if (ab.requestedLines < $scope.lines) {
             // buffer has not been loaded, but some lines may already be present if they arrived after we connected
             $scope.fetchMoreLines($scope.lines);
         }
         $rootScope.updateTitle(ab);
+
+        // Send a request for the nicklist if it hasn't been loaded yet
+        if (!ab.nicklistRequested()) {
+            connection.requestNicklist(ab.fullName, function() {
+                $scope.showNicklist = $scope.updateShowNicklist();
+                // Scroll after nicklist has been loaded, as it may break long lines
+                $rootScope.scrollWithBuffer(true);
+            });
+        } else {
+            // Check if we should show nicklist or not
+            $scope.showNicklist = $scope.updateShowNicklist();
+        }
+
+        $rootScope.scrollWithBuffer(true);
 
         // If user wants to sync hotlist with weechat
         // we will send a /buffer bufferName command every time
@@ -659,9 +678,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         // Clear search term on buffer change
         $scope.search = '';
-
-        // Check if we should show nicklist or not
-        $scope.showNicklist = $scope.updateShowNicklist();
 
         if (!$rootScope.isMobileDevice()) {
             $('#sendMessage').focus();
@@ -974,8 +990,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if ($scope.nonicklist) {
             return false;
         }
-        // Use flat nicklist to check if empty
-        if (ab.flatNicklist().length === 0) {
+        // Check if nicklist is empty
+        if (ab.isNicklistEmpty()) {
             return false;
         }
         return true;

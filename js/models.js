@@ -147,6 +147,25 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             }
         };
 
+
+        // Check if the nicklist is empty, i.e., no nicks present
+        // This checks for the presence of people, not whether a
+        // request for the nicklist has been made
+        var isNicklistEmpty = function() {
+            for (var obj in nicklist) {
+                if (obj !== 'root') {
+                    return false;
+                }
+            }
+            return true;
+        };
+
+        var nicklistRequested = function() {
+            // If the nicklist has been requested but is empty, it
+            // still has a 'root' property. Check for its existence.
+            return nicklist.hasOwnProperty('root');
+        };
+
         return {
             id: pointer,
             fullName: fullName,
@@ -171,7 +190,9 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             history: history,
             addToHistory: addToHistory,
             getHistoryUp: getHistoryUp,
-            getHistoryDown: getHistoryDown
+            getHistoryDown: getHistoryDown,
+            isNicklistEmpty: isNicklistEmpty,
+            nicklistRequested: nicklistRequested
         };
 
     };
