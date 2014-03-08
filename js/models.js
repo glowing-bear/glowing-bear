@@ -419,11 +419,13 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             previousBuffer.lastSeen = previousBuffer.lines.length-1;
         }
 
+        var unreadSum = activeBuffer.unread + activeBuffer.notification;
+
         activeBuffer.active = true;
         activeBuffer.unread = 0;
         activeBuffer.notification = 0;
 
-        $rootScope.$emit('activeBufferChanged');
+        $rootScope.$emit('activeBufferChanged', unreadSum);
         $rootScope.$emit('notificationChanged');
         return true;
     };

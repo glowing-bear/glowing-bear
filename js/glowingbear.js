@@ -645,12 +645,20 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     };
 
-    $rootScope.$on('activeBufferChanged', function() {
+
+    $rootScope.$on('activeBufferChanged', function(event, unreadSum) {
         var ab = models.getActiveBuffer();
 
         if (ab.requestedLines < $scope.lines) {
             // buffer has not been loaded, but some lines may already be present if they arrived after we connected
-            $scope.fetchMoreLines($scope.lines);
+            // try to determine how many lines to fetch
+            var numLines = $scope.lines;  // that's a screenful plus 10 lines
+            unreadSum += 10;  // let's just add a 10 line safety margin here again
+            if (unreadSum > numLines) {
+                // request up to 4*(screenful + 10 lines)
+                numLines = Math.min(4*numLines, unreadSum);
+            }
+            $scope.fetchMoreLines(numLines);
         }
         $rootScope.updateTitle(ab);
 
@@ -847,8 +855,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
 
     $rootScope.loadingLines = false;
-    $scope.fetchMoreLines = function() {
-        connection.fetchMoreLines($scope.lines);
+    $scope.fetchMoreLines = function(numLines) {
+        if (!numLines) {
+            numLines = $scope.lines;
+        }
+        connection.fetchMoreLines(numLines);
     };
 
     $rootScope.scrollWithBuffer = function(nonIncremental) {
