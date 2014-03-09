@@ -349,6 +349,21 @@ table.notimestamp td.time {
     border-bottom: 0;
 }
 
+h2 {
+    padding-bottom: 5px;
+    height: 72px;
+}
+
+h2 img {
+    padding-right: 5px;
+    float: left;
+}
+
+h2 span, h2 small {
+    padding: 5px 0 0 0;
+    display: block;
+}
+
 /* */
 /* Mobile layout */
 /* */
