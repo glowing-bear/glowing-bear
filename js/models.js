@@ -49,14 +49,19 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
          * Adds a nick to nicklist
          */
         var addNick = function(group, nick) {
-            nicklist[group].nicks.push(nick);
-            flatnicklist = getFlatNicklist();
+            if (nicklistRequested()) {
+                nicklist[group].nicks.push(nick);
+                flatnicklist = getFlatNicklist();
+            }
         };
         /*
          * Deletes a nick from nicklist
          */
         var delNick = function(group, nick) {
             group = nicklist[group];
+            if (group === undefined) {
+                return;
+            }
             group.nicks = _.filter(group.nicks, function(n) { return n.name !== nick.name;});
             flatnicklist = getFlatNicklist();
             /*
