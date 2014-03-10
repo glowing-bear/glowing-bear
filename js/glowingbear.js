@@ -434,7 +434,9 @@ function($rootScope,
         ).then(function(lineinfo) {
             // delete old lines and add new ones
             var oldLength = buffer.lines.length;
-            var setReadmarker = (buffer.lastSeen >= 0);
+            // Whether to set the readmarker to the middle position
+            // Don't do that if we didn't get any more lines than we already had
+            var setReadmarker = (buffer.lastSeen >= 0) && (oldLength !== buffer.lines.length);
             buffer.lines.length = 0;
             buffer.requestedLines = 0;
             // Count number of lines recieved
