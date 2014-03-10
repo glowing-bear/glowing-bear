@@ -357,6 +357,7 @@ h2 {
 h2 img {
     padding-right: 5px;
     float: left;
+    height: 72px;
 }
 
 h2 span, h2 small {
