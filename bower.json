@@ -1,0 +1,28 @@
+{
+  "name": "glowing-bear",
+  "version": "0.0.1",
+  "homepage": "https://github.com/cormier/glowing-bear",
+  "description": "fun with weechat and websockets",
+  "main": "index.html",
+  "keywords": [
+    "weechat",
+    "irc"
+  ],
+  "license": "GPLv3",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "angular": "~1.2.0",
+    "angular-route": "~1.2.0",
+    "angular-sanitize": "~1.2.0",
+    "angular-touch": "~1.2.0",
+    "angular-animate": "~1.2.0",
+    "underscore": "~1.5.2",
+    "jquery": "~1.11",
+    "bootstrap": "~3.1"
+  }
+}
