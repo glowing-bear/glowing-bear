@@ -34,6 +34,21 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
                 $log.info('Service Worker err:', err);
             });
         }
+
+        document.addEventListener('deviceready', function() {
+            // Add cordova local notification click handler
+            if (cordova !== null && cordova.plugins !== undefined && cordova.plugins.notification !== undefined &&
+                cordova.plugins.notification.local !== undefined) {
+                cordova.plugins.notification.local.on("click", function (notification) {
+                    // go to buffer
+                    var data = JSON.parse(notification.data);
+                    models.setActiveBuffer(data.buffer);
+                    window.focus();
+                    // clear this notification
+                    cordova.plugins.notification.local.clear(notification.id);
+                });
+            }
+        });
     };
 
     var showNotification = function(buffer, title, body) {
@@ -66,8 +81,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
 
             toastNotifier.show(toast);
 
-        } else {
-
+        } else if (typeof Notification !== 'undefined') {
             var notification = new Notification(title, {
                 body: body,
                 icon: 'assets/img/favicon.png'
@@ -96,6 +110,22 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
             notification.onclose = function() {
                 delete notifications[this.id];
             };
+        } else if (cordova !== undefined && cordova.plugins !== undefined && cordova.plugins.notification !== undefined && cordova.plugins.notification.local !== undefined) {
+            // Cordova local notification
+            // Calculate notification id from buffer ID
+            // Needs to be unique number, but we'll only ever have one per buffer
+            var id = parseInt(buffer.id, 16);
+
+            // Cancel previous notification for buffer (if there was one)
+            cordova.plugins.notification.local.clear(id);
+
+            // Send new notification
+            cordova.plugins.notification.local.schedule({
+                id: id,
+                text: body,
+                title: title,
+                data: { buffer: buffer.id }  // remember buffer id for when the notification is clicked
+            });
 
         }
 
@@ -173,13 +203,6 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
         title += buffer.shortName + " (" + buffer.server + ")";
 
         showNotification(buffer, title, body);
-
-        if (settings.soundnotification) {
-            // TODO fill in a sound file
-            var audioFile = "assets/audio/sonar";
-            var soundHTML = '<audio autoplay="autoplay"><source src="' + audioFile + '.ogg" type="audio/ogg" /><source src="' + audioFile + '.mp3" type="audio/mpeg" /></audio>';
-            document.getElementById("soundNotification").innerHTML = soundHTML;
-        }
     };
 
     var cancelAll = function() {
