@@ -1021,31 +1021,41 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         title += buffer.shortName;
         title += buffer.fullName.replace(/irc.([^\.]+)\..+/, " ($1)");
 
-        var notification = new Notification(title, {
-            body: body,
-            icon: 'assets/img/favicon.png'
-        });
+        // Chrome for Android doesn't know this
+        if (typeof Notification !== 'undefined') {
+            var notification = new Notification(title, {
+                body: body,
+                icon: 'assets/img/favicon.png'
+            });
 
-        // Cancel notification automatically
-        var timeout = 15*1000;
-        notification.onshow = function() {
-            setTimeout(function() {
+            // Cancel notification automatically
+            var timeout = 15*1000;
+            notification.onshow = function() {
+                setTimeout(function() {
+                    notification.close();
+                }, timeout);
+            };
+
+            // Click takes the user to the buffer
+            notification.onclick = function() {
+                models.setActiveBuffer(buffer.id);
+                window.focus();
                 notification.close();
-            }, timeout);
-        };
-
-        // Click takes the user to the buffer
-        notification.onclick = function() {
-            models.setActiveBuffer(buffer.id);
-            window.focus();
-            notification.close();
-        };
+            };
+        }
 
         if ($scope.soundnotification) {
             // TODO fill in a sound file
             var audioFile = "assets/audio/sonar";
             var soundHTML = '<audio autoplay="autoplay"><source src="' + audioFile + '.ogg" type="audio/ogg" /><source src="' + audioFile + '.mp3" type="audio/mpeg" /></audio>';
             document.getElementById("soundNotification").innerHTML = soundHTML;
+        }
+
+        if (navigator.notification !== undefined) {
+            console.log('vibrating!');
+            navigator.notification.vibrate(500);
+        } else {
+            console.log('no notification api :(', navigator.notification);
         }
     };
 
