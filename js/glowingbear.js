@@ -201,6 +201,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         models.reinitialize();
         $rootScope.$emit('notificationChanged');
         $scope.connectbutton = 'Connect';
+
+        // Clear all cordova notifications
+        if (window.plugin !== undefined && window.plugin.notification !== undefined && window.plugin.notification.local !== undefined) {
+            window.plugin.notification.local.cancelAll();
+        }
     });
     $scope.connectbutton = 'Connect';
 
@@ -260,8 +265,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "showtimestamp", showtimestamp);
     // Save setting for showing seconds on timestamps
     $store.bind($scope, "showtimestampSeconds", false);
-    // Save setting for playing sound on notification
-    $store.bind($scope, "soundnotification", false);
     // Save setting for font family
     $store.bind($scope, "fontfamily");
     // Save setting for theme
