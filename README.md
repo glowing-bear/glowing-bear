@@ -1,6 +1,8 @@
 A web client for WeeChat [![Build Status](https://api.travis-ci.org/glowing-bear/glowing-bear.png)](https://travis-ci.org/glowing-bear/glowing-bear?branch=master)
 ========================
 
+**This branch is for use with Apache Cordova, see https://github.com/glowing-bear/glowing-bear-cordova**
+
 Glowing Bear is an HTML5 web frontend for [WeeChat](http://weechat.org) that strives to be a modern and slick interface. It relies on WeeChat to do all the heavy lifting (connections, servers, history, etc) and then provides some nice features on top of that, like content embedding (images, video) and desktop notifications. The main advantage, though, is that you can access it from any modern internet device without having to worry about ssh connections or terminal emulators.
 
 Glowing Bear uses WeeChat directly as the backend through its relay plugin, which allows it to directly connect to WeeChat from the browser using Websockets. That means that the client does not need a special "backend service", and you don't have to install anything. A connection is made from your browser to your WeeChat, with no services in between. Thus, Glowing Bear is written purely in client-side JavaScript with a bit of HTML and CSS.
