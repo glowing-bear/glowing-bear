@@ -21,6 +21,21 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', function($root
                 window.webkitNotifications.requestPermission();
             }
         }
+
+        // Add cordova local notification click handler
+        if (window.plugin !== undefined && window.plugin.notification !== undefined && window.plugin.notification.local !== undefined) {
+            window.plugin.notification.local.onclick = function (id, state, json) {
+                // Parse payload
+                var data = JSON.parse(json);
+                var buffer = data.buffer;
+                if (buffer) {
+                    // Hide sidebar, open notification buffer
+                    // TODO does this work?
+                    $rootScope.hideSidebar();
+                    models.setActiveBuffer(buffer);
+                }
+            };
+        }
     };
 
 
@@ -84,31 +99,44 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', function($root
         title += buffer.shortName;
         title += buffer.fullName.replace(/irc.([^\.]+)\..+/, " ($1)");
 
-        var notification = new Notification(title, {
-            body: body,
-            icon: 'assets/img/favicon.png'
-        });
+        // Chrome for Android doesn't know this
+        if (typeof Notification !== 'undefined') {
+            var notification = new Notification(title, {
+                body: body,
+                icon: 'assets/img/favicon.png'
+            });
 
-        // Cancel notification automatically
-        var timeout = 15*1000;
-        notification.onshow = function() {
-            setTimeout(function() {
+            // Cancel notification automatically
+            var timeout = 15*1000;
+            notification.onshow = function() {
+                setTimeout(function() {
+                    notification.close();
+                }, timeout);
+            };
+
+            // Click takes the user to the buffer
+            notification.onclick = function() {
+                models.setActiveBuffer(buffer.id);
+                window.focus();
                 notification.close();
-            }, timeout);
-        };
+            };
+        } else if (window.plugin !== undefined && window.plugin.notification !== undefined && window.plugin.notification.local !== undefined) {
+            // Cordova local notification
+            // Calculate notification id from buffer ID
+            // Needs to be unique number, but we'll only ever have one per buffer
+            var id = parseInt(buffer.id, 16);
 
-        // Click takes the user to the buffer
-        notification.onclick = function() {
-            models.setActiveBuffer(buffer.id);
-            window.focus();
-            notification.close();
-        };
+            // Cancel previous notification for buffer (if there was one)
+            window.plugin.notification.local.cancel(id);
 
-        if ($rootScope.soundnotification) {
-            // TODO fill in a sound file
-            var audioFile = "assets/audio/sonar";
-            var soundHTML = '<audio autoplay="autoplay"><source src="' + audioFile + '.ogg" type="audio/ogg" /><source src="' + audioFile + '.mp3" type="audio/mpeg" /></audio>';
-            document.getElementById("soundNotification").innerHTML = soundHTML;
+            // Send new notification
+            window.plugin.notification.local.add({
+                id: id,
+                message: body,
+                title: title,
+                autoCancel: true,
+                json: JSON.stringify({ buffer: buffer.id })  // remember buffer id for when the notification is clicked
+            });
         }
     };
 
