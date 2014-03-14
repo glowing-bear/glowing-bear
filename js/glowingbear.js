@@ -851,6 +851,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     window.addEventListener("resize", _.debounce(function() {
         // Recalculation fails when not connected
         if ($rootScope.connected) {
+            // Show the sidebar if switching away from mobile view, hide it when switching to mobile
+            // Wrap in a condition so we save ourselves the $apply if nothing changes (50ms or more)
+            if ($scope.showSidebar === $scope.isMobileDevice()) {
+                $scope.showSidebar = !$scope.showSidebar;
+                $scope.$apply();
+            }
             $scope.calculateNumLines();
         }
     }, 100));
