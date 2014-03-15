@@ -334,7 +334,7 @@ img.embed {
 
 
 table.notimestamp td.time {
-    display: none;
+    display: none !important;
 }
 
 .modal ul {
