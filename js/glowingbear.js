@@ -951,7 +951,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         var notification = new Notification(title, {
             body: body,
-            icon: 'img/favicon.png'
+            icon: 'assets/img/favicon.png'
         });
 
         // Cancel notification automatically
