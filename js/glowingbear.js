@@ -373,7 +373,7 @@ function($rootScope,
                          'onopen': onopen,
                          'onclose': onclose,
                          'onmessage': onmessage,
-                         'onerror': onerror,
+                         'onerror': onerror
                      });
 
     };
@@ -1102,7 +1102,7 @@ weechat.directive('plugin', function() {
         templateUrl: 'directives/plugin.html',
 
         scope: {
-            plugin: '=data',
+            plugin: '=data'
         },
 
         controller: function($scope) {
@@ -1144,7 +1144,7 @@ weechat.directive('inputBar', function() {
         templateUrl: 'directives/input.html',
         
         scope: {
-            inputId: '@inputId',
+            inputId: '@inputId'
         },
 
         controller: function($rootScope,
