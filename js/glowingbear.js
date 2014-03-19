@@ -935,11 +935,21 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $rootScope.createHighlight = function(buffer, message) {
         var title = '';
         var body = '';
+        var numNotifications = buffer.notification;
+
         if (['#', '&', '+', '!'].indexOf(buffer.shortName.charAt(0)) < 0) {
-            title = 'Private message from ';
+            if (numNotifications > 1) {
+                title = numNotifications.toString() + ' private messages from ';
+            } else {
+                title = 'Private message from ';
+            }
             body = message.text;
         } else {
-            title = 'Highlight in ';
+            if (numNotifications > 1) {
+                title = numNotifications.toString() + ' highlights in ';
+            } else {
+                title = 'Highlight in ';
+            }
             var prefix = '';
             for (var i = 0; i < message.prefix.length; i++) {
                 prefix += message.prefix[i].text;
