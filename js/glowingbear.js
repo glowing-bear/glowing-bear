@@ -455,10 +455,6 @@ function($rootScope,
                 // the read marker position correct
                 buffer.lastSeen -= oldLength;
             }
-            // We request more lines, but didn't get more. No more lines!
-            if (oldLength === buffer.lines.length) {
-                buffer.allLinesFetched  = true;
-            }
             // We requested more lines than we got, no more lines.
             if (linesReceivedCount < numLines) {
                 buffer.allLinesFetched = true;
