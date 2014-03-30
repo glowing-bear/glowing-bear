@@ -740,10 +740,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     var noembed = false;
     var notimestamp = false;
 
+    $rootScope.wasMobileDevice = false;
+
     if ($rootScope.isMobileDevice()) {
         nonicklist = true;
         noembed = true;
         notimestamp = true;
+        $rootScope.wasMobileDevice = true;
     }
 
 
@@ -853,10 +856,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if ($rootScope.connected) {
             // Show the sidebar if switching away from mobile view, hide it when switching to mobile
             // Wrap in a condition so we save ourselves the $apply if nothing changes (50ms or more)
-            if ($scope.showSidebar === $scope.isMobileDevice()) {
+            if ($scope.wasMobileDevice !== $scope.isMobileDevice() &&
+                    $scope.showSidebar === $scope.isMobileDevice()) {
                 $scope.showSidebar = !$scope.showSidebar;
                 $scope.$apply();
             }
+            $scope.wasMobileDevice = $scope.isMobileDevice();
             $scope.calculateNumLines();
         }
     }, 100));
