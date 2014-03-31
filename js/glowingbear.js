@@ -503,8 +503,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
 
-    $rootScope.isMobileDevice = function() {
+    $rootScope.isMobileUi = function() {
         // TODO don't base detection solely on screen width
+        // You are right. In the meantime I am renaming isMobileDevice to isMobileUi
         var mobile_cutoff = 968;
         return (document.body.clientWidth < mobile_cutoff);
     };
@@ -689,7 +690,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Clear search term on buffer change
         $scope.search = '';
 
-        if (!$rootScope.isMobileDevice()) {
+        if (!$rootScope.isMobileUi()) {
             $('#sendMessage').focus();
         }
     });
@@ -740,13 +741,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     var noembed = false;
     var notimestamp = false;
 
-    $rootScope.wasMobileDevice = false;
+    $rootScope.wasMobileUi = false;
 
-    if ($rootScope.isMobileDevice()) {
+    if ($rootScope.isMobileUi()) {
         nonicklist = true;
         noembed = true;
         notimestamp = true;
-        $rootScope.wasMobileDevice = true;
+        $rootScope.wasMobileUi = true;
     }
 
 
@@ -773,13 +774,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     // Open and close panels while on mobile devices through swiping
     $scope.swipeSidebar = function() {
-        if ($rootScope.isMobileDevice()) {
+        if ($rootScope.isMobileUi()) {
             $scope.showSidebar = !$scope.showSidebar;
         }
     };
 
     $scope.openNick = function() {
-        if ($rootScope.isMobileDevice()) {
+        if ($rootScope.isMobileUi()) {
             if ($scope.nonicklist) {
                 $scope.nonicklist = false;
             }
@@ -787,7 +788,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.closeNick = function() {
-        if ($rootScope.isMobileDevice()) {
+        if ($rootScope.isMobileUi()) {
             if (!$scope.nonicklist) {
                 $scope.nonicklist = true;
             }
@@ -819,7 +820,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.setActiveBuffer = function(bufferId, key) {
         // If we are on mobile we need to collapse the menu on sidebar clicks
         // We use 968 px as the cutoff, which should match the value in glowingbear.css
-        if ($rootScope.isMobileDevice()) {
+        if ($rootScope.isMobileUi()) {
             $scope.showSidebar = false;
         }
         return models.setActiveBuffer(bufferId, key);
@@ -856,12 +857,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if ($rootScope.connected) {
             // Show the sidebar if switching away from mobile view, hide it when switching to mobile
             // Wrap in a condition so we save ourselves the $apply if nothing changes (50ms or more)
-            if ($scope.wasMobileDevice !== $scope.isMobileDevice() &&
-                    $scope.showSidebar === $scope.isMobileDevice()) {
+            if ($scope.wasMobileUi !== $scope.isMobileUi() &&
+                    $scope.showSidebar === $scope.isMobileUi()) {
                 $scope.showSidebar = !$scope.showSidebar;
                 $scope.$apply();
             }
-            $scope.wasMobileDevice = $scope.isMobileDevice();
+            $scope.wasMobileUi = $scope.isMobileUi();
             $scope.calculateNumLines();
         }
     }, 100));
