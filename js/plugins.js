@@ -169,7 +169,7 @@ plugins.factory('userPlugins', function() {
         var match = message.match(rPath) || message.match(rAnchor) || message.match(rShorten);
         if (match) {
             var id = match[1];
-            var embedurl = 'http://www.dailymotion.com/embed/video/' + id + '?html&controls=html&startscreen=html&info=0&logo=0&related=0';
+            var embedurl = 'https://www.dailymotion.com/embed/video/' + id + '?html&controls=html&startscreen=html&info=0&logo=0&related=0';
             return '<iframe frameborder="0" width="480" height="270" src="' + embedurl + '"></iframe>';
         }
 
