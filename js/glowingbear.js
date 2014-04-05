@@ -1291,12 +1291,18 @@ weechat.directive('inputBar', function() {
                 // Arrow up -> go up in history
                 if (code === 38) {
                     inputNode.value = models.getActiveBuffer().getHistoryUp(inputNode.value);
+                    // Set cursor to last position. Need 0ms timeout because browser sets cursor
+                    // position to the beginning after this key handler returns.
+                    setTimeout(function() {
+                        inputNode.setSelectionRange(inputNode.value.length, inputNode.value.length);
+                    }, 0);
                     return true;
                 }
 
                 // Arrow down -> go down in history
                 if (code === 40) {
                     inputNode.value = models.getActiveBuffer().getHistoryDown(inputNode.value);
+                    // We don't need to set the cursor to the rightmost position here, the browser does that for us
                     return true;
                 }
             };
