@@ -134,32 +134,6 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
         }
     };
 
-    var updateFavico = function() {
-        var notifications = unreadCount('notification');
-        if (notifications > 0) {
-            $rootScope.favico.badge(notifications, {
-                    bgColor: '#d00',
-                    textColor: '#fff'
-            });
-            // Set badge to notifications count
-            updateBadge(notifications);
-        } else {
-            var unread = unreadCount('unread');
-            if (unread === 0) {
-                $rootScope.favico.reset();
-                // Remove badge form app icon
-                updateBadge('');
-            } else {
-                $rootScope.favico.badge(unread, {
-                    bgColor: '#5CB85C',
-                    textColor: '#ff0'
-                });
-                // Set app badge to "." when only unread and no notifications
-                updateBadge("•");
-            }
-        }
-    };
-
     // Update app badge (electron only)
     var updateBadge = function(value) {
 
@@ -220,7 +194,6 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
     return {
         requestNotificationPermission: requestNotificationPermission,
         updateTitle: updateTitle,
-        updateFavico: updateFavico,
         updateBadge: updateBadge,
         createHighlight: createHighlight,
         cancelAll: cancelAll,
