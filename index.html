@@ -34,7 +34,6 @@
     <script type="text/javascript" src="js/websockets.js"></script>
     <script type="text/javascript" src="js/models.js"></script>
     <script type="text/javascript" src="js/plugins.js"></script>
-    <script type="text/javascript" src="3rdparty/favico-0.3.5.min.js"></script>
   </head>
   <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" lang="en-US">
     <div ng-hide="connected" class="container">
@@ -370,16 +369,6 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                     <label>
                       <input type="checkbox" ng-model="readlineBindings">
                       Enable common readline keybindings in input bar
-                    </label>
-                  </div>
-                </form>
-              </li>
-              <li>
-                <form class="form-inline" role="form">
-                  <div class="checkbox">
-                    <label>
-                      <input type="checkbox" ng-model="useFavico">
-                      Display unread count in favicon
                     </label>
                   </div>
                 </form>

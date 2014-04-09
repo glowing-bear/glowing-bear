@@ -76,7 +76,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                     buffer.unread = 0;
                     buffer.notification = 0;
 
-                    // Trigger title and favico update
+                    // Trigger title update
                     $rootScope.$emit('notificationChanged');
                 }
 
@@ -162,14 +162,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     });
 
-    $rootScope.favico = new Favico({animation: 'none'});
-
     $rootScope.$on('notificationChanged', function() {
         notifications.updateTitle();
-
-        if ($scope.useFavico && $rootScope.favico) {
-            notifications.updateFavico();
-        }
     });
 
     $rootScope.$on('relayDisconnect', function() {
@@ -229,8 +223,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "noembed", noembed);
     // Save setting for channel ordering
     $store.bind($scope, "orderbyserver", true);
-    // Save setting for updating favicon
-    $store.bind($scope, "useFavico", true);
     // Save setting for showtimestamp
     $store.bind($scope, "showtimestamp", showtimestamp);
     // Save setting for showing seconds on timestamps
@@ -318,18 +310,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Watch model and update channel sorting when it changes
     $scope.$watch('orderbyserver', function() {
         $rootScope.predicate = $scope.orderbyserver ? 'serverSortKey' : 'number';
-    });
-
-    $scope.$watch('useFavico', function() {
-        // this check is necessary as this is called on page load, too
-        if (!$rootScope.connected) {
-            return;
-        }
-        if ($scope.useFavico) {
-            notifications.updateFavico();
-        } else {
-            $rootScope.favico.reset();
-        }
     });
 
     // Update font family when changed
@@ -598,7 +578,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             if ($rootScope.connected) {
                 $scope.disconnect();
             }
-            $scope.favico.reset();
         }
     };
 
