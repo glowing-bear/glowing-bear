@@ -44,7 +44,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'fontsize': '14px',
         'fontfamily': (utils.isMobileUi() ? 'sans-serif' : 'Inconsolata, Consolas, Monaco, Ubuntu Mono, monospace'),
         'readlineBindings': false,
-        'enableJSEmoji': (utils.isMobileUi() ? false : true),
         'enableMathjax': false,
     });
     $scope.settings = settings;
@@ -108,7 +107,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                     buffer.unread = 0;
                     buffer.notification = 0;
 
-                    // Trigger title and favico update
+                    // Trigger title update
                     $rootScope.$emit('notificationChanged');
                 }
 
@@ -213,7 +212,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     });
 
-    $rootScope.favico = new Favico({animation: 'none'});
     $scope.notifications = notifications.unreadCount('notification');
     $scope.unread = notifications.unreadCount('unread');
 
@@ -221,10 +219,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         notifications.updateTitle();
         $scope.notifications = notifications.unreadCount('notification');
         $scope.unread = notifications.unreadCount('unread');
-
-        if (settings.useFavico && $rootScope.favico) {
-            notifications.updateFavico();
-        }
     });
 
     $rootScope.$on('relayDisconnect', function() {
@@ -351,17 +345,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $rootScope.predicate = orderbyserver ? 'serverSortKey' : 'number';
     });
 
-    settings.addCallback('useFavico', function(useFavico) {
-        // this check is necessary as this is called on page load, too
-        if (!$rootScope.connected) {
-            return;
-        }
-        if (useFavico) {
-            notifications.updateFavico();
-        } else {
-            $rootScope.favico.reset();
-        }
-    });
 
     // To prevent unnecessary loading times for users who don't
     // want MathJax, load it only if the setting is enabled.
@@ -750,7 +733,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             if ($rootScope.connected) {
                 $scope.disconnect();
             }
-            $scope.favico.reset();
         }
     };
 
