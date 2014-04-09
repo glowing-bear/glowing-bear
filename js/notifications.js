@@ -57,26 +57,6 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
         }
     };
 
-    var updateFavico = function() {
-        var notifications = unreadCount('notification');
-        if (notifications > 0) {
-            $rootScope.favico.badge(notifications, {
-                    bgColor: '#d00',
-                    textColor: '#fff'
-            });
-        } else {
-            var unread = unreadCount('unread');
-            if (unread === 0) {
-                $rootScope.favico.reset();
-            } else {
-                $rootScope.favico.badge(unread, {
-                    bgColor: '#5CB85C',
-                    textColor: '#ff0'
-                });
-            }
-        }
-    };
-
     /* Function gets called from bufferLineAdded code if user should be notified */
     var createHighlight = function(buffer, message) {
         var title = '';
@@ -154,7 +134,6 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
     return {
         requestNotificationPermission: requestNotificationPermission,
         updateTitle: updateTitle,
-        updateFavico: updateFavico,
         createHighlight: createHighlight,
         cancelAll: cancelAll,
         unreadCount: unreadCount
