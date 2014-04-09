@@ -112,7 +112,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                     buffer.unread = 0;
                     buffer.notification = 0;
 
-                    // Trigger title and favico update
+                    // Trigger title update
                     $rootScope.$emit('notificationChanged');
                 }
 
@@ -215,14 +215,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     });
 
-    $rootScope.favico = new Favico({animation: 'none'});
-
     $rootScope.$on('notificationChanged', function() {
         notifications.updateTitle();
-
-        if (settings.useFavico && $rootScope.favico) {
-            notifications.updateFavico();
-        }
     });
 
     $rootScope.$on('relayDisconnect', function() {
@@ -338,17 +332,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $rootScope.predicate = orderbyserver ? 'serverSortKey' : 'number';
     });
 
-    settings.addCallback('useFavico', function(useFavico) {
-        // this check is necessary as this is called on page load, too
-        if (!$rootScope.connected) {
-            return;
-        }
-        if (useFavico) {
-            notifications.updateFavico();
-        } else {
-            $rootScope.favico.reset();
-        }
-    });
 
     // Update font family when changed
     settings.addCallback('fontfamily', function(fontfamily) {
@@ -632,7 +615,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             if ($rootScope.connected) {
                 $scope.disconnect();
             }
-            $scope.favico.reset();
         }
     };
 
