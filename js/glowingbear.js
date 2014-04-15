@@ -582,11 +582,14 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 // We just switched back to the glowing-bear window and unread messages may have
                 // accumulated in the active buffer while the window was in the background
                 var buffer = models.getActiveBuffer();
-                buffer.unread = 0;
-                buffer.notification = 0;
+                // This can also be triggered before connecting to the relay, check for null (not undefined!)
+                if (buffer !== null) {
+                    buffer.unread = 0;
+                    buffer.notification = 0;
 
-                // Trigger title and favico update
-                $rootScope.$emit('notificationChanged');
+                    // Trigger title and favico update
+                    $rootScope.$emit('notificationChanged');
+                }
 
                 // the unread badge in the bufferlist doesn't update if we don't do this
                 $rootScope.$apply();
