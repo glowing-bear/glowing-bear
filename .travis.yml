@@ -3,3 +3,6 @@ node_js:
   - "0.10"
 install: "npm -g install jshint"
 script: "jshint js/*"
+notifications:
+  email: false
+  irc: "chat.freenode.net#glowing-bear"
