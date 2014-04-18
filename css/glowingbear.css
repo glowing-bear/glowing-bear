@@ -374,7 +374,10 @@ h2 span, h2 small {
     }
 
     .bufferline {
-        line-height: 25px;
+        display: inline-block;
+        padding-top: 4px;
+        padding-bottom: 3px;
+        line-height: 15px;
     }
 
     #sidebar {
