@@ -1080,7 +1080,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if ($rootScope.connected) {
             event.preventDefault();
             // Chrome requires us to set this or it will not show the dialog
-            event.returnValue = "You have an active connection to your WeeChat relay. Please disconnect using the button in the top-right corner or by pressing the Escape key.";
+            event.returnValue = "You have an active connection to your WeeChat relay. Please disconnect using the button in the top-right corner or by double-tapping the Escape key.";
         }
         $scope.favico.reset();
     };
@@ -1273,10 +1273,14 @@ weechat.directive('inputBar', function() {
                     }
                 }
 
-                // Escape -> disconnect
+                // Double-tap Escape -> disconnect
                 if (code === 27) {
                     $event.preventDefault();
-                    connection.disconnect();
+                    if (typeof $scope.lastEscape !== "undefined" && (Date.now() - $scope.lastEscape) <= 500) {
+                        // Double-tap
+                        connection.disconnect();
+                    }
+                    $scope.lastEscape = Date.now();
                     return true;
                 }
 
