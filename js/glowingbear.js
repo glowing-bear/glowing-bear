@@ -838,6 +838,41 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     };
 
+    $scope.highlightNick = function(prefix) {
+        // Extract nick from bufferline prefix
+        var nick = prefix[prefix.length - 1].text;
+
+        var input = document.getElementById('sendMessage');
+        var newValue = input.value;
+        var addColon = newValue.length === 0;
+        if (newValue.length > 0) {
+            // Try to determine if it's a sequence of nicks
+            if (newValue.charAt(newValue.length - 1) === ':') {
+                // get last word
+                var lastSpace = newValue.lastIndexOf(' ') + 1;
+                var lastWord = newValue.slice(lastSpace, newValue.length - 1).trim();
+                var nicklist = models.getActiveBuffer().flatNicklist();
+                // check against nicklist to see if it's a list of highlights
+                if (nicklist.indexOf(lastWord) !== -1) {
+                    // It's another highlight!
+                    newValue = newValue.slice(0, newValue.length - 1) + ' ';
+                    addColon = true;
+                }
+            }
+
+            // Add a space before the nick if there isn't one already
+            // Last char might have changed above, so re-check
+            if (newValue.charAt(newValue.length - 1) !== ' ') {
+                newValue += ' ';
+            }
+        }
+        // Add highlight to nicklist
+        newValue += nick;
+        if (addColon) {
+            newValue += ':';
+        }
+        input.value = newValue;
+    };
 
     // Calculate number of lines to fetch
     $scope.calculateNumLines = function() {
