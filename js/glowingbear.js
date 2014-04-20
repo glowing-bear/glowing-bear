@@ -654,6 +654,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $rootScope.$on('activeBufferChanged', function(event, unreadSum) {
         var ab = models.getActiveBuffer();
+        $scope.bufferlines = ab.lines;
+        $scope.nicklist = ab.nicklist;
 
         if (ab.requestedLines < $scope.lines) {
             // buffer has not been loaded, but some lines may already be present if they arrived after we connected
@@ -719,13 +721,14 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $scope.buffers = models.model.buffers;
 
+    $scope.bufferlines = {};
+    $scope.nicklist = {};
+
     $scope.activeBuffer = models.getActiveBuffer;
 
     $rootScope.waseverconnected = false;
 
     $rootScope.models = models;
-
-    $rootScope.buffer = [];
 
     $rootScope.iterCandidate = null;
 
