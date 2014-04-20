@@ -419,6 +419,10 @@ function($rootScope,
 
     var fetchMoreLines = function(numLines) {
         var buffer = models.getActiveBuffer();
+        if (numLines === undefined) {
+            // Math.max(undefined, *) = NaN -> need a number here
+            numLines = 0;
+        }
         // Calculate number of lines to fetch, at least as many as the parameter
         numLines = Math.max(numLines, buffer.requestedLines * 2);
 
