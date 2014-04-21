@@ -5,4 +5,7 @@ install: "npm -g install jshint"
 script: "jshint js/*"
 notifications:
   email: false
-  irc: "chat.freenode.net#glowing-bear"
+  irc:
+    channels: "chat.freenode.net#glowing-bear"
+    use_notice: true
+    skip_join: true
