@@ -3,3 +3,9 @@ node_js:
   - "0.10"
 install: "npm -g install jshint"
 script: "jshint js/*"
+notifications:
+  email: false
+  irc:
+    channels: "chat.freenode.net#glowing-bear"
+    use_notice: true
+    skip_join: true
