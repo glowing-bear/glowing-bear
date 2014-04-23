@@ -337,14 +337,22 @@ function($rootScope,
         };
 
 
-        var onclose = function () {
+        var onclose = function (evt) {
             /*
              * Handles websocket disconnection
              */
             $log.info("Disconnected from relay");
             failCallbacks('disconnection');
             $rootScope.connected = false;
-            $rootScope.$emit('relayDisconnect');
+            if ($rootScope.waseverconnected) {
+                $rootScope.$emit('relayDisconnect');
+            } else if (ssl && evt.code === 1006) {
+                // A password error doesn't trigger onerror, but certificate issues do. Check time of last error.
+                if (typeof $rootScope.lastError !== "undefined" && (Date.now() - $rootScope.lastError) < 1000) {
+                    // abnormal disconnect by client, most likely ssl error
+                    $rootScope.sslError = true;
+                }
+            }
             $rootScope.$apply();
         };
 
@@ -353,7 +361,8 @@ function($rootScope,
              * Handles cases when connection issues come from
              * the relay.
              */
-            $log.error("Relay error" + evt.data);
+            $log.error("Relay error", evt);
+            $rootScope.lastError = Date.now();
 
             if (evt.type === "error" && this.readyState !== 1) {
                 failCallbacks('error');
@@ -946,6 +955,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $scope.connect = function() {
         $scope.requestNotificationPermission();
+        $rootScope.sslError = false;
+        $rootScope.errorMessage = false;
         connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl);
     };
     $scope.disconnect = function() {
