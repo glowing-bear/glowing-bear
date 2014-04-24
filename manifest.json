@@ -9,11 +9,11 @@
   },
   "app": {
     "urls": [
-      "https://cormier.github.io/glowing-bear/"
+      "https://glowing-bear.github.io/glowing-bear/"
     ],
     "launch": {
       "container": "panel",
-      "web_url": "https://cormier.github.io/glowing-bear/"
+      "web_url": "https://glowing-bear.github.io/glowing-bear/"
     }
   },
   "permissions": [
