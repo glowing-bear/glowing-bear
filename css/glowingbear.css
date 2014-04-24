@@ -340,11 +340,6 @@ img.embed {
     max-height: 300px;
 }
 
-
-table.notimestamp td.time {
-    display: none !important;
-}
-
 .modal ul {
     list-style: none;
     padding-left: 15px;
