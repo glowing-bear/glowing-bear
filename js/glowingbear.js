@@ -860,15 +860,16 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         var addColon = newValue.length === 0;
         if (newValue.length > 0) {
             // Try to determine if it's a sequence of nicks
-            if (newValue.charAt(newValue.length - 1) === ':') {
+            var trimmedValue = newValue.trim();
+            if (trimmedValue.charAt(trimmedValue.length - 1) === ':') {
                 // get last word
-                var lastSpace = newValue.lastIndexOf(' ') + 1;
-                var lastWord = newValue.slice(lastSpace, newValue.length - 1).trim();
+                var lastSpace = trimmedValue.lastIndexOf(' ') + 1;
+                var lastWord = trimmedValue.slice(lastSpace, trimmedValue.length - 1);
                 var nicklist = models.getActiveBuffer().flatNicklist();
                 // check against nicklist to see if it's a list of highlights
                 if (nicklist.indexOf(lastWord) !== -1) {
                     // It's another highlight!
-                    newValue = newValue.slice(0, newValue.length - 1) + ' ';
+                    newValue = newValue.slice(0, newValue.lastIndexOf(':')) + ' ';
                     addColon = true;
                 }
             }
@@ -882,9 +883,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Add highlight to nicklist
         newValue += nick;
         if (addColon) {
-            newValue += ':';
+            newValue += ': ';
         }
         input.value = newValue;
+        input.focus();
     };
 
     // Calculate number of lines to fetch
