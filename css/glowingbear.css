@@ -266,11 +266,19 @@ input[type=text], input[type=password], .badge {
     overflow-y: auto;
     width: auto;
     top: 35px; /* topbar */
-    padding-bottom: 10px;
+    padding-bottom: 10px; /* ignored by firefox */
     margin-right: -5px;
     -webkit-transition:0.35s ease all;
     transition:0.35s ease all;
 }
+
+@-moz-document url-prefix() {
+    /* firefox specific rule because it ignores the padding in #bufferlines */
+    #bufferlines table {
+        margin-bottom: 10px;
+    }
+}
+
 .withnicklist {
     margin-right: 100px !important; /* nicklist */
 }
