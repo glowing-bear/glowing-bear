@@ -21,6 +21,21 @@ var IrcUtils = {
 
         return newList;
     },
+    /**
+     * Get a new version of a nick list, sorted by last speaker
+     *
+     * @param nickList Original nick list
+     * @return Sorted nick list
+     */
+    _ciNickList: function(nickList) {
+
+        var newList = _(nickList).sortBy(function(nickObj) {
+            return -nickObj.spokeAt;
+        });
+        newList = _(newList).pluck('name');
+
+        return newList;
+    },
 
     /**
      * Completes a single nick.
@@ -66,10 +81,13 @@ var IrcUtils = {
                 if (lcCurrentNick === lcNick) {
                     at = matchingNicks.length - 1;
                 }
-            } else if (matchingNicks.length > 0) {
+            } 
+            /* Since we aren't sorted any more torhve disabled this:
+            else if (matchingNicks.length > 0) {
                 // end of group, no need to check after this
-                break;
+                //break;
             }
+            */
         }
 
         if (at === null || matchingNicks.length === 0) {
@@ -105,7 +123,7 @@ var IrcUtils = {
         }
 
         // new nick list to search in
-        var searchNickList = IrcUtils._ciSearchNickList(nickList);
+        var searchNickList = IrcUtils._ciNickList(nickList);
 
         // text before and after caret
         var beforeCaret = text.substring(0, caretPos);

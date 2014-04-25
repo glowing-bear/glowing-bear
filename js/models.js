@@ -43,6 +43,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
          */
         var addLine = function(line) {
             lines.push(line);
+            updateNickSpeak(line);
         };
 
         /*
@@ -50,6 +51,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
          */
         var addNick = function(group, nick) {
             if (nicklistRequested()) {
+                nick.spokeAt = Date.now();
                 nicklist[group].nicks.push(nick);
                 flatnicklist = getFlatNicklist();
             }
@@ -88,18 +90,61 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         };
 
         /*
-         * Maintain a cached version of a flat sorted nicklist
+         * Update a nick with a fresh timestamp so tab completion
+         * can use time to complete recent speakers
+         */
+        var updateNickSpeak = function(line) {
+            // Try to find nick from prefix
+            var prefix = line.prefix;
+            var nick = prefix[prefix.length - 1].text;
+            // Action / me, find the nick as the first word of the message
+            if (nick === " *") {
+                var match = line.text.match(/^(.+)\s/);
+                if (match) {
+                    nick = match[1];
+                }
+            }
+            else if (nick === "" || nick === "=!=") {
+                return;
+            }
+            _.each(nicklist, function(nickGroup) {
+                _.each(nickGroup.nicks, function(nickObj) {
+                    if (nickObj.name === nick) {
+                        // Use the order the line arrive in for simplicity
+                        // instead of using weechat's own timestamp
+                        nickObj.spokeAt = Date.now();
+                    }
+                });
+            });
+            flatnicklist = getFlatNicklist();
+        };
+
+        /*
+         * Get a flat nicklist sorted by speaker time. This function is
+         * called for every tab key press by the user.
          *
          */
+        var getNicklistByTime = function() {
+            var newlist = [];
+            _.each(nicklist, function(nickGroup) {
+                _.each(nickGroup.nicks, function(nickObj) {
+                    newlist.push(nickObj);
+                });
+            });
+
+            newlist.sort(function(a, b) {
+                return a.spokeAt < b.spokeAt;
+            });
+
+            return newlist;
+        };
+
         var getFlatNicklist = function() {
             var newlist = [];
             _.each(nicklist, function(nickGroup) {
                 _.each(nickGroup.nicks, function(nickObj) {
                     newlist.push(nickObj.name);
                 });
-            });
-            newlist.sort(function(a, b) {
-                return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
             });
             return newlist;
         };
@@ -190,6 +235,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             delNick: delNick,
             updateNick: updateNick,
             flatNicklist: flatNicklist,
+            getNicklistByTime: getNicklistByTime,
             serverSortKey: serverSortKey,
             indent: indent,
             history: history,
