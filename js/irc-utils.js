@@ -4,24 +4,6 @@
 
 var IrcUtils = {
     /**
-     * Get a new version of a nick list, sorted alphabetically by lowercase nick.
-     *
-     * @param nickList Original nick list
-     * @return Nick list sorted alphabetically by lowercase nick
-     */
-    _ciSearchNickList: function(nickList) {
-        var newList = [];
-
-        nickList.forEach(function(nick) {
-            newList.push(nick);
-        });
-        newList.sort(function(a, b) {
-            return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
-        });
-
-        return newList;
-    },
-    /**
      * Get a new version of a nick list, sorted by last speaker
      *
      * @param nickList Original nick list

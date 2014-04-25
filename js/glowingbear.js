@@ -868,7 +868,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 // get last word
                 var lastSpace = trimmedValue.lastIndexOf(' ') + 1;
                 var lastWord = trimmedValue.slice(lastSpace, trimmedValue.length - 1);
-                var nicklist = models.getActiveBuffer().flatNicklist();
+                var nicklist = models.getActiveBuffer().getNicklistByTime();
                 // check against nicklist to see if it's a list of highlights
                 if (nicklist.indexOf(lastWord) !== -1) {
                     // It's another highlight!
@@ -1230,7 +1230,7 @@ weechat.directive('inputBar', function() {
                 // get current caret position
                 var caretPos = inputNode.selectionStart;
 
-                // create flat array of nicks
+                // get current active buffer
                 var activeBuffer = models.getActiveBuffer();
 
                 // complete nick

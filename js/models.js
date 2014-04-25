@@ -20,7 +20,6 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var lines = [];
         var requestedLines = 0;
         var nicklist = {};
-        var flatnicklist = [];
         var history = [];
         var historyPos = 0;
         var active = false;
@@ -53,7 +52,6 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             if (nicklistRequested()) {
                 nick.spokeAt = Date.now();
                 nicklist[group].nicks.push(nick);
-                flatnicklist = getFlatNicklist();
             }
         };
         /*
@@ -65,7 +63,6 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
                 return;
             }
             group.nicks = _.filter(group.nicks, function(n) { return n.name !== nick.name;});
-            flatnicklist = getFlatNicklist();
             /*
             for (i in group.nicks) {
                 if (group.nicks[i].name == nick.name) {
@@ -86,7 +83,6 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
                     break;
                 }
             }
-            flatnicklist = getFlatNicklist();
         };
 
         /*
@@ -116,7 +112,6 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
                     }
                 });
             });
-            flatnicklist = getFlatNicklist();
         };
 
         /*
@@ -137,20 +132,6 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             });
 
             return newlist;
-        };
-
-        var getFlatNicklist = function() {
-            var newlist = [];
-            _.each(nicklist, function(nickGroup) {
-                _.each(nickGroup.nicks, function(nickObj) {
-                    newlist.push(nickObj.name);
-                });
-            });
-            return newlist;
-        };
-
-        var flatNicklist = function() {
-            return flatnicklist;
         };
 
         var addToHistory = function(line) {
@@ -234,7 +215,6 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             addNick: addNick,
             delNick: delNick,
             updateNick: updateNick,
-            flatNicklist: flatNicklist,
             getNicklistByTime: getNicklistByTime,
             serverSortKey: serverSortKey,
             indent: indent,
