@@ -20,7 +20,6 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var lines = [];
         var requestedLines = 0;
         var nicklist = {};
-        var flatnicklist = [];
         var history = [];
         var historyPos = 0;
         var active = false;
@@ -43,6 +42,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
          */
         var addLine = function(line) {
             lines.push(line);
+            updateNickSpeak(line);
         };
 
         /*
@@ -50,8 +50,8 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
          */
         var addNick = function(group, nick) {
             if (nicklistRequested()) {
+                nick.spokeAt = Date.now();
                 nicklist[group].nicks.push(nick);
-                flatnicklist = getFlatNicklist();
             }
         };
         /*
@@ -63,7 +63,6 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
                 return;
             }
             group.nicks = _.filter(group.nicks, function(n) { return n.name !== nick.name;});
-            flatnicklist = getFlatNicklist();
             /*
             for (i in group.nicks) {
                 if (group.nicks[i].name == nick.name) {
@@ -84,28 +83,55 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
                     break;
                 }
             }
-            flatnicklist = getFlatNicklist();
         };
 
         /*
-         * Maintain a cached version of a flat sorted nicklist
+         * Update a nick with a fresh timestamp so tab completion
+         * can use time to complete recent speakers
+         */
+        var updateNickSpeak = function(line) {
+            // Try to find nick from prefix
+            var prefix = line.prefix;
+            var nick = prefix[prefix.length - 1].text;
+            // Action / me, find the nick as the first word of the message
+            if (nick === " *") {
+                var match = line.text.match(/^(.+)\s/);
+                if (match) {
+                    nick = match[1];
+                }
+            }
+            else if (nick === "" || nick === "=!=") {
+                return;
+            }
+            _.each(nicklist, function(nickGroup) {
+                _.each(nickGroup.nicks, function(nickObj) {
+                    if (nickObj.name === nick) {
+                        // Use the order the line arrive in for simplicity
+                        // instead of using weechat's own timestamp
+                        nickObj.spokeAt = Date.now();
+                    }
+                });
+            });
+        };
+
+        /*
+         * Get a flat nicklist sorted by speaker time. This function is
+         * called for every tab key press by the user.
          *
          */
-        var getFlatNicklist = function() {
+        var getNicklistByTime = function() {
             var newlist = [];
             _.each(nicklist, function(nickGroup) {
                 _.each(nickGroup.nicks, function(nickObj) {
-                    newlist.push(nickObj.name);
+                    newlist.push(nickObj);
                 });
             });
-            newlist.sort(function(a, b) {
-                return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
-            });
-            return newlist;
-        };
 
-        var flatNicklist = function() {
-            return flatnicklist;
+            newlist.sort(function(a, b) {
+                return a.spokeAt < b.spokeAt;
+            });
+
+            return newlist;
         };
 
         var addToHistory = function(line) {
@@ -189,7 +215,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             addNick: addNick,
             delNick: delNick,
             updateNick: updateNick,
-            flatNicklist: flatNicklist,
+            getNicklistByTime: getNicklistByTime,
             serverSortKey: serverSortKey,
             indent: indent,
             history: history,

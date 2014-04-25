@@ -4,20 +4,17 @@
 
 var IrcUtils = {
     /**
-     * Get a new version of a nick list, sorted alphabetically by lowercase nick.
+     * Get a new version of a nick list, sorted by last speaker
      *
      * @param nickList Original nick list
-     * @return Nick list sorted alphabetically by lowercase nick
+     * @return Sorted nick list
      */
-    _ciSearchNickList: function(nickList) {
-        var newList = [];
+    _ciNickList: function(nickList) {
 
-        nickList.forEach(function(nick) {
-            newList.push(nick);
+        var newList = _(nickList).sortBy(function(nickObj) {
+            return -nickObj.spokeAt;
         });
-        newList.sort(function(a, b) {
-            return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
-        });
+        newList = _(newList).pluck('name');
 
         return newList;
     },
@@ -66,10 +63,13 @@ var IrcUtils = {
                 if (lcCurrentNick === lcNick) {
                     at = matchingNicks.length - 1;
                 }
-            } else if (matchingNicks.length > 0) {
+            } 
+            /* Since we aren't sorted any more torhve disabled this:
+            else if (matchingNicks.length > 0) {
                 // end of group, no need to check after this
-                break;
+                //break;
             }
+            */
         }
 
         if (at === null || matchingNicks.length === 0) {
@@ -105,7 +105,7 @@ var IrcUtils = {
         }
 
         // new nick list to search in
-        var searchNickList = IrcUtils._ciSearchNickList(nickList);
+        var searchNickList = IrcUtils._ciNickList(nickList);
 
         // text before and after caret
         var beforeCaret = text.substring(0, caretPos);

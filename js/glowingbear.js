@@ -666,6 +666,18 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $scope.bufferlines = ab.lines;
         $scope.nicklist = ab.nicklist;
 
+        // Send a request for the nicklist if it hasn't been loaded yet
+        if (!ab.nicklistRequested()) {
+            connection.requestNicklist(ab.fullName, function() {
+                $scope.showNicklist = $scope.updateShowNicklist();
+                // Scroll after nicklist has been loaded, as it may break long lines
+                $rootScope.scrollWithBuffer(true);
+            });
+        } else {
+            // Check if we should show nicklist or not
+            $scope.showNicklist = $scope.updateShowNicklist();
+        }
+
         if (ab.requestedLines < $scope.lines) {
             // buffer has not been loaded, but some lines may already be present if they arrived after we connected
             // try to determine how many lines to fetch
@@ -678,18 +690,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             $scope.fetchMoreLines(numLines);
         }
         $rootScope.updateTitle(ab);
-
-        // Send a request for the nicklist if it hasn't been loaded yet
-        if (!ab.nicklistRequested()) {
-            connection.requestNicklist(ab.fullName, function() {
-                $scope.showNicklist = $scope.updateShowNicklist();
-                // Scroll after nicklist has been loaded, as it may break long lines
-                $rootScope.scrollWithBuffer(true);
-            });
-        } else {
-            // Check if we should show nicklist or not
-            $scope.showNicklist = $scope.updateShowNicklist();
-        }
 
         $rootScope.scrollWithBuffer(true);
 
@@ -868,7 +868,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 // get last word
                 var lastSpace = trimmedValue.lastIndexOf(' ') + 1;
                 var lastWord = trimmedValue.slice(lastSpace, trimmedValue.length - 1);
-                var nicklist = models.getActiveBuffer().flatNicklist();
+                var nicklist = models.getActiveBuffer().getNicklistByTime();
                 // check against nicklist to see if it's a list of highlights
                 if (nicklist.indexOf(lastWord) !== -1) {
                     // It's another highlight!
@@ -1230,12 +1230,12 @@ weechat.directive('inputBar', function() {
                 // get current caret position
                 var caretPos = inputNode.selectionStart;
 
-                // create flat array of nicks
+                // get current active buffer
                 var activeBuffer = models.getActiveBuffer();
 
                 // complete nick
                 var nickComp = IrcUtils.completeNick(inputText, caretPos,
-                                                     $scope.iterCandidate, activeBuffer.flatNicklist(), ':');
+                                                     $scope.iterCandidate, activeBuffer.getNicklistByTime(), ':');
 
                 // remember iteration candidate
                 $scope.iterCandidate = nickComp.iterCandidate;
