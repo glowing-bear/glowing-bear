@@ -1217,7 +1217,10 @@ weechat.directive('inputBar', function() {
              * Returns the input element
              */
             $scope.getInputNode = function() {
-                return $element.find('input')[0];
+                return $element.find('#'+$scope.inputId)[0];
+            };
+            $scope.getForm = function() {
+                return $element.find('form')[0];
             };
 
             $scope.completeNick = function() {
@@ -1253,8 +1256,11 @@ weechat.directive('inputBar', function() {
             $scope.sendMessage = function() {
 
                 var input = $scope.getInputNode();
-                connection.sendMessage(input.value);
                 models.getActiveBuffer().addToHistory(input.value);  // log to buffer history
+                // Split the command into multiple commands based on line breaks
+                _.each($scope.command.split(/\r?\n/), function(line) {
+                    connection.sendMessage(line);
+                });
                 input.value = '';
             };
 
@@ -1361,6 +1367,14 @@ weechat.directive('inputBar', function() {
                 if (code === 40) {
                     inputNode.value = models.getActiveBuffer().getHistoryDown(inputNode.value);
                     // We don't need to set the cursor to the rightmost position here, the browser does that for us
+                    return true;
+                }
+
+                // Enter to submit, shift-enter for newline
+                //
+                if (code == 13 && !$event.shiftKey) {
+                    $event.preventDefault();
+                    $scope.sendMessage();
                     return true;
                 }
             };

@@ -1,6 +1,7 @@
-<form class="form form-horizontal" ng-submit="sendMessage()">
+<form class="form form-horizontal" id="inputform" ng-submit="sendMessage()">
   <div class="input-group">
-    <input id="{{inputId}}" type="text" class="form-control monospace" autocomplete="off" >
+    <textarea id="{{inputId}}" class="form-control monospace" ng-trim="false" rows="1" autocomplete="off" ng-model="command">
+    </textarea>
     <span class="input-group-btn">
       <button class="btn btn-default btn-primary">Send</button>
     </span>
