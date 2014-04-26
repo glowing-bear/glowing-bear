@@ -192,7 +192,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           <a href="#" ng-click="swipeSidebar()">
             <img alt="brand" src="assets/img/favicon.png" title="Connected to {{ host }}:{{ port}}">
           </a>
-          <button ng-show="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
+          <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
         </div>
         <div class="title" ng-bind-html="activeBuffer().title | irclinky:'_blank'"></div>
         <div class="actions pull-right vertical-line-left">
@@ -215,15 +215,15 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </li>
           <li class="buffer" ng-class="{'active': buffer.active, 'indent': buffer.indent }" ng-repeat="(key, buffer) in (filteredBuffers = (buffers | toArray | filter:{fullName:search} | filter:hasUnread | orderBy:predicate))">
             <a href="#" ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}">
-              <span class="badge pull-right" ng-hide="buffer.notification" ng-if="buffer.unread" ng-bind="buffer.unread"></span>
-              <span class="badge pull-right danger" ng-show="buffer.notification" ng-bind="buffer.notification"></span>
-              <span class="buffername">{{ buffer.shortName }}</span><span ng-hide="buffer.shortName">{{ buffer.fullName }}</span>
+              <span class="badge pull-right" ng-if="buffer.unread && !buffer.notification" ng-bind="buffer.unread"></span>
+              <span class="badge pull-right danger" ng-if="buffer.notification" ng-bind="buffer.notification"></span>
+              <span class="buffername">{{ buffer.shortName }}</span><span ng-if="!buffer.shortName">{{ buffer.fullName }}</span>
             </a>
           </li>
         </ul>
       </div>
       <div bindonce id="bufferlines" class="monospace" ng-swipe-right="swipeSidebar()" ng-swipe-left="openNick()" ng-class="{'withnicklist': showNicklist, 'withsidebar': showSidebar}">
-        <div id="nicklist" ng-show="showNicklist" ng-swipe-right="closeNick()" class="vertical-line-left">
+        <div id="nicklist" ng-if="showNicklist" ng-swipe-right="closeNick()" class="vertical-line-left">
           <ul class="nicklistgroup list-unstyled" ng-repeat="group in nicklist">
             <li ng-repeat="nick in group.nicks|orderBy:'name'" ng-click="openBuffer(nick.name)">
               <a ng-click="nickAction(nick)"><span bo-class="nick.prefixClasses" bo-text="nick.prefix"></span><span bo-class="nick.nameClasses" bo-text="nick.name"></span></a>
