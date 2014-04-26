@@ -1,3 +1,4 @@
+"use strict";
 /**
  * Portable utilities for IRC.
  */
