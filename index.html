@@ -241,7 +241,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </tbody>
           <tbody ng-repeat="bufferline in bufferlines">
             <tr class="bufferline">
-              <td class="time" ng-if="!notimestamp">
+              <td class="time">
                 <span class="date" bo-class="{'repeated-time': bufferline.shortTime==bufferlines[$index-1].shortTime}">
                   <span class="cof-chat_time cob-chat_time coa-chat_time" bo-text="bufferline.date|date:'HH'"></span><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time" bo-text="bufferline.date|date:'mm'"></span>
                 </span>
