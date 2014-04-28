@@ -4,20 +4,6 @@ body {
 /* The html and body elements cannot have any padding or margin. */
 }
 
-/* Wrapper for page content to push down footer */
-#wrap {
-    min-height: 100%;
-    height: auto !important;
-    height: 100%;
-    /* Negative indent footer by it's height */
-    margin: 0 auto -25px;
-}
-
-/* Set the fixed height of the footer here */
-#push,
-#footer {
-    height: 25px;
-}
 .horizontal-line {
     -webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
     -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
