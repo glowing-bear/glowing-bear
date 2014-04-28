@@ -703,7 +703,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $scope.search = '';
 
         if (!$rootScope.isMobileUi()) {
-            $('#sendMessage').focus();
+            document.getElementById('sendMessage').focus();
         }
     });
 
@@ -1215,10 +1215,7 @@ weechat.directive('inputBar', function() {
              * Returns the input element
              */
             $scope.getInputNode = function() {
-                return $element.find('#'+$scope.inputId)[0];
-            };
-            $scope.getForm = function() {
-                return $element.find('form')[0];
+                return document.querySelector('textarea#' + $scope.inputId);
             };
 
             $scope.completeNick = function() {
