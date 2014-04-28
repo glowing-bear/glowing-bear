@@ -491,24 +491,22 @@ function($rootScope,
 
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', function ($rootScope, $scope, $store, $timeout, $log, models, connection) {
 
+    // From: http://stackoverflow.com/a/18539624 by StackOverflow user "plantian"
     $rootScope.countWatchers = function () {
-        var root = $(document.getElementsByTagName('body'));
-        var watchers = [];
-
-        var f = function (element) {
-            if (element.data().hasOwnProperty('$scope')) {
-                angular.forEach(element.data().$scope.$$watchers, function (watcher) {
-                    watchers.push(watcher);
-                });
+        var q = [$rootScope], watchers = 0, scope;
+        while (q.length > 0) {
+            scope = q.pop();
+            if (scope.$$watchers) {
+                watchers += scope.$$watchers.length;
             }
-
-            angular.forEach(element.children(), function (childElement) {
-                f($(childElement));
-            });
-        };
-
-        f(root);
-        console.log(watchers.length);
+            if (scope.$$childHead) {
+                q.push(scope.$$childHead);
+            }
+            if (scope.$$nextSibling) {
+                q.push(scope.$$nextSibling);
+            }
+        }
+        console.log(watchers);
     };
 
 
