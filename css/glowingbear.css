@@ -2,6 +2,7 @@ html,
 body {
     height: 100%;
 /* The html and body elements cannot have any padding or margin. */
+    overflow:hidden;
 }
 
 .horizontal-line {
@@ -81,9 +82,6 @@ hr {
 body {
     color: #ddd;
     background-color: #181818;
-    padding-left: 0;
-    padding-right: 5px;
-    padding-bottom:70px;
 }
 
 #sendMessage {
@@ -91,7 +89,7 @@ body {
     height: 36px;
     resize: none;
 }
-#footer button {
+.footer button {
     border-radius: 0;
 }
 .panel input, .panel .input-group {
@@ -250,21 +248,20 @@ input[type=text], input[type=password], #sendMessage, .badge {
 
 #bufferlines {
     position: relative;
-    height: 98%;
+    height: 100%;
     overflow-y: auto;
     width: auto;
-    top: 35px; /* topbar */
-    padding-bottom: 10px; /* ignored by firefox */
-    margin-right: -5px;
+    bottom: 35px;
+    padding-top: 35px; /* topbar */
     -webkit-transition:0.35s ease all;
     transition:0.35s ease all;
 }
+#bufferlines table {
+  margin-top: 35px;
+}
 
+/* Placeholder for firefox specific CSS */
 @-moz-document url-prefix() {
-    /* firefox specific rule because it ignores the padding in #bufferlines */
-    #bufferlines table {
-        margin-bottom: 10px;
-    }
 }
 
 .withnicklist {
@@ -277,13 +274,17 @@ input[type=text], input[type=password], #sendMessage, .badge {
     font-family: sans-serif;
 }
 
-.navbar-fixed-bottom {
-    margin: 0 5px 0 145px; /* sidebar */
+.footer {
+    position: fixed;
+    bottom: 0;
+    height: 35px;
+    width: 100%;
     -webkit-transition:0.35s ease all;
     transition:0.35s ease all;
 }
-.navbar-inverse {
-    background-color: #181818;
+.footer.withsidebar {
+    margin-left: 0;
+    padding-left: 145px;
 }
 
 .color-light-green {
