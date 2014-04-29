@@ -102,6 +102,9 @@ input[type=text], input[type=password], #sendMessage, .badge {
     box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.8) inset;
     background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.3);
 }
+.glyphicon {
+    top: 0; /* Fixes alignment issue in top bar */
+}
 #topbar {
     position: fixed;
     width: 100%;
@@ -110,9 +113,6 @@ input[type=text], input[type=password], #sendMessage, .badge {
     z-index: 2;
     line-height: 35px;
     white-space: nowrap;
-    -webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
-    -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
-    box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
 }
 #topbar .brand {
     float: left;
@@ -398,11 +398,10 @@ h2 span, h2 small {
     }
 
     #topbar .actions {
-        line-height: 30px;
-        font-size: 30px;
+        line-height: 35px;
+        height: 35px;
+        font-size: 31px;
         margin-right: 0;
-        height: 32px;
-        padding-top: 3px;
     }
 
     #bufferlines, #nicklist {
