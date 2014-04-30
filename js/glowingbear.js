@@ -1234,6 +1234,22 @@ weechat.directive('plugin', function() {
 });
 
 
+weechat.directive('bufferLine', function() {
+    return {
+        templateUrl: 'directives/bufferline.html',
+        restrict: 'A',
+        scope: {
+            bufferline: '=',
+            previousbufferline: '='
+        },
+
+        controller: function($scope) {
+            console.log($scope);
+        }
+
+    }
+});
+
 weechat.directive('inputBar', function() {
 
     return {

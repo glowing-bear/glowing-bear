@@ -241,18 +241,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
             </tr>
           </tbody>
           <tbody ng-repeat="bufferline in bufferlines">
-            <tr class="bufferline">
-              <td class="time">
-                <span class="date" bo-class="{'repeated-time': bufferline.shortTime==bufferlines[$index-1].shortTime}">
-                  <span class="cof-chat_time cob-chat_time coa-chat_time" bo-text="bufferline.date|date:'HH'"></span><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time" bo-text="bufferline.date|date:'mm'"></span><span class="seconds"><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time" bo-text="bufferline.date|date:'ss'"></span></span>
-                </span>
-              </td>
-              <td class="prefix"><a ng-click="addMention(bufferline.prefix)"><span ng-repeat="part in bufferline.prefix" bo-class="part.classes" bo-html="part.text"></span></a></td>
-              <td class="message">
-                <div ng-repeat="metadata in bufferline.metadata" plugin data="metadata"></div>
-                <span ng-repeat="part in bufferline.content" class="text" bo-class="part.classes" bo-html="part.text|irclinky:'_blank'"></span>
-              </td>
-            </tr>
+            <tr buffer-line bufferline="bufferline" previousbufferline="bufferlines[$index-1]"></tr>
             <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
               <td colspan="3">
                 <hr id="readmarker">
