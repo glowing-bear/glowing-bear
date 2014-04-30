@@ -248,17 +248,13 @@ input[type=text], input[type=password], #sendMessage, .badge {
     height: 100%;
     overflow-y: auto;
     width: auto;
-    bottom: 35px;
-    padding-top: 35px; /* topbar */
+    bottom: 42px;
+    padding-top: 42px; /* topbar */
     -webkit-transition:0.35s ease all;
     transition:0.35s ease all;
 }
 #bufferlines table {
   margin-top: 35px;
-}
-
-/* Placeholder for firefox specific CSS */
-@-moz-document url-prefix() {
 }
 
 .withnicklist {
