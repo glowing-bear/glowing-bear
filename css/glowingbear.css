@@ -3,6 +3,8 @@ body {
     height: 100%;
 /* The html and body elements cannot have any padding or margin. */
     overflow:hidden;
+    color: #ddd;
+    background-color: #181818;
 }
 
 .horizontal-line {
@@ -77,11 +79,6 @@ hr {
 }
 .text {
     white-space: pre-wrap;
-}
-
-body {
-    color: #ddd;
-    background-color: #181818;
 }
 
 #sendMessage {
