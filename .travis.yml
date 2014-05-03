@@ -9,5 +9,5 @@ notifications:
     channels: "chat.freenode.net#glowing-bear"
     use_notice: true
     skip_join: true
-    on_success: change
+    on_success: never
     on_failure: always
