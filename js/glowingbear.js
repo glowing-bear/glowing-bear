@@ -892,7 +892,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     // Calculate number of lines to fetch
     $scope.calculateNumLines = function() {
-        var lineHeight = document.querySelector(".bufferline").clientHeight;
+        var bufferlineElements = document.querySelectorAll(".bufferline");
+        var lineHeight = 0, idx = 0;
+        while (lineHeight === 0 && idx < bufferlineElements.length) {
+            lineHeight = bufferlineElements[idx++].clientHeight;
+        }
         var areaHeight = document.querySelector("#bufferlines").clientHeight;
         // Fetch 10 lines more than theoretically needed so that scrolling up will correctly trigger the loading of more lines
         // Also, some lines might be hidden, so it's probably better to have a bit of buffer there
