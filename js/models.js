@@ -92,6 +92,10 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var updateNickSpeak = function(line) {
             // Try to find nick from prefix
             var prefix = line.prefix;
+            if (prefix.length === 0) {
+                // some scripts produce lines without a prefix
+                return;
+            }
             var nick = prefix[prefix.length - 1].text;
             // Action / me, find the nick as the first word of the message
             if (nick === " *") {
