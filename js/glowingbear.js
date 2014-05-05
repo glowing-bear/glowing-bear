@@ -703,7 +703,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $scope.search = '';
 
         if (!$rootScope.isMobileUi()) {
-            document.getElementById('sendMessage').focus();
+            // This needs to happen asynchronously to prevent the enter key handler
+            // of the input bar to be triggered on buffer switch via the search.
+            // Otherwise its current contents would be sent to the new buffer
+            setTimeout(function() {
+                document.getElementById('sendMessage').focus();
+            }, 0);
         }
     });
 
@@ -1371,7 +1376,7 @@ weechat.directive('inputBar', function() {
 
                 // Enter to submit, shift-enter for newline
                 //
-                if (code == 13 && !$event.shiftKey) {
+                if (code == 13 && !$event.shiftKey && document.activeElement === inputNode) {
                     $event.preventDefault();
                     $scope.sendMessage();
                     return true;
