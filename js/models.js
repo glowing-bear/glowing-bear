@@ -19,6 +19,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var notify = 3; // Default 3 == message
         var lines = [];
         var requestedLines = 0;
+        var allLinesFetched = false;
         var nicklist = {};
         var history = [];
         var historyPos = 0;
@@ -197,6 +198,14 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             return nicklist.hasOwnProperty('root');
         };
 
+        /* Clear all our buffer lines */
+        var clear = function() {
+            while(lines.length > 0) {
+                lines.pop();
+            }
+            requestedLines = 0;
+        };
+
         return {
             id: pointer,
             fullName: fullName,
@@ -204,6 +213,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             number: number,
             title: title,
             lines: lines,
+            clear: clear,
             requestedLines: requestedLines,
             addLine: addLine,
             lastSeen: lastSeen,

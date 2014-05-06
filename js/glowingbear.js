@@ -427,6 +427,7 @@ function($rootScope,
 
 
     var fetchMoreLines = function(numLines) {
+        $log.debug('Fetching ', numLines, ' lines');
         var buffer = models.getActiveBuffer();
         if (numLines === undefined) {
             // Math.max(undefined, *) = NaN -> need a number here
@@ -506,7 +507,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 q.push(scope.$$nextSibling);
             }
         }
-        console.log(watchers);
+        $log.debug(watchers);
     };
 
 
@@ -1208,6 +1209,7 @@ weechat.directive('inputBar', function() {
         controller: function($rootScope,
                              $scope,
                              $element,
+                             $log,
                              connection,
                              models) {
 
@@ -1251,11 +1253,23 @@ weechat.directive('inputBar', function() {
             $scope.sendMessage = function() {
 
                 var input = $scope.getInputNode();
-                models.getActiveBuffer().addToHistory(input.value);  // log to buffer history
+                var ab = models.getActiveBuffer();
+
+                // log to buffer history
+                ab.addToHistory(input.value);
+
                 // Split the command into multiple commands based on line breaks
                 _.each($scope.command.split(/\r?\n/), function(line) {
                     connection.sendMessage(line);
                 });
+
+                // Check for /clear command
+                if ($scope.command === '/clear' || $scope.command === '/c') {
+                    $log.debug('Clearing lines');
+                    ab.clear();
+                }
+
+                // Empty the input after it's sent
                 input.value = '';
             };
 
