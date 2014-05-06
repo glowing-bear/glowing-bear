@@ -345,9 +345,8 @@ function($rootScope,
             $log.info("Disconnected from relay");
             failCallbacks('disconnection');
             $rootScope.connected = false;
-            if ($rootScope.waseverconnected) {
-                $rootScope.$emit('relayDisconnect');
-            } else if (ssl && evt.code === 1006) {
+            $rootScope.$emit('relayDisconnect');
+            if (ssl && evt.code === 1006) {
                 // A password error doesn't trigger onerror, but certificate issues do. Check time of last error.
                 if (typeof $rootScope.lastError !== "undefined" && (Date.now() - $rootScope.lastError) < 1000) {
                     // abnormal disconnect by client, most likely ssl error
@@ -643,7 +642,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
 
         var activeBuffer = models.getActiveBuffer();
-        $rootScope.pageTitle = activeBuffer.shortName + ' | ' + activeBuffer.title;
+        if (activeBuffer) {
+            $rootScope.pageTitle = activeBuffer.shortName + ' | ' + activeBuffer.title;
+        }
     };
 
     $scope.updateFavico = function() {
@@ -730,7 +731,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Disabled it until it's fully investigated and fixed
         //models.reinitialize();
         $rootScope.$emit('notificationChanged');
+        $scope.connectbutton = 'Connect';
     });
+    $scope.connectbutton = 'Connect';
 
     $scope.showSidebar = true;
 
@@ -969,9 +972,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $rootScope.sslError = false;
         $rootScope.securityError = false;
         $rootScope.errorMessage = false;
+        $scope.connectbutton = 'Connecting ...';
         connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl);
     };
     $scope.disconnect = function() {
+        $scope.connectbutton = 'Connect';
         connection.disconnect();
     };
     $scope.install = function() {
