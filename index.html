@@ -45,6 +45,9 @@
         <div class="alert alert-danger" ng-show="sslError">
           <strong>Secure connection error</strong> A secure connection with the WeeChat relay could not be initiated. This is most likely because your browser does not trust your relay's certificate. Please read the encryption instructions below!
         </div>
+        <div class="alert alert-danger" ng-show="securityError">
+          <strong>Secure connection error</strong> Unable to connect to unencrypted relay when your are connecting to Glowing Bear over HTTPS. Please use an encrypted relay or load the page without using HTTPS.
+        </div>
         <div class="panel-group" id="accordion">
           <div class="panel">
             <div class="panel-heading">

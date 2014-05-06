@@ -242,6 +242,7 @@ function($rootScope,
     var connect = function (host, port, passwd, ssl, noCompression) {
         var proto = ssl ? 'wss' : 'ws';
         var url = proto + "://" + host + ":" + port + "/weechat";
+        $log.debug('Connecting to URL: ', url);
 
         var onopen = function () {
 
@@ -375,7 +376,8 @@ function($rootScope,
         };
 
 
-        ngWebsockets.connect(url,
+        try {
+            ngWebsockets.connect(url,
                      protocol,
                      {
                          'binaryType': "arraybuffer",
@@ -384,6 +386,12 @@ function($rootScope,
                          'onmessage': onmessage,
                          'onerror': onerror
                      });
+        }catch(e) {
+            $log.debug("Websocket caught DOMException:", e);
+            $rootScope.lastError = Date.now();
+            $rootScope.errorMessage = true;
+            $rootScope.securityError = true;
+        }
 
     };
 
@@ -959,6 +967,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.connect = function() {
         $scope.requestNotificationPermission();
         $rootScope.sslError = false;
+        $rootScope.securityError = false;
         $rootScope.errorMessage = false;
         connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl);
     };
