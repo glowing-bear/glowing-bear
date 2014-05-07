@@ -1272,8 +1272,6 @@ weechat.directive('inputBar', function() {
 
             // Send the message to the websocket
             $scope.sendMessage = function() {
-
-                var input = $scope.getInputNode();
                 var ab = models.getActiveBuffer();
 
                 // It's undefined early in the lifecycle of the program.
