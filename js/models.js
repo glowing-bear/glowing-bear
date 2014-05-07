@@ -15,7 +15,6 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var title = message.title;
         var number = message.number;
         var pointer = message.pointers[0];
-        var local_variables = message.local_vars;
         var notify = 3; // Default 3 == message
         var lines = [];
         var requestedLines = 0;
@@ -28,7 +27,8 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var unread = 0;
         var lastSeen = -1;
         var serverSortKey = fullName.replace(/^irc.server.(\w+)/, "irc.$1");
-        var indent = (fullName.match(/^irc./) && !fullName.match(/^irc.server./));
+        var type = message.local_variables.type;
+        var indent = (['channel', 'private'].indexOf(type) >= 0);
 
         // Buffer opened message does not include notify level
         if (message.notify !== undefined) {
@@ -223,7 +223,6 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             lastSeen: lastSeen,
             unread: unread,
             notification: notification,
-            localvars: local_variables,
             notify: notify,
             nicklist: nicklist,
             addNick: addNick,
