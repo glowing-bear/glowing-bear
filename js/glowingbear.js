@@ -385,11 +385,12 @@ function($rootScope,
                          'onmessage': onmessage,
                          'onerror': onerror
                      });
-        }catch(e) {
+        } catch(e) {
             $log.debug("Websocket caught DOMException:", e);
             $rootScope.lastError = Date.now();
             $rootScope.errorMessage = true;
             $rootScope.securityError = true;
+            $rootScope.$emit('relayDisconnect');
         }
 
     };
