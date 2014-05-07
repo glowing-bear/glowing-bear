@@ -870,43 +870,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     };
 
-    $scope.highlightNick = function(prefix) {
-        // Extract nick from bufferline prefix
-        var nick = prefix[prefix.length - 1].text;
-
-        var input = document.getElementById('sendMessage');
-        var newValue = input.value;
-        var addColon = newValue.length === 0;
-        if (newValue.length > 0) {
-            // Try to determine if it's a sequence of nicks
-            var trimmedValue = newValue.trim();
-            if (trimmedValue.charAt(trimmedValue.length - 1) === ':') {
-                // get last word
-                var lastSpace = trimmedValue.lastIndexOf(' ') + 1;
-                var lastWord = trimmedValue.slice(lastSpace, trimmedValue.length - 1);
-                var nicklist = models.getActiveBuffer().getNicklistByTime();
-                // check against nicklist to see if it's a list of highlights
-                if (nicklist.indexOf(lastWord) !== -1) {
-                    // It's another highlight!
-                    newValue = newValue.slice(0, newValue.lastIndexOf(':')) + ' ';
-                    addColon = true;
-                }
-            }
-
-            // Add a space before the nick if there isn't one already
-            // Last char might have changed above, so re-check
-            if (newValue.charAt(newValue.length - 1) !== ' ') {
-                newValue += ' ';
-            }
-        }
-        // Add highlight to nicklist
-        newValue += nick;
-        if (addColon) {
-            newValue += ': ';
-        }
-        input.value = newValue;
-        input.focus();
-    };
 
     // Calculate number of lines to fetch
     $scope.calculateNumLines = function() {
@@ -1296,6 +1259,47 @@ weechat.directive('inputBar', function() {
                     $scope.command = '';
                 }
             };
+
+            $rootScope.highlightNick = function(prefix) {
+                // Extract nick from bufferline prefix
+                var nick = prefix[prefix.length - 1].text;
+
+                var newValue = $scope.command || '';  // can be undefined, in that case, use the empty string
+                var addColon = newValue.length === 0;
+                if (newValue.length > 0) {
+                    // Try to determine if it's a sequence of nicks
+                    var trimmedValue = newValue.trim();
+                    if (trimmedValue.charAt(trimmedValue.length - 1) === ':') {
+                        // get last word
+                        var lastSpace = trimmedValue.lastIndexOf(' ') + 1;
+                        var lastWord = trimmedValue.slice(lastSpace, trimmedValue.length - 1);
+                        var nicklist = models.getActiveBuffer().getNicklistByTime();
+                        // check against nicklist to see if it's a list of highlights
+                        for (var index in nicklist) {
+                            if (nicklist[index].name === lastWord) {
+                                // It's another highlight!
+                                newValue = newValue.slice(0, newValue.lastIndexOf(':')) + ' ';
+                                addColon = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Add a space before the nick if there isn't one already
+                    // Last char might have changed above, so re-check
+                    if (newValue.charAt(newValue.length - 1) !== ' ') {
+                        newValue += ' ';
+                    }
+                }
+                // Add highlight to nicklist
+                newValue += nick;
+                if (addColon) {
+                    newValue += ': ';
+                }
+                $scope.command = newValue;
+                $scope.getInputNode().focus();
+            };
+
 
             // Handle key presses in the input bar
             $rootScope.handleKeyPress = function($event) {
