@@ -133,8 +133,8 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
             var buffer = models.getBuffer(l.buffer);
             // 1 is message
             buffer.unread += l.count[1];
-            // 2 is ?
-            buffer.unread += l.count[2];
+            // 2 is private
+            buffer.notification += l.count[2];
             // 3 is highlight
             buffer.notification += l.count[3];
             /* Since there is unread messages, we can guess
