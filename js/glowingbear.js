@@ -1264,22 +1264,27 @@ weechat.directive('inputBar', function() {
                 var input = $scope.getInputNode();
                 var ab = models.getActiveBuffer();
 
-                // log to buffer history
-                ab.addToHistory(input.value);
+                // It's undefined early in the lifecycle of the program.
+                // Don't send empty commands
+                if($scope.command !== undefined && $scope.command !== '') {
 
-                // Split the command into multiple commands based on line breaks
-                _.each($scope.command.split(/\r?\n/), function(line) {
-                    connection.sendMessage(line);
-                });
+                    // log to buffer history
+                    ab.addToHistory($scope.command);
 
-                // Check for /clear command
-                if ($scope.command === '/buffer clear' || $scope.command === '/c') {
-                    $log.debug('Clearing lines');
-                    ab.clear();
+                    // Split the command into multiple commands based on line breaks
+                    _.each($scope.command.split(/\r?\n/), function(line) {
+                        connection.sendMessage(line);
+                    });
+
+                    // Check for /clear command
+                    if ($scope.command === '/buffer clear' || $scope.command === '/c') {
+                        $log.debug('Clearing lines');
+                        ab.clear();
+                    }
+
+                    // Empty the input after it's sent
+                    $scope.command = '';
                 }
-
-                // Empty the input after it's sent
-                input.value = '';
             };
 
             // Handle key presses in the input bar
