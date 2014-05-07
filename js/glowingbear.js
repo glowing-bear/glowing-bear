@@ -1248,9 +1248,6 @@ weechat.directive('inputBar', function() {
                 // input DOM node
                 var inputNode = $scope.getInputNode();
 
-                // get current input
-                var inputText = inputNode.value;
-
                 // get current caret position
                 var caretPos = inputNode.selectionStart;
 
@@ -1258,14 +1255,14 @@ weechat.directive('inputBar', function() {
                 var activeBuffer = models.getActiveBuffer();
 
                 // complete nick
-                var nickComp = IrcUtils.completeNick(inputText, caretPos,
+                var nickComp = IrcUtils.completeNick($scope.command, caretPos,
                                                      $scope.iterCandidate, activeBuffer.getNicklistByTime(), ':');
 
                 // remember iteration candidate
                 $scope.iterCandidate = nickComp.iterCandidate;
 
                 // update current input
-                inputNode.value = nickComp.text;
+                $scope.command = nickComp.text;
 
                 // update current caret position
                 inputNode.focus();
@@ -1358,7 +1355,7 @@ weechat.directive('inputBar', function() {
                 if ($event.altKey && (code === 76 || code === 108)) {
                     $event.preventDefault();
                     inputNode.focus();
-                    inputNode.setSelectionRange(inputNode.value.length, inputNode.value.length);
+                    inputNode.setSelectionRange($scope.command.length, $scope.command.length);
                     return true;
                 }
 
@@ -1392,18 +1389,18 @@ weechat.directive('inputBar', function() {
 
                 // Arrow up -> go up in history
                 if (code === 38) {
-                    inputNode.value = models.getActiveBuffer().getHistoryUp(inputNode.value);
+                    $scope.command = models.getActiveBuffer().getHistoryUp($scope.command);
                     // Set cursor to last position. Need 0ms timeout because browser sets cursor
                     // position to the beginning after this key handler returns.
                     setTimeout(function() {
-                        inputNode.setSelectionRange(inputNode.value.length, inputNode.value.length);
+                        inputNode.setSelectionRange($scope.command.length, $scope.command.length);
                     }, 0);
                     return true;
                 }
 
                 // Arrow down -> go down in history
                 if (code === 40) {
-                    inputNode.value = models.getActiveBuffer().getHistoryDown(inputNode.value);
+                    $scope.command = models.getActiveBuffer().getHistoryDown($scope.command);
                     // We don't need to set the cursor to the rightmost position here, the browser does that for us
                     return true;
                 }
