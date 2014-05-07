@@ -18,7 +18,7 @@ To use the web interface you first need to set a relay and a password:
 	/relay add weechat 9001
 	/set relay.network.password YOURPASSWORD
 
-Then go to the GitHub hosted version of [Glowing Bear](https://glowing-bear.github.io/glowing-bear)!
+Then go to the GitHub hosted version of [Glowing Bear](http://glowing-bear.github.io/glowing-bear)!
 
 
 Screenshots
