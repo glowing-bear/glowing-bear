@@ -506,11 +506,16 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
      * @return undefined
      */
     this.closeBuffer = function(bufferId) {
-        var wasActive = this.model.buffers[bufferId.id].active;
-        if (wasActive) {
+        var buffer = this.getBuffer(bufferId);
+        // Check if the buffer really exists, just in case
+        if (buffer === undefined) {
+            return;
+        }
+        if (buffer.active) {
             var firstBuffer = _.keys(this.model.buffers)[0];
             this.setActiveBuffer(firstBuffer);
         }
-        delete(this.model.buffers[bufferId.id]);
+        // Can't use `buffer` here, needs to be deleted from the list
+        delete(this.model.buffers[bufferId]);
     };
 }]);
