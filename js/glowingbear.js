@@ -40,8 +40,8 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
 
     var handleBufferClosing = function(message) {
         var bufferMessage = message.objects[0].content[0];
-        var buffer = new models.Buffer(bufferMessage);
-        models.closeBuffer(buffer);
+        var bufferId = bufferMessage.pointers[0];
+        models.closeBuffer(bufferId);
     };
 
     var handleLine = function(line, manually) {
