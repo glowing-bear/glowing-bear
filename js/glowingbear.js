@@ -36,7 +36,7 @@ weechat.filter('irclinky', ['$filter', function($filter) {
     };
 }]);
 
-weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootScope, models, plugins) {
+weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', function($rootScope, $log, models, plugins) {
 
     var handleBufferClosing = function(message) {
         var bufferMessage = message.objects[0].content[0];
@@ -205,6 +205,8 @@ weechat.factory('handlers', ['$rootScope', 'models', 'plugins', function($rootSc
     $rootScope.$on('onMessage', function(event, message) {
         if (_.has(eventHandlers, message.id)) {
             eventHandlers[message.id](message);
+        } else {
+            $log.debug('Unhandled event received: ' + message.id);
         }
     });
 
