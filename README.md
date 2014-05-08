@@ -1,7 +1,7 @@
 A web client for WeeChat [![Build Status](https://api.travis-ci.org/glowing-bear/glowing-bear.png)](https://travis-ci.org/glowing-bear/glowing-bear)
 ========================
 
-Glowing Bear is a HTML5 web frontend for WeeChat that strives to be a modern and slick interface on top of WeeChat. It relies on WeeChat to do all the heavy lifting (connection, servers, history, etc) and then provides a few features on top of that, like content embedding (images, video) and desktop notification. 
+Glowing Bear is a HTML5 web frontend for WeeChat that strives to be a modern and slick interface on top of WeeChat. It relies on WeeChat to do all the heavy lifting (connection, servers, history, etc) and then provides a few features on top of that, like content embedding (images, video) and desktop notifications.
 
 Glowing Bear uses WeeChat directly as the backend through its relay plugin, which allows us to directly connect to WeeChat from the browser using Websockets. That means that the client does not need a special "backend service", everything is provided by the IRC client itself and this frontend is written in pure HTML/CSS/JavaScript.
 
@@ -43,6 +43,8 @@ If you want to host the HTML application yourself, it is enough to clone it and 
     python -m SimpleHTTPServer
 
 Now you can point your browser to [http://localhost:8000](http://localhost:8000)!
+
+Remember that **you don't need to host Glowing Bear yourself to use it**, you can just use the [GitHub hosted version](http://glowing-bear.github.io/glowing-bear), and we'll take care of updates for you. Your browser connects to WeeChat directly, so it does not matter where Glowing Bear is hosted.
 
 ----
 
