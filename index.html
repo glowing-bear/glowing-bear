@@ -218,9 +218,8 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </li>
           <li class="buffer" ng-class="{'active': buffer.active, 'indent': buffer.indent }" ng-repeat="(key, buffer) in (filteredBuffers = (buffers | toArray | filter:{fullName:search} | filter:hasUnread | orderBy:predicate))">
             <a href="#" ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}">
-              <span class="badge pull-right" ng-if="buffer.unread && !buffer.notification" ng-bind="buffer.unread"></span>
-              <span class="badge pull-right danger" ng-if="buffer.notification" ng-bind="buffer.notification"></span>
-              <span class="buffername">{{ buffer.shortName }}</span><span ng-if="!buffer.shortName">{{ buffer.fullName }}</span>
+              <span class="badge pull-right" ng-class="{'danger': buffer.notification}" ng-if="buffer.notification || buffer.unread" ng-bind="buffer.notification || buffer.unread"></span>
+              <span class="buffername">{{ buffer.shortName || buffer.fullName }}</span>
             </a>
           </li>
         </ul>
@@ -228,8 +227,8 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
       <div bindonce id="bufferlines" class="monospace" ng-swipe-right="swipeSidebar()" ng-swipe-left="openNick()" ng-class="{'withnicklist': showNicklist, 'withsidebar': showSidebar}">
         <div id="nicklist" ng-if="showNicklist" ng-swipe-right="closeNick()" class="vertical-line-left">
           <ul class="nicklistgroup list-unstyled" ng-repeat="group in nicklist">
-            <li ng-repeat="nick in group.nicks|orderBy:'name'" ng-click="openBuffer(nick.name)">
-              <a ng-click="nickAction(nick)"><span bo-class="nick.prefixClasses" bo-text="nick.prefix"></span><span bo-class="nick.nameClasses" bo-text="nick.name"></span></a>
+            <li ng-repeat="nick in group.nicks|orderBy:'name'">
+              <a ng-click="openBuffer(nick.name)"><span bo-class="nick.prefixClasses" bo-text="nick.prefix"></span><span bo-class="nick.nameClasses" bo-text="nick.name"></span></a>
             </li>
           </ul>
         </div>
@@ -251,9 +250,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
               </td>
               <td class="prefix"><a ng-click="addMention(bufferline.prefix)"><span ng-repeat="part in bufferline.prefix" bo-class="part.classes" bo-html="part.text"></span></a></td>
               <td class="message">
-                <div ng-repeat="metadata in bufferline.metadata">
-                  <div plugin data="metadata"></div>
-                </div>
+                <div ng-repeat="metadata in bufferline.metadata" plugin data="metadata"></div>
                 <span ng-repeat="part in bufferline.content" class="text" bo-class="part.classes" bo-html="part.text|irclinky:'_blank'"></span>
               </td>
             </tr>

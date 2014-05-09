@@ -106,6 +106,18 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', function
         old.shortName = obj.short_name;
     };
 
+    var handleBufferLocalvarChanged = function(message) {
+        var obj = message.objects[0].content[0];
+        var buffer = obj.pointers[0];
+        var old = models.getBuffer(buffer);
+
+        var localvars = obj.local_variables;
+        if (old !== undefined && localvars !== undefined) {
+            // Update indendation status
+            old.indent = (['channel', 'private'].indexOf(localvars.type) >= 0);
+        }
+    };
+
     /*
      * Handle answers to (lineinfo) messages
      *
@@ -195,6 +207,8 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', function
     var eventHandlers = {
         _buffer_closing: handleBufferClosing,
         _buffer_line_added: handleBufferLineAdded,
+        _buffer_localvar_added: handleBufferLocalvarChanged,
+        _buffer_localvar_removed: handleBufferLocalvarChanged,
         _buffer_opened: handleBufferOpened,
         _buffer_title_changed: handleBufferTitleChanged,
         _buffer_renamed: handleBufferRenamed,
