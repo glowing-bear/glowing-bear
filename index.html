@@ -39,151 +39,150 @@
         <span>glowing bear</span>
         <small>WeeChat web frontend</small>
       </h2>
-        <div class="alert alert-danger" ng-show="errorMessage">
-          <strong>Connection error</strong> The client was unable to connect to the WeeChat relay
-        </div>
-        <div class="alert alert-danger" ng-show="sslError">
-          <strong>Secure connection error</strong> A secure connection with the WeeChat relay could not be initiated. This is most likely because your browser does not trust your relay's certificate. Please read the encryption instructions below!
-        </div>
-        <div class="alert alert-danger" ng-show="securityError">
-          <strong>Secure connection error</strong> Unable to connect to unencrypted relay when your are connecting to Glowing Bear over HTTPS. Please use an encrypted relay or load the page without using HTTPS.
-        </div>
-        <div class="panel-group" id="accordion">
-          <div class="panel">
-            <div class="panel-heading">
-              <h4 class="panel-title">
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                  Connection settings
-                </a>
-              </h4>
-            </div>
-            <div id="collapseOne" class="panel-collapse collapse in">
-              <div class="panel-body">
-                <form class="form-signin" role="form">
-                  <div class="form-group">
-                    <label class="control-label" for="host">WeeChat relay hostname and port number</label>
-                    <div class="input-group">
-                      <input type="text" class="form-control monospace" id="host" ng-model="host" placeholder="Address">
-                      <input type="text" class="form-control monospace" id="port" ng-model="port" placeholder="9001">
-                    </div>
-                    <label class="control-label" for="password">WeeChat relay password</label>
-                    <input type="password" class="form-control monospace" id="password" ng-model="password" placeholder="Password">
-                    <div class="alert alert-danger" ng-show="passwordError">
-                      Error: wrong password
-                    </div>
-
-                    <div class="checkbox">
-                      <label class="control-label" for="savepassword">
-                          <input type="checkbox" id="savepassword" ng-model="savepassword">
-                          Save password in your browser
-                      </label>
-                    </div>
-                    <div class="checkbox">
-                      <label class="control-label" for="ssl">
-                        <input type="checkbox" id="ssl" ng-model="ssl">
-                        Encryption. Read instructions for help
-                      </label>
-                    </div>
+      <div class="alert alert-danger" ng-show="errorMessage">
+        <strong>Connection error</strong> The client was unable to connect to the WeeChat relay
+      </div>
+      <div class="alert alert-danger" ng-show="sslError">
+        <strong>Secure connection error</strong> A secure connection with the WeeChat relay could not be initiated. This is most likely because your browser does not trust your relay's certificate. Please read the encryption instructions below!
+      </div>
+      <div class="alert alert-danger" ng-show="securityError">
+        <strong>Secure connection error</strong> Unable to connect to unencrypted relay when your are connecting to Glowing Bear over HTTPS. Please use an encrypted relay or load the page without using HTTPS.
+      </div>
+      <div class="panel-group" id="accordion">
+        <div class="panel">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                Connection settings
+              </a>
+            </h4>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse in">
+            <div class="panel-body">
+              <form class="form-signin" role="form">
+                <div class="form-group">
+                  <label class="control-label" for="host">WeeChat relay hostname and port number</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control monospace" id="host" ng-model="host" placeholder="Address">
+                    <input type="text" class="form-control monospace" id="port" ng-model="port" placeholder="9001">
                   </div>
-                  <button class="btn btn-lg btn-primary" ng-click="connect()">{{ connectbutton }} <i class="glyphicon glyphicon-chevron-right"></i></button>
-                </form>
-              </div>
+                  <label class="control-label" for="password">WeeChat relay password</label>
+                  <input type="password" class="form-control monospace" id="password" ng-model="password" placeholder="Password">
+                  <div class="alert alert-danger" ng-show="passwordError">
+                    Error: wrong password
+                  </div>
+
+                  <div class="checkbox">
+                    <label class="control-label" for="savepassword">
+                        <input type="checkbox" id="savepassword" ng-model="savepassword">
+                        Save password in your browser
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label class="control-label" for="ssl">
+                      <input type="checkbox" id="ssl" ng-model="ssl">
+                      Encryption. Read instructions for help
+                    </label>
+                  </div>
+                </div>
+                <button class="btn btn-lg btn-primary" ng-click="connect()">{{ connectbutton }} <i class="glyphicon glyphicon-chevron-right"></i></button>
+              </form>
             </div>
           </div>
-          <div class="panel">
-            <div class="panel-heading">
-              <h4 class="panel-title">
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-                  Usage instructions
-                </a>
-              </h4>
-            </div>
-            <div id="collapseTwo" class="panel-collapse collapse">
-              <div class="panel-body">
-                <h3>Configuring the relay</h3>
-                <div>To start using glowing bear, please enable the relay plugin in your WeeChat client:
+        </div>
+        <div class="panel">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                Usage instructions
+              </a>
+            </h4>
+          </div>
+          <div id="collapseTwo" class="panel-collapse collapse">
+            <div class="panel-body">
+              <h3>Configuring the relay</h3>
+              <div>To start using glowing bear, please enable the relay plugin in your WeeChat client:
 <pre>
 /set relay.network.password yourpassword
 /relay add weechat 9001
 </pre>
-                <span class="label label-danger">WeeChat version 0.4.2 or higher is required.</span><br>
-                The communication goes directly between your browser and your WeeChat relay in plain text. Check the instructions below for help on setting up encrypted communication.
-                Connection settings, including your password, are saved locally in your own browser between sessions.
-                <br>
-                <h3>Shortcuts</h3>
-                Glowing Bear has a few shortcuts:
-                <ul>
-                  <li>ALT-n: Toggle nicklist</li>
-                  <li>ALT-l: Focus on input bar</li>
-                  <li>ALT-[0-9]: Focus on buffer</li>
-                  <li>ALT-a: Focus on next buffer with activity</li>
-                  <li>ALT-&lt;: Switch to previous buffer</li>
-                  <li>ALT-g: Focus on buffer list filter</li>
-                  <li>Esc-Esc: disconnect (double-tap)</li>
-                  <li>arrow keys: history navigation</li>
-                </ul>
-                </div>
+              <span class="label label-danger">WeeChat version 0.4.2 or higher is required.</span><br>
+              The communication goes directly between your browser and your WeeChat relay in plain text. Check the instructions below for help on setting up encrypted communication.
+              Connection settings, including your password, are saved locally in your own browser between sessions.
+              <br>
+              <h3>Shortcuts</h3>
+              Glowing Bear has a few shortcuts:
+              <ul>
+                <li>ALT-n: Toggle nicklist</li>
+                <li>ALT-l: Focus on input bar</li>
+                <li>ALT-[0-9]: Focus on buffer</li>
+                <li>ALT-a: Focus on next buffer with activity</li>
+                <li>ALT-&lt;: Switch to previous buffer</li>
+                <li>ALT-g: Focus on buffer list filter</li>
+                <li>Esc-Esc: disconnect (double-tap)</li>
+                <li>arrow keys: history navigation</li>
+              </ul>
               </div>
             </div>
           </div>
-          <div class="panel ">
-            <div class="panel-heading">
-              <h4 class="panel-title">
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-                  Encryption instructions
-                </a>
-              </h4>
-            </div>
-            <div id="collapseThree" class="panel-collapse collapse">
-              <div class="panel-body">
-                <p>If you check the encryption box, the communication between browser and WeeChat will be encrypted with SSL.</p>
-                <p><strong>Note</strong>: If you are using a self-signed certificate, you have to visit <a href="https://{{ host }}:{{ port }}/">https://{{ host || 'weechathost' }}:{{ port || 'relayport' }}/</a> in your browser first to add a security exception. You can close that tab once you confirmed the certificate, no content will appear. The necessity of this process is a bug in <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">Firefox</a> and other browsers.</p>
-                <p><strong>Setup</strong>: If you want to use an encrypted session you first have to set up the relay to use SSL. You basically have two options: a self-signed certificate is easier to set up, but requires manual security exceptions. Using a certificate that is trusted by your browser requires more setup, but does not require any security exceptions. As the process for requesting a certificate is different for every certification authority, we detail the method for setting up WeeChat with a self-signed certificate here. To create one, execute the following commands in a shell on the same host and as the user running WeeChat:</p>
+        </div>
+        <div class="panel ">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                Encryption instructions
+              </a>
+            </h4>
+          </div>
+          <div id="collapseThree" class="panel-collapse collapse">
+            <div class="panel-body">
+              <p>If you check the encryption box, the communication between browser and WeeChat will be encrypted with SSL.</p>
+              <p><strong>Note</strong>: If you are using a self-signed certificate, you have to visit <a href="https://{{ host }}:{{ port }}/">https://{{ host || 'weechathost' }}:{{ port || 'relayport' }}/</a> in your browser first to add a security exception. You can close that tab once you confirmed the certificate, no content will appear. The necessity of this process is a bug in <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">Firefox</a> and other browsers.</p>
+              <p><strong>Setup</strong>: If you want to use an encrypted session you first have to set up the relay to use SSL. You basically have two options: a self-signed certificate is easier to set up, but requires manual security exceptions. Using a certificate that is trusted by your browser requires more setup, but does not require any security exceptions. As the process for requesting a certificate is different for every certification authority, we detail the method for setting up WeeChat with a self-signed certificate here. To create one, execute the following commands in a shell on the same host and as the user running WeeChat:</p>
 <pre>
 $ mkdir -p ~/.weechat/ssl
 $ cd ~/.weechat/ssl
 $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out relay.pem -subj "/CN={{host || 'your weechat host'}}/"
 </pre>
-                <p>If WeeChat is already running, you can reload the certificate and private key and set up an encrypted relay on port 8000 with these WeeChat commands:</p>
+              <p>If WeeChat is already running, you can reload the certificate and private key and set up an encrypted relay on port 8000 with these WeeChat commands:</p>
 <pre>
 /relay sslcertkey
 /relay add ssl.weechat 8000
 </pre>
-              </div>
             </div>
           </div>
-          <div class="panel" ng-hide="isinstalled">
-            <div class="panel-heading">
-              <h4 class="panel-title">
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
-                  Install app
-                </a>
-              </h4>
-            </div>
-            <div id="collapseFour" class="panel-collapse collapse">
-              <div class="panel-body">
-                <p>You don't need to install anything to use this app, it should work with any modern browser. Start using it <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">right now</a>! However, there are a few ways to improve integration with your operating system.</p>
-                <h3>Firefox</h3>
-                <p>If you have a recent version of Firefox you can install glowing bear as an app. Click the button to install.</p>
-                <button class="btn btn-lg btn-primary" ng-click="install()">Install Firefox app <i class="glyphicon glyphicon-chevron-right"></i></button>
-                <h3>Chrome</h3>
-                <p>To install glowing bear as an app in Chrome, select <kbd>Menu - Add to home screen</kbd> (Android) or <kbd>Menu - Tools - Create Application Shortcuts</kbd> (desktop version).</p>
-              </div>
+        </div>
+        <div class="panel" ng-hide="isinstalled">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
+                Install app
+              </a>
+            </h4>
+          </div>
+          <div id="collapseFour" class="panel-collapse collapse">
+            <div class="panel-body">
+              <p>You don't need to install anything to use this app, it should work with any modern browser. Start using it <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">right now</a>! However, there are a few ways to improve integration with your operating system.</p>
+              <h3>Firefox</h3>
+              <p>If you have a recent version of Firefox you can install glowing bear as an app. Click the button to install.</p>
+              <button class="btn btn-lg btn-primary" ng-click="install()">Install Firefox app <i class="glyphicon glyphicon-chevron-right"></i></button>
+              <h3>Chrome</h3>
+              <p>To install glowing bear as an app in Chrome, select <kbd>Menu - Add to home screen</kbd> (Android) or <kbd>Menu - Tools - Create Application Shortcuts</kbd> (desktop version).</p>
             </div>
           </div>
-          <div class="panel">
-            <div class="panel-heading">
-              <h4 class="panel-title">
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
-                  Get involved
-                </a>
-              </h4>
-            </div>
-            <div id="collapseFive" class="panel-collapse collapse">
-              <div class="panel-body">
-                <p>Glowing bear is built by a small group of developers in their free time. As we're always trying to improve it, we would love getting your feedback and help. If that sounds like something you might enjoy, check out our <a href="https://github.com/glowing-bear/glowing-bear">project page</a> on GitHub!</p>
-                <p>If you're interested in contributing or simply want to say hello, head over to <strong>#glowing-bear</strong> on <strong>freenode!</strong> We won't bite, promise (-ish).</p>
-              </div>
+        </div>
+        <div class="panel">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
+                Get involved
+              </a>
+            </h4>
+          </div>
+          <div id="collapseFive" class="panel-collapse collapse">
+            <div class="panel-body">
+              <p>Glowing bear is built by a small group of developers in their free time. As we're always trying to improve it, we would love getting your feedback and help. If that sounds like something you might enjoy, check out our <a href="https://github.com/glowing-bear/glowing-bear">project page</a> on GitHub!</p>
+              <p>If you're interested in contributing or simply want to say hello, head over to <strong>#glowing-bear</strong> on <strong>freenode!</strong> We won't bite, promise (-ish).</p>
             </div>
           </div>
         </div>
@@ -266,8 +265,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
         <div input-bar input-id="sendMessage"></div>
       </div>
     </div>
-      <div id="soundNotification"></div>
-    </div>
+    <div id="soundNotification"></div>
     <div id="settingsModal" class="modal fade">
       <div class="modal-dialog">
         <div class="modal-content">
