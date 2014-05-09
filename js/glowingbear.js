@@ -1262,7 +1262,7 @@ weechat.directive('inputBar', function() {
                 }
             };
 
-            $rootScope.highlightNick = function(prefix) {
+            $rootScope.addMention = function(prefix) {
                 // Extract nick from bufferline prefix
                 var nick = prefix[prefix.length - 1].text;
 
