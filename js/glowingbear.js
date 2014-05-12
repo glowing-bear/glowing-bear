@@ -822,8 +822,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "orderbyserver", false);
     // Save setting for showtimestamp
     $store.bind($scope, "showtimestamp", showtimestamp);
-    // Save setting for playing sound on notification
-    $store.bind($scope, "soundnotification", false);
 
     // Save setting for displaying embeds in rootScope so it can be used from service
     $rootScope.visible = $scope.noembed === false;
@@ -1066,13 +1064,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 autoCancel: true,
                 json: JSON.stringify({ buffer: buffer.id })  // remember buffer id for when the notification is clicked
             });
-        }
-
-        if ($scope.soundnotification) {
-            // TODO fill in a sound file
-            var audioFile = "assets/audio/sonar";
-            var soundHTML = '<audio autoplay="autoplay"><source src="' + audioFile + '.ogg" type="audio/ogg" /><source src="' + audioFile + '.mp3" type="audio/mpeg" /></audio>';
-            document.getElementById("soundNotification").innerHTML = soundHTML;
         }
     };
 

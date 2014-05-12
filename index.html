@@ -247,7 +247,6 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
         <div input-bar input-id="sendMessage"></div>
       </div>
     </div>
-    <div id="soundNotification"></div>
     <div id="settingsModal" class="modal fade">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -314,16 +313,6 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                     <label>
                       <input type="checkbox" ng-model="orderbyserver">
                       Order channels by server
-                    </label>
-                  </div>
-                </form>
-              </li>
-              <li>
-                <form class="form-inline" role="form">
-                  <div class="checkbox">
-                    <label>
-                      <input type="checkbox" ng-model="soundnotification">
-                      Play sound on notification
                     </label>
                   </div>
                 </form>
