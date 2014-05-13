@@ -1233,9 +1233,12 @@ weechat.directive('inputBar', function() {
                 // get current active buffer
                 var activeBuffer = models.getActiveBuffer();
 
+                // Empty input makes $scope.command undefined -- use empty string instead
+                var input = $scope.command || '';
+
                 // complete nick
-                var nickComp = IrcUtils.completeNick($scope.command, caretPos,
-                                                     $scope.iterCandidate, activeBuffer.getNicklistByTime(), ':');
+                var nickComp = IrcUtils.completeNick(input, caretPos, $scope.iterCandidate,
+                                                     activeBuffer.getNicklistByTime(), ':');
 
                 // remember iteration candidate
                 $scope.iterCandidate = nickComp.iterCandidate;
