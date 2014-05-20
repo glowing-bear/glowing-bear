@@ -1245,27 +1245,28 @@ weechat.directive('bufferLine', function() {
 
         link: {
             pre: function preLink(scope, iElement, iAttrs, controller) {
-                var prefix = "";
-                var part, partNum, classNum;
-                for (partNum in scope.bufferline.prefix) {
-                    part = scope.bufferline.prefix[partNum];
-                    prefix = angular.element("<span>" + part.text + "</span>");
-                    for (classNum in part.classes) {
-                        prefix.addClass(part.classes[classNum]);
+                var assembleParts = function(parts, target, render) {
+                    var prefix, part, partNum, classNum;
+                    for (partNum in parts) {
+                        part = parts[partNum];
+                        if (render === undefined) {
+                            prefix = angular.element("<span>" + part.text + "</span>");
+                        } else {
+                            prefix = angular.element(render(part));
+                        }
+                        for (classNum in part.classes) {
+                            prefix.addClass(part.classes[classNum]);
+                        }
+                        iElement.find(target).append(prefix);
                     }
-                    iElement.find('td.prefix a').append(prefix);
-                }
+                };
 
-                var content;
-                for (partNum in scope.bufferline.content) {
-                    part = scope.bufferline.content[partNum];
-                    content = scope.irclinky(part.text);
-                    prefix = angular.element('<span class="text">' + content + '</span>');
-                    for (classNum in part.classes) {
-                        prefix.addClass(part.classes[classNum]);
+                assembleParts(scope.bufferline.prefix, 'td.prefix a');
+                assembleParts(scope.bufferline.content, 'td.message',
+                    function(part) {
+                        return '<span class="text">' + scope.irclinky(part.text) + '</span>';
                     }
-                    iElement.find('td.message').append(prefix);
-                }
+                );
             }
         },
 
