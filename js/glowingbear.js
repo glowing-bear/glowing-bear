@@ -1246,20 +1246,36 @@ weechat.directive('bufferLine', function() {
         link: {
             pre: function preLink(scope, iElement, iAttrs, controller) {
                 var prefix = "";
-                for (var partNum in scope.bufferline.prefix) {
-                    var part = scope.bufferline.prefix[partNum];
+                var part, partNum, classNum;
+                for (partNum in scope.bufferline.prefix) {
+                    part = scope.bufferline.prefix[partNum];
                     prefix = angular.element("<span>" + part.text + "</span>");
-                    for (var classNum in part.classes) {
+                    for (classNum in part.classes) {
                         prefix.addClass(part.classes[classNum]);
                     }
                     iElement.find('td.prefix a').append(prefix);
                 }
+
+                var content;
+                for (partNum in scope.bufferline.content) {
+                    part = scope.bufferline.content[partNum];
+                    content = scope.irclinky(part.text);
+                    prefix = angular.element('<span class="text">' + content + '</span>');
+                    for (classNum in part.classes) {
+                        prefix.addClass(part.classes[classNum]);
+                    }
+                    iElement.find('td.message').append(prefix);
+                }
             }
         },
 
-        controller: function($rootScope, $scope) {
+        controller: function($rootScope, $scope, $filter) {
             // pass through the nick click action
             $scope.addMention = $rootScope.addMention;
+
+            $scope.irclinky = function(text) {
+                return $filter('irclinky')(text, '_blank');
+            };
         }
 
     };
