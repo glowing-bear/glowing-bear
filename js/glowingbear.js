@@ -1252,12 +1252,14 @@ weechat.directive('bufferLine', function() {
                     for (var classNum in part.classes) {
                         prefix.addClass(part.classes[classNum]);
                     }
-                    iElement.find('td.prefix').append(prefix);
+                    iElement.find('td.prefix a').append(prefix);
                 }
             }
         },
 
-        controller: function($scope) {
+        controller: function($rootScope, $scope) {
+            // pass through the nick click action
+            $scope.addMention = $rootScope.addMention;
         }
 
     };
