@@ -6,7 +6,7 @@ Glowing Bear is a HTML5 web frontend for WeeChat that strives to be a modern and
 Glowing Bear uses WeeChat directly as the backend through its relay plugin, which allows it to directly connect to WeeChat from the browser using Websockets. That means that the client does not need a special "backend service", and you don't have to install anything. A connection is made from your browser to your WeeChat, with no services in between. Thus, Glowing Bear is written in pure client-side JavaScript with a bit of HTML and CSS.
 
 Getting started
-===============
+---------------
 
 Required WeeChat version: 0.4.2
 
@@ -20,13 +20,19 @@ Then go to the GitHub hosted version of [Glowing Bear](http://glowing-bear.githu
 You can run Glowing Bear in multiple ways: use it like any other webpage, as a Firefox or Chrome app, or a full-screen Chrome app on Android ("Add to homescreen"). We also provide an [Android app](https://play.google.com/store/apps/details?id=com.glowing_bear) that you can install from the Google Play Store.
 
 Screenshots
-----------
+-----------
 Running as Chrome application in a separate window on Windows and as Firefox application on Android:
 
 ![Glowing bear screenshot](https://4z2.de/glowingbear.png)
 
+FAQ
+---
+
+- *Can I use Glowing Bear to access a machine or port not exposed to the internet by passing the connection through my server?* No, that's not what Glowing Bear does. You can use a websocket proxy module for your webserver to forward `/weechat` to your WeeChat instance though. Here are some pointers you might find helpful for setting this up with [nginx](http://nginx.com/blog/websocket-nginx/) or [apache](https://httpd.apache.org/docs/2.4/mod/mod_proxy_wstunnel.html).
+- *How does the encryption work?* TLS is used for securing the connection if you enable encryption. You can find more detailed instructions on how to communicate securely in the "encryption instructions" tab on the [landing page](http://glowing-bear.github.io/glowing-bear). Note that your browser will perform the certificate validation, so it is strongly recommended to use a certificate that your browser trusts.
+
 Development
-===========
+-----------
 
 Getting started with the development of Glowing Bear is really simple, partly because we don't have a build process (pure client-side JS, remember). All you have to do is clone the repository, fire up a webserver to host the files, and start fiddling around. You can try out your changes by reloading the page.
 
