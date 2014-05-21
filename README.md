@@ -1,7 +1,7 @@
 A web client for WeeChat [![Build Status](https://api.travis-ci.org/glowing-bear/glowing-bear.png)](https://travis-ci.org/glowing-bear/glowing-bear)
 ========================
 
-Glowing Bear is a HTML5 web frontend for WeeChat that strives to be a modern and slick interface on top of WeeChat. It relies on WeeChat to do all the heavy lifting (connection, servers, history, etc) and then provides some nice features on top of that, like content embedding (images, video) and desktop notifications. The main advantage, though, is that you can access it from any modern device without having to worry about ssh connections or terminal emulators.
+Glowing Bear is an HTML5 web frontend for [WeeChat](http://weechat.org) that strives to be a modern and slick interface. It relies on WeeChat to do all the heavy lifting (connections, servers, history, etc) and then provides some nice features on top of that, like content embedding (images, video) and desktop notifications. The main advantage, though, is that you can access it from any modern internet device without having to worry about ssh connections or terminal emulators.
 
 Glowing Bear uses WeeChat directly as the backend through its relay plugin, which allows it to directly connect to WeeChat from the browser using Websockets. That means that the client does not need a special "backend service", and you don't have to install anything. A connection is made from your browser to your WeeChat, with no services in between. Thus, Glowing Bear is written in pure client-side JavaScript with a bit of HTML and CSS.
 
@@ -53,3 +53,7 @@ Contributing
 ------------
 
 Interested in contributing or simply want to talk about the project? Join us at **#glowing-bear** on **freenode**!
+
+If you're curious about the projects we're using, here's a list: [AngularJS](https://angularjs.org/), [Bootstrap](http://getbootstrap.com/), [bindonce](https://github.com/Pasvaz/bindonce), [Underscore](http://underscorejs.org/), [favico.js](http://lab.ejci.net/favico.js/), and [zlib.js](https://github.com/imaya/zlib.js). Technology-wise, [WebSockets](http://en.wikipedia.org/wiki/WebSocket) are the most important part, but we also use [local storage](https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Storage#localStorage), the [Notification Web API](https://developer.mozilla.org/en/docs/Web/API/notification), and last (but not least) [Apache Cordova](https://cordova.apache.org/) for our slick app.
+
+We always appreciate pull requests, and if you don't know where to get started, why not browse our [issue tracker](https://github.com/glowing-bear/glowing-bear/issues)? We're also always happy to hear which devices and platforms Glowing Bear works on (or doesn't) — for example, none of our current developers own an Apple device, so if you're interested in helping us test, we'd be most grateful!
