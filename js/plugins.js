@@ -211,7 +211,7 @@ plugins.factory('userPlugins', function() {
 
         if (url) {
             url = url[0]; /* Actually parse one url per message */
-            if (url.match(/\.(png|gif|jpg|jpeg)$/)) {
+            if (url.match(/\.(png|gif|jpg|jpeg)$/i)) {
 
                 /* A fukung.net URL may end by an image extension but is not a direct link. */
                 if (url.indexOf("^https?://fukung.net/v/") != -1) {
