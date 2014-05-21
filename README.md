@@ -21,14 +21,9 @@ You can run Glowing Bear in multiple ways: use it like any other webpage, as a F
 
 Screenshots
 ----------
-Running as Chrome application in a separate window on Windows:
+Running as Chrome application in a separate window on Windows and as Firefox application on Android:
 
-![Glowing bear screenshot](http://hveem.no/ss/weechat-web-client720.png)
-
-Running as Firefox application on Android:
-
-![Glowing bear android screenshot](http://hveem.no/ss/weechat-web-android720.png)
-
+![Glowing bear screenshot](https://4z2.de/glowingbear.png)
 
 Development
 ===========
