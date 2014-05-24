@@ -3,10 +3,10 @@
   "description": "WeeChat Web frontend",
   "launch_path": "/glowing-bear/index.html",
   "icons": {
-    "128": "/glowing-bear/img/weechat_logo_128x128.png",
-    "60": "/glowing-bear/img/weechat_logo_60x60.png",
-    "90": "/glowing-bear/img/weechat_logo_90x90.png",
-    "32": "/glowing-bear/img/favicon.png"
+    "128": "/glowing-bear/assets/img/glowing_bear_128x128.png",
+    "60": "/glowing-bear/assets/img/glowing_bear_60x60.png",
+    "90": "/glowing-bear/assets/img/glowing_bear_90x90.png",
+    "32": "/glowing-bear/assets/img/favicon.png"
   },
   "installs_allowed_from": [
     "*"
