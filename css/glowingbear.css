@@ -170,6 +170,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
     font-size: smaller;
     -webkit-transition:0.35s ease all;
     transition:0.35s ease all;
+    z-index: 2;
 }
 #sidebar form {
 }
@@ -205,6 +206,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
     padding-top: 35px; 
     padding-left: 5px;
     padding-bottom: 35px;
+    z-index: 2;
 }
 #nicklist ul {
     padding: 0;
@@ -277,6 +279,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
     width: 100%;
     -webkit-transition:0.35s ease all;
     transition:0.35s ease all;
+    z-index: 1;
 }
 .footer.withsidebar {
     margin-left: 0;
@@ -378,7 +381,6 @@ h2 span, h2 small {
 
     #sidebar {
         font-size: normal;
-        z-index: 2;
         bottom: 0px;
         width: auto;
         max-width: 60%;
@@ -466,7 +468,10 @@ h2 span, h2 small {
         padding-right: 0px !important;
         width: 100% !important;
         background: rgb(24,24,24);
-        z-index: 1;
+    }
+
+    .footer.withnicklist {
+        padding-right: 108px !important;
     }
 
     ::-webkit-scrollbar {
