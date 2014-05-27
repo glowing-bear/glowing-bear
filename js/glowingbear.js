@@ -793,7 +793,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     if ($rootScope.isMobileUi()) {
         nonicklist = true;
         noembed = true;
-        notimestamp = true;
         $rootScope.wasMobileUi = true;
     }
 
