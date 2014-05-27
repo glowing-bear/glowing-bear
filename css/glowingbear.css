@@ -371,10 +371,6 @@ h2 span, h2 small {
 /* Mobile layout */
 /* */
 @media (max-width: 968px) {
-    .message span {
-        color: #C7C7C7;
-    }
-
     #bufferlines table {
         border-collapse: separate;
         border-spacing: 2px 4px;
