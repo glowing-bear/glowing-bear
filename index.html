@@ -231,7 +231,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
             </li>
           </ul>
         </div>
-        <table ng-class="{'notimestamp':notimestamp}">
+        <table ng-class="{'notimestamp':!showtimestamp}">
           <tbody>
             <tr class="bufferline">
               <td ng-hide="activeBuffer().allLinesFetched" colspan="3">
@@ -290,8 +290,8 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                 <form class="form-inline" role="form">
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" ng-model="notimestamp">
-                      Hide timestamps
+                      <input type="checkbox" ng-model="showtimestamp">
+                      Show timestamps
                     </label>
                   </div>
                 </form>

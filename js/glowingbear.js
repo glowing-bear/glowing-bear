@@ -786,7 +786,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // We use 968 px as the cutoff, which should match the value in glowingbear.css
     var nonicklist = false;
     var noembed = false;
-    var notimestamp = false;
+    var showtimestamp = true;
 
     $rootScope.wasMobileUi = false;
 
@@ -810,8 +810,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "orderbyserver", false);
     // Save setting for updating favicon
     $store.bind($scope, "useFavico", true);
-    // Save setting for notimestamp
-    $store.bind($scope, "notimestamp", notimestamp);
+    // Save setting for showtimestamp
+    $store.bind($scope, "showtimestamp", showtimestamp);
     // Save setting for playing sound on notification
     $store.bind($scope, "soundnotification", false);
 
