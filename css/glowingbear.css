@@ -373,7 +373,7 @@ h2 span, h2 small {
 @media (max-width: 968px) {
     #bufferlines table {
         border-collapse: separate;
-        border-spacing: 2px 4px;
+        border-spacing: 2px 6px;
     }
 
     #sidebar {
@@ -437,7 +437,13 @@ h2 span, h2 small {
     }
 
     #bufferlines td.time {
-        padding-right: 4px;
+        padding-right: 3px;
+        font-size: 12px;
+    }
+
+    #bufferlines td.time span.date {
+        display: block;
+        margin-top: -2px;
     }
 
     #bufferlines td.prefix {
@@ -452,10 +458,10 @@ h2 span, h2 small {
         display: inline;
     }
 
-    /* they're practically invisible otherwise */
+    /* a different colour is too irregular on mobile */
     .repeated-time .cof-chat_time,
     .repeated-time .cof-chat_time_delimiters {
-        color: #444;
+        color: #999;
     }
 
     .footer {
