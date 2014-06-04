@@ -371,9 +371,14 @@ h2 span, h2 small {
 /* Mobile layout */
 /* */
 @media (max-width: 968px) {
+    .monospace {
+        /* readability on mobile +9001% */
+        font-family: sans-serif;
+    }
+
     #bufferlines table {
         border-collapse: separate;
-        border-spacing: 2px 6px;
+        border-spacing: 2px 3px;
     }
 
     #sidebar {
@@ -451,6 +456,7 @@ h2 span, h2 small {
         padding-right: 0;
         border: 0;
         font-weight: bold;
+        font-size: 15px;
     }
 
     #bufferlines td.message {
