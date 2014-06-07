@@ -242,9 +242,15 @@ input[type=text], input[type=password], #sendMessage, .badge {
 .nav-pills > li > a:hover, .nav-pills > li > a:hover span {
     color: #222;
 }
+/* fix for mobile firefox which ignores :hover */
+.nav-pills > li > a:active, .nav-pills > li > a:active span {
+    text-decoration: none;
+    background-color: #eee;
+    color: #222;
+}
 .content {
-    height: 100%; 
-    min-height: 100%; 
+    height: 100%;
+    min-height: 100%;
 }
 
 .monospace {
