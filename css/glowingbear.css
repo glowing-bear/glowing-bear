@@ -2,9 +2,12 @@ html,
 body {
     height: 100%;
 /* The html and body elements cannot have any padding or margin. */
-    overflow:hidden;
     color: #ddd;
     background-color: #181818;
+}
+
+.no-overflow {
+    overflow: hidden;
 }
 
 .horizontal-line {
@@ -239,9 +242,15 @@ input[type=text], input[type=password], #sendMessage, .badge {
 .nav-pills > li > a:hover, .nav-pills > li > a:hover span {
     color: #222;
 }
+/* fix for mobile firefox which ignores :hover */
+.nav-pills > li > a:active, .nav-pills > li > a:active span {
+    text-decoration: none;
+    background-color: #eee;
+    color: #222;
+}
 .content {
-    height: 100%; 
-    min-height: 100%; 
+    height: 100%;
+    min-height: 100%;
 }
 
 .monospace {
@@ -368,15 +377,14 @@ h2 span, h2 small {
 /* Mobile layout */
 /* */
 @media (max-width: 968px) {
-    .message span {
-        color: #C7C7C7;
+    .monospace {
+        /* readability on mobile +9001% */
+        font-family: sans-serif;
     }
 
-    .bufferline {
-        display: inline-block;
-        padding-top: 4px;
-        padding-bottom: 3px;
-        line-height: 15px;
+    #bufferlines table {
+        border-collapse: separate;
+        border-spacing: 2px 3px;
     }
 
     #sidebar {
@@ -440,14 +448,21 @@ h2 span, h2 small {
     }
 
     #bufferlines td.time {
-        display: inline;
-        padding-right: 0;
+        padding-right: 3px;
+        font-size: 12px;
+    }
+
+    #bufferlines td.time span.date {
+        display: block;
+        margin-top: -2px;
     }
 
     #bufferlines td.prefix {
         display: inline;
         padding-right: 0;
         border: 0;
+        font-weight: bold;
+        font-size: 15px;
     }
 
     #bufferlines td.message {
@@ -455,12 +470,10 @@ h2 span, h2 small {
         display: inline;
     }
 
-    #bufferlines td.prefix:before {
-        content: "<";
-    }
-
-    #bufferlines td.prefix:after {
-        content: ">";
+    /* a different colour is too irregular on mobile */
+    .repeated-time .cof-chat_time,
+    .repeated-time .cof-chat_time_delimiters {
+        color: #999;
     }
 
     .footer {
