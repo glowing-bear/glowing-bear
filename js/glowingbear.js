@@ -86,7 +86,10 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', function
         var bufferMessage = message.objects[0].content[0];
         var buffer = new models.Buffer(bufferMessage);
         models.addBuffer(buffer);
+        /* Until we can decide if user asked for this buffer to be opened
+         * or not we will let user click opened buffers. 
         models.setActiveBuffer(buffer.id);
+        */
     };
 
     var handleBufferTitleChanged = function(message) {
