@@ -21,7 +21,7 @@ You can run Glowing Bear in multiple ways: use it like any other webpage, as a F
 
 Screenshots
 -----------
-Running as Chrome application in a separate window on Windows and as Firefox application on Android:
+Running as Chrome application in a separate window on Windows and as Android app:
 
 ![Glowing bear screenshot](https://4z2.de/glowingbear.png)
 
