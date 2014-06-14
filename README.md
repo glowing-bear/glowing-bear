@@ -3,7 +3,7 @@ A web client for WeeChat [![Build Status](https://api.travis-ci.org/glowing-bear
 
 Glowing Bear is an HTML5 web frontend for [WeeChat](http://weechat.org) that strives to be a modern and slick interface. It relies on WeeChat to do all the heavy lifting (connections, servers, history, etc) and then provides some nice features on top of that, like content embedding (images, video) and desktop notifications. The main advantage, though, is that you can access it from any modern internet device without having to worry about ssh connections or terminal emulators.
 
-Glowing Bear uses WeeChat directly as the backend through its relay plugin, which allows it to directly connect to WeeChat from the browser using Websockets. That means that the client does not need a special "backend service", and you don't have to install anything. A connection is made from your browser to your WeeChat, with no services in between. Thus, Glowing Bear is written in pure client-side JavaScript with a bit of HTML and CSS.
+Glowing Bear uses WeeChat directly as the backend through its relay plugin, which allows it to directly connect to WeeChat from the browser using Websockets. That means that the client does not need a special "backend service", and you don't have to install anything. A connection is made from your browser to your WeeChat, with no services in between. Thus, Glowing Bear is written purely in client-side JavaScript with a bit of HTML and CSS.
 
 Getting started
 ---------------
@@ -47,7 +47,7 @@ Now you can point your browser to [http://localhost:8000](http://localhost:8000)
 
 Remember that **you don't need to host Glowing Bear yourself to use it**, you can just use the [GitHub hosted version](http://glowing-bear.github.io/glowing-bear), and we'll take care of updates for you. Your browser connects to WeeChat directly, so it does not matter where Glowing Bear is hosted.
 
-If you'd prefer a version hosted with HTTPS, GitHub serves that as well with an undocumented, not officially supported (by GitHub) link. Be careful though, it might break any minute. Don't blame us if it stops working, you've been warned. Anyway, here's the link: [secret GitHub HTTPS link](https://glowing-bear.github.io/glowing-bear/) (the trailing forward slash in the URL seems to make all the difference).
+If you'd prefer a version hosted with HTTPS, GitHub serves that as well with an undocumented, not officially supported (by GitHub) link. Be careful though, it might break any minute. Anyway, here's the link: [secret GitHub HTTPS link](https://glowing-bear.github.io/glowing-bear/) (the trailing forward slash in the URL seems to make all the difference).
 
 Contributing
 ------------
