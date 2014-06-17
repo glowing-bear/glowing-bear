@@ -530,6 +530,13 @@ img.emoji {
    vertical-align: -0.1em;
 }
 
+.forkme img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: 0;
+}
+
 /* */
 /* Mobile layout */
 /* */
@@ -654,5 +661,9 @@ img.emoji {
     }
     .col-sm-9 {
         padding-right: 0px !important;
+    }
+
+    .forkme {
+        display: none;
     }
 }
