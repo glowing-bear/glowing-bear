@@ -466,7 +466,7 @@ function($rootScope,
         // Indicator that we are loading lines, hides "load more lines" link
         $rootScope.loadingLines = true;
         // Send hdata request to fetch lines for this particular buffer
-        ngWebsockets.send(
+        return ngWebsockets.send(
             weeChat.Protocol.formatHdata({
                 // "0x" is important, otherwise it won't work
                 path: "buffer:0x" + buffer.id + "/own_lines/last_line(-" + numLines + ")/data",
@@ -718,7 +718,16 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 // request up to 4*(screenful + 10 lines)
                 numLines = Math.min(4*numLines, unreadSum);
             }
-            $scope.fetchMoreLines(numLines);
+            $scope.fetchMoreLines(numLines).then(
+                // Update initial scroll position
+                // Most relevant when first connecting to properly initalise
+                function() {
+                    $timeout(function() {
+                        var bufferlines = document.getElementById("bufferlines");
+                        $rootScope.originalBufferlinesPosition = bufferlines.scrollTop + bufferlines.scrollHeight;
+                    });
+                }
+            );
         }
         $rootScope.updateTitle(ab);
 
@@ -920,6 +929,16 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             }
             $scope.wasMobileUi = $scope.isMobileUi();
             $scope.calculateNumLines();
+
+            // if we're scrolled to the bottom, scroll down to the same position after the resize
+            // most common use case: opening the keyboard on a mobile device
+            var bufferlines = document.getElementById("bufferlines");
+            if ($rootScope.originalBufferlinesPosition === bufferlines.scrollHeight + bufferlines.scrollTop) {
+                $timeout(function() {
+                    bufferlines.scrollTop = bufferlines.scrollHeight;
+                }, 100);
+            }
+            $rootScope.originalBufferlinesPosition = bufferlines.scrollTop + bufferlines.scrollHeight;
         }
     }, 100));
 
@@ -929,7 +948,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if (!numLines) {
             numLines = $scope.lines;
         }
-        connection.fetchMoreLines(numLines);
+        return connection.fetchMoreLines(numLines);
     };
 
     $rootScope.scrollWithBuffer = function(nonIncremental) {
