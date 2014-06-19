@@ -579,7 +579,13 @@
                 decodedString = decodeURIComponent(escape(encodedString));
             return decodedString;
         } catch (exception) {
-            return "--Sorry, Glowing Bear cannot decode this line as it is invalid--";
+            // Replace all non-ASCII bytes with "?" if the string couldn't be
+            // decoded as UTF-8.
+            var s = "";
+            for (var i = 0, n = uia.length; i < n; i++) {
+                s += uia[i] < 0x80 ? String.fromCharCode(uia[i]) : "?";
+            }
+            return s;
         }
     };
 
