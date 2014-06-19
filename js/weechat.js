@@ -574,10 +574,13 @@
     WeeChatProtocol._uia2s = function(uia) {
         if(!uia.length || uia[0] === 0) return "";
 
-        var encodedString = String.fromCharCode.apply(null, uia),
-            decodedString = decodeURIComponent(escape(encodedString));
-
-        return decodedString;
+        try {
+            var encodedString = String.fromCharCode.apply(null, uia),
+                decodedString = decodeURIComponent(escape(encodedString));
+            return decodedString;
+        } catch (exception) {
+            return "--Sorry, Glowing Bear cannot decode this line as it is invalid--";
+        }
     };
 
     /**
