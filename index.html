@@ -174,29 +174,6 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
             </div>
           </div>
         </div>
-        <div class="panel" data-state="collapsed" ng-hide="isinstalled">
-          <div class="panel-heading">
-            <h4 class="panel-title">
-              <a class="accordion-toggle" ng-click="toggleAccordion($event)">
-                Install app
-              </a>
-            </h4>
-          </div>
-          <div id="collapseFour" class="panel-collapse collapse in">
-            <div class="panel-body">
-              <p>You don't need to install anything to use this app, it should work with any modern browser. Start using it <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">right now</a>! However, there are a few ways to improve integration with your operating system.</p>
-              <h3>Mobile Applications</h3>
-              <p>If you're running Android 4.4 or later, you can install our app from the Google Play Store! We also provide an optimized application for Firefox OS devices. If you're using the Firefox browser, keep on reading below -- the Firefox OS app won't work for you</p>
-              <p><a href="https://play.google.com/store/apps/details?id=com.glowing_bear"><img alt="Android app on Google Play" src="https://developer.android.com/images/brand/en_app_rgb_wo_45.png" /></a> <a href="https://marketplace.firefox.com/app/glowing-bear/"><img alt="Firefox OS app in the Firefox Marketplace" src="https://marketplace.cdn.mozilla.net/media/img/mkt/badges/firefox-marketplace_badge-orange_129_45.png" /></a></p>
-              <h3>Firefox Browser</h3>
-              <p>If you have a recent version of Firefox you can install Glowing Bear as a Firefox app. Click the button to install.</p>
-              <p><button class="btn btn-lg btn-primary" ng-click="install()">Install Firefox app <i class="glyphicon glyphicon-chevron-right"></i></button></p>
-              <p>Note for self-signed certificates: Firefox does not share a certificate storage with Firefox apps, so accepting self-signed certificates is a bit tricky.</p>
-              <h3>Chrome</h3>
-              <p>To install Glowing Bear as an app in Chrome for Android, select <kbd>Menu - Add to home screen</kbd>. In the desktop version of Chrome, click <kbd>Menu - More tools - Create application shortcuts</kbd>.</p>
-            </div>
-          </div>
-        </div>
         <div class="panel" data-state="collapsed">
           <div class="panel-heading">
             <h4 class="panel-title">
