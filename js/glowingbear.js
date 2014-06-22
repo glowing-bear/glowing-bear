@@ -605,23 +605,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
 
-    $scope.isinstalled = (function() {
-        // Check for firefox & app installed
-        if (navigator.mozApps !== undefined) {
-            navigator.mozApps.getSelf().onsuccess = function _onAppReady(evt) {
-                var app = evt.target.result;
-                if (app) {
-                    return true;
-                } else {
-                    return false;
-                }
-            };
-        } else {
-            return false;
-        }
-    }());
-
-
     // Detect page visibility attributes
     (function() {
         // Sadly, the page visibility API still has a lot of vendor prefixes
@@ -1097,28 +1080,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.disconnect = function() {
         $scope.connectbutton = 'Connect';
         connection.disconnect();
-    };
-    $scope.install = function() {
-        if (navigator.mozApps !== undefined) {
-            // Find absolute url with trailing '/' or '/index.html' removed
-            var base_url = location.protocol + '//' + location.host +
-                location.pathname.replace(/\/(index\.html)?$/, '');
-            var request = navigator.mozApps.install(base_url + '/manifest.webapp');
-            request.onsuccess = function () {
-                $scope.isinstalled = true;
-                // Save the App object that is returned
-                var appRecord = this.result;
-                // Start the app.
-                appRecord.launch();
-                alert('Installation successful!');
-            };
-            request.onerror = function () {
-                // Display the error information from the DOMError object
-                alert('Install failed, error: ' + this.error.name);
-            };
-        } else {
-            alert('Sorry. Only supported in Firefox v26+');
-        }
     };
 
     $scope.showModal = function(elementId) {
