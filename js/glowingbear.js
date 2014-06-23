@@ -831,6 +831,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "useFavico", true);
     // Save setting for showtimestamp
     $store.bind($scope, "showtimestamp", showtimestamp);
+    // Save setting for showing seconds on timestamps
+    $store.bind($scope, "showtimestampSeconds", false);
     // Save setting for playing sound on notification
     $store.bind($scope, "soundnotification", false);
 

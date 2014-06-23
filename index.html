@@ -231,7 +231,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
             </li>
           </ul>
         </div>
-        <table ng-class="{'notimestamp':!showtimestamp}">
+        <table ng-class="{'notimestamp':!showtimestamp,'notimestampseconds':!showtimestampSeconds}">
           <tbody>
             <tr class="bufferline">
               <td ng-hide="activeBuffer().allLinesFetched" colspan="3">
@@ -244,7 +244,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
             <tr class="bufferline">
               <td class="time">
                 <span class="date" bo-class="{'repeated-time': bufferline.shortTime==bufferlines[$index-1].shortTime}">
-                  <span class="cof-chat_time cob-chat_time coa-chat_time" bo-text="bufferline.date|date:'HH'"></span><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time" bo-text="bufferline.date|date:'mm'"></span>
+                  <span class="cof-chat_time cob-chat_time coa-chat_time" bo-text="bufferline.date|date:'HH'"></span><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time" bo-text="bufferline.date|date:'mm'"></span><span class="seconds"><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time" bo-text="bufferline.date|date:'ss'"></span></span>
                 </span>
               </td>
               <td class="prefix"><a ng-click="addMention(bufferline.prefix)"><span ng-repeat="part in bufferline.prefix" bo-class="part.classes" bo-html="part.text"></span></a></td>
@@ -295,6 +295,18 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                     </label>
                   </div>
                 </form>
+                <ul ng-show="showtimestamp">
+                  <li>
+                    <form class="form-inline" role="form">
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" ng-model="showtimestampSeconds">
+                          Show seconds
+                        </label>
+                      </div>
+                    </form>
+                  </li>
+                </ul>
               </li>
               <li>
                 <form class="form-inline" role="form">

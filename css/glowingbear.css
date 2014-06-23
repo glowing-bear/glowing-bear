@@ -345,6 +345,10 @@ table.notimestamp td.time {
     display: none !important;
 }
 
+table.notimestampseconds td.time span.seconds {
+    display: none !important;
+}
+
 .modal ul {
     list-style: none;
     padding-left: 15px;
@@ -352,6 +356,9 @@ table.notimestamp td.time {
 .modal li {
     font-size: larger;
     margin-bottom: 10px;
+}
+.modal li li {
+    font-size: medium;
 }
 .modal-header {
     border-bottom: 0;
