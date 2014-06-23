@@ -196,7 +196,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </a>
           <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
         </div>
-        <div class="title" ng-bind-html="activeBuffer().title | irclinky:'_blank'"></div>
+        <div class="title" ng-bind-html="activeBuffer().title | irclinky:'_blank'" title="{{activeBuffer().title}}"></div>
         <div class="actions pull-right vertical-line-left">
           <div class="pull-left">
             <a class="" data-toggle="modal" data-target="#settingsModal" title="Options menu">
