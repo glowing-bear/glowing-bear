@@ -698,6 +698,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $rootScope.$on('activeBufferChanged', function(event, unreadSum) {
         var ab = models.getActiveBuffer();
+
+        // trim lines to 2 screenfuls + 10 lines
+        ab.lines.splice(0, ab.lines.length - (2 * $scope.lines + 10));
+        ab.requestedLines = ab.lines.length;
+
         $scope.bufferlines = ab.lines;
         $scope.nicklist = ab.nicklist;
 
