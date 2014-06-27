@@ -698,6 +698,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $rootScope.$on('activeBufferChanged', function(event, unreadSum) {
         var ab = models.getActiveBuffer();
+
+        // trim lines to 2 screenfuls + 10 lines
+        ab.lines.splice(0, ab.lines.length - (2 * $scope.lines_per_screen + 10));
+        ab.requestedLines = ab.lines.length;
+
         $scope.bufferlines = ab.lines;
         $scope.nicklist = ab.nicklist;
 
@@ -713,10 +718,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             $scope.showNicklist = $scope.updateShowNicklist();
         }
 
-        if (ab.requestedLines < $scope.lines) {
+        if (ab.requestedLines < $scope.lines_per_screen) {
             // buffer has not been loaded, but some lines may already be present if they arrived after we connected
             // try to determine how many lines to fetch
-            var numLines = $scope.lines;  // that's a screenful plus 10 lines
+            var numLines = $scope.lines_per_screen;  // that's a screenful plus 10 lines
             unreadSum += 10;  // let's just add a 10 line safety margin here again
             if (unreadSum > numLines) {
                 // request up to 4*(screenful + 10 lines)
@@ -918,7 +923,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Fetch 10 lines more than theoretically needed so that scrolling up will correctly trigger the loading of more lines
         // Also, some lines might be hidden, so it's probably better to have a bit of buffer there
         var numLines = Math.ceil(areaHeight/lineHeight + 10);
-        $scope.lines = numLines;
+        $scope.lines_per_screen = numLines;
     };
     $scope.calculateNumLines();
 
@@ -952,7 +957,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $rootScope.loadingLines = false;
     $scope.fetchMoreLines = function(numLines) {
         if (!numLines) {
-            numLines = $scope.lines;
+            numLines = $scope.lines_per_screen;
         }
         return connection.fetchMoreLines(numLines);
     };
