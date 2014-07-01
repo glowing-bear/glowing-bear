@@ -774,9 +774,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     });
 
     $rootScope.$on('relayDisconnect', function() {
-        // this reinitialze just breaks the bufferlist upon reconnection.
-        // Disabled it until it's fully investigated and fixed
-        //models.reinitialize();
+        models.reinitialize();
         $rootScope.$emit('notificationChanged');
         $scope.connectbutton = 'Connect';
     });
@@ -784,7 +782,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $scope.showSidebar = true;
 
-    $scope.buffers = models.model.buffers;
+    $scope.getBuffers = models.getBuffers.bind(models);
 
     $scope.bufferlines = {};
     $scope.nicklist = {};
@@ -1125,7 +1123,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $rootScope.switchToActivityBuffer = function() {
         // Find next buffer with activity and switch to it
-        var sortedBuffers = _.sortBy($scope.buffers, 'number');
+        var sortedBuffers = _.sortBy($scope.getBuffers(), 'number');
         var i, buffer;
         // Try to find buffer with notification
         for (i in sortedBuffers) {
