@@ -87,7 +87,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', function
         var buffer = new models.Buffer(bufferMessage);
         models.addBuffer(buffer);
         /* Until we can decide if user asked for this buffer to be opened
-         * or not we will let user click opened buffers. 
+         * or not we will let user click opened buffers.
         models.setActiveBuffer(buffer.id);
         */
     };
@@ -699,9 +699,14 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $rootScope.$on('activeBufferChanged', function(event, unreadSum) {
         var ab = models.getActiveBuffer();
 
-        // trim lines to 2 screenfuls + 10 lines
-        ab.lines.splice(0, ab.lines.length - (2 * $scope.lines_per_screen + 10));
-        ab.requestedLines = ab.lines.length;
+        // Discard surplus lines. This is done *before* lines are fetched because that saves us the effort of special handling for the
+        // case where a buffer is opened for the first time ;)
+        var minRetainUnread = ab.lines.length - unreadSum + 5;  // do not discard unread lines and keep 5 additional lines for context
+        var surplusLines = ab.lines.length - (2 * $scope.lines_per_screen + 10);  // retain up to 2*(screenful + 10) + 10 lines because magic numbers
+        var linesToRemove = Math.max(0, Math.min(minRetainUnread, surplusLines));
+        ab.lines.splice(0, linesToRemove);  // remove the lines from the buffer
+        ab.requestedLines = ab.lines.length;  // to ensure that the correct amount of lines is fetched should more be requested
+        ab.lastSeen -= linesToRemove;  // adjust readmarker
 
         $scope.bufferlines = ab.lines;
         $scope.nicklist = ab.nicklist;
@@ -1237,7 +1242,7 @@ weechat.directive('inputBar', function() {
     return {
 
         templateUrl: 'directives/input.html',
-        
+
         scope: {
             inputId: '@inputId'
         },
