@@ -523,9 +523,6 @@ function($rootScope,
 
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', function ($rootScope, $scope, $store, $timeout, $log, models, connection) {
 
-
-    $scope.port = 9001;
-
     // From: http://stackoverflow.com/a/18539624 by StackOverflow user "plantian"
     $rootScope.countWatchers = function () {
         var q = [$rootScope], watchers = 0, scope;
