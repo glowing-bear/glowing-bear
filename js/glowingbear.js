@@ -1312,6 +1312,8 @@ weechat.directive('inputBar', function() {
                     // Empty the input after it's sent
                     $scope.command = '';
                 }
+
+                $scope.getInputNode().focus();
             };
 
             $rootScope.addMention = function(prefix) {
