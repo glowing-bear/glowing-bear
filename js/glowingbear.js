@@ -1080,6 +1080,15 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     };
 
+    // Modal toggles
+    $scope.toggleModal = function(elementId) {
+        var element = document.getElementById(elementId);
+        element.setAttribute('data-state', element.getAttribute('data-state') === "hidden" ? "visible" : "hidden");
+    };
+
+    $scope.preventModalToggle = function(elementId, event) {
+        event.stopPropagation();
+    };
 
     /* Function gets called from bufferLineAdded code if user should be notified */
     $rootScope.createHighlight = function(buffer, message) {
