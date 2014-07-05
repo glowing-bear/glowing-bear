@@ -423,6 +423,20 @@ h2 span, h2 small {
     display: block;
 }
 
+.panel[data-state=active] .panel-collapse {
+    transition: max-height 0.5s;
+    max-height: 35em;
+    height: auto;
+    display: block;
+}
+.panel[data-state=collapsed] .panel-collapse {
+    transition: max-height 0.5s;
+    max-height: 0;
+}
+.panel[data-state=collapsed] {
+    border: 0px solid transparent;
+}
+
 /* */
 /* Mobile layout */
 /* */

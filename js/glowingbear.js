@@ -1090,6 +1090,23 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         event.stopPropagation();
     };
 
+    $scope.toggleAccordion = function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+
+        var target = event.target.parentNode.parentNode.parentNode;
+        target.setAttribute('data-state', target.getAttribute('data-state') === 'active' ? 'collapsed' : 'active');
+
+        // Hide all other siblings
+        var siblings = target.parentNode.children;
+        for (var childId in siblings) {
+            var child = siblings[childId];
+            if (child.nodeType === 1 && child !== target) {
+                child.setAttribute('data-state', 'collapsed');
+            }
+        }
+    };
+
     /* Function gets called from bufferLineAdded code if user should be notified */
     $rootScope.createHighlight = function(buffer, message) {
         var title = '';
