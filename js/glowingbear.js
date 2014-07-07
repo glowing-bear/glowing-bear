@@ -14,6 +14,19 @@ weechat.filter('toArray', function () {
     };
 });
 
+// Helper to change style of a class
+var changeClassStyle = function(classSelector, attr, value) {
+    _.each(document.getElementsByClassName(classSelector), function(e) {
+        e.style[attr] = value;
+    });
+};
+// Helper to get style from a class
+var getClassStyle = function(classSelector, attr) {
+    _.each(document.getElementsByClassName(classSelector), function(e) {
+        return e.style[attr];
+    });
+};
+
 weechat.filter('irclinky', ['$filter', function($filter) {
     'use strict';
     return function(text, target) {
@@ -843,9 +856,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Save setting for playing sound on notification
     $store.bind($scope, "soundnotification", false);
     // Save setting for font family
-    $store.bind($scope, "fontfamily", angular.element('.monospace').css('font-family'));
+    $store.bind($scope, "fontfamily", getClassStyle('monospace', 'font-family'));
     // Save setting for font size
-    $store.bind($scope, "fontsize", angular.element('.monospace').css('font-size'));
+    $store.bind($scope, "fontsize", getClassStyle('monospace', 'font-size'));
 
     // Save setting for displaying embeds in rootScope so it can be used from service
     $rootScope.visible = $scope.noembed === false;
@@ -896,11 +909,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     // Update font family when changed
     $scope.$watch('fontfamily', function() {
-        angular.element('.monospace').css('font-family', $scope.fontfamily);
+        changeClassStyle('monospace', 'font-family', $scope.fontfamily);
     });
     // Update font size when changed
     $scope.$watch('fontsize', function() {
-        angular.element('.monospace').css('font-size', $scope.fontsize);
+        changeClassStyle('monospace', 'font-size', $scope.fontsize);
     });
 
     $scope.setActiveBuffer = function(bufferId, key) {
