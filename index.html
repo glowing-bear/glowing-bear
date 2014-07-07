@@ -368,9 +368,14 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                 </form>
               </li>
               <li>
-                Override font
+                Override font family
                 <br>
                 <input type="text" ng-model="fontfamily">
+              </li>
+              <li>
+                Override font size (E.g. 16px)
+                <br>
+                <input type="text" ng-model="fontsize" placeholder="14px">
               </li>
               <li>
                 <form class="form-inline" role="form">

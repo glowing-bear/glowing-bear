@@ -844,6 +844,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "soundnotification", false);
     // Save setting for font family
     $store.bind($scope, "fontfamily", angular.element('.monospace').css('font-family'));
+    // Save setting for font size
+    $store.bind($scope, "fontsize", angular.element('.monospace').css('font-size'));
 
     // Save setting for displaying embeds in rootScope so it can be used from service
     $rootScope.visible = $scope.noembed === false;
@@ -895,6 +897,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Update font family when changed
     $scope.$watch('fontfamily', function() {
         angular.element('.monospace').css('font-family', $scope.fontfamily);
+    });
+    // Update font size when changed
+    $scope.$watch('fontsize', function() {
+        angular.element('.monospace').css('font-size', $scope.fontsize);
     });
 
     $scope.setActiveBuffer = function(bufferId, key) {
