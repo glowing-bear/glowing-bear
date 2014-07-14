@@ -292,14 +292,13 @@ plugins.factory('userPlugins', function() {
 
         if (match) {
             var url = match[0];
-            var regexp = /^https?:\/\/(?:www\.)?yr\.no\/(place|stad|sted|sadji)\/([^\s.;,(){}<>\/]+)\/([^\s.;,(){}<>\/]+)\/([^\s.;,(){}<>\/]+)/;
+            var regexp = /^https?:\/\/(?:www\.)?yr\.no\/(place|stad|sted|sadji|paikka)\/(([^\s.;,(){}<>\/]+\/){3,})/;
             match = url.match(regexp);
             if (match) {
                 var language = match[1];
-                var country = match[2];
-                var province = match[3];
-                var city = match[4];
-                url = "http://www.yr.no/" + language + "/" + country + "/" + province + "/" + city + "/avansert_meteogram.png";
+                var location = match[2];
+                var city = match[match.length - 1].slice(0, -1);
+                url = "http://www.yr.no/" + language + "/" + location + "avansert_meteogram.png";
                 return "<img src='" + url + "' alt='Meteogram for " + city + "' />";
             }
         }
