@@ -111,7 +111,7 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
  */
 plugins.factory('userPlugins', function() {
 
-    var urlRegexp = RegExp(/(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/);
+    var urlRegexp = RegExp(/(ftp|https?):\/\/\S*[^\s.;,(){}<>]/)
 
     /*
      * Spotify Embedded Player
