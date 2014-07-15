@@ -483,6 +483,9 @@ function($rootScope,
             // Don't do that if we didn't get any more lines than we already had
             var setReadmarker = (buffer.lastSeen >= 0) && (oldLength !== buffer.lines.length);
             buffer.lines.length = 0;
+            // We need to set the number of requested lines to 0 here, because parsing a line
+            // increments it. This is needed to also count newly arriving lines while we're
+            // already connected.
             buffer.requestedLines = 0;
             // Count number of lines recieved
             var linesReceivedCount = lineinfo.objects[0].content.length;
@@ -702,7 +705,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         var surplusLines = ab.lines.length - (2 * $scope.lines_per_screen + 10);  // retain up to 2*(screenful + 10) + 10 lines because magic numbers
         var linesToRemove = Math.max(0, Math.min(minRetainUnread, surplusLines));
         ab.lines.splice(0, linesToRemove);  // remove the lines from the buffer
-        ab.requestedLines = ab.lines.length;  // to ensure that the correct amount of lines is fetched should more be requested
+        ab.requestedLines -= linesToRemove;  // to ensure that the correct amount of lines is fetched should more be requested
         ab.lastSeen -= linesToRemove;  // adjust readmarker
 
         $scope.bufferlines = ab.lines;
@@ -723,8 +726,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if (ab.requestedLines < $scope.lines_per_screen) {
             // buffer has not been loaded, but some lines may already be present if they arrived after we connected
             // try to determine how many lines to fetch
-            var numLines = $scope.lines_per_screen;  // that's a screenful plus 10 lines
-            unreadSum += 10;  // let's just add a 10 line safety margin here again
+            var numLines = $scope.lines_per_screen + 10;  // that's (a screenful plus 10 lines) plus 10 lines, just to be safe
             if (unreadSum > numLines) {
                 // request up to 4*(screenful + 10 lines)
                 numLines = Math.min(4*numLines, unreadSum);
