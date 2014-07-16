@@ -526,25 +526,6 @@ function($rootScope,
 
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', function ($rootScope, $scope, $store, $timeout, $log, models, connection) {
 
-    // From: http://stackoverflow.com/a/18539624 by StackOverflow user "plantian"
-    $rootScope.countWatchers = function () {
-        var q = [$rootScope], watchers = 0, scope;
-        while (q.length > 0) {
-            scope = q.pop();
-            if (scope.$$watchers) {
-                watchers += scope.$$watchers.length;
-            }
-            if (scope.$$childHead) {
-                q.push(scope.$$childHead);
-            }
-            if (scope.$$nextSibling) {
-                q.push(scope.$$nextSibling);
-            }
-        }
-        $log.debug(watchers);
-    };
-
-
     $rootScope.isMobileUi = function() {
         // TODO don't base detection solely on screen width
         // You are right. In the meantime I am renaming isMobileDevice to isMobileUi

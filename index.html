@@ -193,7 +193,6 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           <a href="#" ng-click="swipeSidebar()">
             <img alt="brand" src="assets/img/favicon.png" title="Connected to {{ host }}:{{ port}}">
           </a>
-          <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
         </div>
         <div class="title" ng-bind-html="activeBuffer().title | irclinky:'_blank'" title="{{activeBuffer().title}}"></div>
         <div class="actions pull-right vertical-line-left">
@@ -363,16 +362,6 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                     <label>
                       <input type="checkbox" ng-model="soundnotification">
                       Play sound on notification
-                    </label>
-                  </div>
-                </form>
-              </li>
-              <li>
-                <form class="form-inline" role="form">
-                  <div class="checkbox">
-                    <label>
-                      <input type="checkbox" ng-model="debugMode">
-                      Debug Mode
                     </label>
                   </div>
                 </form>
