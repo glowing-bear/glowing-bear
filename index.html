@@ -263,11 +263,11 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
       </div>
     </div>
     <div id="soundNotification"></div>
-    <div id="settingsModal" class="gb-modal" data-state="hidden" ng-click="closeModal($event)">
-      <div class="modal-dialog" ng-click="preventModalToggle('settingsModal', $event)">
+    <div id="settingsModal" class="gb-modal" data-state="hidden">
+      <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <button type="button" class="close" ng-click="closeModal($event)" aria-hidden="true">&times;</button>
             <h4 class="modal-title">Settings</h4>
             <p>Settings will be stored in your browser.</p>
           </div>
