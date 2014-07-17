@@ -111,7 +111,7 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
  */
 plugins.factory('userPlugins', function() {
 
-    var urlRegexp = RegExp(/(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/);
+    var urlRegexp = RegExp(/(ftp|https?):\/\/\S*[^\s.;,(){}<>]/);
 
     /*
      * Spotify Embedded Player
@@ -287,8 +287,26 @@ plugins.factory('userPlugins', function() {
     });
     asciinemaPlugin.name = "ascii cast";
 
+    var yrPlugin = new Plugin(function(message) {
+        var match = message.match(urlRegexp);
+
+        if (match) {
+            var url = match[0];
+            var regexp = /^https?:\/\/(?:www\.)?yr\.no\/(place|stad|sted|sadji|paikka)\/(([^\s.;,(){}<>\/]+\/){3,})/;
+            match = url.match(regexp);
+            if (match) {
+                var language = match[1];
+                var location = match[2];
+                var city = match[match.length - 1].slice(0, -1);
+                url = "http://www.yr.no/" + language + "/" + location + "avansert_meteogram.png";
+                return "<img src='" + url + "' alt='Meteogram for " + city + "' />";
+            }
+        }
+    });
+    yrPlugin.name = "meteogram";
+
     return {
-        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin]
+        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin]
     };
 
 
