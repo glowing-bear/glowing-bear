@@ -1094,10 +1094,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         closest($event.target, '.gb-modal').setAttribute('data-state', 'hidden');
     };
 
-    $scope.preventModalToggle = function(elementId, event) {
-        event.stopPropagation();
-    };
-
     $scope.toggleAccordion = function(event) {
         event.stopPropagation();
         event.preventDefault();
