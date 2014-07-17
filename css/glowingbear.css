@@ -361,7 +361,13 @@ table.notimestampseconds td.time span.seconds {
     font-size: medium;
 }
 .modal-header {
+    padding-top: 23px;
     border-bottom: 0;
+}
+
+#fontchoice label {
+    font-weight: normal;
+    text-align: left;
 }
 
 h2 {

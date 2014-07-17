@@ -271,10 +271,25 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4 class="modal-title">Settings</h4>
+            <p>Settings will be stored in your browser.</p>
           </div>
           <div class="modal-body">
-            <p>Settings will be stored in your browser.</p>
             <ul class="">
+              <li id="fontchoice">
+                <form class="form-horizontal" role="form">
+                  <div class="form-group">
+                    <label for="font" class="col-sm-3 control-label">Preferred font</label>
+                    <div class="col-sm-4" style="padding-left: 0;">
+                      <input type="text" ng-model="fontfamily" class="form-control" id="font">
+                    </div>
+
+                    <label for="size" class="col-sm-1 control-label">Size</label>
+                    <div class="col-sm-2">
+                      <input type="text" ng-model="fontsize" class="form-control" id="size" placeholder="14px">
+                    </div>
+                  </div>
+                </form>
+              </li>
               <li>
                 <form class="form-inline" role="form">
                   <div class="checkbox">
