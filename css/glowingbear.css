@@ -336,8 +336,14 @@ li.notification {
     background: rgba(255,255,255,0.5);
 }
 
-img.embed {
+div.embed * {
+    max-width: 100%;
+}
+
+/* not for all img embeds so as not to affect the yr plugin (302px) */
+div.embed img.embed {
     max-height: 300px;
+    max-width: 100%;
 }
 
 
