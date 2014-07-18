@@ -808,8 +808,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     });
     $scope.connectbutton = 'Connect';
 
-    $scope.showSidebar = true;
-
     $scope.getBuffers = models.getBuffers.bind(models);
 
     $scope.bufferlines = {};
@@ -874,13 +872,32 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Save setting for displaying embeds in rootScope so it can be used from service
     $rootScope.visible = $scope.noembed === false;
 
-    // Open and close panels while on mobile devices through swiping
-    $scope.swipeSidebar = function() {
+    $scope.isSidebarVisible = function() {
+        return document.getElementById('sidebar').getAttribute('sidebar-state') === 'visible';
+    };
+
+    $scope.showSidebar = function() {
+        document.getElementById('sidebar').setAttribute('data-state', 'visible');
+        document.getElementById('content').setAttribute('sidebar-state', 'visible');
+    };
+
+    $scope.hideSidebar = function() {
+        document.getElementById('sidebar').setAttribute('data-state', 'hidden');
+        document.getElementById('content').setAttribute('sidebar-state', 'hidden');
+    };
+
+    // toggle sidebar (if on mobile)
+    $scope.toggleSidebar = function() {
         if ($rootScope.isMobileUi()) {
-            $scope.showSidebar = !$scope.showSidebar;
+            if ($scope.isSidebarVisible()) {
+                $scope.hideSidebar();
+            } else {
+                $scope.showSidebar();
+            }
         }
     };
 
+    // Open and close panels while on mobile devices through swiping
     $scope.openNick = function() {
         if ($rootScope.isMobileUi()) {
             if ($scope.nonicklist) {
@@ -931,7 +948,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // If we are on mobile we need to collapse the menu on sidebar clicks
         // We use 968 px as the cutoff, which should match the value in glowingbear.css
         if ($rootScope.isMobileUi()) {
-            $scope.showSidebar = false;
+            $scope.hideSidebar();
         }
         return models.setActiveBuffer(bufferId, key);
     };
@@ -971,10 +988,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if ($rootScope.connected) {
             // Show the sidebar if switching away from mobile view, hide it when switching to mobile
             // Wrap in a condition so we save ourselves the $apply if nothing changes (50ms or more)
-            if ($scope.wasMobileUi !== $scope.isMobileUi() &&
-                    $scope.showSidebar === $scope.isMobileUi()) {
-                $scope.showSidebar = !$scope.showSidebar;
-                $scope.$apply();
+            if ($scope.wasMobileUi && !$scope.isMobileUi()) {
+                $scope.showSidebar();
             }
             $scope.wasMobileUi = $scope.isMobileUi();
             $scope.calculateNumLines();

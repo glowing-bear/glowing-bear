@@ -187,10 +187,10 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
         </div>
       </div>
     </div>
-    <div class="content" ng-show="connected">
+    <div class="content" id="content" sidebar-state="visible" ng-show="connected">
       <div id="topbar">
         <div class="brand">
-          <a href="#" ng-click="swipeSidebar()">
+          <a href="#" ng-click="toggleSidebar()">
             <img alt="brand" src="assets/img/favicon.png" title="Connected to {{ host }}:{{ port}}">
           </a>
           <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
@@ -207,7 +207,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </a>
         </div>
       </div>
-      <div bindonce id="sidebar" ng-show="showSidebar" ng-swipe-left="swipeSidebar()" class="vertical-line">
+      <div bindonce id="sidebar" data-state="visible" ng-swipe-left="hideSidebar()" class="vertical-line">
         <ul class="nav nav-pills nav-stacked" ng-class="{'indented': (predicate === 'serverSortKey')}">
           <li class="bufferfilter">
             <form role="form">
@@ -222,7 +222,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </li>
         </ul>
       </div>
-      <div bindonce id="bufferlines" class="monospace" ng-swipe-right="swipeSidebar()" ng-swipe-left="swipeSidebar()" ng-class="{'withnicklist': showNicklist, 'withsidebar': showSidebar}">
+      <div bindonce id="bufferlines" class="monospace" ng-swipe-right="showSidebar()" ng-swipe-left="hideSidebar()" ng-class="{'withnicklist': showNicklist}">
         <div id="nicklist" ng-if="showNicklist" ng-swipe-right="closeNick()" class="vertical-line-left">
           <ul class="nicklistgroup list-unstyled" ng-repeat="group in nicklist">
             <li ng-repeat="nick in group.nicks|orderBy:'name'">
@@ -260,7 +260,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </tbody>
         </table>
       </div>
-      <div class="footer" ng-class="{'withnicklist': showNicklist, 'withsidebar': showSidebar}">
+      <div class="footer" ng-class="{'withnicklist': showNicklist}">
         <div input-bar input-id="sendMessage"></div>
       </div>
     </div>
