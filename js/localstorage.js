@@ -1,3 +1,4 @@
+(function() {
 'use strict';
 
 var ls = angular.module('localStorage',[]);
@@ -113,3 +114,4 @@ ls.factory("$store",function($parse){
     };
     return publicMethods;
 });
+})();
