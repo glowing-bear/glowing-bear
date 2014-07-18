@@ -386,6 +386,13 @@ h2 span, h2 small {
     display: block;
 }
 
+.forkme img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: 0;
+}
+
 /* */
 /* Mobile layout */
 /* */
@@ -503,5 +510,9 @@ h2 span, h2 small {
     ::-webkit-scrollbar {
         width: 5px;
         height: 5px;
+    }
+
+    .forkme {
+        display: none;
     }
 }
