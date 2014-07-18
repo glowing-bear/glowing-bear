@@ -624,6 +624,17 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     })();
 
+    // Enable debug mode if "?debug=1" or "?debug=true" is set
+    (function() {
+        window.location.search.substring(1).split('&').forEach(function(f) {
+            var segs = f.split('=');
+            if (segs[0] === "debug" && ["true", "1"].indexOf(segs[1]) != -1) {
+                $rootScope.debugMode = true;
+                return;
+            }
+        });
+    })();
+
 
     $rootScope.isWindowFocused = function() {
         if (typeof $scope.documentHidden === "undefined") {
