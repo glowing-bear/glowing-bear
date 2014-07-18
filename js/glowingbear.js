@@ -857,7 +857,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Save setting for displaying embeds
     $store.bind($scope, "noembed", noembed);
     // Save setting for channel ordering
-    $store.bind($scope, "orderbyserver", false);
+    $store.bind($scope, "orderbyserver", true);
     // Save setting for updating favicon
     $store.bind($scope, "useFavico", true);
     // Save setting for showtimestamp
