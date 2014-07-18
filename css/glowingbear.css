@@ -254,7 +254,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
 }
 
 .monospace {
-    font-family: 'Terminus', 'Consolas', 'Monaco', 'Inconsolata', 'Ubuntu Mono', monospace;
+    font-family: 'Inconsolata', 'Consolas', 'Monaco', 'Ubuntu Mono', monospace;
 }
 
 #bufferlines {
