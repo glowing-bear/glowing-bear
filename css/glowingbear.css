@@ -360,28 +360,53 @@ table.notimestampseconds td.time span.seconds {
 }
 
 .gb-modal {
-     position: absolute;
-     left: 0px;
-     width:100%;
-     height: 100%;
-     z-index: 1000;
-     background-color:rgba(0, 0, 0, 0.5)
+    z-index: 1000;
+    height: 100%;
+    overflow-y: scroll;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
 }
+
 .gb-modal[data-state=hidden] {
-    transition: .2s ease-in-out, top .2s ease-in;
-    transition-delay: 0.1s, 0s;
-    top: -150px;
+    transition: .2s ease-in-out;
     visibility: hidden;
     opacity: 0;
 }
 
 .gb-modal[data-state=visible] {
-    transition: .2s ease-in-out, top .3s ease-out;
-    transition-delay: 0s, 0.1s;
-    top: 0px;
-    height: 200%;
+    transition: .2s ease-in-out;
     visibility: visible;
     opacity: 1;
+}
+
+.gb-modal[data-state=hidden] .modal-dialog {
+    transition: top .3s ease-in;
+    top: -150px;
+}
+
+.gb-modal[data-state=visible] .modal-dialog {
+    transition: top .3s ease-out;
+    top: 0px;
+}
+.gb-modal .backdrop {
+    z-index: 999;
+    position: fixed;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    overflow: none;
+    background-color:rgba(0, 0, 0, 0.5)
+}
+.gb-modal .modal-dialog {
+    z-index: 1001;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    top: 35px;
 }
 .gb-modal[ng-click], .gb-modal div[ng-click] {
     cursor: default;
@@ -550,6 +575,11 @@ h2 span, h2 small {
     #bufferlines td.message {
         display: inline;
         padding: 0px !important;
+    }
+
+    .gb-modal .modal-dialog {
+        margin: 20px 2%;
+        width: 96%;
     }
 
     /* a different colour is too irregular on mobile */
