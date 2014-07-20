@@ -1517,10 +1517,43 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Enter to submit, shift-enter for newline
-                //
                 if (code == 13 && !$event.shiftKey && document.activeElement === inputNode) {
                     $event.preventDefault();
                     $scope.sendMessage();
+                    return true;
+                }
+                // Some readline keybindings
+                if ($event.ctrlKey && !$event.altKey && !$event.shiftKey && document.activeElement === inputNode) {
+                    // Ctrl-a
+                    if (code == 65) {
+                        inputNode.setSelectionRange(0, 0);
+                    // Ctrl-e
+                    } else if (code == 69) {
+                        inputNode.setSelectionRange($scope.command.length, $scope.command.length);
+                    // Ctrl-u
+                    } else if (code == 85) {
+                        $scope.command = $scope.command.slice(caretPos);
+                        setTimeout(function() {
+                            inputNode.setSelectionRange(0, 0);
+                        });
+                    // Ctrl-k
+                    } else if (code == 75) {
+                        $scope.command = $scope.command.slice(0, caretPos);
+                        setTimeout(function() {
+                            inputNode.setSelectionRange($scope.command.length, $scope.command.length);
+                        });
+                    // Ctrl-w
+                    } else if (code == 87) {
+                        var trimmedValue = $scope.command.slice(0, caretPos);
+                        var lastSpace = trimmedValue.lastIndexOf(' ') + 1;
+                        $scope.command = $scope.command.slice(0, lastSpace) + $scope.command.slice(caretPos, $scope.command.length);
+                        setTimeout(function() {
+                            inputNode.setSelectionRange(lastSpace, lastSpace);
+                        });
+                    } else {
+                        return false;
+                    }
+                    $event.preventDefault();
                     return true;
                 }
             };
