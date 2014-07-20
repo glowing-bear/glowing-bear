@@ -829,6 +829,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     if ($scope.savepassword) {
         $store.bind($scope, "password", "");
     }
+    $store.bind($scope, "autoconnect", false);
 
     // If we are on mobile change some defaults
     // We use 968 px as the cutoff, which should match the value in glowingbear.css
@@ -885,6 +886,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         document.getElementById('sidebar').setAttribute('data-state', 'hidden');
         document.getElementById('content').setAttribute('sidebar-state', 'hidden');
     };
+    $scope.$watch('autoconnect', function() {
+        if ($scope.autoconnect && !$rootScope.connected) {
+            $scope.connect();
+        }
+    });
 
     // toggle sidebar (if on mobile)
     $scope.toggleSidebar = function() {
@@ -1229,6 +1235,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
         $scope.favico.reset();
     };
+
+    if ($scope.autoconnect && !$rootScope.connected && !$rootScope.sslError && !$rootScope.securityError && !$rootScope.errorMessage) {
+        $scope.connect();
+    }
 
 }]
 );
