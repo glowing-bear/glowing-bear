@@ -1513,6 +1513,16 @@ weechat.directive('inputBar', function() {
                 // Double-tap Escape -> disconnect
                 if (code === 27) {
                     $event.preventDefault();
+
+                    // Check if a modal is visible. If so, close it instead of disconnecting
+                    var modals = document.querySelectorAll('.gb-modal');
+                    for (var modalId in modals) {
+                        if (modals[modalId].getAttribute('data-state') === 'visible') {
+                            modals[modalId].setAttribute('data-state', 'hidden');
+                            return true;
+                        }
+                    }
+
                     if (typeof $scope.lastEscape !== "undefined" && (Date.now() - $scope.lastEscape) <= 500) {
                         // Double-tap
                         connection.disconnect();
