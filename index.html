@@ -64,7 +64,7 @@
         <strong>Connection error</strong> The client was unable to connect to the WeeChat relay
       </div>
       <div class="alert alert-danger" ng-show="sslError">
-        <strong>Secure connection error</strong> A secure connection with the WeeChat relay could not be initiated. This is most likely because your browser does not trust your relay's certificate. Please read the encryption instructions below!
+        <strong>Secure connection error</strong> A secure connection with the WeeChat relay could not be initiated. This is most likely because your device does not trust your relay's certificate. It's easiest to use a trusted certificate, and remember to include all intermediate CAs. For more info, please read the encryption instructions below!
       </div>
       <div class="alert alert-danger" ng-show="securityError">
         <strong>Secure connection error</strong> Unable to connect to unencrypted relay when you are connecting to Glowing Bear over HTTPS. Please use an encrypted relay or load the page without using HTTPS.
@@ -102,7 +102,7 @@
                   <div class="checkbox">
                     <label class="control-label" for="savepassword">
                         <input type="checkbox" id="savepassword" ng-model="settings.savepassword">
-                        Save password in your browser
+                        Save password
                     </label>
                   </div>
                   <div class="checkbox" ng-show="settings.savepassword">
@@ -134,9 +134,9 @@
           <div id="collapseTwo" class="panel-collapse collapse">
             <div class="panel-body">
               <p><span class="label label-danger">WeeChat version 0.4.2 or higher is required—we recommend at least 1.0.</p>
-              <p>To start using Glowing Bear, follow the instructions below to set up an encrypted relay. All communication goes directly between your browser and your WeeChat relay! This means that your server must be accessible. We never see any of your data or your password, and you don't need to trust a "cloud". All settings, including your password, are saved locally in your own browser between sessions.</p>
+              <p>To start using Glowing Bear, follow the instructions below to set up an encrypted relay. All communication goes directly between the app and your WeeChat relay! This means that your server must be accessible. We never see any of your data or your password, and you don't need to trust a "cloud". All settings, including your password, are saved locally on your device between sessions.</p>
               <div class="alert alert-warning" ng-show="show_tls_warning"><strong>You're using Glowing Bear over an unencrypted connection (http://). This is not recommended!</strong> We recommend using our secure hosted version at <a href="https://www.glowing-bear.org/">https://www.glowing-bear.org/</a>, or <a href="https://latest.glowing-bear.org/">https://latest.glowing-bear.org</a> for the latest and greatest development version. You can still follow the instructions below to set up an encrypted relay, though.</div>
-              <p>When using encryption, all communication between your browser and WeeChat will be securely encrypted with TLS. This means that you have to set up a certificate. While it's possible to use a self-signed cert, we recommend against it, because it's handled poorly in browsers, and may not work at all on mobile devices. If you don't already have a certificate for your domain (or you don't have a domain), we strongly encourage you to get a certificate from <a href="https://letsencrypt.org/">Let's Encrypt</a>—it's free and easy. We'll walk you through it.</p>
+              <p>When using encryption, all communication between the app and WeeChat will be securely encrypted with TLS. This means that you have to set up a certificate. While it's possible to use a self-signed cert, we recommend against it, because it's handled poorly in browsers, and may not work at all on mobile devices. If you don't already have a certificate for your domain (or you don't have a domain), we strongly encourage you to get a certificate from <a href="https://letsencrypt.org/">Let's Encrypt</a>—it's free and easy. We'll walk you through it.</p>
               <p><strong>If you don't have a domain</strong> you can get a free subdomain from providers such as <a href="https://freedns.afraid.org/">afraid</a>. You'll want to set up an 'A' record to your server's IP address, and quite possibly an AAAA record to its IPv6 address. These might take a few hours to propagate, if the steps below don't work right away, try again in a few hours.</p>
               <p><strong>Getting a certificate</strong> is easy. You'll need certbot—just follow the encryptions at <a href="https://certbot.eff.org/">https://certbot.eff.org</a>. If you're not serving webpages on the same server or are unsure, select "none of the above" (if you are, you can probably use that webserver to proxy your relay, and skip this—check out the <a href="https://github.com/glowing-bear/glowing-bear/wiki/Proxying-WeeChat-relay-with-a-web-server">instructions in our Wiki</a>). Next, get the certificate with <code>certbot certonly --standalone -d {{ settings.host || your.domain.com }}</code> and follow the instructions.</p>
               <p>Nearly done! Now you just need to copy the files into place. To do that, use the following commands, replacing the <strong>username</strong> placeholder with your actual username:</p>
@@ -202,7 +202,7 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
           </div>
           <div id="collapseFive" class="panel-collapse collapse">
             <div class="panel-body">
-              <p>Glowing bear is built by a small group of developers in their free time. As we're always trying to improve it, we would love getting your feedback and help. If that sounds like something you might enjoy, check out our <a href="https://github.com/glowing-bear/glowing-bear">project page</a> on GitHub!</p>
+              <p>Glowing bear is built by a small group of developers in their free time. As we're always trying to improve it, we would love getting your feedback and help. If that sounds like something you might enjoy, check out our <a href="https://github.com/glowing-bear/glowing-bear">main project page</a> and its <a href="https://github.com/glowing-bear/glowing-bear-cordova">mobile app spin-off</a> on GitHub!</p>
               <p>If you're interested in contributing or simply want to say hello, head over to <strong>#glowing-bear</strong> on <strong>freenode!</strong> We won't bite, promise :)</p>
             </div>
           </div>
@@ -316,7 +316,7 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
             <button type="button" class="close" ng-click="closeModal($event)" aria-hidden="true">&times;</button>
             <span class="pull-right version">Glowing Bear version 0.7.0</span>
             <h4 class="modal-title">Settings</h4>
-            <p>Settings will be stored in your browser.</p>
+            <p>Settings will be stored on your device.</p>
           </div>
           <div class="modal-body">
             <ul class="">

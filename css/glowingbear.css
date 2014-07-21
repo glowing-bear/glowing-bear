@@ -279,7 +279,6 @@ input[type=text], input[type=password], #sendMessage {
 .nav-pills > li > a {
     border-radius: 0;
     color: #ddd;
-    padding: 5px 10px;
 }
 .nav-pills > li > a:hover, .nav-pills > li > a:hover span {
     color: #222;
