@@ -80,7 +80,7 @@
                   <div class="checkbox">
                     <label class="control-label" for="savepassword">
                         <input type="checkbox" id="savepassword" ng-model="savepassword">
-                        Save password in your browser
+                        Save password
                     </label>
                   </div>
                   <div class="checkbox" ng-show="savepassword">
@@ -118,8 +118,8 @@
 /relay add weechat 9001
 </pre>
               <span class="label label-danger">WeeChat version 0.4.2 or higher is required.</span><br>
-              The communication goes directly between your browser and your WeeChat relay in plain text. Check the instructions below for help on setting up encrypted communication.
-              Connection settings, including your password, are saved locally in your own browser between sessions.
+              The communication goes directly between the app and your WeeChat relay in plain text. Check the instructions below for help on setting up encrypted communication.
+              Connection settings, including your password, are saved locally on your device between sessions.
               <br>
               <h3>Shortcuts</h3>
               Glowing Bear has a few shortcuts:
@@ -150,8 +150,8 @@
           <div id="collapseThree" class="panel-collapse collapse in">
             <div class="panel-body">
               <p>If you check the encryption box, the communication between browser and WeeChat will be encrypted with SSL.</p>
-              <p><strong>Note</strong>: If you are using a self-signed certificate, you have to visit <a href="https://{{ host }}:{{ port }}/">https://{{ host || 'weechathost' }}:{{ port || 'relayport' }}/</a> in your browser first to add a security exception. You can close that tab once you confirmed the certificate, no content will appear. The necessity of this process is a bug in <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">Firefox</a> and other browsers.</p>
-              <p><strong>Setup</strong>: If you want to use an encrypted session you first have to set up the relay to use SSL. You basically have two options: a self-signed certificate is easier to set up, but requires manual security exceptions. Using a certificate that is trusted by your browser requires more setup, but does not require any security exceptions. As the process for requesting a certificate is different for every certification authority, we detail the method for setting up WeeChat with a self-signed certificate here. To create one, execute the following commands in a shell on the same host and as the user running WeeChat:</p>
+              <p><strong>Note</strong>: If you are using a self-signed certificate that is not trusted by your device, you have to visit <a href="https://{{ host }}:{{ port }}/">https://{{ host || 'weechathost' }}:{{ port || 'relayport' }}/</a> in your browser first to add a security exception. You can close it once you confirmed the certificate, no content will appear. This is a bug in the browsers.</p>
+              <p><strong>Setup</strong>: If you want to use an encrypted session you first have to set up the relay to use SSL. You basically have two options: a self-signed certificate is easier to set up, but requires manual security exceptions. Using a certificate that is trusted by your device requires more setup, but does not require any security exceptions. As the process for requesting a certificate is different for every certification authority, we detail the method for setting up WeeChat with a self-signed certificate here. To create one, execute the following commands in a shell on the same host and as the user running WeeChat:</p>
 <pre>
 $ mkdir -p ~/.weechat/ssl
 $ cd ~/.weechat/ssl
@@ -175,7 +175,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </div>
           <div id="collapseFive" class="panel-collapse collapse in">
             <div class="panel-body">
-              <p>Glowing bear is built by a small group of developers in their free time. As we're always trying to improve it, we would love getting your feedback and help. If that sounds like something you might enjoy, check out our <a href="https://github.com/glowing-bear/glowing-bear">project page</a> on GitHub!</p>
+              <p>Glowing bear is built by a small group of developers in their free time. As we're always trying to improve it, we would love getting your feedback and help. If that sounds like something you might enjoy, check out our <a href="https://github.com/glowing-bear/glowing-bear">main project page</a> and its <a href="https://github.com/glowing-bear/glowing-bear-cordova">mobile app spin-off</a> on GitHub!</p>
               <p>If you're interested in contributing or simply want to say hello, head over to <strong>#glowing-bear</strong> on <strong>freenode!</strong> We won't bite, promise (-ish).</p>
             </div>
           </div>
@@ -266,7 +266,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           <div class="modal-header">
             <button type="button" class="close" ng-click="closeModal($event)" aria-hidden="true">&times;</button>
             <h4 class="modal-title">Settings</h4>
-            <p>Settings will be stored in your browser.</p>
+            <p>Settings will be stored on your device.</p>
           </div>
           <div class="modal-body">
             <ul class="">
