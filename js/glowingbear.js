@@ -1524,6 +1524,8 @@ weechat.directive('inputBar', function() {
                 }
                 // Some readline keybindings
                 if ($event.ctrlKey && !$event.altKey && !$event.shiftKey && document.activeElement === inputNode) {
+                    // get current caret position
+                    var caretPos = inputNode.selectionStart;
                     // Ctrl-a
                     if (code == 65) {
                         inputNode.setSelectionRange(0, 0);
