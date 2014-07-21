@@ -13,7 +13,6 @@
     <link rel="shortcut icon" type="image/png" href="assets/img/favicon.png" >
     <link href="css/style.css" rel="stylesheet" media="screen">
     <link href="css/glowingbear.css" rel="stylesheet" media="screen">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.8/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.8/angular-route.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.8/angular-sanitize.min.js"></script>
@@ -29,7 +28,6 @@
     <script type="text/javascript" src="js/plugins.js"></script>
     <script type="text/javascript" src="3rdparty/bindonce.min.js"></script>
     <script type="text/javascript" src="3rdparty/favico-0.3.4-mod.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
   </head>
   <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-class="{'no-overflow': connected}">
     <div ng-hide="connected" class="container">
@@ -47,18 +45,18 @@
       <div class="alert alert-danger" ng-show="securityError">
         <strong>Secure connection error</strong> Unable to connect to unencrypted relay when your are connecting to Glowing Bear over HTTPS. Please use an encrypted relay or load the page without using HTTPS.
       </div>
-      <div class="panel-group" id="accordion">
-        <div class="panel">
+      <div class="panel-group accordion">
+        <div class="panel" data-state="active">
           <div class="panel-heading">
             <h4 class="panel-title">
-              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+              <a class="accordion-toggle" ng-click="toggleAccordion($event)">
                 Connection settings
               </a>
             </h4>
           </div>
           <div id="collapseOne" class="panel-collapse collapse in">
             <div class="panel-body">
-              <form class="form-signin" role="form">
+               <form class="form-signin" role="form">
                 <div class="form-group">
                   <label class="control-label" for="host">WeeChat relay hostname and port number</label>
                   <div class="input-group">
@@ -95,15 +93,15 @@
             </div>
           </div>
         </div>
-        <div class="panel">
+        <div class="panel" data-state="collapsed">
           <div class="panel-heading">
             <h4 class="panel-title">
-              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+              <a class="accordion-toggle" ng-click="toggleAccordion($event)">
                 Usage instructions
               </a>
             </h4>
           </div>
-          <div id="collapseTwo" class="panel-collapse collapse">
+          <div id="collapseTwo" class="panel-collapse collapse in">
             <div class="panel-body">
               <h3>Configuring the relay</h3>
               <div>To start using glowing bear, please enable the relay plugin in your WeeChat client:
@@ -133,15 +131,15 @@
             </div>
           </div>
         </div>
-        <div class="panel ">
+        <div class="panel" data-state="collapsed">
           <div class="panel-heading">
             <h4 class="panel-title">
-              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+              <a class="accordion-toggle" ng-click="toggleAccordion($event)">
                 Encryption instructions
               </a>
             </h4>
           </div>
-          <div id="collapseThree" class="panel-collapse collapse">
+          <div id="collapseThree" class="panel-collapse collapse in">
             <div class="panel-body">
               <p>If you check the encryption box, the communication between browser and WeeChat will be encrypted with SSL.</p>
               <p><strong>Note</strong>: If you are using a self-signed certificate, you have to visit <a href="https://{{ host }}:{{ port }}/">https://{{ host || 'weechathost' }}:{{ port || 'relayport' }}/</a> in your browser first to add a security exception. You can close that tab once you confirmed the certificate, no content will appear. The necessity of this process is a bug in <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">Firefox</a> and other browsers.</p>
@@ -159,15 +157,15 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
             </div>
           </div>
         </div>
-        <div class="panel" ng-hide="isinstalled">
+        <div class="panel" data-state="collapsed" ng-hide="isinstalled">
           <div class="panel-heading">
             <h4 class="panel-title">
-              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
+              <a class="accordion-toggle" ng-click="toggleAccordion($event)">
                 Install app
               </a>
             </h4>
           </div>
-          <div id="collapseFour" class="panel-collapse collapse">
+          <div id="collapseFour" class="panel-collapse collapse in">
             <div class="panel-body">
               <p>You don't need to install anything to use this app, it should work with any modern browser. Start using it <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">right now</a>! However, there are a few ways to improve integration with your operating system.</p>
               <h3>Firefox</h3>
@@ -178,15 +176,15 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
             </div>
           </div>
         </div>
-        <div class="panel">
+        <div class="panel" data-state="collapsed">
           <div class="panel-heading">
             <h4 class="panel-title">
-              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
+              <a class="accordion-toggle" ng-click="toggleAccordion($event)">
                 Get involved
               </a>
             </h4>
           </div>
-          <div id="collapseFive" class="panel-collapse collapse">
+          <div id="collapseFive" class="panel-collapse collapse in">
             <div class="panel-body">
               <p>Glowing bear is built by a small group of developers in their free time. As we're always trying to improve it, we would love getting your feedback and help. If that sounds like something you might enjoy, check out our <a href="https://github.com/glowing-bear/glowing-bear">project page</a> on GitHub!</p>
               <p>If you're interested in contributing or simply want to say hello, head over to <strong>#glowing-bear</strong> on <strong>freenode!</strong> We won't bite, promise (-ish).</p>
@@ -206,7 +204,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
         <div class="title" ng-bind-html="activeBuffer().title | irclinky:'_blank'" title="{{activeBuffer().title}}"></div>
         <div class="actions pull-right vertical-line-left">
           <div class="pull-left">
-            <a class="" data-toggle="modal" data-target="#settingsModal" title="Options menu">
+            <a class="settings-toggle" ng-click="showModal('settingsModal')" title="Options menu">
               <i class="glyphicon glyphicon-cog"></i>
             </a>
           </div>
@@ -273,11 +271,12 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
       </div>
     </div>
     <div id="soundNotification"></div>
-    <div id="settingsModal" class="modal fade">
+    <div id="settingsModal" class="gb-modal" data-state="hidden">
+      <div class="backdrop" ng-click="closeModal($event)"></div>
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <button type="button" class="close" ng-click="closeModal($event)" aria-hidden="true">&times;</button>
             <h4 class="modal-title">Settings</h4>
             <p>Settings will be stored in your browser.</p>
           </div>
@@ -403,7 +402,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
             </ul>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" ng-click="closeModal($event)">Close</button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->

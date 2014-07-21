@@ -1093,6 +1093,36 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     };
 
+    $scope.showModal = function(elementId) {
+        document.getElementById(elementId).setAttribute('data-state', 'visible');
+    };
+    $scope.closeModal = function($event) {
+        function closest(elem, selector) {
+            var matchesSelector = elem.matches || elem.webkitMatchesSelector || elem.mozMatchesSelector || elem.msMatchesSelector;
+            while (elem) {
+                if (matchesSelector.call(elem, selector)) return elem;
+                else elem = elem.parentElement;
+            }
+        }
+        closest($event.target, '.gb-modal').setAttribute('data-state', 'hidden');
+    };
+
+    $scope.toggleAccordion = function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+
+        var target = event.target.parentNode.parentNode.parentNode;
+        target.setAttribute('data-state', target.getAttribute('data-state') === 'active' ? 'collapsed' : 'active');
+
+        // Hide all other siblings
+        var siblings = target.parentNode.children;
+        for (var childId in siblings) {
+            var child = siblings[childId];
+            if (child.nodeType === 1 && child !== target) {
+                child.setAttribute('data-state', 'collapsed');
+            }
+        }
+    };
 
     /* Function gets called from bufferLineAdded code if user should be notified */
     $rootScope.createHighlight = function(buffer, message) {
@@ -1500,6 +1530,16 @@ weechat.directive('inputBar', function() {
                 // Double-tap Escape -> disconnect
                 if (code === 27) {
                     $event.preventDefault();
+
+                    // Check if a modal is visible. If so, close it instead of disconnecting
+                    var modals = document.querySelectorAll('.gb-modal');
+                    for (var modalId in modals) {
+                        if (modals[modalId].getAttribute('data-state') === 'visible') {
+                            modals[modalId].setAttribute('data-state', 'hidden');
+                            return true;
+                        }
+                    }
+
                     if (typeof $scope.lastEscape !== "undefined" && (Date.now() - $scope.lastEscape) <= 500) {
                         // Double-tap
                         connection.disconnect();
