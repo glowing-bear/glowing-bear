@@ -118,10 +118,10 @@
                 <li>ALT-a: Focus on next buffer with activity</li>
                 <li>ALT-&lt;: Switch to previous active buffer</li>
                 <li>ALT-g: Focus on buffer list filter</li>
-                <li>Esc-Esc: disconnect (double-tap)</li>
-                <li>Arrow keys: history navigation</li>
-                <li>Tab key: nick complete</li>
-                <li>The following readline/emacs style keybindings works: <span title="Move cursor to beginning of line">Ctrl-a</span>, <span title="Move cursor to te end of the line">Ctrl-e</span>, <span title="Delete from cursor to beginning of the line">Ctrl-u</span>, <span title="Delete from cursor to the end of the line">Ctrl-k</span>, <span title="Delete from cursor to previous space">Ctrl-w</span></li>
+                <li>Esc-Esc: Disconnect (double-tap)</li>
+                <li>Arrow keys: Navigate history</li>
+                <li>Tab key: Complete nick</li>
+                <li>The following readline/emacs style keybindings can be enabled with a setting: <span title="Move cursor to beginning of line">Ctrl-a</span>, <span title="Move cursor to te end of the line">Ctrl-e</span>, <span title="Delete from cursor to beginning of the line">Ctrl-u</span>, <span title="Delete from cursor to the end of the line">Ctrl-k</span>, <span title="Delete from cursor to previous space">Ctrl-w</span></li>
               </ul>
               </div>
             </div>
@@ -360,6 +360,16 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                     <label>
                       <input type="checkbox" ng-model="orderbyserver">
                       Hierarchical buffer view (order by server)
+                    </label>
+                  </div>
+                </form>
+              </li>
+              <li>
+                <form class="form-inline" role="form">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="readlineBindings">
+                      Enable common readline keybindings in input bar
                     </label>
                   </div>
                 </form>
