@@ -167,7 +167,14 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         };
 
         var getHistoryDown = function(currentLine) {
-            if (historyPos < 0 || historyPos >= history.length) {
+            if (historyPos === history.length) {
+                // stash on history like weechat does
+                if (currentLine !== undefined && currentLine !== '') {
+                    history.push(currentLine);
+                    historyPos++;
+                }
+                return '';
+            } else if (historyPos < 0 || historyPos > history.length) {
                 // Can't go down from out of bounds or last message
                 return currentLine;
             } else {
