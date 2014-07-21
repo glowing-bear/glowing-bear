@@ -869,6 +869,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "fontfamily", getClassStyle('monospace', 'fontFamily'));
     // Save setting for font size
     $store.bind($scope, "fontsize", getClassStyle('monospace', 'fontSize'));
+    // Save setting for readline keybindings
+    $store.bind($scope, "readlineBindings", false);
 
     // Save setting for displaying embeds in rootScope so it can be used from service
     $rootScope.visible = $scope.noembed === false;
@@ -948,6 +950,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Update font size when changed
     $scope.$watch('fontsize', function() {
         changeClassStyle('monospace', 'fontSize', $scope.fontsize);
+    });
+    // Crude scoping hack. The keypress listener does not live in the same scope as
+    // the checkbox, so we need to transfer this between scopes here.
+    $scope.$watch('readlineBindings', function() {
+        $rootScope.readlineBindings = $scope.readlineBindings;
     });
 
     $scope.setActiveBuffer = function(bufferId, key) {
@@ -1533,7 +1540,9 @@ weechat.directive('inputBar', function() {
                     return true;
                 }
                 // Some readline keybindings
-                if ($event.ctrlKey && !$event.altKey && !$event.shiftKey && document.activeElement === inputNode) {
+                if ($rootScope.readlineBindings && $event.ctrlKey && !$event.altKey && !$event.shiftKey && document.activeElement === inputNode) {
+                    // get current caret position
+                    var caretPos = inputNode.selectionStart;
                     // Ctrl-a
                     if (code == 65) {
                         inputNode.setSelectionRange(0, 0);
