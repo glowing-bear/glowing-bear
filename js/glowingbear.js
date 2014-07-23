@@ -1533,7 +1533,7 @@ weechat.directive('inputBar', function() {
 
                     // Check if a modal is visible. If so, close it instead of disconnecting
                     var modals = document.querySelectorAll('.gb-modal');
-                    for (var modalId in modals) {
+                    for (var modalId = 0; modalId < modals.length; modalId++) {
                         if (modals[modalId].getAttribute('data-state') === 'visible') {
                             modals[modalId].setAttribute('data-state', 'hidden');
                             return true;
