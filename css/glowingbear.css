@@ -470,6 +470,10 @@ h2 span, h2 small {
     }
 }
 
+.make-thinner {
+    padding-right: -15px;
+}
+
 /* */
 /* Mobile layout */
 /* */
