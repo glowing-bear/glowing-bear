@@ -885,8 +885,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.hideSidebar = function() {
-        document.getElementById('sidebar').setAttribute('data-state', 'hidden');
-        document.getElementById('content').setAttribute('sidebar-state', 'hidden');
+        if ($rootScope.isMobileUi()) {
+            document.getElementById('sidebar').setAttribute('data-state', 'hidden');
+            document.getElementById('content').setAttribute('sidebar-state', 'hidden');
+        }
     };
     $scope.$watch('autoconnect', function() {
         if ($scope.autoconnect && !$rootScope.connected) {
