@@ -1300,7 +1300,7 @@ weechat.config(['$routeProvider',
 ]);
 
 
-weechat.directive('plugin', function() {
+weechat.directive('plugin', function($rootScope) {
     /*
      * Plugin directive
      * Shows additional plugin content
@@ -1315,6 +1315,8 @@ weechat.directive('plugin', function() {
         controller: function($scope) {
 
             $scope.displayedContent = "";
+
+            $scope.plugin.visible = $rootScope.visible;
 
             $scope.hideContent = function() {
                 $scope.plugin.visible = false;
@@ -1339,6 +1341,10 @@ weechat.directive('plugin', function() {
                 };
                 setTimeout(scroll, 100);
             };
+
+            if ($scope.plugin.visible) {
+                $scope.showContent();
+            }
         }
     };
 });
