@@ -257,7 +257,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
     min-height: 100%;
 }
 
-.monospace {
+.favorite-font {
     font-family: 'Inconsolata', 'Consolas', 'Monaco', 'Ubuntu Mono', monospace;
 }
 
@@ -478,7 +478,7 @@ h2 span, h2 small {
 /* Mobile layout */
 /* */
 @media (max-width: 968px) {
-    .monospace {
+    .favorite-font {
         /* readability on mobile +9001% */
         font-family: sans-serif;
     }

@@ -866,9 +866,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Save setting for playing sound on notification
     $store.bind($scope, "soundnotification", false);
     // Save setting for font family
-    $store.bind($scope, "fontfamily", getClassStyle('monospace', 'fontFamily'));
+    $store.bind($scope, "fontfamily", getClassStyle('favorite-font', 'fontFamily'));
     // Save setting for font size
-    $store.bind($scope, "fontsize", getClassStyle('monospace', 'fontSize'));
+    $store.bind($scope, "fontsize", getClassStyle('favorite-font', 'fontSize'));
     // Save setting for readline keybindings
     $store.bind($scope, "readlineBindings", false);
 
@@ -947,11 +947,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     // Update font family when changed
     $scope.$watch('fontfamily', function() {
-        changeClassStyle('monospace', 'fontFamily', $scope.fontfamily);
+        changeClassStyle('favorite-font', 'fontFamily', $scope.fontfamily);
     });
     // Update font size when changed
     $scope.$watch('fontsize', function() {
-        changeClassStyle('monospace', 'fontSize', $scope.fontsize);
+        changeClassStyle('favorite-font', 'fontSize', $scope.fontsize);
     });
     // Crude scoping hack. The keypress listener does not live in the same scope as
     // the checkbox, so we need to transfer this between scopes here.
