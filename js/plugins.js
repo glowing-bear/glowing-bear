@@ -53,7 +53,7 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
          * Iterates through all the registered plugins
          * and run their contentForMessage function.
          */
-        var contentForMessage = function(message, visible) {
+        var contentForMessage = function(message) {
 
             message.metadata = [];
             for (var i = 0; i < plugins.length; i++) {
@@ -66,10 +66,9 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
 
                 var pluginContent = plugins[i].contentForMessage(message.text);
                 if (pluginContent) {
-                    pluginContent = {'visible': visible,
-                                         'content': $sce.trustAsHtml(pluginContent),
-                                         'nsfw': nsfw,
-                                         'name': plugins[i].name };
+                    pluginContent = {'content': $sce.trustAsHtml(pluginContent),
+                                     'nsfw': nsfw,
+                                     'name': plugins[i].name };
 
                     message.metadata.push(pluginContent);
 

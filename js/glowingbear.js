@@ -63,7 +63,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', function
         buffer.requestedLines++;
         // Only react to line if its displayed
         if (message.displayed) {
-            message = plugins.PluginManager.contentForMessage(message, $rootScope.visible);
+            message = plugins.PluginManager.contentForMessage(message);
             buffer.addLine(message);
 
             if (manually) {
