@@ -872,6 +872,14 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Save setting for readline keybindings
     $store.bind($scope, "readlineBindings", false);
 
+    if (!$scope.fontfamily) {
+        if ($rootScope.isMobileUi()) {
+            $scope.fontfamily = 'sans-serif';
+        } else {
+            $scope.fontfamily = "Inconsolata, Consolas, Monaco, Ubuntu Mono, monospace";
+        }
+    }
+
     // Save setting for displaying embeds in rootScope so it can be used from service
     $rootScope.visible = $scope.noembed === false;
 
