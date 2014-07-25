@@ -881,7 +881,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     }
 
     // Save setting for displaying embeds in rootScope so it can be used from service
-    $rootScope.visible = $scope.noembed === false;
+    $rootScope.auto_display_embedded_content = $scope.noembed === false;
 
     $scope.isSidebarVisible = function() {
         return document.getElementById('sidebar').getAttribute('sidebar-state') === 'visible';
@@ -934,7 +934,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     // Watch model and update show setting when it changes
     $scope.$watch('noembed', function() {
-        $rootScope.visible = $scope.noembed === false;
+        $rootScope.auto_display_embedded_content = $scope.noembed === false;
     });
     // Watch model and update channel sorting when it changes
     $scope.$watch('orderbyserver', function() {
@@ -1316,7 +1316,7 @@ weechat.directive('plugin', function($rootScope) {
 
             $scope.displayedContent = "";
 
-            $scope.plugin.visible = $rootScope.visible;
+            $scope.plugin.visible = $rootScope.auto_display_embedded_content;
 
             $scope.hideContent = function() {
                 $scope.plugin.visible = false;
