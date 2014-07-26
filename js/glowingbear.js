@@ -63,7 +63,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', function
         buffer.requestedLines++;
         // Only react to line if its displayed
         if (message.displayed) {
-            message = plugins.PluginManager.contentForMessage(message, $rootScope.visible);
+            message = plugins.PluginManager.contentForMessage(message);
             buffer.addLine(message);
 
             if (manually) {
@@ -881,7 +881,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     }
 
     // Save setting for displaying embeds in rootScope so it can be used from service
-    $rootScope.visible = $scope.noembed === false;
+    $rootScope.auto_display_embedded_content = $scope.noembed === false;
 
     $scope.isSidebarVisible = function() {
         return document.getElementById('sidebar').getAttribute('sidebar-state') === 'visible';
@@ -934,7 +934,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     // Watch model and update show setting when it changes
     $scope.$watch('noembed', function() {
-        $rootScope.visible = $scope.noembed === false;
+        $rootScope.auto_display_embedded_content = $scope.noembed === false;
     });
     // Watch model and update channel sorting when it changes
     $scope.$watch('orderbyserver', function() {
@@ -1300,7 +1300,7 @@ weechat.config(['$routeProvider',
 ]);
 
 
-weechat.directive('plugin', function() {
+weechat.directive('plugin', function($rootScope) {
     /*
      * Plugin directive
      * Shows additional plugin content
@@ -1315,6 +1315,8 @@ weechat.directive('plugin', function() {
         controller: function($scope) {
 
             $scope.displayedContent = "";
+
+            $scope.plugin.visible = $rootScope.auto_display_embedded_content;
 
             $scope.hideContent = function() {
                 $scope.plugin.visible = false;
@@ -1339,6 +1341,10 @@ weechat.directive('plugin', function() {
                 };
                 setTimeout(scroll, 100);
             };
+
+            if ($scope.plugin.visible) {
+                $scope.showContent();
+            }
         }
     };
 });
