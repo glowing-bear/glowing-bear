@@ -54,24 +54,38 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
          * and run their contentForMessage function.
          */
         var contentForMessage = function(message) {
-
             message.metadata = [];
+
+            var addPluginContent = function(content, pluginName, num) {
+                if (num) {
+                    pluginName += " " + num;
+                }
+                message.metadata.push({
+                    'content': $sce.trustAsHtml(content),
+                    'nsfw': nsfw,
+                    'name': pluginName
+                });
+            };
+
             for (var i = 0; i < plugins.length; i++) {
 
                 var nsfw = false;
                 if (message.text.match(nsfwRegexp)) {
                     nsfw = true;
-                    visible = false;
                 }
 
                 var pluginContent = plugins[i].contentForMessage(message.text);
-                if (pluginContent) {
-                    pluginContent = {'content': $sce.trustAsHtml(pluginContent),
-                                     'nsfw': nsfw,
-                                     'name': plugins[i].name };
+                if (pluginContent && pluginContent !== []) {
 
-                    message.metadata.push(pluginContent);
-
+                    if (pluginContent instanceof Array) {
+                        for (var j = pluginContent.length - 1; j >= 0; j--) {
+                            // only give a number if there are multiple embeds
+                            var num = (pluginContent.length == 1) ? undefined : (j + 1);
+                            addPluginContent(pluginContent[j], plugins[i].name, num);
+                        }
+                    } else {
+                        addPluginContent(pluginContent, plugins[i].name);
+                    }
 
                     if (plugins[i].exclusive) {
                         break;
@@ -110,7 +124,7 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
  */
 plugins.factory('userPlugins', function() {
 
-    var urlRegexp = RegExp(/(ftp|https?):\/\/\S*[^\s.;,(){}<>]/);
+    var urlRegexp = RegExp(/(?:ftp|https?):\/\/\S*[^\s.;,(){}<>]/g);
 
     /*
      * Spotify Embedded Player
