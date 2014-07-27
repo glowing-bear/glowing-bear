@@ -277,7 +277,7 @@ plugins.factory('userPlugins', function() {
         if (match) {
             var url = match[0];
 
-            if (url.match(/^https?:\/\/maps\.google\./i) || url.match(/^https?:\/\/([^\w]+\.)?google\.[^\w]+\/maps/i)) {
+            if (url.match(/^https?:\/\/maps\.google\./i) || url.match(/^https?:\/\/(?:[\w]+\.)?google\.[\w]+\/maps/i)) {
                 return '<iframe width="450" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="' + url + '&output=embed"></iframe>';
             }
         }
