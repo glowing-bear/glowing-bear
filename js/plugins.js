@@ -54,24 +54,38 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
          * and run their contentForMessage function.
          */
         var contentForMessage = function(message) {
-
             message.metadata = [];
+
+            var addPluginContent = function(content, pluginName, num) {
+                if (num) {
+                    pluginName += " " + num;
+                }
+                message.metadata.push({
+                    'content': $sce.trustAsHtml(content),
+                    'nsfw': nsfw,
+                    'name': pluginName
+                });
+            };
+
             for (var i = 0; i < plugins.length; i++) {
 
                 var nsfw = false;
                 if (message.text.match(nsfwRegexp)) {
                     nsfw = true;
-                    visible = false;
                 }
 
                 var pluginContent = plugins[i].contentForMessage(message.text);
-                if (pluginContent) {
-                    pluginContent = {'content': $sce.trustAsHtml(pluginContent),
-                                     'nsfw': nsfw,
-                                     'name': plugins[i].name };
+                if (pluginContent && pluginContent !== []) {
 
-                    message.metadata.push(pluginContent);
-
+                    if (pluginContent instanceof Array) {
+                        for (var j = pluginContent.length - 1; j >= 0; j--) {
+                            // only give a number if there are multiple embeds
+                            var num = (pluginContent.length == 1) ? undefined : (j + 1);
+                            addPluginContent(pluginContent[j], plugins[i].name, num);
+                        }
+                    } else {
+                        addPluginContent(pluginContent, plugins[i].name);
+                    }
 
                     if (plugins[i].exclusive) {
                         break;
@@ -110,7 +124,7 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
  */
 plugins.factory('userPlugins', function() {
 
-    var urlRegexp = RegExp(/(ftp|https?):\/\/\S*[^\s.;,(){}<>]/);
+    var urlRegexp = RegExp(/(?:ftp|https?):\/\/\S*[^\s.;,(){}<>]/g);
 
     /*
      * Spotify Embedded Player
@@ -120,18 +134,16 @@ plugins.factory('userPlugins', function() {
      */
 
     var spotifyPlugin = new Plugin(function(message) {
+        content = [];
         var addMatch = function(match) {
-            var ret = '';
-            for(var i in match) {
-                var id = match[i].substr(match[i].length-22, match[i].length);
-                ret += '<iframe src="//embed.spotify.com/?uri=spotify:track:'+id+'" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>';
+            for (var i = 0; match && i < match.length; i++) {
+                var id = match[i].substr(match[i].length - 22, match[i].length);
+                content.push('<iframe src="//embed.spotify.com/?uri=spotify:track:' + id + '" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>');
             }
-            return ret;
         };
-        var match = message.match(/spotify:track:([a-zA-Z-0-9]{22})/g);
-        var ret = addMatch(match);
-        ret += addMatch(message.match(/open.spotify.com\/track\/([a-zA-Z-0-9]{22})/g));
-        return ret;
+        addMatch(message.match(/spotify:track:([a-zA-Z-0-9]{22})/g));
+        addMatch(message.match(/open.spotify.com\/track\/([a-zA-Z-0-9]{22})/g));
+        return content;
     });
     spotifyPlugin.name = 'Spotify track';
 
@@ -142,20 +154,20 @@ plugins.factory('userPlugins', function() {
      */
     var youtubePlugin = new Plugin(function(message) {
 
-        var regExp = /((?:https?:\/\/)?(?:www\.)?(?:youtube.com|youtu.be)\/(?:v\/|embed\/|watch(?:\?v=|\/))?([a-zA-Z0-9-]+))/gm;
+        var regExp = /(?:https?:\/\/)?(?:www\.)?(?:youtube.com|youtu.be)\/(?:v\/|embed\/|watch(?:\?v=|\/))?([a-zA-Z0-9-]+)/gm;
         var match = regExp.exec(message);
-        var retval = '';
+        var content = [];
 
         // iterate over all matches
         while (match !== null){
-            var token = match[2];
+            var token = match[1];
             var embedurl = "https://www.youtube.com/embed/" + token + "?html5=1&iv_load_policy=3&modestbranding=1&rel=0&showinfo=0";
-            retval += '<iframe width="560" height="315" src="'+ embedurl + '" frameborder="0" allowfullscreen frameborder="0"></iframe>';
+            content.push('<iframe width="560" height="315" src="'+ embedurl + '" frameborder="0" allowfullscreen frameborder="0"></iframe>');
             // next match
             match = regExp.exec(message);
         }
 
-        return retval;
+        return content;
     });
     youtubePlugin.name = 'YouTube video';
 
@@ -205,11 +217,11 @@ plugins.factory('userPlugins', function() {
      */
     var imagePlugin = new Plugin(function(message) {
 
-        var url = message.match(urlRegexp);
-        var content = null;
+        var urls = message.match(urlRegexp);
+        var content = [];
 
-        if (url) {
-            url = url[0]; /* Actually parse one url per message */
+        for (var i = 0; urls && i < urls.length; i++) {
+            var url  = urls[i];
             if (url.match(/\.(png|gif|jpg|jpeg)$/i)) {
 
                 /* A fukung.net URL may end by an image extension but is not a direct link. */
@@ -220,7 +232,7 @@ plugins.factory('userPlugins', function() {
                     url = url.replace(/http:/, "");
                 }
 
-                content = '<a target="_blank" href="'+url+'"><img class="embed" src="' + url + '"></a>';
+                content.push('<a target="_blank" href="'+url+'"><img class="embed" src="' + url + '"></a>');
             }
         }
 
@@ -233,23 +245,24 @@ plugins.factory('userPlugins', function() {
      */
     var cloudmusicPlugin = new Plugin(function(message) {
 
-        var match = message.match(urlRegexp);
+        var urls = message.match(urlRegexp);
+        var content = [];
 
-        if (match) {
-            var url = match[0];
+        for (var i = 0; urls && i < urls.length; i++) {
+            var url = urls[i];
 
             /* SoundCloud http://help.soundcloud.com/customer/portal/articles/247785-what-widgets-can-i-use-from-soundcloud- */
             if (url.match(/^https?:\/\/soundcloud.com\//)) {
-                return '<iframe width="100%" height="120" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=' + url + '&amp;color=ff6600&amp;auto_play=false&amp;show_artwork=true"></iframe>';
+                content.push('<iframe width="100%" height="120" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=' + url + '&amp;color=ff6600&amp;auto_play=false&amp;show_artwork=true"></iframe>');
             }
 
             /* MixCloud */
             if (url.match(/^https?:\/\/([a-z]+\.)?mixcloud.com\//)) {
-                return '<iframe width="480" height="60" src="//www.mixcloud.com/widget/iframe/?feed=' + url + '&mini=1&stylecolor=&hide_artwork=&embed_type=widget_standard&hide_tracklist=1&hide_cover=" frameborder="0"></iframe>';
+                content.push('<iframe width="480" height="60" src="//www.mixcloud.com/widget/iframe/?feed=' + url + '&mini=1&stylecolor=&hide_artwork=&embed_type=widget_standard&hide_tracklist=1&hide_cover=" frameborder="0"></iframe>');
             }
         }
 
-        return null;
+        return content;
     });
     cloudmusicPlugin.name = 'cloud music';
 
@@ -258,17 +271,18 @@ plugins.factory('userPlugins', function() {
      */
     var googlemapPlugin = new Plugin(function(message) {
 
-        var match = message.match(urlRegexp);
+        var urls = message.match(urlRegexp);
+        var content = [];
 
-        if (match) {
-            var url = match[0];
+        for (var i = 0; urls && i < urls.length; i++) {
+            var url = urls[i];
 
-            if (url.match(/^https?:\/\/maps\.google\./i) || url.match(/^https?:\/\/([^\w]+\.)?google\.[^\w]+\/maps/i)) {
-                return '<iframe width="450" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="' + url + '&output=embed"></iframe>';
+            if (url.match(/^https?:\/\/maps\.google\./i) || url.match(/^https?:\/\/(?:[\w]+\.)?google\.[\w]+\/maps/i)) {
+                content.push('<iframe width="450" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="' + url + '&output=embed"></iframe>');
             }
         }
 
-        return null;
+        return content;
     });
     googlemapPlugin.name = 'Google Map';
 
@@ -287,20 +301,22 @@ plugins.factory('userPlugins', function() {
     asciinemaPlugin.name = "ascii cast";
 
     var yrPlugin = new Plugin(function(message) {
-        var match = message.match(urlRegexp);
+        var urls = message.match(urlRegexp);
+        var content = [];
 
-        if (match) {
-            var url = match[0];
+        for (var i = 0; urls && i < urls.length; i++) {
+            var url = urls[i];
             var regexp = /^https?:\/\/(?:www\.)?yr\.no\/(place|stad|sted|sadji|paikka)\/(([^\s.;,(){}<>\/]+\/){3,})/;
-            match = url.match(regexp);
+            var match = url.match(regexp);
             if (match) {
                 var language = match[1];
                 var location = match[2];
                 var city = match[match.length - 1].slice(0, -1);
                 url = "http://www.yr.no/" + language + "/" + location + "avansert_meteogram.png";
-                return "<img src='" + url + "' alt='Meteogram for " + city + "' />";
+                content.push("<img src='" + url + "' alt='Meteogram for " + city + "' />");
             }
         }
+        return content;
     });
     yrPlugin.name = "meteogram";
 
