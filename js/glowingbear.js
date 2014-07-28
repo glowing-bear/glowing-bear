@@ -815,6 +815,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $scope.activeBuffer = models.getActiveBuffer;
 
+    $rootScope.connected = false;
     $rootScope.waseverconnected = false;
 
     $rootScope.models = models;
@@ -898,8 +899,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             document.getElementById('content').setAttribute('sidebar-state', 'hidden');
         }
     };
+    // This also fires on page load
     $scope.$watch('autoconnect', function() {
-        if ($scope.autoconnect && !$rootScope.connected) {
+        if ($scope.autoconnect && !$rootScope.connected && !$rootScope.sslError && !$rootScope.securityError && !$rootScope.errorMessage) {
             $scope.connect();
         }
     });
@@ -1282,10 +1284,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
         $scope.favico.reset();
     };
-
-    if ($scope.autoconnect && !$rootScope.connected && !$rootScope.sslError && !$rootScope.securityError && !$rootScope.errorMessage) {
-        $scope.connect();
-    }
 
 }]
 );
