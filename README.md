@@ -15,7 +15,7 @@ To use the web interface you first need to set a relay and a password:
 	/relay add weechat 9001
 	/set relay.network.password YOURPASSWORD
 
-Then go to the GitHub hosted version of [Glowing Bear](http://glowing-bear.github.io/glowing-bear)!
+Then go to our hosted version of [Glowing Bear](http://www.glowing-bear.org)!
 
 You can run Glowing Bear in multiple ways: use it like any other webpage, as a Firefox or Chrome app, or a full-screen Chrome app on Android ("Add to homescreen"). We also provide an [Android app](https://play.google.com/store/apps/details?id=com.glowing_bear) that you can install from the Google Play Store.
 
@@ -29,7 +29,7 @@ FAQ
 ---
 
 - *Can I use Glowing Bear to access a machine or port not exposed to the internet by passing the connection through my server?* No, that's not what Glowing Bear does. You can use a websocket proxy module for your webserver to forward `/weechat` to your WeeChat instance though. Here are some pointers you might find helpful for setting this up with [nginx](http://nginx.com/blog/websocket-nginx/) or [apache](https://httpd.apache.org/docs/2.4/mod/mod_proxy_wstunnel.html).
-- *How does the encryption work?* TLS is used for securing the connection if you enable encryption. You can find more detailed instructions on how to communicate securely in the "encryption instructions" tab on the [landing page](http://glowing-bear.github.io/glowing-bear). Note that your browser will perform the certificate validation, so it is strongly recommended to use a certificate that your browser trusts.
+- *How does the encryption work?* TLS is used for securing the connection if you enable encryption. You can find more detailed instructions on how to communicate securely in the "encryption instructions" tab on the [landing page](http://www.glowing-bear.org). Note that your browser will perform the certificate validation, so it is strongly recommended to use a certificate that your browser trusts.
 
 Development
 -----------
@@ -45,7 +45,7 @@ python -m SimpleHTTPServer
 
 Now you can point your browser to [http://localhost:8000](http://localhost:8000)!
 
-Remember that **you don't need to host Glowing Bear yourself to use it**, you can just use the [GitHub hosted version](http://glowing-bear.github.io/glowing-bear), and we'll take care of updates for you. Your browser connects to WeeChat directly, so it does not matter where Glowing Bear is hosted.
+Remember that **you don't need to host Glowing Bear yourself to use it**, you can just use the [our hosted version](http://www.glowing-bear.org) powered by GitHub pages, and we'll take care of updates for you. Your browser connects to WeeChat directly, so it does not matter where Glowing Bear is hosted.
 
 If you'd prefer a version hosted with HTTPS, GitHub serves that as well with an undocumented, not officially supported (by GitHub) link. Be careful though, it might break any minute. Anyway, here's the link: [secret GitHub HTTPS link](https://glowing-bear.github.io/glowing-bear/) (the trailing forward slash in the URL seems to make all the difference).
 
