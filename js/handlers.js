@@ -71,6 +71,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         var old = models.getBuffer(buffer);
         old.fullName = obj.full_name;
         old.shortName = obj.short_name;
+        old.trimmedName = obj.short_name.replace(/^[#&+]/, '');
     };
 
     var handleBufferLocalvarChanged = function(message) {
@@ -80,7 +81,8 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
 
         var localvars = obj.local_variables;
         if (old !== undefined && localvars !== undefined) {
-            // Update indendation status
+            // Update indentation status
+            old.type = localvars.type;
             old.indent = (['channel', 'private'].indexOf(localvars.type) >= 0);
         }
     };
