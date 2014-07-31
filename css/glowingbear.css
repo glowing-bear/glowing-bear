@@ -346,6 +346,15 @@ div.embed img.embed {
     max-width: 100%;
 }
 
+div.colourbox {
+    display: inline-block;
+    border-radius: 3px;
+    border: 1px solid #bbb;
+    width: 14px;
+    height: 14px;
+    margin-bottom: -2px;
+}
+
 
 table.notimestamp td.time {
     display: none !important;
