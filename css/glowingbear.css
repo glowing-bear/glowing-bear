@@ -116,12 +116,6 @@ input[type=text], input[type=password], #sendMessage, .badge {
     padding: 0px;
 }
 
-@media (min-width: 768px) {
-    .col-sm-9 {
-        padding-right: 5px !important;
-    }
-}
-
 .glyphicon {
     top: 0; /* Fixes alignment issue in top bar */
 }
@@ -624,5 +618,11 @@ h2 span, h2 small {
     ::-webkit-scrollbar {
         width: 5px;
         height: 5px;
+    }
+}
+
+@media (min-width: 768px) {
+    .col-sm-9 {
+        padding-right: 5px !important;
     }
 }
