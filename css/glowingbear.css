@@ -107,6 +107,10 @@ input[type=text], input[type=password], #sendMessage, .badge {
     margin-bottom: 5px !important;
 }
 
+.input-group {
+    width: 100%
+}
+
 .row {
     margin: 0px;
     max-width: 300px;
@@ -114,6 +118,10 @@ input[type=text], input[type=password], #sendMessage, .badge {
 
 .no-gutter [class*="col"] {
     padding: 0px;
+}
+
+.col-sm-9 {
+    padding-right: 5px !important;
 }
 
 .glyphicon {
@@ -268,6 +276,10 @@ input[type=text], input[type=password], #sendMessage, .badge {
     min-height: 100%;
 }
 
+.monospace {
+    font-family: 'Inconsolata', 'Consolas', 'Monaco', 'Ubuntu Mono', monospace;
+}
+
 #bufferlines {
     position: relative;
     height: 100%;
@@ -355,15 +367,6 @@ div.embed * {
 div.embed img.embed {
     max-height: 300px;
     max-width: 100%;
-}
-
-div.colourbox {
-    display: inline-block;
-    border-radius: 3px;
-    border: 1px solid #bbb;
-    width: 14px;
-    height: 14px;
-    margin-bottom: -2px;
 }
 
 
@@ -486,14 +489,14 @@ h2 span, h2 small {
     }
 }
 
-.make-thinner {
-    padding-right: -15px;
-}
-
 /* */
 /* Mobile layout */
 /* */
 @media (max-width: 968px) {
+    .monospace {
+        /* readability on mobile +9001% */
+        font-family: sans-serif;
+    }
 
     #bufferlines table {
         border-collapse: separate;
@@ -619,10 +622,8 @@ h2 span, h2 small {
         width: 5px;
         height: 5px;
     }
-}
 
-@media (min-width: 768px) {
     .col-sm-9 {
-        padding-right: 5px !important;
+        padding-right: 0px !important;
     }
 }
