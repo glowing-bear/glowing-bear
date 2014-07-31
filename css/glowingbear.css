@@ -104,7 +104,26 @@ input[type=text], input[type=password], #sendMessage, .badge {
     color: #ccc;
     box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.8) inset;
     background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.3);
+    margin-bottom: 5px !important;
 }
+
+.input-group {
+    width: 100%
+}
+
+.row {
+    margin: 0px;
+    max-width: 300px;
+}
+
+.no-gutter [class*="col"] {
+    padding: 0px;
+}
+
+.col-sm-9 {
+    padding-right: 5px !important;
+}
+
 .glyphicon {
     top: 0; /* Fixes alignment issue in top bar */
 }
@@ -257,6 +276,10 @@ input[type=text], input[type=password], #sendMessage, .badge {
     min-height: 100%;
 }
 
+.monospace {
+    font-family: 'Inconsolata', 'Consolas', 'Monaco', 'Ubuntu Mono', monospace;
+}
+
 #bufferlines {
     position: relative;
     height: 100%;
@@ -354,7 +377,6 @@ div.colourbox {
     height: 14px;
     margin-bottom: -2px;
 }
-
 
 table.notimestamp td.time {
     display: none !important;
@@ -475,14 +497,14 @@ h2 span, h2 small {
     }
 }
 
-.make-thinner {
-    padding-right: -15px;
-}
-
 /* */
 /* Mobile layout */
 /* */
 @media (max-width: 968px) {
+    .monospace {
+        /* readability on mobile +9001% */
+        font-family: sans-serif;
+    }
 
     #bufferlines table {
         border-collapse: separate;
@@ -607,5 +629,9 @@ h2 span, h2 small {
     ::-webkit-scrollbar {
         width: 5px;
         height: 5px;
+    }
+
+    .col-sm-9 {
+        padding-right: 0px !important;
     }
 }
