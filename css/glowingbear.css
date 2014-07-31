@@ -107,6 +107,10 @@ input[type=text], input[type=password], #sendMessage, .badge {
     margin-bottom: 5px !important;
 }
 
+.input-group {
+    width: 100%
+}
+
 .row {
     margin: 0px;
     max-width: 300px;
@@ -114,6 +118,10 @@ input[type=text], input[type=password], #sendMessage, .badge {
 
 .no-gutter [class*="col"] {
     padding: 0px;
+}
+
+.col-sm-9 {
+    padding-right: 5px !important;
 }
 
 .glyphicon {
@@ -366,7 +374,6 @@ div.colourbox {
     margin-bottom: -2px;
 }
 
-
 table.notimestamp td.time {
     display: none !important;
 }
@@ -494,6 +501,10 @@ h2 span, h2 small {
 /* Mobile layout */
 /* */
 @media (max-width: 968px) {
+    .monospace {
+        /* readability on mobile +9001% */
+        font-family: sans-serif;
+    }
 
     #bufferlines table {
         border-collapse: separate;
@@ -619,10 +630,8 @@ h2 span, h2 small {
         width: 5px;
         height: 5px;
     }
-}
 
-@media (min-width: 768px) {
     .col-sm-9 {
-        padding-right: 5px !important;
+        padding-right: 0px !important;
     }
 }
