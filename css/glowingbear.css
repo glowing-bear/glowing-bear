@@ -276,6 +276,10 @@ input[type=text], input[type=password], #sendMessage, .badge {
     min-height: 100%;
 }
 
+.monospace {
+    font-family: 'Inconsolata', 'Consolas', 'Monaco', 'Ubuntu Mono', monospace;
+}
+
 #bufferlines {
     position: relative;
     height: 100%;
@@ -491,10 +495,6 @@ h2 span, h2 small {
     .panel[data-state=collapsed] .panel-collapse * {
         display: none;
     }
-}
-
-.make-thinner {
-    padding-right: -15px;
 }
 
 /* */
