@@ -255,7 +255,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
               <td class="prefix"><a ng-click="addMention(bufferline.prefix)"><span ng-repeat="part in bufferline.prefix" bo-class="part.classes" bo-html="part.text"></span></a></td>
               <td class="message">
                 <div ng-repeat="metadata in bufferline.metadata" plugin data="metadata"></div>
-                <span ng-repeat="part in bufferline.content" class="text" bo-class="part.classes" bo-html="part.text|irclinky:'_blank'"></span>
+                <span ng-repeat="part in bufferline.content" class="text" bo-class="part.classes" bo-html="part.text | irclinky:'_blank' | inlinecolour"></span>
               </td>
             </tr>
             <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
