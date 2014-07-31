@@ -1577,7 +1577,9 @@ weechat.directive('inputBar', function() {
                     // Set cursor to last position. Need 0ms timeout because browser sets cursor
                     // position to the beginning after this key handler returns.
                     setTimeout(function() {
-                        inputNode.setSelectionRange($scope.command.length, $scope.command.length);
+                        if ($scope.command) {
+                            inputNode.setSelectionRange($scope.command.length, $scope.command.length);
+                        }
                     }, 0);
                     return true;
                 }
