@@ -1,4 +1,4 @@
-var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'plugins', 'ngSanitize', 'ngWebsockets', 'pasvaz.bindonce', 'ngTouch', 'ngAnimate']);
+var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'plugins', 'ngSanitize', 'ngWebsockets', 'pasvaz.bindonce', 'ngTouch']);
 
 weechat.filter('toArray', function () {
     'use strict';
@@ -14,6 +14,19 @@ weechat.filter('toArray', function () {
     };
 });
 
+// Helper to change style of a class
+var changeClassStyle = function(classSelector, attr, value) {
+    _.each(document.getElementsByClassName(classSelector), function(e) {
+        e.style[attr] = value;
+    });
+};
+// Helper to get style from a class
+var getClassStyle = function(classSelector, attr) {
+    _.each(document.getElementsByClassName(classSelector), function(e) {
+        return e.style[attr];
+    });
+};
+
 weechat.filter('irclinky', ['$filter', function($filter) {
     'use strict';
     return function(text, target) {
@@ -28,13 +41,29 @@ weechat.filter('irclinky', ['$filter', function($filter) {
         // However, it matches all *common* IRC channels while trying to minimise false positives. "#1" is much
         // more likely to be "number 1" than "IRC channel #1".
         // Thus, we only match channels beginning with a # and having at least one letter in them.
-        var channelRegex = /(^|[\s,.:;?!"'()+@])(#+[a-z0-9-_]*[a-z][a-z0-9-_]*)/gmi;
+        var channelRegex = /(^|[\s,.:;?!"'()+@-])(#+[a-z0-9-_]*[a-z][a-z0-9-_]*)/gmi;
         // This is SUPER nasty, but ng-click does not work inside a filter, as the markup has to be $compiled first, which is not possible in filter afaik.
         // Therefore, get the scope, fire the method, and $apply. Yuck. I sincerely hope someone finds a better way of doing this.
         linkiedText = linkiedText.replace(channelRegex, '$1<a href="#" onclick="var $scope = angular.element(event.target).scope(); $scope.openBuffer(\'$2\'); $scope.$apply();">$2</a>');
         return linkiedText;
     };
 }]);
+
+weechat.filter('inlinecolour', function() {
+    'use strict';
+
+    return function(text) {
+        if (!text) {
+            return text;
+        }
+
+        // only match 6-digit colour codes, 3-digit ones have too many false positives (issue numbers, etc)
+        var hexColourRegex = /(^|[^&])\#([0-9a-f]{6})($|[^\w'"])/gmi;
+        var substitute = '$1#$2 <div class="colourbox" style="background-color:#$2"></div> $3';
+
+        return text.replace(hexColourRegex, substitute);
+    };
+});
 
 weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', function($rootScope, $log, models, plugins) {
 
@@ -50,7 +79,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', function
         buffer.requestedLines++;
         // Only react to line if its displayed
         if (message.displayed) {
-            message = plugins.PluginManager.contentForMessage(message, $rootScope.visible);
+            message = plugins.PluginManager.contentForMessage(message);
             buffer.addLine(message);
 
             if (manually) {
@@ -87,7 +116,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', function
         var buffer = new models.Buffer(bufferMessage);
         models.addBuffer(buffer);
         /* Until we can decide if user asked for this buffer to be opened
-         * or not we will let user click opened buffers. 
+         * or not we will let user click opened buffers.
         models.setActiveBuffer(buffer.id);
         */
     };
@@ -483,6 +512,9 @@ function($rootScope,
             // Don't do that if we didn't get any more lines than we already had
             var setReadmarker = (buffer.lastSeen >= 0) && (oldLength !== buffer.lines.length);
             buffer.lines.length = 0;
+            // We need to set the number of requested lines to 0 here, because parsing a line
+            // increments it. This is needed to also count newly arriving lines while we're
+            // already connected.
             buffer.requestedLines = 0;
             // Count number of lines recieved
             var linesReceivedCount = lineinfo.objects[0].content.length;
@@ -522,9 +554,6 @@ function($rootScope,
 }]);
 
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', function ($rootScope, $scope, $store, $timeout, $log, models, connection) {
-
-
-    $scope.port = 9001;
 
     // From: http://stackoverflow.com/a/18539624 by StackOverflow user "plantian"
     $rootScope.countWatchers = function () {
@@ -609,6 +638,17 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             $scope.documentHidden = "msHidden";
             $scope.documentVisibilityChange = "msvisibilitychange";
         }
+    })();
+
+    // Enable debug mode if "?debug=1" or "?debug=true" is set
+    (function() {
+        window.location.search.substring(1).split('&').forEach(function(f) {
+            var segs = f.split('=');
+            if (segs[0] === "debug" && ["true", "1"].indexOf(segs[1]) != -1) {
+                $rootScope.debugMode = true;
+                return;
+            }
+        });
     })();
 
 
@@ -699,9 +739,14 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $rootScope.$on('activeBufferChanged', function(event, unreadSum) {
         var ab = models.getActiveBuffer();
 
-        // trim lines to 2 screenfuls + 10 lines
-        ab.lines.splice(0, ab.lines.length - (2 * $scope.lines_per_screen + 10));
-        ab.requestedLines = ab.lines.length;
+        // Discard surplus lines. This is done *before* lines are fetched because that saves us the effort of special handling for the
+        // case where a buffer is opened for the first time ;)
+        var minRetainUnread = ab.lines.length - unreadSum + 5;  // do not discard unread lines and keep 5 additional lines for context
+        var surplusLines = ab.lines.length - (2 * $scope.lines_per_screen + 10);  // retain up to 2*(screenful + 10) + 10 lines because magic numbers
+        var linesToRemove = Math.max(0, Math.min(minRetainUnread, surplusLines));
+        ab.lines.splice(0, linesToRemove);  // remove the lines from the buffer
+        ab.requestedLines -= linesToRemove;  // to ensure that the correct amount of lines is fetched should more be requested
+        ab.lastSeen -= linesToRemove;  // adjust readmarker
 
         $scope.bufferlines = ab.lines;
         $scope.nicklist = ab.nicklist;
@@ -721,8 +766,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if (ab.requestedLines < $scope.lines_per_screen) {
             // buffer has not been loaded, but some lines may already be present if they arrived after we connected
             // try to determine how many lines to fetch
-            var numLines = $scope.lines_per_screen;  // that's a screenful plus 10 lines
-            unreadSum += 10;  // let's just add a 10 line safety margin here again
+            var numLines = $scope.lines_per_screen + 10;  // that's (a screenful plus 10 lines) plus 10 lines, just to be safe
             if (unreadSum > numLines) {
                 // request up to 4*(screenful + 10 lines)
                 numLines = Math.min(4*numLines, unreadSum);
@@ -774,23 +818,20 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     });
 
     $rootScope.$on('relayDisconnect', function() {
-        // this reinitialze just breaks the bufferlist upon reconnection.
-        // Disabled it until it's fully investigated and fixed
-        //models.reinitialize();
+        models.reinitialize();
         $rootScope.$emit('notificationChanged');
         $scope.connectbutton = 'Connect';
     });
     $scope.connectbutton = 'Connect';
 
-    $scope.showSidebar = true;
-
-    $scope.buffers = models.model.buffers;
+    $scope.getBuffers = models.getBuffers.bind(models);
 
     $scope.bufferlines = {};
     $scope.nicklist = {};
 
     $scope.activeBuffer = models.getActiveBuffer;
 
+    $rootScope.connected = false;
     $rootScope.waseverconnected = false;
 
     $rootScope.models = models;
@@ -805,6 +846,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     if ($scope.savepassword) {
         $store.bind($scope, "password", "");
     }
+    $store.bind($scope, "autoconnect", false);
 
     // If we are on mobile change some defaults
     // We use 968 px as the cutoff, which should match the value in glowingbear.css
@@ -831,7 +873,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Save setting for displaying embeds
     $store.bind($scope, "noembed", noembed);
     // Save setting for channel ordering
-    $store.bind($scope, "orderbyserver", false);
+    $store.bind($scope, "orderbyserver", true);
     // Save setting for updating favicon
     $store.bind($scope, "useFavico", true);
     // Save setting for showtimestamp
@@ -840,17 +882,58 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "showtimestampSeconds", false);
     // Save setting for playing sound on notification
     $store.bind($scope, "soundnotification", false);
+    // Save setting for font family
+    $store.bind($scope, "fontfamily", getClassStyle('favorite-font', 'fontFamily'));
+    // Save setting for font size
+    $store.bind($scope, "fontsize", getClassStyle('favorite-font', 'fontSize'));
+    // Save setting for readline keybindings
+    $store.bind($scope, "readlineBindings", false);
+
+    if (!$scope.fontfamily) {
+        if ($rootScope.isMobileUi()) {
+            $scope.fontfamily = 'sans-serif';
+        } else {
+            $scope.fontfamily = "Inconsolata, Consolas, Monaco, Ubuntu Mono, monospace";
+        }
+    }
 
     // Save setting for displaying embeds in rootScope so it can be used from service
-    $rootScope.visible = $scope.noembed === false;
+    $rootScope.auto_display_embedded_content = $scope.noembed === false;
 
-    // Open and close panels while on mobile devices through swiping
-    $scope.swipeSidebar = function() {
+    $scope.isSidebarVisible = function() {
+        return document.getElementById('sidebar').getAttribute('sidebar-state') === 'visible';
+    };
+
+    $scope.showSidebar = function() {
+        document.getElementById('sidebar').setAttribute('data-state', 'visible');
+        document.getElementById('content').setAttribute('sidebar-state', 'visible');
+    };
+
+    $scope.hideSidebar = function() {
         if ($rootScope.isMobileUi()) {
-            $scope.showSidebar = !$scope.showSidebar;
+            document.getElementById('sidebar').setAttribute('data-state', 'hidden');
+            document.getElementById('content').setAttribute('sidebar-state', 'hidden');
+        }
+    };
+    // This also fires on page load
+    $scope.$watch('autoconnect', function() {
+        if ($scope.autoconnect && !$rootScope.connected && !$rootScope.sslError && !$rootScope.securityError && !$rootScope.errorMessage) {
+            $scope.connect();
+        }
+    });
+
+    // toggle sidebar (if on mobile)
+    $scope.toggleSidebar = function() {
+        if ($rootScope.isMobileUi()) {
+            if ($scope.isSidebarVisible()) {
+                $scope.hideSidebar();
+            } else {
+                $scope.showSidebar();
+            }
         }
     };
 
+    // Open and close panels while on mobile devices through swiping
     $scope.openNick = function() {
         if ($rootScope.isMobileUi()) {
             if ($scope.nonicklist) {
@@ -869,7 +952,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     // Watch model and update show setting when it changes
     $scope.$watch('noembed', function() {
-        $rootScope.visible = $scope.noembed === false;
+        $rootScope.auto_display_embedded_content = $scope.noembed === false;
     });
     // Watch model and update channel sorting when it changes
     $scope.$watch('orderbyserver', function() {
@@ -888,12 +971,25 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     });
 
+    // Update font family when changed
+    $scope.$watch('fontfamily', function() {
+        changeClassStyle('favorite-font', 'fontFamily', $scope.fontfamily);
+    });
+    // Update font size when changed
+    $scope.$watch('fontsize', function() {
+        changeClassStyle('favorite-font', 'fontSize', $scope.fontsize);
+    });
+    // Crude scoping hack. The keypress listener does not live in the same scope as
+    // the checkbox, so we need to transfer this between scopes here.
+    $scope.$watch('readlineBindings', function() {
+        $rootScope.readlineBindings = $scope.readlineBindings;
+    });
 
     $scope.setActiveBuffer = function(bufferId, key) {
         // If we are on mobile we need to collapse the menu on sidebar clicks
         // We use 968 px as the cutoff, which should match the value in glowingbear.css
         if ($rootScope.isMobileUi()) {
-            $scope.showSidebar = false;
+            $scope.hideSidebar();
         }
         return models.setActiveBuffer(bufferId, key);
     };
@@ -933,10 +1029,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if ($rootScope.connected) {
             // Show the sidebar if switching away from mobile view, hide it when switching to mobile
             // Wrap in a condition so we save ourselves the $apply if nothing changes (50ms or more)
-            if ($scope.wasMobileUi !== $scope.isMobileUi() &&
-                    $scope.showSidebar === $scope.isMobileUi()) {
-                $scope.showSidebar = !$scope.showSidebar;
-                $scope.$apply();
+            if ($scope.wasMobileUi && !$scope.isMobileUi()) {
+                $scope.showSidebar();
             }
             $scope.wasMobileUi = $scope.isMobileUi();
             $scope.calculateNumLines();
@@ -1027,6 +1121,36 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     };
 
+    $scope.showModal = function(elementId) {
+        document.getElementById(elementId).setAttribute('data-state', 'visible');
+    };
+    $scope.closeModal = function($event) {
+        function closest(elem, selector) {
+            var matchesSelector = elem.matches || elem.webkitMatchesSelector || elem.mozMatchesSelector || elem.msMatchesSelector;
+            while (elem) {
+                if (matchesSelector.call(elem, selector)) return elem;
+                else elem = elem.parentElement;
+            }
+        }
+        closest($event.target, '.gb-modal').setAttribute('data-state', 'hidden');
+    };
+
+    $scope.toggleAccordion = function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+
+        var target = event.target.parentNode.parentNode.parentNode;
+        target.setAttribute('data-state', target.getAttribute('data-state') === 'active' ? 'collapsed' : 'active');
+
+        // Hide all other siblings
+        var siblings = target.parentNode.children;
+        for (var childId in siblings) {
+            var child = siblings[childId];
+            if (child.nodeType === 1 && child !== target) {
+                child.setAttribute('data-state', 'collapsed');
+            }
+        }
+    };
 
     /* Function gets called from bufferLineAdded code if user should be notified */
     $rootScope.createHighlight = function(buffer, message) {
@@ -1125,7 +1249,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $rootScope.switchToActivityBuffer = function() {
         // Find next buffer with activity and switch to it
-        var sortedBuffers = _.sortBy($scope.buffers, 'number');
+        var sortedBuffers = _.sortBy($scope.getBuffers(), 'number');
         var i, buffer;
         // Try to find buffer with notification
         for (i in sortedBuffers) {
@@ -1190,7 +1314,7 @@ weechat.config(['$routeProvider',
 ]);
 
 
-weechat.directive('plugin', function() {
+weechat.directive('plugin', function($rootScope) {
     /*
      * Plugin directive
      * Shows additional plugin content
@@ -1205,6 +1329,8 @@ weechat.directive('plugin', function() {
         controller: function($scope) {
 
             $scope.displayedContent = "";
+
+            $scope.plugin.visible = $rootScope.auto_display_embedded_content;
 
             $scope.hideContent = function() {
                 $scope.plugin.visible = false;
@@ -1229,6 +1355,10 @@ weechat.directive('plugin', function() {
                 };
                 setTimeout(scroll, 100);
             };
+
+            if ($scope.plugin.visible) {
+                $scope.showContent();
+            }
         }
     };
 });
@@ -1239,7 +1369,7 @@ weechat.directive('inputBar', function() {
     return {
 
         templateUrl: 'directives/input.html',
-        
+
         scope: {
             inputId: '@inputId'
         },
@@ -1312,6 +1442,8 @@ weechat.directive('inputBar', function() {
                     // Empty the input after it's sent
                     $scope.command = '';
                 }
+
+                $scope.getInputNode().focus();
             };
 
             $rootScope.addMention = function(prefix) {
@@ -1428,6 +1560,16 @@ weechat.directive('inputBar', function() {
                 // Double-tap Escape -> disconnect
                 if (code === 27) {
                     $event.preventDefault();
+
+                    // Check if a modal is visible. If so, close it instead of disconnecting
+                    var modals = document.querySelectorAll('.gb-modal');
+                    for (var modalId = 0; modalId < modals.length; modalId++) {
+                        if (modals[modalId].getAttribute('data-state') === 'visible') {
+                            modals[modalId].setAttribute('data-state', 'hidden');
+                            return true;
+                        }
+                    }
+
                     if (typeof $scope.lastEscape !== "undefined" && (Date.now() - $scope.lastEscape) <= 500) {
                         // Double-tap
                         connection.disconnect();
@@ -1449,7 +1591,9 @@ weechat.directive('inputBar', function() {
                     // Set cursor to last position. Need 0ms timeout because browser sets cursor
                     // position to the beginning after this key handler returns.
                     setTimeout(function() {
-                        inputNode.setSelectionRange($scope.command.length, $scope.command.length);
+                        if ($scope.command) {
+                            inputNode.setSelectionRange($scope.command.length, $scope.command.length);
+                        }
                     }, 0);
                     return true;
                 }
@@ -1462,10 +1606,45 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Enter to submit, shift-enter for newline
-                //
                 if (code == 13 && !$event.shiftKey && document.activeElement === inputNode) {
                     $event.preventDefault();
                     $scope.sendMessage();
+                    return true;
+                }
+                // Some readline keybindings
+                if ($rootScope.readlineBindings && $event.ctrlKey && !$event.altKey && !$event.shiftKey && document.activeElement === inputNode) {
+                    // get current caret position
+                    var caretPos = inputNode.selectionStart;
+                    // Ctrl-a
+                    if (code == 65) {
+                        inputNode.setSelectionRange(0, 0);
+                    // Ctrl-e
+                    } else if (code == 69) {
+                        inputNode.setSelectionRange($scope.command.length, $scope.command.length);
+                    // Ctrl-u
+                    } else if (code == 85) {
+                        $scope.command = $scope.command.slice(caretPos);
+                        setTimeout(function() {
+                            inputNode.setSelectionRange(0, 0);
+                        });
+                    // Ctrl-k
+                    } else if (code == 75) {
+                        $scope.command = $scope.command.slice(0, caretPos);
+                        setTimeout(function() {
+                            inputNode.setSelectionRange($scope.command.length, $scope.command.length);
+                        });
+                    // Ctrl-w
+                    } else if (code == 87) {
+                        var trimmedValue = $scope.command.slice(0, caretPos);
+                        var lastSpace = trimmedValue.lastIndexOf(' ') + 1;
+                        $scope.command = $scope.command.slice(0, lastSpace) + $scope.command.slice(caretPos, $scope.command.length);
+                        setTimeout(function() {
+                            inputNode.setSelectionRange(lastSpace, lastSpace);
+                        });
+                    } else {
+                        return false;
+                    }
+                    $event.preventDefault();
                     return true;
                 }
             };

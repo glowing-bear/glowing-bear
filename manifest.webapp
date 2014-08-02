@@ -1,5 +1,5 @@
 {
-  "name": "WeeChat",
+  "name": "Glowing Bear",
   "description": "WeeChat Web frontend",
   "launch_path": "/glowing-bear/index.html",
   "icons": {
@@ -16,6 +16,5 @@
     "url": "https://github.com/glowing-bear"
   },
   "default_locale": "en",
-  "version": "2"
+  "version": "0.4.0"
 }
-

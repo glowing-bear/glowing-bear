@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <title ng-bind-template="{{ notificationStatus }}Glowing Bear {{ pageTitle}}"></title>
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link rel="shortcut icon" sizes="128x128" href="assets/img/glowing_bear_128x128.png">
@@ -13,12 +14,10 @@
     <link rel="shortcut icon" type="image/png" href="assets/img/favicon.png" >
     <link href="css/style.css" rel="stylesheet" media="screen">
     <link href="css/glowingbear.css" rel="stylesheet" media="screen">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.8/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.8/angular-route.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.8/angular-sanitize.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.8/angular-touch.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.8/angular-animate.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
     <script type="text/javascript" src="3rdparty/inflate.min.js"></script>
     <script type="text/javascript" src="js/localstorage.js"></script>
@@ -30,7 +29,6 @@
     <script type="text/javascript" src="js/plugins.js"></script>
     <script type="text/javascript" src="3rdparty/bindonce.min.js"></script>
     <script type="text/javascript" src="3rdparty/favico-0.3.4-mod.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
   </head>
   <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-class="{'no-overflow': connected}">
     <div ng-hide="connected" class="container">
@@ -48,26 +46,32 @@
       <div class="alert alert-danger" ng-show="securityError">
         <strong>Secure connection error</strong> Unable to connect to unencrypted relay when your are connecting to Glowing Bear over HTTPS. Please use an encrypted relay or load the page without using HTTPS.
       </div>
-      <div class="panel-group" id="accordion">
-        <div class="panel">
+      <div class="panel-group accordion">
+        <div class="panel" data-state="active">
           <div class="panel-heading">
             <h4 class="panel-title">
-              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+              <a class="accordion-toggle" ng-click="toggleAccordion($event)">
                 Connection settings
               </a>
             </h4>
           </div>
           <div id="collapseOne" class="panel-collapse collapse in">
             <div class="panel-body">
-              <form class="form-signin" role="form">
+               <form class="form-signin" role="form">
                 <div class="form-group">
                   <label class="control-label" for="host">WeeChat relay hostname and port number</label>
                   <div class="input-group">
-                    <input type="text" class="form-control monospace" id="host" ng-model="host" placeholder="Address">
-                    <input type="text" class="form-control monospace" id="port" ng-model="port">
+                    <div class="row no-gutter">
+                      <div class="col-sm-9">
+                        <input type="text" class="form-control favorite-font" id="host" ng-model="host" placeholder="Address" >
+                      </div>
+                      <div class="col-sm-3">
+                        <input type="text" class="form-control favorite-font" id="port" ng-model="port" placeholder="Port">
+                      </div>
+                    </div>
                   </div>
                   <label class="control-label" for="password">WeeChat relay password</label>
-                  <input type="password" class="form-control monospace" id="password" ng-model="password" placeholder="Password">
+                  <input type="password" class="form-control favorite-font" id="password" ng-model="password" placeholder="Password">
                   <div class="alert alert-danger" ng-show="passwordError">
                     Error: wrong password
                   </div>
@@ -76,6 +80,12 @@
                     <label class="control-label" for="savepassword">
                         <input type="checkbox" id="savepassword" ng-model="savepassword">
                         Save password in your browser
+                    </label>
+                  </div>
+                  <div class="checkbox" ng-show="savepassword">
+                    <label class="control-label" for="autoconnect">
+                        <input type="checkbox" id="autoconnect" ng-model="autoconnect">
+                        Automatically connect
                     </label>
                   </div>
                   <div class="checkbox">
@@ -90,15 +100,15 @@
             </div>
           </div>
         </div>
-        <div class="panel">
+        <div class="panel" data-state="collapsed">
           <div class="panel-heading">
             <h4 class="panel-title">
-              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+              <a class="accordion-toggle" ng-click="toggleAccordion($event)">
                 Usage instructions
               </a>
             </h4>
           </div>
-          <div id="collapseTwo" class="panel-collapse collapse">
+          <div id="collapseTwo" class="panel-collapse collapse in">
             <div class="panel-body">
               <h3>Configuring the relay</h3>
               <div>To start using glowing bear, please enable the relay plugin in your WeeChat client:
@@ -115,26 +125,28 @@
               <ul>
                 <li>ALT-n: Toggle nicklist</li>
                 <li>ALT-l: Focus on input bar</li>
-                <li>ALT-[0-9]: Focus on buffer</li>
+                <li>ALT-[0-9]: Switch to buffer number N</li>
                 <li>ALT-a: Focus on next buffer with activity</li>
-                <li>ALT-&lt;: Switch to previous buffer</li>
+                <li>ALT-&lt;: Switch to previous active buffer</li>
                 <li>ALT-g: Focus on buffer list filter</li>
-                <li>Esc-Esc: disconnect (double-tap)</li>
-                <li>arrow keys: history navigation</li>
+                <li>Esc-Esc: Disconnect (double-tap)</li>
+                <li>Arrow keys: Navigate history</li>
+                <li>Tab key: Complete nick</li>
+                <li>The following readline/emacs style keybindings can be enabled with a setting: <span title="Move cursor to beginning of line">Ctrl-a</span>, <span title="Move cursor to te end of the line">Ctrl-e</span>, <span title="Delete from cursor to beginning of the line">Ctrl-u</span>, <span title="Delete from cursor to the end of the line">Ctrl-k</span>, <span title="Delete from cursor to previous space">Ctrl-w</span></li>
               </ul>
               </div>
             </div>
           </div>
         </div>
-        <div class="panel ">
+        <div class="panel" data-state="collapsed">
           <div class="panel-heading">
             <h4 class="panel-title">
-              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+              <a class="accordion-toggle" ng-click="toggleAccordion($event)">
                 Encryption instructions
               </a>
             </h4>
           </div>
-          <div id="collapseThree" class="panel-collapse collapse">
+          <div id="collapseThree" class="panel-collapse collapse in">
             <div class="panel-body">
               <p>If you check the encryption box, the communication between browser and WeeChat will be encrypted with SSL.</p>
               <p><strong>Note</strong>: If you are using a self-signed certificate, you have to visit <a href="https://{{ host }}:{{ port }}/">https://{{ host || 'weechathost' }}:{{ port || 'relayport' }}/</a> in your browser first to add a security exception. You can close that tab once you confirmed the certificate, no content will appear. The necessity of this process is a bug in <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">Firefox</a> and other browsers.</p>
@@ -152,15 +164,15 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
             </div>
           </div>
         </div>
-        <div class="panel" ng-hide="isinstalled">
+        <div class="panel" data-state="collapsed" ng-hide="isinstalled">
           <div class="panel-heading">
             <h4 class="panel-title">
-              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
+              <a class="accordion-toggle" ng-click="toggleAccordion($event)">
                 Install app
               </a>
             </h4>
           </div>
-          <div id="collapseFour" class="panel-collapse collapse">
+          <div id="collapseFour" class="panel-collapse collapse in">
             <div class="panel-body">
               <p>You don't need to install anything to use this app, it should work with any modern browser. Start using it <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">right now</a>! However, there are a few ways to improve integration with your operating system.</p>
               <h3>Firefox</h3>
@@ -171,15 +183,15 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
             </div>
           </div>
         </div>
-        <div class="panel">
+        <div class="panel" data-state="collapsed">
           <div class="panel-heading">
             <h4 class="panel-title">
-              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
+              <a class="accordion-toggle" ng-click="toggleAccordion($event)">
                 Get involved
               </a>
             </h4>
           </div>
-          <div id="collapseFive" class="panel-collapse collapse">
+          <div id="collapseFive" class="panel-collapse collapse in">
             <div class="panel-body">
               <p>Glowing bear is built by a small group of developers in their free time. As we're always trying to improve it, we would love getting your feedback and help. If that sounds like something you might enjoy, check out our <a href="https://github.com/glowing-bear/glowing-bear">project page</a> on GitHub!</p>
               <p>If you're interested in contributing or simply want to say hello, head over to <strong>#glowing-bear</strong> on <strong>freenode!</strong> We won't bite, promise (-ish).</p>
@@ -188,10 +200,10 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
         </div>
       </div>
     </div>
-    <div class="content" ng-show="connected">
+    <div class="content" id="content" sidebar-state="visible" ng-show="connected">
       <div id="topbar">
         <div class="brand">
-          <a href="#" ng-click="swipeSidebar()">
+          <a href="#" ng-click="toggleSidebar()">
             <img alt="brand" src="assets/img/favicon.png" title="Connected to {{ host }}:{{ port}}">
           </a>
           <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
@@ -199,7 +211,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
         <div class="title" ng-bind-html="activeBuffer().title | irclinky:'_blank'" title="{{activeBuffer().title}}"></div>
         <div class="actions pull-right vertical-line-left">
           <div class="pull-left">
-            <a class="" data-toggle="modal" data-target="#settingsModal" title="Options menu">
+            <a class="settings-toggle" ng-click="showModal('settingsModal')" title="Options menu">
               <i class="glyphicon glyphicon-cog"></i>
             </a>
           </div>
@@ -208,14 +220,14 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </a>
         </div>
       </div>
-      <div bindonce id="sidebar" ng-show="showSidebar" ng-swipe-left="swipeSidebar()" class="vertical-line">
+      <div bindonce id="sidebar" data-state="visible" ng-swipe-left="hideSidebar()" class="vertical-line">
         <ul class="nav nav-pills nav-stacked" ng-class="{'indented': (predicate === 'serverSortKey')}">
           <li class="bufferfilter">
             <form role="form">
-              <input class="form-control monospace" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="Search">
+              <input class="form-control favorite-font" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="Search">
             </form>
           </li>
-          <li class="buffer" ng-class="{'active': buffer.active, 'indent': buffer.indent }" ng-repeat="(key, buffer) in (filteredBuffers = (buffers | toArray | filter:{fullName:search} | filter:hasUnread | orderBy:predicate))">
+          <li class="buffer" ng-class="{'active': buffer.active, 'indent': buffer.indent }" ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray | filter:{fullName:search} | filter:hasUnread | orderBy:predicate))">
             <a href="#" ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}">
               <span class="badge pull-right" ng-class="{'danger': buffer.notification}" ng-if="buffer.notification || buffer.unread" ng-bind="buffer.notification || buffer.unread"></span>
               <span class="buffername">{{ buffer.shortName || buffer.fullName }}</span>
@@ -223,7 +235,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </li>
         </ul>
       </div>
-      <div bindonce id="bufferlines" class="monospace" ng-swipe-right="swipeSidebar()" ng-swipe-left="openNick()" ng-class="{'withnicklist': showNicklist, 'withsidebar': showSidebar}">
+      <div bindonce id="bufferlines" class="favorite-font" ng-swipe-right="showSidebar()" ng-swipe-left="hideSidebar()" ng-class="{'withnicklist': showNicklist}">
         <div id="nicklist" ng-if="showNicklist" ng-swipe-right="closeNick()" class="vertical-line-left">
           <ul class="nicklistgroup list-unstyled" ng-repeat="group in nicklist">
             <li ng-repeat="nick in group.nicks|orderBy:'name'">
@@ -250,7 +262,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
               <td class="prefix"><a ng-click="addMention(bufferline.prefix)"><span ng-repeat="part in bufferline.prefix" bo-class="part.classes" bo-html="part.text"></span></a></td>
               <td class="message">
                 <div ng-repeat="metadata in bufferline.metadata" plugin data="metadata"></div>
-                <span ng-repeat="part in bufferline.content" class="text" bo-class="part.classes" bo-html="part.text|irclinky:'_blank'"></span>
+                <span ng-repeat="part in bufferline.content" class="text" bo-class="part.classes" bo-html="part.text | irclinky:'_blank' | inlinecolour"></span>
               </td>
             </tr>
             <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
@@ -261,21 +273,37 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </tbody>
         </table>
       </div>
-      <div class="footer" ng-class="{'withnicklist': showNicklist, 'withsidebar': showSidebar}">
+      <div class="footer" ng-class="{'withnicklist': showNicklist}">
         <div input-bar input-id="sendMessage"></div>
       </div>
     </div>
     <div id="soundNotification"></div>
-    <div id="settingsModal" class="modal fade">
+    <div id="settingsModal" class="gb-modal" data-state="hidden">
+      <div class="backdrop" ng-click="closeModal($event)"></div>
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <button type="button" class="close" ng-click="closeModal($event)" aria-hidden="true">&times;</button>
             <h4 class="modal-title">Settings</h4>
+            <p>Settings will be stored in your browser.</p>
           </div>
           <div class="modal-body">
-            <p>Settings will be stored in your browser.</p>
             <ul class="">
+              <li id="fontchoice">
+                <form class="form-horizontal" role="form">
+                  <div class="form-group">
+                    <label for="font" class="col-sm-3 control-label make-thinner">Preferred font</label>
+                    <div class="col-sm-4">
+                      <input type="text" ng-model="fontfamily" class="form-control" id="font">
+                    </div>
+
+                    <label for="size" class="col-sm-1 control-label">Size</label>
+                    <div class="col-sm-2">
+                      <input type="text" ng-model="fontsize" class="form-control" id="size" placeholder="14px">
+                    </div>
+                  </div>
+                </form>
+              </li>
               <li>
                 <form class="form-inline" role="form">
                   <div class="checkbox">
@@ -323,7 +351,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                   <div class="checkbox">
                     <label>
                       <input type="checkbox" ng-model="hotlistsync">
-                      Sync hotlist with WeeChat
+                      Mark messages as read in WeeChat
                     </label>
                   </div>
                 </form>
@@ -343,7 +371,17 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                   <div class="checkbox">
                     <label>
                       <input type="checkbox" ng-model="orderbyserver">
-                      Order channels by server
+                      Hierarchical buffer view (order by server)
+                    </label>
+                  </div>
+                </form>
+              </li>
+              <li>
+                <form class="form-inline" role="form">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="readlineBindings">
+                      Enable common readline keybindings in input bar
                     </label>
                   </div>
                 </form>
@@ -368,20 +406,10 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                   </div>
                 </form>
               </li>
-              <li>
-                <form class="form-inline" role="form">
-                  <div class="checkbox">
-                    <label>
-                      <input type="checkbox" ng-model="debugMode">
-                      Debug Mode
-                    </label>
-                  </div>
-                </form>
-              </li>
             </ul>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" ng-click="closeModal($event)">Close</button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->

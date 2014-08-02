@@ -1,3 +1,5 @@
+(function() {
+'use strict';
 
 var ls = angular.module('localStorage',[]);
 
@@ -97,8 +99,10 @@ ls.factory("$store",function($parse){
              * @returns {*} - returns whatever the stored value is
              */
             bind: function ($scope, key, def) {
-                def = def || '';
-                if (publicMethods.get(key) === undefined) {
+                if (def === undefined) {
+                    def = '';
+                }
+                if (publicMethods.get(key) === undefined || publicMethods.get(key) === null) {
                     publicMethods.set(key, def);
                 }
                 $parse(key).assign($scope, publicMethods.get(key));
@@ -110,3 +114,4 @@ ls.factory("$store",function($parse){
     };
     return publicMethods;
 });
+})();
