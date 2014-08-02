@@ -41,6 +41,8 @@ FAQ
 Development
 -----------
 
+Setup
+^^^^^
 Getting started with the development of Glowing Bear is really simple, partly because we don't have a build process (pure client-side JS, remember). All you have to do is clone the repository, fire up a webserver to host the files, and start fiddling around. You can try out your changes by reloading the page.
 
 Here's a simple example using the python simple web server:
@@ -57,6 +59,19 @@ Remember that **you don't need to host Glowing Bear yourself to use it**, you ca
 If you'd prefer a version hosted with HTTPS, GitHub serves that as well with an undocumented, not officially supported (by GitHub) link. Be careful though, it might break any minute. Anyway, here's the link: [secret GitHub HTTPS link](https://glowing-bear.github.io/glowing-bear/).
 
 You can also use the latest and greatest development version of Glowing Bear at [https://latest.glowing-bear.org/](https://latest.glowing-bear.org/).
+
+Running the tests
+^^^^^^^^^^^^^^^^^
+Glowing Bear uses Karma and Jasmine to run its unit tests. To run the tests locally, you will first need to install `npm` and `bower` on your machine.
+
+Once this is done, you will need to retrieve the necessary packages for testing Glowing-Bear:
+
+`$ npm install`
+
+Finally, you can run the tests:
+
+`$ npm test`
+
 
 Contributing
 ------------
