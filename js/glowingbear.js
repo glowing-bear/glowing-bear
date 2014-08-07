@@ -841,7 +841,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "host", "localhost");
     $store.bind($scope, "port", "9001");
     $store.bind($scope, "proto", "weechat");
-    $store.bind($scope, "ssl", false);
+    $store.bind($scope, "ssl", (window.location.protocol === "https:"));
     $store.bind($scope, "savepassword", false);
     if ($scope.savepassword) {
         $store.bind($scope, "password", "");
