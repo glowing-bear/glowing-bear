@@ -351,8 +351,36 @@ plugins.factory('userPlugins', function() {
     );
     gistPlugin.name = 'Gist';
 
+    var tweetPlugin = new Plugin(
+        urlPlugin(function(url) {
+            var regexp = /^https?:\/\/twitter\.com\/(?:#!\/)?(\w+)\/status(?:es)?\/(\d+)/i;
+            var match = url.match(regexp);
+            if (match) {
+                url = 'https://api.twitter.com/1/statuses/oembed.json?id=' + match[2];
+                return function() {
+                    var element = document.querySelector('.embed_' + this.$$hashKey);
+                    jsonp(url, function(data) {
+                        // sepearate the HTML into content and script tag
+                        var scriptIndex = data.html.indexOf("<script ");
+                        var content = data.html.substr(0, scriptIndex);
+                        // Set DNT (Do Not Track)
+                        content = content.replace("<blockquote class=\"twitter-tweet\">", "<blockquote class=\"twitter-tweet\" data-dnt=\"true\">");
+                        element.innerHTML = content;
+
+                        // The script tag needs to be generated manually or the browser won't load it
+                        var scriptElem = document.createElement('script');
+                        // Hardcoding the URL here, I don't suppose it's going to change anytime soon
+                        scriptElem.src = "//platform.twitter.com/widgets.js";
+                        element.appendChild(scriptElem);
+                    });
+                };
+            }
+        })
+    );
+    tweetPlugin.name = 'Tweet';
+
     return {
-        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin]
+        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, tweetPlugin]
     };
 
 
