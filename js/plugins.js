@@ -60,8 +60,14 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
                 if (num) {
                     pluginName += " " + num;
                 }
+
+                // If content isn't a callback, it's HTML
+                if (!(content instanceof Function)) {
+                    content = $sce.trustAsHtml(content);
+                }
+
                 message.metadata.push({
-                    'content': $sce.trustAsHtml(content),
+                    'content': content,
                     'nsfw': nsfw,
                     'name': pluginName
                 });
