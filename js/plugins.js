@@ -132,6 +132,21 @@ plugins.factory('userPlugins', function() {
 
     var urlRegexp = RegExp(/(?:ftp|https?):\/\/\S*[^\s.;,(){}<>]/g);
 
+    var urlPlugin = function(callback) {
+        return function(message) {
+            var urls = message.match(urlRegexp);
+            var content = [];
+
+            for (var i = 0; urls && i < urls.length; i++) {
+                var result = callback(urls[i]);
+                if (result) {
+                    content.push(result);
+                }
+            }
+            return content;
+        };
+    };
+
     /*
      * Spotify Embedded Player
      *
@@ -221,13 +236,8 @@ plugins.factory('userPlugins', function() {
     /*
      * Image Preview
      */
-    var imagePlugin = new Plugin(function(message) {
-
-        var urls = message.match(urlRegexp);
-        var content = [];
-
-        for (var i = 0; urls && i < urls.length; i++) {
-            var url  = urls[i];
+    var imagePlugin = new Plugin(
+        urlPlugin(function(url) {
             if (url.match(/\.(png|gif|jpg|jpeg)$/i)) {
 
                 /* A fukung.net URL may end by an image extension but is not a direct link. */
@@ -238,58 +248,40 @@ plugins.factory('userPlugins', function() {
                     url = url.replace(/http:/, "");
                 }
 
-                content.push('<a target="_blank" href="'+url+'"><img class="embed" src="' + url + '"></a>');
+                return '<a target="_blank" href="'+url+'"><img class="embed" src="' + url + '"></a>';
             }
-        }
-
-        return content;
-    });
+        })
+    );
     imagePlugin.name = 'image';
 
     /*
      * Cloud Music Embedded Players
      */
-    var cloudmusicPlugin = new Plugin(function(message) {
-
-        var urls = message.match(urlRegexp);
-        var content = [];
-
-        for (var i = 0; urls && i < urls.length; i++) {
-            var url = urls[i];
-
+    var cloudmusicPlugin = new Plugin(
+        urlPlugin(function(url) {
             /* SoundCloud http://help.soundcloud.com/customer/portal/articles/247785-what-widgets-can-i-use-from-soundcloud- */
             if (url.match(/^https?:\/\/soundcloud.com\//)) {
-                content.push('<iframe width="100%" height="120" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=' + url + '&amp;color=ff6600&amp;auto_play=false&amp;show_artwork=true"></iframe>');
+                return '<iframe width="100%" height="120" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=' + url + '&amp;color=ff6600&amp;auto_play=false&amp;show_artwork=true"></iframe>';
             }
 
             /* MixCloud */
             if (url.match(/^https?:\/\/([a-z]+\.)?mixcloud.com\//)) {
-                content.push('<iframe width="480" height="60" src="//www.mixcloud.com/widget/iframe/?feed=' + url + '&mini=1&stylecolor=&hide_artwork=&embed_type=widget_standard&hide_tracklist=1&hide_cover=" frameborder="0"></iframe>');
+                return '<iframe width="480" height="60" src="//www.mixcloud.com/widget/iframe/?feed=' + url + '&mini=1&stylecolor=&hide_artwork=&embed_type=widget_standard&hide_tracklist=1&hide_cover=" frameborder="0"></iframe>';
             }
-        }
-
-        return content;
-    });
+        })
+    );
     cloudmusicPlugin.name = 'cloud music';
 
     /*
      * Google Maps
      */
-    var googlemapPlugin = new Plugin(function(message) {
-
-        var urls = message.match(urlRegexp);
-        var content = [];
-
-        for (var i = 0; urls && i < urls.length; i++) {
-            var url = urls[i];
-
+    var googlemapPlugin = new Plugin(
+        urlPlugin(function(url) {
             if (url.match(/^https?:\/\/maps\.google\./i) || url.match(/^https?:\/\/(?:[\w]+\.)?google\.[\w]+\/maps/i)) {
-                content.push('<iframe width="450" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="' + url + '&output=embed"></iframe>');
+                return '<iframe width="450" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="' + url + '&output=embed"></iframe>';
             }
-        }
-
-        return content;
-    });
+        })
+    );
     googlemapPlugin.name = 'Google Map';
 
     /*
@@ -306,12 +298,8 @@ plugins.factory('userPlugins', function() {
     });
     asciinemaPlugin.name = "ascii cast";
 
-    var yrPlugin = new Plugin(function(message) {
-        var urls = message.match(urlRegexp);
-        var content = [];
-
-        for (var i = 0; urls && i < urls.length; i++) {
-            var url = urls[i];
+    var yrPlugin = new Plugin(
+        urlPlugin(function(url) {
             var regexp = /^https?:\/\/(?:www\.)?yr\.no\/(place|stad|sted|sadji|paikka)\/(([^\s.;,(){}<>\/]+\/){3,})/;
             var match = url.match(regexp);
             if (match) {
@@ -319,11 +307,10 @@ plugins.factory('userPlugins', function() {
                 var location = match[2];
                 var city = match[match.length - 1].slice(0, -1);
                 url = "http://www.yr.no/" + language + "/" + location + "avansert_meteogram.png";
-                content.push("<img src='" + url + "' alt='Meteogram for " + city + "' />");
+                return "<img src='" + url + "' alt='Meteogram for " + city + "' />";
             }
-        }
-        return content;
-    });
+        })
+    );
     yrPlugin.name = "meteogram";
 
     return {
