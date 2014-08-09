@@ -1,12 +1,15 @@
 /* plugins go here */
 
 var msg = function(msg) {
-    return {'text': msg }
-}
+    return {'text': msg };
+};
 
 var metadata_name = function(message) {
-    return message['metadata'][0]['name']
-}
+    if (message.metadata && message.metadata[0] && message.metadata[0].name) {
+        return message.metadata[0].name;
+    }
+    return null;
+};
 
 var expectTheseMessagesToContain = function(urls, pluginType, plugins) {
     for (var i = 0; i < urls.length; i++) {
@@ -16,7 +19,7 @@ var expectTheseMessagesToContain = function(urls, pluginType, plugins) {
             )
         ).toEqual(pluginType);
     }
-}
+};
 
 describe('filter', function() {
     beforeEach(module('plugins'));
