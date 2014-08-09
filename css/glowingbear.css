@@ -38,20 +38,6 @@ a {
     cursor: pointer;
 }
 
-table {
-    width: 100%;
-}
-tr {
-    line-height: 100%;
-}
-tr:hover {
-    background-color: #222222;
-}
-td.time {
-    padding: 1px 5px 1px 1px;
-    vertical-align: top;
-}
-
 .repeated-time {
 }
 .repeated-time .cof-chat_time,
@@ -281,8 +267,19 @@ input[type=text], input[type=password], #sendMessage, .badge {
     -webkit-transition:0.35s ease all;
     transition:0.35s ease all;
 }
-#bufferlines table {
+#bufferlines > table {
   margin-top: 35px;
+    width: 100%;
+}
+tr.bufferline {
+    line-height: 100%;
+}
+tr.bufferline:hover {
+    background-color: #222222;
+}
+td.time {
+    padding: 1px 5px 1px 1px;
+    vertical-align: top;
 }
 
 .withnicklist {

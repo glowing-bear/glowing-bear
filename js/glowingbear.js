@@ -1343,6 +1343,12 @@ weechat.directive('plugin', function($rootScope) {
                  * Actual plugin content is only fetched when
                  * content is shown.
                  */
+
+                // If the plugin is asynchronous / lazy, execute it now and store
+                // the result. This ensures that the callback is executed only once
+                if ($scope.plugin.content instanceof Function) {
+                    $scope.plugin.content = $scope.plugin.content();
+                }
                 $scope.displayedContent = $scope.plugin.content;
                 $scope.plugin.visible = true;
 
