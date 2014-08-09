@@ -31,8 +31,8 @@ describe('filter', function() {
 
         it('should recognize spotify tracks', inject(function(plugins) {
             expectTheseMessagesToContain([
-                'https://spotify:track:3AAAAAAAAAAAAAAAAAAAAA',
-                'https://open.spotify.com/track/3AAAAAAAAAAAAAAAAAAAAA'
+                'spotify:track:6JEK0CvvjDjjMUBFoXShNZ',
+                'https://open.spotify.com/track/6JEK0CvvjDjjMUBFoXShNZ'
             ],
             'Spotify track',
             plugins);
@@ -45,8 +45,9 @@ describe('filter', function() {
                 'http://www.youtube.com/watch?v=dQw4w9WgXcQ',
                 'http://youtu.be/J6vIS8jb6Fs',
                 'https://youtu.be/J6vIS8jb6Fs',
-                'http://www.youtube.com/embed?v=dQw4w9WgXcQ',
-                'https://www.youtube.com/embed?v=dQw4w9WgXcQ'
+                'http://www.youtube.com/embed/dQw4w9WgXcQ',
+                'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                'youtu.be/dQw4w9WgXcQ'
             ],
             'YouTube video',
             plugins);
@@ -73,10 +74,11 @@ describe('filter', function() {
 
         it('should recognize images', inject(function(plugins) {
             expectTheseMessagesToContain([
-                'http://test.png',
-                'https://test.jpg',
-                'https://test.jpeg',
-                'https://test.gif',
+                'http://i.imgur.com/BTNIDBR.gif',
+                'https://i.imgur.com/1LmDmct.jpg',
+                'http://i.imgur.com/r4FKrnu.jpeg',
+                'https://4z2.de/gb-mobile-new.png',
+                'http://static.weechat.org/images/screenshots/relay/medium/glowing-bear.png',
             ],
             'image',
             plugins);
