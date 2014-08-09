@@ -62,9 +62,9 @@ You can also use the latest and greatest development version of Glowing Bear at 
 
 Running the tests
 ^^^^^^^^^^^^^^^^^
-Glowing Bear uses Karma and Jasmine to run its unit tests. To run the tests locally, you will first need to install `npm` and `bower` on your machine.
+Glowing Bear uses Karma and Jasmine to run its unit tests. To run the tests locally, you will first need to install `npm` on your machine. Check out the wonderful [nvm](https://github.com/creationix/nvm) if you don't know it already, it's highly recommended.
 
-Once this is done, you will need to retrieve the necessary packages for testing Glowing-Bear:
+Once this is done, you will need to retrieve the necessary packages for testing Glowing-Bear (first, you might want to use `npm link` on any packages you have already installed globally):
 
 `$ npm install`
 
