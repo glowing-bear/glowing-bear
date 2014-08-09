@@ -129,6 +129,19 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
  *
  */
 plugins.factory('userPlugins', function() {
+    // standard JSONp origin policy trick
+    var jsonp = function (url, callback) {
+        var callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+        window[callbackName] = function(data) {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            callback(data);
+        };
+
+        var script = document.createElement('script');
+        script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName;
+        document.body.appendChild(script);
+    };
 
     var urlRegexp = RegExp(/(?:ftp|https?):\/\/\S*[^\s.;,(){}<>]/g);
 
@@ -313,8 +326,33 @@ plugins.factory('userPlugins', function() {
     );
     yrPlugin.name = "meteogram";
 
+    // Embed GitHub gists
+    var gistPlugin = new Plugin(
+        urlPlugin(function(url) {
+            var regexp = /^https:\/\/gist\.github.com\/[^.?]+/i;
+            var match = url.match(regexp);
+            if (match) {
+                // get the URL from the match to trim away pseudo file endings and request parameters
+                url = match[0] + '.json';
+                // load gist asynchronously -- return a function here
+                return function() {
+                    var element = document.querySelector('.embed_' + this.$$hashKey);
+                    jsonp(url, function(data) {
+                        // Add the gist stylesheet only once
+                        if (document.querySelectorAll('link[rel=stylesheet][href="' + data.stylesheet + '"]').length < 1) {
+                            var stylesheet = '<link rel="stylesheet" href="' + data.stylesheet + '"></link>';
+                            document.getElementsByTagName('head')[0].innerHTML += stylesheet;
+                        }
+                        element.innerHTML = '<div style="clear:both">' + data.div + '</div>';
+                    });
+                };
+            }
+        })
+    );
+    gistPlugin.name = 'Gist';
+
     return {
-        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin]
+        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin]
     };
 
 
