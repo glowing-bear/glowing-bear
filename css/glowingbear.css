@@ -283,10 +283,12 @@ input[type=text], input[type=password], #sendMessage {
 }
 tr.bufferline {
     line-height: 100%;
+    padding: 1px 0px;
+    display: block;
 }
 
 td.time {
-    padding: 1px 5px 1px 1px;
+    padding: 0px 5px 0px 1px;
     vertical-align: top;
 }
 
