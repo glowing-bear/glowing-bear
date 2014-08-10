@@ -1604,7 +1604,7 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Arrow up -> go up in history
-                if (code === 38) {
+                if ($event.type === "keydown" && code === 38) {
                     $scope.command = models.getActiveBuffer().getHistoryUp($scope.command);
                     // Set cursor to last position. Need 0ms timeout because browser sets cursor
                     // position to the beginning after this key handler returns.
@@ -1617,7 +1617,7 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Arrow down -> go down in history
-                if (code === 40) {
+                if ($event.type === "keydown" && code === 40) {
                     $scope.command = models.getActiveBuffer().getHistoryDown($scope.command);
                     // We don't need to set the cursor to the rightmost position here, the browser does that for us
                     return true;
