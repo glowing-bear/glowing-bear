@@ -907,6 +907,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.showSidebar = function() {
         document.getElementById('sidebar').setAttribute('data-state', 'visible');
         document.getElementById('content').setAttribute('sidebar-state', 'visible');
+        if ($rootScope.isMobileUi()) {
+            // de-focus the input bar when opening the sidebar on mobile, so that the keyboard goes down
+            _.each(document.getElementsByTagName('textarea'), function(elem) {
+                elem.blur();
+            });
+        }
     };
 
     $rootScope.hideSidebar = function() {
