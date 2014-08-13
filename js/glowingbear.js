@@ -909,7 +909,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         document.getElementById('content').setAttribute('sidebar-state', 'visible');
     };
 
-    $scope.hideSidebar = function() {
+    $rootScope.hideSidebar = function() {
         if ($rootScope.isMobileUi()) {
             document.getElementById('sidebar').setAttribute('data-state', 'hidden');
             document.getElementById('content').setAttribute('sidebar-state', 'hidden');
@@ -1392,6 +1392,10 @@ weechat.directive('inputBar', function() {
              */
             $scope.getInputNode = function() {
                 return document.querySelector('textarea#' + $scope.inputId);
+            };
+
+            $scope.hideSidebar = function() {
+                $rootScope.hideSidebar();
             };
 
             $scope.completeNick = function() {
