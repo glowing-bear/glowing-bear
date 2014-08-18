@@ -79,6 +79,8 @@ describe('filter', function() {
                 'http://i.imgur.com/r4FKrnu.jpeg',
                 'https://4z2.de/gb-mobile-new.png',
                 'http://static.weechat.org/images/screenshots/relay/medium/glowing-bear.png',
+                'http://foo.bar/baz.php?img=trololo.png&dummy=yes',
+                'https://tro.lo.lo/images/rick.png?size=123x45'
             ],
             'image',
             plugins);
