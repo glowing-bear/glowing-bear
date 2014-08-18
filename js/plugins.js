@@ -259,6 +259,9 @@ plugins.factory('userPlugins', function() {
                 } else if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
                     // remove protocol specification to load over https if used by g-b
                     url = url.replace(/http:/, "");
+                } else if (url.match(/^https:\/\/www\.dropbox\.com\/s\/[a-z0-9]+\/[^?]+$/i)) {
+                    // Dropbox requires a get parameter, dl=1
+                    url = url + "?dl=1";
                 }
 
                 return '<a target="_blank" href="'+url+'"><img class="embed" src="' + url + '"></a>';
