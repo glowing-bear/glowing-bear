@@ -251,8 +251,14 @@ plugins.factory('userPlugins', function() {
      */
     var imagePlugin = new Plugin(
         urlPlugin(function(url) {
-            if (url.match(/\.(png|gif|jpg|jpeg)$/i)) {
-
+            var embed = false;
+            // Check the get parameters as well, they might contain an image to load
+            var segments = url.split(/[?&]/).forEach(function(param) {
+                if (param.match(/\.(png|gif|jpg|jpeg)$/i)) {
+                    embed = true;
+                }
+            });
+            if (embed) {
                 /* A fukung.net URL may end by an image extension but is not a direct link. */
                 if (url.indexOf("^https?://fukung.net/v/") != -1) {
                     url = url.replace(/.*\//, "http://media.fukung.net/imgs/");
