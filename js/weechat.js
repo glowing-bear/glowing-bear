@@ -605,16 +605,6 @@
     };
 
     /**
-     * Add the ID to the previously formatted command
-     *
-     * @param id Command ID
-     * @param command previously formatted command
-     */
-    WeeChatProtocol.setId = function(id, command) {
-        return '(' + id + ') ' + command;
-    };
-
-    /**
      * Formats a command.
      *
      * @param id Command ID (null for no ID)
@@ -1177,6 +1167,16 @@
          */
         _setData: function(data) {
             this._data = data;
+        },
+
+        /**
+         * Add the ID to the previously formatted command
+         *
+         * @param id Command ID
+         * @param command previously formatted command
+         */
+        setId: function(id, command) {
+            return '(' + id + ') ' + command;
         },
 
         /**
