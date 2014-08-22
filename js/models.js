@@ -7,7 +7,7 @@
 
 var models = angular.module('weechatModels', []);
 
-models.service('models', ['$rootScope', '$filter', function($rootScope, $filter) {
+models.service('models', ['$rootScope', '$filter', 'protocolModule', function($rootScope, $filter, protocolModule) {
     /*
      * Buffer class
      */
@@ -367,13 +367,13 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             addClasses(strtime);
         }
 
-        var prefix = weeChat.Protocol.rawText2Rich(message.prefix);
+        var prefix = protocolModule.mod.rawText2Rich(message.prefix);
         addClasses(prefix);
 
         var tags_array = message.tags_array;
         var displayed = message.displayed;
         var highlight = message.highlight;
-        var content = weeChat.Protocol.rawText2Rich(message.message);
+        var content = protocolModule.mod.rawText2Rich(message.message);
         addClasses(content);
 
         if (highlight) {
