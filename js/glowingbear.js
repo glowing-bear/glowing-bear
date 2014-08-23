@@ -49,7 +49,7 @@ weechat.filter('irclinky', ['$filter', function($filter) {
     };
 }]);
 
-weechat.filter('inlinecolour', function() {
+weechat.filter('inlinecolour', ['$sce', function($sce) {
     'use strict';
 
     return function(text) {
@@ -61,9 +61,9 @@ weechat.filter('inlinecolour', function() {
         var hexColourRegex = /(^|[^&])\#([0-9a-f]{6})($|[^\w'"])/gmi;
         var substitute = '$1#$2 <div class="colourbox" style="background-color:#$2"></div> $3';
 
-        return text.replace(hexColourRegex, substitute);
+        return $sce.trustAsHtml(text.replace(hexColourRegex, substitute));
     };
-});
+}]);
 
 weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', function($rootScope, $log, models, plugins) {
 
