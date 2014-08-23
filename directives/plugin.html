@@ -1,18 +1,18 @@
 <div ng-show="plugin.visible">
   <button class="btn btn-primary btn-sm pull-right"
           ng-click="hideContent()">
-    Hide {{ plugin.name }}
+    Hide {{ ::plugin.name }}
   </button>
 
-  <div ng-bind-html="displayedContent" class="embed" bo-class="'embed_' + plugin.$$hashKey"></div>
+  <div ng-bind-html="displayedContent" class="embed" ng-class="::('embed_' + plugin.$$hashKey)"></div>
 </div>
 
 <div ng-hide="plugin.visible">
   <button class="btn btn-sm pull-right"
-          bo-class="{
+          ng-class="::{
                     'btn-warning': plugin.nsfw,
                     'btn-primary': !plugin.nsfw}"
           ng-click="showContent()">
-          Show {{ plugin.name }}
+          Show {{ ::plugin.name }}
   </button>
 </div>
