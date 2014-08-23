@@ -251,14 +251,23 @@ plugins.factory('userPlugins', function() {
      */
     var imagePlugin = new Plugin(
         urlPlugin(function(url) {
-            if (url.match(/\.(png|gif|jpg|jpeg)$/i)) {
-
+            var embed = false;
+            // Check the get parameters as well, they might contain an image to load
+            var segments = url.split(/[?&]/).forEach(function(param) {
+                if (param.match(/\.(png|gif|jpg|jpeg)$/i)) {
+                    embed = true;
+                }
+            });
+            if (embed) {
                 /* A fukung.net URL may end by an image extension but is not a direct link. */
                 if (url.indexOf("^https?://fukung.net/v/") != -1) {
                     url = url.replace(/.*\//, "http://media.fukung.net/imgs/");
                 } else if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
                     // remove protocol specification to load over https if used by g-b
                     url = url.replace(/http:/, "");
+                } else if (url.match(/^https:\/\/www\.dropbox\.com\/s\/[a-z0-9]+\/[^?]+$/i)) {
+                    // Dropbox requires a get parameter, dl=1
+                    url = url + "?dl=1";
                 }
 
                 return '<a target="_blank" href="'+url+'"><img class="embed" src="' + url + '"></a>';
