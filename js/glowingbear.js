@@ -422,10 +422,6 @@ function($rootScope,
             }
         };
 
-        protocol.setId = function(id, message) {
-            return '(' + id + ') ' + message;
-        };
-
 
         try {
             ngWebsockets.connect(url,
