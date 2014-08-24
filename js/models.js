@@ -2,6 +2,9 @@
  * This file contains the weechat models and various
  * helper methods to work with them.
  */
+(function() {
+'use strict';
+
 var models = angular.module('weechatModels', []);
 
 models.service('models', ['$rootScope', '$filter', function($rootScope, $filter) {
@@ -282,6 +285,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
                 if (textEl.attrs.name !== null) {
                     textEl.classes.push('coa-' + textEl.attrs.name);
                 }
+                var val;
                 for (var attr in textEl.attrs.override) {
                     val = textEl.attrs.override[attr];
                     if (val) {
@@ -449,7 +453,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         if (key === 'id') {
             activeBuffer = this.model.buffers[bufferId];
         }
-        else { 
+        else {
             activeBuffer = _.find(this.model.buffers, function(buffer) {
                 if (buffer[key] === bufferId) {
                     return buffer;
@@ -526,3 +530,4 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         delete(this.model.buffers[bufferId]);
     };
 }]);
+})();

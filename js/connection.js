@@ -1,3 +1,6 @@
+(function() {
+'use strict';
+
 var weechat = angular.module('weechat');
 
 weechat.factory('connection',
@@ -7,7 +10,7 @@ weechat.factory('connection',
          models,
          ngWebsockets) {
 
-    protocol = new weeChat.Protocol();
+    var protocol = new weeChat.Protocol();
 
     // Takes care of the connection and websocket hooks
 
@@ -120,7 +123,7 @@ weechat.factory('connection',
              * Handles websocket disconnection
              */
             $log.info("Disconnected from relay");
-            failCallbacks('disconnection');
+            ngWebsockets.failCallbacks('disconnection');
             $rootScope.connected = false;
             $rootScope.$emit('relayDisconnect');
             if (ssl && evt.code === 1006) {
@@ -142,15 +145,10 @@ weechat.factory('connection',
             $rootScope.lastError = Date.now();
 
             if (evt.type === "error" && this.readyState !== 1) {
-                failCallbacks('error');
+                ngWebsockets.failCallbacks('error');
                 $rootScope.errorMessage = true;
             }
         };
-
-        protocol.setId = function(id, message) {
-            return '(' + id + ') ' + message;
-        };
-
 
         try {
             ngWebsockets.connect(url,
@@ -278,3 +276,4 @@ weechat.factory('connection',
         requestNicklist: requestNicklist
     };
 }]);
+})();

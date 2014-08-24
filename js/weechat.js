@@ -1,4 +1,5 @@
 (function(exports) {// http://weechat.org/files/doc/devel/weechat_dev.en.html#color_codes_in_strings
+'use strict';
 
 /**
  * WeeChat protocol handling.
@@ -605,16 +606,6 @@
     };
 
     /**
-     * Add the ID to the previously formatted command
-     *
-     * @param id Command ID
-     * @param command previously formatted command
-     */
-    WeeChatProtocol.setId = function(id, command) {
-        return '(' + id + ') ' + command;
-    };
-
-    /**
      * Formats a command.
      *
      * @param id Command ID (null for no ID)
@@ -966,7 +957,7 @@
             var objs = [];
             var hpath = this._getString();
 
-            keys = this._getString().split(',');
+            var keys = this._getString().split(',');
             paths = hpath.split('/');
             count = this._getInt();
 
@@ -1177,6 +1168,17 @@
          */
         _setData: function(data) {
             this._data = data;
+        },
+
+
+        /**
+         * Add the ID to the previously formatted command
+         *
+         * @param id Command ID
+         * @param command previously formatted command
+         */
+        setId: function(id, command) {
+            return '(' + id + ') ' + command;
         },
 
         /**

@@ -1,4 +1,7 @@
-var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'plugins', 'ngSanitize', 'ngWebsockets', 'ngTouch']);
+(function() {
+'use strict';
+
+var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'plugins', 'IrcUtils', 'ngSanitize', 'ngWebsockets', 'ngTouch']);
 
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', 'notifications', 'utils', function ($rootScope, $scope, $store, $timeout, $log, models, connection, notifications, utils) {
 
@@ -642,3 +645,5 @@ weechat.config(['$routeProvider',
         });
     }
 ]);
+
+})();

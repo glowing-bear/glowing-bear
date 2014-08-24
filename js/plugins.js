@@ -2,7 +2,10 @@
  * This file contains the plugin definitions
  */
 
-plugins = angular.module('plugins', []);
+(function() {
+'use strict';
+
+var plugins = angular.module('plugins', []);
 
 /*
  * Definition of a user provided plugin with sensible default values
@@ -143,7 +146,7 @@ plugins.factory('userPlugins', function() {
         document.body.appendChild(script);
     };
 
-    var urlRegexp = RegExp(/(?:ftp|https?):\/\/\S*[^\s.;,(){}<>]/g);
+    var urlRegexp = new RegExp(/(?:ftp|https?):\/\/\S*[^\s.;,(){}<>]/g);
 
     var urlPlugin = function(callback) {
         return function(message) {
@@ -168,7 +171,7 @@ plugins.factory('userPlugins', function() {
      */
 
     var spotifyPlugin = new Plugin(function(message) {
-        content = [];
+        var content = [];
         var addMatch = function(match) {
             for (var i = 0; match && i < match.length; i++) {
                 var id = match[i].substr(match[i].length - 22, match[i].length);
@@ -394,3 +397,4 @@ plugins.factory('userPlugins', function() {
 
 
 });
+})();
