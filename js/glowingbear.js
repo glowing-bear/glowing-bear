@@ -1428,8 +1428,10 @@ weechat.directive('inputBar', function() {
                 $scope.command = nickComp.text;
 
                 // update current caret position
-                inputNode.focus();
-                inputNode.setSelectionRange(nickComp.caretPos, nickComp.caretPos);
+                setTimeout(function() {
+                    inputNode.focus();
+                    inputNode.setSelectionRange(nickComp.caretPos, nickComp.caretPos);
+                }, 0);
             };
 
 
