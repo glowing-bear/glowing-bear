@@ -4,8 +4,9 @@
 var weechat = angular.module('weechat');
 
 weechat.factory('connection',
-                ['$rootScope', '$log', 'handlers', 'protocolModule', 'models', 'ngWebsockets', function($rootScope,
+                ['$rootScope', '$log', '$q', 'handlers', 'protocolModule', 'models', 'ngWebsockets', function($rootScope,
          $log,
+         $q,
          handlers,
          protocolModule,
          models,
@@ -29,6 +30,28 @@ weechat.factory('connection',
 
             // Helper methods for initialization commands
             var _initializeConnection = function(passwd) {
+                if (protocolModule.mod.challengeAuth) {
+                    return (function (){
+                        var key = Math.random().toString(36).substr(2);
+                        var cb = $q.defer();
+                        ngWebsockets.send(
+                            { challenge: key }
+                        ).then(
+                            function(msg) {
+                                ngWebsockets.send(
+                                    { login: CryptoJS
+                                      .HmacSHA256(passwd, msg.challenge + key)
+                                      .toString(CryptoJS.enc.Base64).replace(/=$/,'') }
+                                ).then(function(message) { cb.resolve(message); });
+                            },
+                            function(error) {
+                                cb.reject(error);
+                            }
+                        );
+                        return cb.promise;
+                    })();
+                }
+
                 // This is not the proper way to do this.
                 // WeeChat does not send a confirmation for the init.
                 // Until it does, We need to "assume" that formatInit
