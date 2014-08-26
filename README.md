@@ -68,9 +68,12 @@ Once this is done, you will need to retrieve the necessary packages for testing 
 
 `$ npm install`
 
-Finally, you can run the tests:
+Finally, you can run the unit tests:
 
 `$ npm test`
+
+Or the end to end tests:
+`$ npm run protractor`
 
 
 Contributing
