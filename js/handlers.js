@@ -138,7 +138,8 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         var group = 'root';
         nicklist.forEach(function(n) {
             var buffer = models.getBuffer(n.pointers[0]);
-            if (n.group === 1) {
+            if (buffer === undefined) { // ignore, buffer doesn't exist
+            } else if (n.group === 1) {
                 var g = new models.NickGroup(n);
                 group = g.name;
                 buffer.nicklist[group] = g;
