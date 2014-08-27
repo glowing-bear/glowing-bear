@@ -235,7 +235,7 @@ weechat.factory('connection',
 
     var fetchMoreLines = function(numLines) {
         $log.debug('Fetching ', numLines, ' lines');
-        var buffer = models.getActiveBuffer();
+        var buffer = models.getActiveBuffer().textbuffer;
         if (numLines === undefined) {
             // Math.max(undefined, *) = NaN -> need a number here
             numLines = 0;

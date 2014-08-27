@@ -80,7 +80,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', function($root
     var createHighlight = function(buffer, message) {
         var title = '';
         var body = '';
-        var numNotifications = buffer.notification;
+        var numNotifications = buffer.textbuffer.notification;
 
         if (buffer.type === 'private') {
             if (numNotifications > 1) {

@@ -13,12 +13,13 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
 
     var handleLine = function(line, manually) {
         var message = new models.BufferLine(line);
-        var buffer = models.getBuffer(message.buffer);
+        var itembuffer = models.getTextBuffer(message.buffer);
+        var buffer = itembuffer.textbuffer;
         buffer.requestedLines++;
         // Only react to line if its displayed
         if (message.displayed) {
             message = plugins.PluginManager.contentForMessage(message);
-            buffer.addLine(message);
+            itembuffer.addLine(message);
 
             if (manually) {
                 buffer.lastSeen++;
@@ -29,14 +30,14 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
             }
 
             if (!manually && (!buffer.active || !$rootScope.isWindowFocused())) {
-                if (buffer.notify > 1 && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
+                if (itembuffer.notify > 1 && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
                     buffer.unread++;
                     $rootScope.$emit('notificationChanged');
                 }
 
-                if ((buffer.notify !== 0 && message.highlight) || _.contains(message.tags, 'notify_private')) {
+                if ((itembuffer.notify !== 0 && message.highlight) || _.contains(message.tags, 'notify_private')) {
                     buffer.notification++;
-                    notifications.createHighlight(buffer, message);
+                    notifications.createHighlight(itembuffer, message);
                     $rootScope.$emit('notificationChanged');
                 }
             }
@@ -115,7 +116,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         }
         var hotlist = message.objects[0].content;
         hotlist.forEach(function(l) {
-            var buffer = models.getBuffer(l.buffer);
+            var buffer = models.getTextBuffer(l.buffer).textbuffer;
             // 1 is message
             buffer.unread += l.count[1];
             // 2 is private

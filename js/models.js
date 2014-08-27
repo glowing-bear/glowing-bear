@@ -8,6 +8,164 @@
 var models = angular.module('weechatModels', []);
 
 models.service('models', ['$rootScope', '$filter', 'protocolModule', function($rootScope, $filter, protocolModule) {
+    var self = this;
+    /*
+     * Textbuffer class
+     */
+    this.Textbuffer = function(message) {
+        var pointer = message.pointers[ protocolModule.mod.useTextbuffer ? 1 : 0 ];
+        var number = message.number;
+        var lines = [];
+        var requestedLines = 0;
+        var allLinesFetched = false;
+        var history = [];
+        var historyPos = 0;
+        var notification = 0;
+        var unread = 0;
+        var lastSeen = -1;
+
+        /*
+         * Adds a line to this textbuffer
+         *
+         * @param line the BufferLine object
+         * @return undefined
+         */
+        var addLine = function(line) {
+            lines.push(line);
+        };
+
+        /*
+         * Adds a line in the middle of this textbuffer
+         *
+         * @param line the BufferLine object
+         * @param id the previous line id
+         * @return whether line was added
+         */
+        var insertLine = function(line, id) {
+            if (this.allLinesFetched && id === null) {
+                lines.unshift(line);
+                return true;
+            }
+            var splicehere;
+            for (var idx in lines) {
+                if (lines[idx].id === id) {
+                    lines.splice(Number(idx)+1, 0, line);
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        var removeLine = function(id) {
+            for (var idx in lines) {
+                if (lines[idx].id === id) {
+                    lines.splice(idx, 1);
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        var addToHistory = function(line) {
+            var result = "";
+            if (historyPos !== history.length) {
+                // Pop cached line from history. Occurs if we submit something from history
+                result = history.pop();
+            }
+            history.push(line);
+            historyPos = history.length;  // Go to end of history
+            return result;
+        };
+
+        var getHistoryUp = function(currentLine) {
+            if (historyPos >= history.length) {
+                // cache current line in history
+                history.push(currentLine);
+            }
+            if (historyPos <= 0 || historyPos >= history.length) {
+                // Can't go up from first message or from out-of-bounds index
+                return currentLine;
+            } else {
+                // Go up in history
+                historyPos--;
+                var line = history[historyPos];
+                return line;
+            }
+        };
+
+        var getHistoryDown = function(currentLine) {
+            if (historyPos === history.length) {
+                // stash on history like weechat does
+                if (currentLine !== undefined && currentLine !== '') {
+                    history.push(currentLine);
+                    historyPos++;
+                }
+                return '';
+            } else if (historyPos < 0 || historyPos > history.length) {
+                // Can't go down from out of bounds or last message
+                return currentLine;
+            } else {
+                historyPos++;
+
+                if (history.length > 0 && historyPos == (history.length-1)) {
+                    // return cached line and remove from cache
+                    return history.pop();
+                } else {
+                    // Go down in history
+                    return history[historyPos];
+                }
+            }
+        };
+
+        /* Clear all our buffer lines */
+        var clear = function() {
+            while(lines.length > 0) {
+                lines.pop();
+            }
+            requestedLines = 0;
+        };
+
+        return {
+            id: pointer,
+            lines: lines,
+            addLine: addLine,
+            insertLine: insertLine,
+            removeLine: removeLine,
+            clear: clear,
+            requestedLines: requestedLines,
+            lastSeen: lastSeen,
+            unread: unread,
+            notification: notification,
+            history: history,
+            addToHistory: addToHistory,
+            getHistoryUp: getHistoryUp,
+            getHistoryDown: getHistoryDown
+        };
+    };
+
+    this.model = { 'buffers': {} };
+
+    /*
+     * find textbuffer for a buffer message, creating it if necessary
+     *
+     * @param message buffer message
+     * @return textbuffer
+     */
+    this.findTextbuffer = function(message) {
+        var buffer;
+        if (protocolModule.mod.useTextbuffer) {
+            var id = 'object' === typeof message ? message.pointers[1] : message;
+            _.each(this.model.buffers, function(itembuffer) {
+                if (itembuffer.textbuffer.id == id) {
+                    buffer = itembuffer.textbuffer;
+                    itembuffer.itemActive = false;
+                }
+            });
+        }
+        if ('object' !== typeof message) { return buffer; }
+        return (buffer || new this.Textbuffer(message));
+    };
+
     /*
      * Buffer class
      */
@@ -22,17 +180,11 @@ models.service('models', ['$rootScope', '$filter', 'protocolModule', function($r
         var title = message.title;
         var number = message.number;
         var pointer = message.pointers[0];
+        var textbuffer = self.findTextbuffer(message);
         var notify = 3; // Default 3 == message
-        var lines = [];
-        var requestedLines = 0;
-        var allLinesFetched = false;
         var nicklist = {};
-        var history = [];
-        var historyPos = 0;
         var active = false;
-        var notification = 0;
-        var unread = 0;
-        var lastSeen = -1;
+        var itemActive = true;
         var serverSortKey = fullName.replace(/^irc\.server\.(\w+)/, "irc.$1");
         var type = message.local_variables.type;
         var indent = (['channel', 'private'].indexOf(type) >= 0);
@@ -49,7 +201,7 @@ models.service('models', ['$rootScope', '$filter', 'protocolModule', function($r
          * @return undefined
          */
         var addLine = function(line) {
-            lines.push(line);
+            textbuffer.addLine(line);
             updateNickSpeak(line);
         };
 
@@ -183,57 +335,9 @@ models.service('models', ['$rootScope', '$filter', 'protocolModule', function($r
             return newlist;
         };
 
-        var addToHistory = function(line) {
-            var result = "";
-            if (historyPos !== history.length) {
-                // Pop cached line from history. Occurs if we submit something from history
-                result = history.pop();
-            }
-            history.push(line);
-            historyPos = history.length;  // Go to end of history
-            return result;
-        };
-
-        var getHistoryUp = function(currentLine) {
-            if (historyPos >= history.length) {
-                // cache current line in history
-                history.push(currentLine);
-            }
-            if (historyPos <= 0 || historyPos >= history.length) {
-                // Can't go up from first message or from out-of-bounds index
-                return currentLine;
-            } else {
-                // Go up in history
-                historyPos--;
-                var line = history[historyPos];
-                return line;
-            }
-        };
-
-        var getHistoryDown = function(currentLine) {
-            if (historyPos === history.length) {
-                // stash on history like weechat does
-                if (currentLine !== undefined && currentLine !== '') {
-                    history.push(currentLine);
-                    historyPos++;
-                }
-                return '';
-            } else if (historyPos < 0 || historyPos > history.length) {
-                // Can't go down from out of bounds or last message
-                return currentLine;
-            } else {
-                historyPos++;
-
-                if (history.length > 0 && historyPos == (history.length-1)) {
-                    // return cached line and remove from cache
-                    return history.pop();
-                } else {
-                    // Go down in history
-                    return history[historyPos];
-                }
-            }
-        };
-
+        var addToHistory = function(line) { return textbuffer.addToHistory(line); };
+        var getHistoryUp = function(currentLine) { return textbuffer.getHistoryUp(currentLine); };
+        var getHistoryDown = function(currentLine) { return textbuffer.getHistoryDown(currentLine); };
 
         // Check if the nicklist is empty, i.e., no nicks present
         // This checks for the presence of people, not whether a
@@ -254,12 +358,7 @@ models.service('models', ['$rootScope', '$filter', 'protocolModule', function($r
         };
 
         /* Clear all our buffer lines */
-        var clear = function() {
-            while(lines.length > 0) {
-                lines.pop();
-            }
-            requestedLines = 0;
-        };
+        var clear = function() { return textbuffer.clear(); };
 
         return {
             id: pointer,
@@ -269,13 +368,9 @@ models.service('models', ['$rootScope', '$filter', 'protocolModule', function($r
             prefix: prefix,
             number: number,
             title: title,
-            lines: lines,
+            textbuffer: textbuffer,
             clear: clear,
-            requestedLines: requestedLines,
             addLine: addLine,
-            lastSeen: lastSeen,
-            unread: unread,
-            notification: notification,
             notify: notify,
             nicklist: nicklist,
             addNick: addNick,
@@ -288,7 +383,7 @@ models.service('models', ['$rootScope', '$filter', 'protocolModule', function($r
             serverSortKey: serverSortKey,
             indent: indent,
             type: type,
-            history: history,
+            itemActive: itemActive,
             addToHistory: addToHistory,
             getHistoryUp: getHistoryUp,
             getHistoryDown: getHistoryDown,
@@ -480,8 +575,6 @@ models.service('models', ['$rootScope', '$filter', 'protocolModule', function($r
     var activeBuffer = null;
     var previousBuffer = null;
 
-    this.model = { 'buffers': {} };
-
     /*
      * Adds a buffer to the list
      *
@@ -544,15 +637,19 @@ models.service('models', ['$rootScope', '$filter', 'protocolModule', function($r
         if (previousBuffer) {
             // turn off the active status for the previous buffer
             previousBuffer.active = false;
+            previousBuffer.textbuffer.active = false;
             // Save the last line we saw
-            previousBuffer.lastSeen = previousBuffer.lines.length-1;
+            previousBuffer.textbuffer.lastSeen = previousBuffer.textbuffer.lines.length-1;
         }
 
-        var unreadSum = activeBuffer.unread + activeBuffer.notification;
+        var unreadSum = activeBuffer.textbuffer.unread + activeBuffer.textbuffer.notification;
 
+        this.findTextbuffer(activeBuffer.textbuffer.id);
         activeBuffer.active = true;
-        activeBuffer.unread = 0;
-        activeBuffer.notification = 0;
+        activeBuffer.itemActive = true;
+        activeBuffer.textbuffer.active = true;
+        activeBuffer.textbuffer.unread = 0;
+        activeBuffer.textbuffer.notification = 0;
 
         $rootScope.$emit('activeBufferChanged', unreadSum);
         $rootScope.$emit('notificationChanged');
@@ -581,6 +678,32 @@ models.service('models', ['$rootScope', '$filter', 'protocolModule', function($r
      */
     this.getBuffer = function(bufferId) {
         return this.model.buffers[bufferId];
+    };
+
+    /*
+     * Returns the buffer object which uses the specified textbuffer
+     *
+     * @param bufferId id of the textbuffer
+     * @return the buffer object
+     */
+    this.getTextBuffer = function(bufferId) {
+        if (protocolModule.mod.useTextbuffer) {
+            var buffer = _.find(this.model.buffers, function(itembuffer) {
+                if (itembuffer.textbuffer.id == bufferId && itembuffer.itemActive) {
+                    return itembuffer;
+                }
+            });
+            if (buffer === undefined) {
+                buffer = _.find(this.model.buffers, function(itembuffer) {
+                    if (itembuffer.textbuffer.id == bufferId) {
+                        itembuffer.itemActive = true;
+                        return itembuffer;
+                    }
+                });
+            }
+            return buffer;
+        }
+        return this.getBuffer(bufferId);
     };
 
     /*
