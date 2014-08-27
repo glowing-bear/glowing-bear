@@ -183,6 +183,26 @@ input[type=text], input[type=password], #sendMessage, .badge {
   width: 0;
 }
 
+#bufferitems {
+    font-size: smaller;
+    overflow-x: hidden;
+    height: 18px;
+}
+
+#bufferitems.nav-pills > li > a {
+    border-radius: 4px;
+    padding: 2px 5px;
+}
+
+.footer.withitems {
+    height: 52px;
+}
+
+#bufferlines.withitems {
+    padding-top: 52px;
+    bottom: 52px;
+}
+
 #nicklist {
     position: fixed;
     width: 100px;

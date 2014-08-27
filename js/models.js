@@ -608,6 +608,17 @@ models.service('models', ['$rootScope', '$filter', 'protocolModule', function($r
     };
 
     /*
+     * Returns all items sharing the active textbuffer
+     *
+     * @return active buffer object
+     */
+    this.getActiveBufferItems = function() {
+        return _.filter(this.model.buffers, function(buf) {
+            return buf.textbuffer == activeBuffer.textbuffer;
+        });
+    };
+
+    /*
      * Returns the previous current active buffer
      *
      * @return previous buffer object

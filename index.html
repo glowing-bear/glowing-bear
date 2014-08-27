@@ -248,7 +248,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </li>
         </ul>
       </div>
-      <div id="bufferlines" class="favorite-font" ng-swipe-right="showSidebar()" ng-swipe-left="hideSidebar()" ng-class="{'withnicklist': showNicklist}">
+      <div id="bufferlines" class="favorite-font" ng-swipe-right="showSidebar()" ng-swipe-left="hideSidebar()" ng-class="{'withnicklist': showNicklist, 'withitems': bufferItems().length > 1}">
         <div id="nicklist" ng-if="showNicklist" ng-swipe-right="closeNick()" class="vertical-line-left">
           <ul class="nicklistgroup list-unstyled" ng-repeat="group in nicklist">
             <li ng-repeat="nick in group.nicks|orderBy:'name'">
@@ -291,7 +291,13 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </tbody>
         </table><span id="end-of-buffer"></span>
       </div>
-      <div class="footer" ng-class="{'withnicklist': showNicklist}">
+      <div class="footer" ng-class="{'withnicklist': showNicklist, 'withitems': bufferItems().length > 1}">
+        <ul id="bufferitems" ng-if="bufferItems().length > 1" class="nav nav-pills" style="overflow: hidden">
+          <li class="bufferitem" ng-class="{'active': buffer.active }" ng-repeat="(key, buffer) in (bufferItems())">
+            <a href="#" ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}">
+              <span class="buffername">{{ buffer.shortName || buffer.fullName }}</span></a>
+          </li>
+        </ul>
         <div input-bar input-id="sendMessage" command="command"></div>
       </div>
     </div>
