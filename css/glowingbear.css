@@ -171,6 +171,14 @@ input[type=text], input[type=password], #sendMessage, .badge {
     padding-left: 10px;
 }
 
+#sidebar ul.indented li.indent.not-selected span.buffername {
+    padding-left: 20px;
+}
+
+#sidebar ul li.not-selected span.buffername {
+    padding-left: 5px;
+}
+
 #sidebar.ng-hide {
   width: 0;
 }

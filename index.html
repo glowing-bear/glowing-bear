@@ -239,7 +239,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
               <input class="form-control favorite-font" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="Search">
             </form>
           </li>
-          <li class="buffer" ng-class="{'active': buffer.active, 'indent': buffer.indent, 'channel': buffer.type === 'channel', 'channel_hash': buffer.prefix === '#', 'channel_plus': buffer.prefix === '+', 'channel_ampersand': buffer.prefix === '&', 'private': buffer.type === 'private'}" ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray:'withidx' | filter:{fullName:search} | filter:hasUnread | orderBy:predicate | getBufferQuickKeys:this))">
+          <li class="buffer" ng-class="{'active': buffer.active, 'indent': buffer.indent, 'channel': buffer.type === 'channel', 'channel_hash': buffer.prefix === '#', 'channel_plus': buffer.prefix === '+', 'channel_ampersand': buffer.prefix === '&', 'private': buffer.type === 'private', 'not-selected': !buffer.itemActive}" ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray:'withidx' | filter:{fullName:search} | filter:hasUnread | orderBy:predicate | getBufferQuickKeys:this))">
             <a href="#" ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}">
               <span class="badge pull-right" ng-class="{'danger': buffer.textbuffer.notification}" ng-if="buffer.itemActive && (buffer.textbuffer.notification || buffer.textbuffer.unread)" ng-bind="buffer.itemActive && (buffer.textbuffer.notification || buffer.textbuffer.unread)"></span>
               <span class="buffer-quick-key">{{ buffer.$quickKey }}</span>
