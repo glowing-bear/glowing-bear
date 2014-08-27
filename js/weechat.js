@@ -567,6 +567,12 @@
     };
 
     /**
+     * Constant indicating whether we can skip lines while fetching
+     * the history.
+     */
+    WeeChatProtocol.skipLines = false;
+
+    /**
      * path to add to the host, where the protocol websocket is
      * mounted.
      */

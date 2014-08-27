@@ -226,13 +226,18 @@ weechat.factory('connection',
         return ngWebsockets.send(
             protocolModule.mod.formatHdata({
                 // "0x" is important, otherwise it won't work
-                path: "buffer:0x" + buffer.id + "/own_lines/last_line(-" + numLines + ")/data",
+                path: "buffer:0x" + buffer.id + "/own_lines/last_line(-" + numLines +
+                    (protocolModule.mod.skipLines ? "," + buffer.requestedLines : "") + ")/data",
                 keys: []
             })
         ).then(function(lineinfo) {
 //XXX move to handlers?
             // delete old lines and add new ones
-            var oldLength = buffer.lines.length;
+            var oldLines = buffer.lines.slice(0);
+            var oldLength = oldLines.length;
+            if (!protocolModule.mod.skipLines || oldLines === undefined) {
+                oldLines = [];
+            }
             // whether we already had all unread lines
             var hadAllUnreadLines = buffer.lastSeen >= 0;
 
@@ -243,10 +248,16 @@ weechat.factory('connection',
             // already connected.
             buffer.requestedLines = 0;
             // Count number of lines recieved
-            var linesReceivedCount = lineinfo.objects[0].content.length;
+            var linesReceivedCount = lineinfo.objects[0].content.length + oldLines.length;
 
             // Parse the lines
             handlers.handleLineInfo(lineinfo, true);
+
+            oldLines.forEach(function(message) {
+                buffer.addLine(message);
+                buffer.lastSeen++;
+                buffer.requestedLines++;
+            });
 
             // Correct the read marker for the lines that were counted twice
             buffer.lastSeen -= oldLength;
