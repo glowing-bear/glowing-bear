@@ -29,7 +29,7 @@
     <script type="text/javascript" src="js/plugins.js"></script>
     <script type="text/javascript" src="3rdparty/favico-0.3.4-mod.min.js"></script>
   </head>
-  <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-class="{'no-overflow': connected}" lang="en-US">
+  <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" lang="en-US">
     <div ng-hide="connected" class="container">
       <h2>
         <img alt="logo" src="assets/img/glowing-bear.svg">
