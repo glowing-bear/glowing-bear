@@ -69,11 +69,18 @@ Finally, you can run the unit tests:
 Or the end to end tests:
 `$ npm run protractor`
 
+**Note**: the end to end tests assume that a web server is hosting Glowing Bear on `localhost:8000` and that a WeeChat relay is configured on port 9001.
 
 ##Contributing
 
 Whether you are interested in contributing or simply want to talk about the project, join us at **#glowing-bear** on **freenode**!
 
 We appreciate all forms of contributions -- whether you're a coder, designer, or user, we are always curious what you have to say. Whether you have suggestions or already implemented a solution, let us know and we'll try to help. We're also very keen to hear which devices and platforms Glowing Bear works on (or doesn't), as we're a small team and don't have access to the resources we would need to test it everywhere.
+
+If you wish to submit code, we try to make the contribution process as simple as possible. Any pull request that is submitted has to go through automatic and manual testing. Please make sure that your changes pass the [Travis](https://travis-ci.org/glowing-bear/glowing-bear) tests before submitting a pull request. Here is how you can run the tests:
+
+`$ ./run_tests.sh`
+
+ We'd also like to ask you to join our IRC channel, #glowing-bear on freenode, so we can discuss your ideas and changes.
 
 If you're curious about the projects we're using, here's a list: [AngularJS](https://angularjs.org/), [Bootstrap](http://getbootstrap.com/), [Underscore](http://underscorejs.org/), [favico.js](http://lab.ejci.net/favico.js/), and [zlib.js](https://github.com/imaya/zlib.js). Technology-wise, [WebSockets](http://en.wikipedia.org/wiki/WebSocket) are the most important part, but we also use [local storage](https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Storage#localStorage), the [Notification Web API](https://developer.mozilla.org/en/docs/Web/API/notification), and last (but not least) [Apache Cordova](https://cordova.apache.org/) for our mobile app.
