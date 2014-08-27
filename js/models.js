@@ -733,8 +733,15 @@ models.service('models', ['$rootScope', '$filter', 'protocolModule', function($r
             return;
         }
         if (buffer.active) {
-            var firstBuffer = _.keys(this.model.buffers)[0];
-            this.setActiveBuffer(firstBuffer);
+            var otherBuffer = _.find(this.model.buffers, function(itembuffer) {
+                if (itembuffer.textbuffer === buffer.textbuffer && itembuffer.id !== buffer.id) {
+                    return itembuffer.id;
+                }
+            });
+            if (otherBuffer === undefined) {
+                otherBuffer = _.keys(this.model.buffers)[0];
+            }
+            this.setActiveBuffer(otherBuffer);
         }
         // Can't use `buffer` here, needs to be deleted from the list
         delete(this.model.buffers[bufferId]);
