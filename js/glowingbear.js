@@ -1332,7 +1332,7 @@ weechat.directive('plugin', ['$rootScope', function($rootScope) {
             plugin: '=data'
         },
 
-        controller: function($scope) {
+        controller: ["$scope", function($scope) {
 
             $scope.displayedContent = "";
 
@@ -1371,12 +1371,12 @@ weechat.directive('plugin', ['$rootScope', function($rootScope) {
             if ($scope.plugin.visible) {
                 $scope.showContent();
             }
-        }
+        }]
     };
 }]);
 
 
-weechat.directive('inputBar', ['$rootScope', function() {
+weechat.directive('inputBar', function() {
 
     return {
 
@@ -1386,7 +1386,7 @@ weechat.directive('inputBar', ['$rootScope', function() {
             inputId: '@inputId'
         },
 
-        controller: ['$rootScope', '$scope', '$log', 'connection', 'models',
+        controller: ['$rootScope', '$scope', '$element', '$log', 'connection', 'models',
                     function($rootScope,
                              $scope,
                              $element,
@@ -1669,4 +1669,4 @@ weechat.directive('inputBar', ['$rootScope', function() {
             };
         }]
     };
-}]);
+});
