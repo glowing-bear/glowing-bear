@@ -44,10 +44,53 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         }
     };
 
+    var handleLineInserted = function(line, previd) {
+        var message = new models.BufferLine(line);
+        var itembuffer = models.getTextBuffer(message.buffer);
+        var buffer = itembuffer.textbuffer;
+        // Only react to line if its displayed
+        if (message.displayed) {
+            message = plugins.PluginManager.contentForMessage(message);
+            if (buffer.insertLine(message, previd)) {
+                buffer.requestedLines++;
+            }
+
+            if (buffer.active) {
+                $rootScope.scrollWithBuffer();
+            }
+        }
+    };
+
+    var handleLineRemoved = function(bufferid, lineid) {
+        var buffer = (models.getTextBuffer(bufferid)||{}).textbuffer;
+        if (buffer === undefined) { return; }
+        if (buffer.removeLine(lineid)) {
+            if (buffer.requestedLines > 0) {
+                buffer.requestedLines--;
+            }
+        }
+    };
+
     var handleBufferLineAdded = function(message) {
         message.objects[0].content.forEach(function(l) {
             handleLine(l, false);
         });
+    };
+
+    var handleBufferLineInserted = function(message) {
+        var prevline = message.prevline;
+        message.objects[0].content.forEach(function(l) {
+            handleLineInserted(l, prevline, false);
+            prevline = l.pointers[0];
+        });
+    };
+
+    var handleBufferLineRemoved = function(message) {
+        for (var buffer in message.lines) {
+            for (var lineIdx in message.lines[buffer]) {
+                handleLineRemoved(buffer, message.lines[buffer][lineIdx]);
+            }
+        }
     };
 
     var handleBufferOpened = function(message) {
@@ -189,6 +232,8 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
     var eventHandlers = {
         _buffer_closing: handleBufferClosing,
         _buffer_line_added: handleBufferLineAdded,
+        _buffer_line_added_after: handleBufferLineInserted,
+        _buffer_line_removed: handleBufferLineRemoved,
         _buffer_localvar_added: handleBufferLocalvarChanged,
         _buffer_localvar_removed: handleBufferLocalvarChanged,
         _buffer_opened: handleBufferOpened,
