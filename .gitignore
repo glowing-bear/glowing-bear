@@ -4,3 +4,7 @@ node_modules/
 # Electron stuff
 fonts/
 Glowing\ Bear-*/
+
+# minified stuff
+min.js
+min.js.map
