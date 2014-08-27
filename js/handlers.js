@@ -192,6 +192,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
     $rootScope.$on('onMessage', function(event, message) {
         if (_.has(eventHandlers, message.id)) {
             eventHandlers[message.id](message);
+        } else if (_.isEmpty(message)) { // ignore
         } else {
             $log.debug('Unhandled event received: ' + message.id);
         }
