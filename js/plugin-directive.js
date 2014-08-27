@@ -41,7 +41,7 @@ weechat.directive('plugin', ['$rootScope', function($rootScope) {
                 // Scroll embed content into view
                 var scroll = function() {
                     var embed = document.querySelector(".embed_" + $scope.plugin.$$hashKey);
-                    if (embed) {
+                    if (embed && embed.scrollIntoViewIfNeeded !== undefined) {
                         embed.scrollIntoViewIfNeeded();
                     }
                 };
