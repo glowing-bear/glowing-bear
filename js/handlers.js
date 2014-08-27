@@ -127,6 +127,16 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         old.prefix = ['#', '&', '+'].indexOf(obj.short_name.charAt(0)) >= 0 ? obj.short_name.charAt(0) : '';
     };
 
+    var handleBufferItemActive = function(message) {
+        var buffer = models.getBuffer(message.item);
+        if (buffer === undefined) { return; } // does not exist (anymore)
+        models.findTextbuffer(buffer.textbuffer.id);
+        buffer.itemActive = true;
+        if (buffer.textbuffer.active && !buffer.active) {
+            models.setActiveBuffer(buffer.id);
+        }
+    };
+
     var handleBufferLocalvarChanged = function(message) {
         var obj = message.objects[0].content[0];
         var buffer = obj.pointers[0];
@@ -244,6 +254,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         _buffer_opened: handleBufferOpened,
         _buffer_title_changed: handleBufferTitleChanged,
         _buffer_renamed: handleBufferRenamed,
+        _buffer_item_active: handleBufferItemActive,
         _buffer_activate: handleBufferActivate,
         _nicklist: handleNicklist,
         _nicklist_diff: handleNicklistDiff
