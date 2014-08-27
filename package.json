@@ -12,10 +12,13 @@
     "bower": "^1.3.1",
     "shelljs": "^0.2.6",
     "jshint": "^2.5.2",
-    "karma-junit-reporter": "^0.2.2"
+    "karma-junit-reporter": "^0.2.2",
+    "uglify-js": "^2.4"
   },
   "scripts": {
     "postinstall": "bower install",
+
+    "minify": " uglifyjs js/localstorage.js js/weechat.js js/irc-utils.js js/glowingbear.js js/websockets.js js/models.js js/plugins.js -c -m --screw-ie8 -o min.js --source-map min.map",
 
     "prestart": "npm install",
     "start": "http-server -a localhost -p 8000",
