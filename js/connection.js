@@ -21,7 +21,7 @@ weechat.factory('connection',
         if (host.indexOf(":") !== -1) {
             host = "[" + host + "]";
         }
-        var url = proto + "://" + host + ":" + port + "/weechat";
+        var url = proto + "://" + host + ":" + port + protocolModule.mod.mountpoint;
         $log.debug('Connecting to URL: ', url);
 
         var onopen = function () {
