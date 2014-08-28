@@ -374,6 +374,18 @@ weechat.directive('inputBar', function() {
                         setTimeout(function() {
                             inputNode.setSelectionRange(lastSpace, lastSpace);
                         });
+                    // Ctrl-x -> cycle multibuffers
+                    } else if (code == 88) {
+                        var buffers = models.getActiveBufferItems();
+                        if (buffers.length < 2) {
+                            return false;
+                        }
+                        var currentIdx = buffers.indexOf(models.getActiveBuffer());
+                        if (currentIdx > -1) {
+                            models.setActiveBuffer(buffers[(currentIdx + 1) % buffers.length].id);
+                        } else {
+                            return false;
+                        }
                     } else {
                         return false;
                     }
