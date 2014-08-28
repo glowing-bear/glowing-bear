@@ -92,6 +92,35 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
                 }
             }
         };
+        /*
+         * Deletes a nick from anywhere in the nicklist
+         */
+        var delNickAllgroups = function(nick) {
+            for (var g in nicklist) {
+                delNick(g, nick);
+            }
+        };
+        /*
+         * Moves nick in nicklist to another group
+         */
+        var updateNickChangegroup = function(group, nick) {
+            delNickAllgroups(nick);
+            addNick(group, nick);
+        };
+        /*
+         * Updates a nick in nicklist
+         */
+        var updateNickRename = function(oldname, nick) {
+            for (var g in nicklist) {
+                for(var i in nicklist[g].nicks) {
+                    if (nicklist[g].nicks[i].name === oldname) {
+                        nicklist[g].nicks[i] = nick;
+                        return;
+                    }
+                }
+            }
+        };
+
 
         /*
          * Update a nick with a fresh timestamp so tab completion
@@ -252,6 +281,9 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             addNick: addNick,
             delNick: delNick,
             updateNick: updateNick,
+            updateNickChangegroup: updateNickChangegroup,
+            delNickAllgroups: delNickAllgroups,
+            updateNickRename: updateNickRename,
             getNicklistByTime: getNicklistByTime,
             serverSortKey: serverSortKey,
             indent: indent,

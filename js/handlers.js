@@ -158,7 +158,8 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         nicklist.forEach(function(n) {
             var buffer = models.getBuffer(n.pointers[0]);
             var d = n._diff;
-            if (n.group === 1) {
+            if (buffer === undefined) { // ignore, buffer doesn't exist
+            } else if (n.group === 1) {
                 group = n.name;
                 if (group === undefined) {
                     var g = new models.NickGroup(n);
@@ -173,6 +174,12 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
                     buffer.delNick(group, nick);
                 } else if (d === 42) { // *
                     buffer.updateNick(group, nick);
+                } else if (d === 64) { // @
+                    buffer.updateNickChangegroup(group, nick);
+                } else if (d === 33) { // !
+                    buffer.delNickAllgroups(nick);
+                } else if (d === 118) { // v
+                    buffer.updateNickRename(n.oldname, n);
                 }
             }
         });
