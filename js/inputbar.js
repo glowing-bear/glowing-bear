@@ -182,7 +182,10 @@ weechat.directive('inputBar', function() {
                         // Map the buffers to only their numbers and IDs so we don't have to
                         // copy the entire (possibly very large) buffer object, and then sort
                         // the buffers according to their WeeChat number
-                        var sortedBuffers = _.map(models.getBuffers(), function(buffer) {
+                        var sortedBuffers = _.map(
+                        _.filter(models.getBuffers(), function(itembuffer) {
+                            return itembuffer.itemActive;
+                        }), function(buffer) {
                             return [buffer.number, buffer.id];
                         }).sort(function(left, right) {
                             // By default, Array.prototype.sort() sorts alphabetically.

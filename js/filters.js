@@ -111,6 +111,7 @@ weechat.filter('getBufferQuickKeys', function () {
                 buf.$quickKey = idx < 10 ? (idx + 1) % 10 : '';
             });
         } else {
+            var skipInactiveCount = 0;
             _.map(obj, function(buffer, idx) {
                 return [buffer.number, buffer.$idx, idx];
             }).sort(function(left, right) {
@@ -118,7 +119,13 @@ weechat.filter('getBufferQuickKeys', function () {
                 // Pass an ordering function to sort by first element.
                 return left[0] - right[0] || left[1] - right[1];
             }).forEach(function(info, keyIdx) {
-                obj[ info[2] ].$quickKey = keyIdx < 10 ? (keyIdx + 1) % 10 : '';
+                if (obj[ info[2] ].itemActive) {
+                    var cv = keyIdx - skipInactiveCount;
+                    obj[ info[2] ].$quickKey = cv < 10 ? (cv + 1) % 10 : '';
+                } else {
+                    obj[ info[2] ].$quickKey = '';
+                    skipInactiveCount++;
+                }
             });
         }
         return obj;
