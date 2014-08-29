@@ -38,20 +38,6 @@ a {
     cursor: pointer;
 }
 
-table {
-    width: 100%;
-}
-tr {
-    line-height: 100%;
-}
-tr:hover {
-    background-color: #222222;
-}
-td.time {
-    padding: 1px 5px 1px 1px;
-    vertical-align: top;
-}
-
 .repeated-time {
 }
 .repeated-time .cof-chat_time,
@@ -70,11 +56,21 @@ td.prefix {
     border-right: 1px solid #444;
 }
 td.message {
-    word-wrap: break-word;
-    word-break: break-word;
     vertical-align: top;
     width: 100%;
     padding: 1px 1px 1px 5px;
+
+-ms-word-break: break-all;
+    word-break: break-all;
+
+    /* Non standard for webkit */
+    word-break: break-word;
+
+-webkit-hyphens: auto;
+   -moz-hyphens: auto;
+    -ms-hyphens: auto;
+        hyphens: auto;
+
 }
 #readmarker {
     margin-top: 5px;
@@ -121,6 +117,10 @@ input[type=text], input[type=password], #sendMessage, .badge {
 }
 .glyphicon {
     top: 0; /* Fixes alignment issue in top bar */
+}
+.glyphicon-off {
+    top: 1px; /* Fixes for relative glyphicon size */
+    font-size: 28px;
 }
 #topbar {
     position: fixed;
@@ -224,7 +224,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
     overflow-x: hidden;
     right: 0;
     top: 0;
-    padding-top: 35px; 
+    padding-top: 35px;
     padding-left: 5px;
     padding-bottom: 35px;
     z-index: 2;
@@ -281,8 +281,19 @@ input[type=text], input[type=password], #sendMessage, .badge {
     -webkit-transition:0.35s ease all;
     transition:0.35s ease all;
 }
-#bufferlines table {
+#bufferlines > table {
   margin-top: 35px;
+    width: 100%;
+}
+tr.bufferline {
+    line-height: 100%;
+}
+tr.bufferline:hover {
+    background-color: #222222;
+}
+td.time {
+    padding: 1px 5px 1px 1px;
+    vertical-align: top;
 }
 
 .withnicklist {
@@ -480,6 +491,18 @@ h2 span, h2 small {
 }
 .panel[data-state=collapsed] {
     border: 0px solid transparent;
+}
+.panel .panel-title:before {
+    display: inline-block;
+    font-size: 22px;
+    line-height: 20px;
+    margin: -3px 5px -3px 0;
+}
+.panel[data-state=active] .panel-title:before {
+    content: "–";
+}
+.panel[data-state=collapsed] .panel-title:before {
+    content: "+";
 }
 
 /* fix for firefox being stupid */

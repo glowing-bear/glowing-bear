@@ -1,4 +1,4 @@
-var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'plugins', 'ngSanitize', 'ngWebsockets', 'pasvaz.bindonce', 'ngTouch']);
+var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'plugins', 'ngSanitize', 'ngWebsockets', 'ngTouch']);
 
 weechat.filter('toArray', function () {
     'use strict';
@@ -49,7 +49,7 @@ weechat.filter('irclinky', ['$filter', function($filter) {
     };
 }]);
 
-weechat.filter('inlinecolour', function() {
+weechat.filter('inlinecolour', ['$sce', function($sce) {
     'use strict';
 
     return function(text) {
@@ -61,9 +61,9 @@ weechat.filter('inlinecolour', function() {
         var hexColourRegex = /(^|[^&])\#([0-9a-f]{6})($|[^\w'"])/gmi;
         var substitute = '$1#$2 <div class="colourbox" style="background-color:#$2"></div> $3';
 
-        return text.replace(hexColourRegex, substitute);
+        return $sce.trustAsHtml(text.replace(hexColourRegex, substitute));
     };
-});
+}]);
 
 weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', function($rootScope, $log, models, plugins) {
 
@@ -841,7 +841,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "host", "localhost");
     $store.bind($scope, "port", "9001");
     $store.bind($scope, "proto", "weechat");
-    $store.bind($scope, "ssl", false);
+    $store.bind($scope, "ssl", (window.location.protocol === "https:"));
     $store.bind($scope, "savepassword", false);
     if ($scope.savepassword) {
         $store.bind($scope, "password", "");
@@ -907,9 +907,15 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.showSidebar = function() {
         document.getElementById('sidebar').setAttribute('data-state', 'visible');
         document.getElementById('content').setAttribute('sidebar-state', 'visible');
+        if ($rootScope.isMobileUi()) {
+            // de-focus the input bar when opening the sidebar on mobile, so that the keyboard goes down
+            _.each(document.getElementsByTagName('textarea'), function(elem) {
+                elem.blur();
+            });
+        }
     };
 
-    $scope.hideSidebar = function() {
+    $rootScope.hideSidebar = function() {
         if ($rootScope.isMobileUi()) {
             document.getElementById('sidebar').setAttribute('data-state', 'hidden');
             document.getElementById('content').setAttribute('sidebar-state', 'hidden');
@@ -1314,7 +1320,7 @@ weechat.config(['$routeProvider',
 ]);
 
 
-weechat.directive('plugin', function($rootScope) {
+weechat.directive('plugin', ['$rootScope', function($rootScope) {
     /*
      * Plugin directive
      * Shows additional plugin content
@@ -1326,7 +1332,7 @@ weechat.directive('plugin', function($rootScope) {
             plugin: '=data'
         },
 
-        controller: function($scope) {
+        controller: ["$scope", function($scope) {
 
             $scope.displayedContent = "";
 
@@ -1343,6 +1349,12 @@ weechat.directive('plugin', function($rootScope) {
                  * Actual plugin content is only fetched when
                  * content is shown.
                  */
+
+                // If the plugin is asynchronous / lazy, execute it now and store
+                // the result. This ensures that the callback is executed only once
+                if ($scope.plugin.content instanceof Function) {
+                    $scope.plugin.content = $scope.plugin.content();
+                }
                 $scope.displayedContent = $scope.plugin.content;
                 $scope.plugin.visible = true;
 
@@ -1359,9 +1371,9 @@ weechat.directive('plugin', function($rootScope) {
             if ($scope.plugin.visible) {
                 $scope.showContent();
             }
-        }
+        }]
     };
-});
+}]);
 
 
 weechat.directive('inputBar', function() {
@@ -1374,7 +1386,8 @@ weechat.directive('inputBar', function() {
             inputId: '@inputId'
         },
 
-        controller: function($rootScope,
+        controller: ['$rootScope', '$scope', '$element', '$log', 'connection', 'models',
+                    function($rootScope,
                              $scope,
                              $element,
                              $log,
@@ -1386,6 +1399,10 @@ weechat.directive('inputBar', function() {
              */
             $scope.getInputNode = function() {
                 return document.querySelector('textarea#' + $scope.inputId);
+            };
+
+            $scope.hideSidebar = function() {
+                $rootScope.hideSidebar();
             };
 
             $scope.completeNick = function() {
@@ -1412,8 +1429,10 @@ weechat.directive('inputBar', function() {
                 $scope.command = nickComp.text;
 
                 // update current caret position
-                inputNode.focus();
-                inputNode.setSelectionRange(nickComp.caretPos, nickComp.caretPos);
+                setTimeout(function() {
+                    inputNode.focus();
+                    inputNode.setSelectionRange(nickComp.caretPos, nickComp.caretPos);
+                }, 0);
             };
 
 
@@ -1586,7 +1605,7 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Arrow up -> go up in history
-                if (code === 38) {
+                if ($event.type === "keydown" && code === 38) {
                     $scope.command = models.getActiveBuffer().getHistoryUp($scope.command);
                     // Set cursor to last position. Need 0ms timeout because browser sets cursor
                     // position to the beginning after this key handler returns.
@@ -1599,7 +1618,7 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Arrow down -> go down in history
-                if (code === 40) {
+                if ($event.type === "keydown" && code === 40) {
                     $scope.command = models.getActiveBuffer().getHistoryDown($scope.command);
                     // We don't need to set the cursor to the rightmost position here, the browser does that for us
                     return true;
@@ -1648,6 +1667,6 @@ weechat.directive('inputBar', function() {
                     return true;
                 }
             };
-        }
+        }]
     };
 });
