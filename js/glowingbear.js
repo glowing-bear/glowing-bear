@@ -196,6 +196,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // are cleared in the buffer the user switches to
         if ($scope.hotlistsync && iab.fullName) {
             connection.sendCoreCommand('/buffer ' + iab.fullName);
+        } else if (protocolModule.mod.canClearHotlist && iab.fullName) {
+            connection.sendCoreCommand('/clearhotlist ' + iab.fullName);
         }
 
         // Clear search term on buffer change

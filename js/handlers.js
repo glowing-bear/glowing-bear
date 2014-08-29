@@ -108,6 +108,15 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         models.setActiveBuffer(buffer.id);
     };
 
+    var handleBufferClearHotlist = function(message) {
+        var buffer = models.getTextBuffer(message.buffer).textbuffer;
+        buffer.unread = 0;
+        buffer.notification = 0;
+
+        // Trigger title and favico update
+        $rootScope.$emit('notificationChanged');
+    };
+
     var handleBufferTitleChanged = function(message) {
         var obj = message.objects[0].content[0];
         var buffer = obj.pointers[0];
@@ -256,6 +265,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         _buffer_renamed: handleBufferRenamed,
         _buffer_item_active: handleBufferItemActive,
         _buffer_activate: handleBufferActivate,
+        _buffer_clear_hotlist: handleBufferClearHotlist,
         _nicklist: handleNicklist,
         _nicklist_diff: handleNicklistDiff
     };
