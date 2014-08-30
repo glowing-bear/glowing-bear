@@ -263,6 +263,9 @@
 .cwf-default {
     color: #d9d9d9;
 }
+.light-theme .cwf-default {
+    color: #282828;
+}
 .cwf-black {
     color: #000000;
 }

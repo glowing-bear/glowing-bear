@@ -5,6 +5,16 @@ body {
     color: #ddd;
     background-color: #181818;
 }
+body.light-theme {
+    background-color: #f7f7f7;
+    color: #181818;
+}
+html {
+    background-color: inherit;
+}
+.light-theme #bufferlines {
+    background-color: #fdfdfd;
+}
 
 .no-overflow {
     overflow: hidden;
@@ -43,6 +53,10 @@ a {
 .repeated-time .cof-chat_time,
 .repeated-time .cof-chat_time_delimiters {
     color: #333;
+}
+.light-theme .repeated-time .cof-chat_time,
+.light-theme .repeated-time .cof-chat_time_delimiters {
+    color: #ccc;
 }
 .repeated-time .cob-chat_time,
 .repeated-time .cob-chat_time_delimiters {
@@ -101,6 +115,11 @@ input[type=text], input[type=password], #sendMessage, .badge {
     box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.8) inset;
     background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.3);
     margin-bottom: 5px !important;
+}
+.light-theme input[type=text], .light-theme input[type=password], .light-theme #sendMessage, .light-theme .badge {
+    color: #333;
+    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.1), 0px 1px 7px 0px rgba(255, 255, 255, 0.8) inset;
+    background: none repeat scroll 0% 0% rgba(255, 255, 255, 0.3);
 }
 .input-group {
     width: 100%;
@@ -164,6 +183,9 @@ input[type=text], input[type=password], #sendMessage, .badge {
     right: 0;
     background: #282828;
 }
+.light-theme #topbar .actions {
+    background: #e7e7e7;
+}
 #topbar .actions > * {
     padding-left: 5px;
 }
@@ -174,6 +196,9 @@ input[type=text], input[type=password], #sendMessage, .badge {
 
 #topbar, #sidebar, .panel, .dropdown-menu, .modal-content {
     background: #282828;
+}
+.light-theme #topbar, .light-theme #sidebar, .light-theme .panel, .light-theme .dropdown-menu, .light-theme .modal-content {
+    background: #e7e7e7;
 }
 #sidebar {
     position: fixed;
@@ -243,6 +268,9 @@ input[type=text], input[type=password], #sendMessage, .badge {
 #nicklist a:hover {
     background: #3b3b3b;
 }
+.light-theme #nicklist a:hover {
+    background: #eee;
+}
 
 #connection-infos {
     float: left;
@@ -257,14 +285,24 @@ input[type=text], input[type=password], #sendMessage, .badge {
     border-radius: 0;
     color: #ddd;
 }
+.light-theme .nav-pills > li > a {
+    color: #222;
+}
 .nav-pills > li > a:hover, .nav-pills > li > a:hover span {
     color: #222;
+}
+.light-theme .nav-pills > li > a:hover, .light-theme .nav-pills > li > a:hover span {
+    color: #555;
 }
 /* fix for mobile firefox which ignores :hover */
 .nav-pills > li > a:active, .nav-pills > li > a:active span {
     text-decoration: none;
     background-color: #eee;
     color: #222;
+}
+.light-theme .nav-pills > li > a:active, .light-theme .nav-pills > li > a:active span {
+    color: #eee;
+    background-color: #222;
 }
 .content {
     height: 100%;
@@ -290,6 +328,9 @@ tr.bufferline {
 }
 tr.bufferline:hover {
     background-color: #222222;
+}
+.light-theme tr.bufferline:hover {
+    background-color: #fff;
 }
 td.time {
     padding: 1px 5px 1px 1px;
@@ -331,7 +372,7 @@ td.time {
     color: deepskyblue;
 }
 
-.danger, .alert-danger, .badge .alert-danger {
+.danger, .light-theme .danger, .alert-danger, .badge .alert-danger {
     background-color: rgb(217, 83, 79);
     color: #ddd;
 }
@@ -428,6 +469,9 @@ table.notimestampseconds td.time span.seconds {
     width: 100%;
     overflow: none;
     background-color:rgba(0, 0, 0, 0.5)
+}
+.light-theme .gb-modal .backdrop {
+    background-color:rgba(255, 255, 255, 0.5)
 }
 .gb-modal .modal-dialog {
     z-index: 1001;
@@ -582,6 +626,11 @@ h2 span, h2 small {
         background: #282828;
         bottom: 0px;
     }
+    .light-theme #nicklist {
+        -webkit-box-shadow: 0px 0px 120px #999;
+        box-shadow: 0px 0px 120px #999;
+        background: #e7e7e7;
+    }
 
     .navbar-fixed-bottom {
         margin: 0;
@@ -629,12 +678,19 @@ h2 span, h2 small {
     .repeated-time .cof-chat_time_delimiters {
         color: #999;
     }
+    .light-theme .repeated-time .cof-chat_time,
+    .light-theme .repeated-time .cof-chat_time_delimiters {
+        color: #666;
+    }
 
     .footer {
         padding-left: 0px !important;
         padding-right: 0px !important;
         width: 100% !important;
         background: rgb(24,24,24);
+    }
+    .light-theme .footer {
+        background: rgb(230,230,230);
     }
 
     .footer.withnicklist {

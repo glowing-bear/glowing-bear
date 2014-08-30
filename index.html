@@ -29,7 +29,7 @@
     <script type="text/javascript" src="js/plugins.js"></script>
     <script type="text/javascript" src="3rdparty/favico-0.3.4-mod.min.js"></script>
   </head>
-  <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" lang="en-US">
+  <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected, 'light-theme': uiLightTheme}" lang="en-US">
     <div ng-hide="connected" class="container">
       <h2>
         <img alt="logo" src="assets/img/glowing-bear.svg">
@@ -122,16 +122,16 @@
               <h3>Shortcuts</h3>
               Glowing Bear has a few shortcuts:
               <ul>
-                <li>ALT-n: Toggle nicklist</li>
-                <li>ALT-l: Focus on input bar</li>
-                <li>ALT-[0-9]: Switch to buffer number N</li>
-                <li>ALT-a: Focus on next buffer with activity</li>
-                <li>ALT-&lt;: Switch to previous active buffer</li>
-                <li>ALT-g: Focus on buffer list filter</li>
-                <li>Esc-Esc: Disconnect (double-tap)</li>
+                <li><kbd>ALT-n</kbd>: Toggle nicklist</li>
+                <li><kbd>ALT-l</kbd>: Focus on input bar</li>
+                <li><kbd>ALT-[0-9]</kbd>: Switch to buffer number N</li>
+                <li><kbd>ALT-a</kbd>: Focus on next buffer with activity</li>
+                <li><kbd>ALT-&lt;</kbd>: Switch to previous active buffer</li>
+                <li><kbd>ALT-g</kbd>: Focus on buffer list filter</li>
+                <li><kbd>Esc-Esc</kbd>: Disconnect (double-tap)</li>
                 <li>Arrow keys: Navigate history</li>
-                <li>Tab key: Complete nick</li>
-                <li>The following readline/emacs style keybindings can be enabled with a setting: <span title="Move cursor to beginning of line">Ctrl-a</span>, <span title="Move cursor to te end of the line">Ctrl-e</span>, <span title="Delete from cursor to beginning of the line">Ctrl-u</span>, <span title="Delete from cursor to the end of the line">Ctrl-k</span>, <span title="Delete from cursor to previous space">Ctrl-w</span></li>
+                <li><kbd>Tab</kbd>: Complete nick</li>
+                <li>The following readline/emacs style keybindings can be enabled with a setting: <span title="Move cursor to beginning of line"><kbd>Ctrl-a</kbd></span>, <span title="Move cursor to te end of the line"><kbd>Ctrl-e</kbd></span>, <span title="Delete from cursor to beginning of the line"><kbd>Ctrl-u</kbd></span>, <span title="Delete from cursor to the end of the line"><kbd>Ctrl-k</kbd></span>, <span title="Delete from cursor to previous space"><kbd>Ctrl-w</kbd></span></li>
               </ul>
               </div>
             </div>
@@ -300,6 +300,16 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                     <div class="col-sm-2">
                       <input type="text" ng-model="fontsize" class="form-control" id="size" placeholder="14px">
                     </div>
+                  </div>
+                </form>
+              </li>
+              <li>
+                <form class="form-inline" role="form">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="uiLightTheme">
+                      Use light theme
+                    </label>
                   </div>
                 </form>
               </li>
