@@ -888,6 +888,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "fontsize", getClassStyle('favorite-font', 'fontSize'));
     // Save setting for readline keybindings
     $store.bind($scope, "readlineBindings", false);
+    // Save setting for theme
+    $store.bind($scope, "uiLightTheme", false);
 
     if (!$scope.fontfamily) {
         if ($rootScope.isMobileUi()) {
