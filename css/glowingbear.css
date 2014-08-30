@@ -372,7 +372,7 @@ td.time {
     color: deepskyblue;
 }
 
-.danger, .alert-danger, .badge .alert-danger {
+.danger, .light-theme .danger, .alert-danger, .badge .alert-danger {
     background-color: rgb(217, 83, 79);
     color: #ddd;
 }
