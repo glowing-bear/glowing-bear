@@ -384,7 +384,7 @@ table.notimestampseconds td.time span.seconds {
     border-bottom: 0;
 }
 
-#fontchoice label {
+.standard-labels label {
     font-weight: normal;
     text-align: left;
 }
