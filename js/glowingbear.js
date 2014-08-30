@@ -6,6 +6,7 @@ var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatMode
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', 'notifications', 'utils', function ($rootScope, $scope, $store, $timeout, $log, models, connection, notifications, utils) {
 
     $scope.command = '';
+    $scope.themes = ['dark'];
 
     // From: http://stackoverflow.com/a/18539624 by StackOverflow user "plantian"
     $rootScope.countWatchers = function () {
@@ -256,6 +257,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "soundnotification", false);
     // Save setting for font family
     $store.bind($scope, "fontfamily");
+    // Save setting for theme
+    $store.bind($scope, "theme", 'dark');
     // Save setting for font size
     $store.bind($scope, "fontsize", "14px");
     // Save setting for readline keybindings

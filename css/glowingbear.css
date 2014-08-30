@@ -2,52 +2,15 @@ html,
 body {
     height: 100%;
 /* The html and body elements cannot have any padding or margin. */
-    color: #ddd;
-    background-color: #181818;
 }
-
 .no-overflow {
     overflow: hidden;
 }
 
-.horizontal-line {
-    -webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
-    -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
-    box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
-    border-bottom: 1px solid #121212;
-}
-.vertical-line {
-    -webkit-box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
-    -moz-box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
-    box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
-    border-right: 1px solid #121212;
-}
-.vertical-line-left {
-    -webkit-box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
-    -moz-box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
-    box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
-    border-left: 1px solid #121212;
-}
-.panel-group .panel-heading + .panel-collapse .panel-body, .modal-body, .modal-header, .modal-footer {
-    -webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
-    -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
-    box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
-    border-top: 1px solid #121212;
-}
 a {
     cursor: pointer;
 }
 
-.repeated-time {
-}
-.repeated-time .cof-chat_time,
-.repeated-time .cof-chat_time_delimiters {
-    color: #333;
-}
-.repeated-time .cob-chat_time,
-.repeated-time .cob-chat_time_delimiters {
-    background-color: transparent;
-}
 td.prefix {
     text-align: right;
     vertical-align: top;
@@ -72,13 +35,15 @@ td.message {
         hyphens: auto;
 
 }
+
 #readmarker {
     margin-top: 5px;
     margin-bottom: 5px;
-    border-top: 1px solid rgba(255, 255, 255, 0.3);
-    border-bottom: 1px solid #121212;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
     height: 2px;
 }
+
 .text {
     white-space: pre-wrap;
 }
@@ -97,11 +62,9 @@ td.message {
 input[type=text], input[type=password], #sendMessage, .badge {
     border: 0;
     border-radius: 0;
-    color: #ccc;
-    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.8) inset;
-    background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.3);
     margin-bottom: 5px !important;
 }
+
 .input-group {
     width: 100%;
 }
@@ -162,8 +125,8 @@ input[type=text], input[type=password], #sendMessage, .badge {
     font-size: 30px;
     position: fixed;
     right: 0;
-    background: #282828;
 }
+
 #topbar .actions > * {
     padding-left: 5px;
 }
@@ -172,9 +135,6 @@ input[type=text], input[type=password], #sendMessage, .badge {
     padding-right: 6px;
 }
 
-#topbar, #sidebar, .panel, .dropdown-menu, .modal-content {
-    background: #282828;
-}
 #sidebar {
     position: fixed;
     width: 140px;
@@ -240,16 +200,12 @@ input[type=text], input[type=password], #sendMessage, .badge {
 #nicklist a {
     text-decoration: none;
 }
-#nicklist a:hover {
-    background: #3b3b3b;
-}
 
 #connection-infos {
     float: left;
     max-width: 10%;
     padding-left: 5px;
     font-size: 12px;
-    color: #aaa;
     overflow: hidden;
 }
 
@@ -267,6 +223,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
     background-color: #eee;
     color: #222;
 }
+
 .content {
     height: 100%;
     min-height: 100%;
@@ -289,9 +246,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
 tr.bufferline {
     line-height: 100%;
 }
-tr.bufferline:hover {
-    background-color: #222222;
-}
+
 td.time {
     padding: 1px 5px 1px 1px;
     vertical-align: top;
@@ -324,25 +279,9 @@ td.time {
     padding-right: 100px;
 }
 
-.color-light-green {
-    color: chartreuse;
-}
-
-.color-27 {
-    color: deepskyblue;
-}
-
-.danger, .alert-danger, .badge .alert-danger {
-    background-color: rgb(217, 83, 79);
-    color: #ddd;
-}
-.alert-danger {
-    border-color: #121212;
-    color: black;
-}
-
-li.notification {
-    color: green;
+/* fix for mobile firefox which ignores :hover */
+.nav-pills > li > a:active, .nav-pills > li > a:active span {
+    text-decoration: none;
 }
 
 [ng-click],
@@ -354,12 +293,9 @@ li.notification {
     width: 10px;
     height: 10px;
 }
-::-webkit-scrollbar-track-piece  {
-    background-color: black;
-}
+
 ::-webkit-scrollbar-thumb:vertical {
     height: 15px;
-    background: rgba(255,255,255,0.5);
 }
 
 div.embed * {
@@ -428,8 +364,8 @@ table.notimestampseconds td.time span.seconds {
     height: 100%;
     width: 100%;
     overflow: none;
-    background-color:rgba(0, 0, 0, 0.5)
 }
+
 .gb-modal .modal-dialog {
     z-index: 1001;
     position: absolute;
@@ -459,10 +395,11 @@ table.notimestampseconds td.time span.seconds {
     border-bottom: 0;
 }
 
-#fontchoice label {
+.standard-labels label {
     font-weight: normal;
     text-align: left;
 }
+
 
 h2 {
     padding-bottom: 5px;
@@ -599,11 +536,8 @@ li.buffer.indent.private a {
         height: auto;
         padding: 35px 7px 35px 10px;
         text-align: center;
-        -webkit-box-shadow: 0px 0px 120px #000;
-        box-shadow: 0px 0px 120px #000;
         position: fixed;
         margin-top: 10px;
-        background: #282828;
         bottom: 0px;
     }
 
@@ -648,17 +582,10 @@ li.buffer.indent.private a {
         width: 96%;
     }
 
-    /* a different colour is too irregular on mobile */
-    .repeated-time .cof-chat_time,
-    .repeated-time .cof-chat_time_delimiters {
-        color: #999;
-    }
-
     .footer {
         padding-left: 0px !important;
         padding-right: 0px !important;
         width: 100% !important;
-        background: rgb(24,24,24);
     }
 
     .footer.withnicklist {

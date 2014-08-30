@@ -1,3 +1,131 @@
+body {
+    background-color: #181818;
+    color: #ddd;
+}
+
+.form-control {
+    color: #ccc;
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.8) inset;
+    background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.3);
+    border: 0px none;
+}
+
+html {
+    background-color: inherit;
+}
+
+.repeated-time .cob-chat_time,
+.repeated-time .cob-chat_time_delimiters {
+    background-color: transparent;
+    color: #333;
+}
+
+/* fix for mobile firefox which ignores :hover */
+.nav-pills > li > a:active, .nav-pills > li > a:active span {
+    background-color: #eee;
+    color: #222;
+}
+
+tr.bufferline:hover {
+    background-color: #222222;
+}
+
+.danger, .alert-danger, .badge .alert-danger {
+    background-color: rgb(217, 83, 79);
+    color: #ddd;
+}
+.alert-danger {
+    border-color: #121212;
+    color: black;
+}
+
+li.notification {
+    color: green;
+}
+
+::-webkit-scrollbar-track-piece  {
+    background-color: black;
+}
+::-webkit-scrollbar-thumb:vertical {
+    height: 15px;
+    background: rgba(255,255,255,0.5);
+}
+
+.gb-modal .backdrop {
+    background-color:rgba(0, 0, 0, 0.5)
+}
+
+input[type=text], input[type=password], #sendMessage, .badge {
+    color: #ccc;
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.8) inset;
+    background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.3);
+}
+
+#connection-infos {
+    color: #aaa;
+}
+
+.nav-pills > li > a {
+    color: #ddd;
+}
+
+.nav-pills > li > a:hover, .nav-pills > li > a:hover span {
+    color: #222;
+}
+
+.color-light-green {
+    color: chartreuse;
+}
+
+.color-27 {
+    color: deepskyblue;
+}
+
+#topbar .actions {
+    background: #282828;
+}
+
+#topbar, #sidebar, .panel, .dropdown-menu, .modal-content {
+    background: #282828;
+}
+
+#nicklist a:hover {
+    background: #3b3b3b;
+}
+
+.horizontal-line {
+    -webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+    -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+    box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+    border-bottom: 1px solid #121212;
+}
+.vertical-line {
+    -webkit-box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
+    -moz-box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
+    box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
+    border-right: 1px solid #121212;
+}
+.vertical-line-left {
+    -webkit-box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
+    -moz-box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
+    box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
+    border-left: 1px solid #121212;
+}
+.panel-group .panel-heading + .panel-collapse .panel-body, .modal-body, .modal-header, .modal-footer {
+    -webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
+    -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
+    box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
+    border-top: 1px solid #121212;
+}
+
+#readmarker {
+    border-top-color: rgba(255, 255, 255, 0.3);
+    border-bottom-color: #121212;
+}
+
+/****************************/
+/* Weechat colors and style */
+/****************************/
 /* style options, foreground */
 .cof-separator {
     color: #68b5d4;
@@ -262,6 +390,9 @@
 /* WeeChat colors, foreground */
 .cwf-default {
     color: #d9d9d9;
+}
+.light-theme .cwf-default {
+    color: #282828;
 }
 .cwf-black {
     color: #000000;
@@ -1935,3 +2066,29 @@
     color: yellow;
     font-weight: bold;
 }
+
+/* */
+/* Mobile layout */
+/* */
+@media (max-width: 968px) {
+    /* a different colour is too irregular on mobile */
+    .repeated-time .cof-chat_time,
+    .repeated-time .cof-chat_time_delimiters {
+        color: #999;
+    }
+
+    #nicklist {
+        -webkit-box-shadow: 0px 0px 120px #000;
+        box-shadow: 0px 0px 120px #000;
+        background: #282828;
+    }
+
+    .footer {
+        background: rgb(24,24,24);
+    }
+
+}
+
+
+
+
