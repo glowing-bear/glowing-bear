@@ -2,6 +2,8 @@ var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatMode
 
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', 'notifications', 'utils', function ($rootScope, $scope, $store, $timeout, $log, models, connection, notifications, utils) {
 
+    $scope.command = '';
+
     // From: http://stackoverflow.com/a/18539624 by StackOverflow user "plantian"
     $rootScope.countWatchers = function () {
         var q = [$rootScope], watchers = 0, scope;
@@ -611,12 +613,19 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     // Prevent user from accidentally leaving the page
     window.onbeforeunload = function(event) {
-        if ($rootScope.connected) {
+
+        if ($scope.command !== null && $scope.command !== '') {
             event.preventDefault();
-            // Chrome requires us to set this or it will not show the dialog
-            event.returnValue = "You have an active connection to your WeeChat relay. Please disconnect using the button in the top-right corner or by double-tapping the Escape key.";
+            // Chrome requires this
+            // Firefox does not show the site provides message
+            event.returnValue = "Any unsent input will be lost. Are you sure that you want to quit?";
+
+        } else {
+            if ($rootScope.connected) {
+                $scope.disconnect();
+            }
+            $scope.favico.reset();
         }
-        $rootScope.favico.reset();
     };
 
 }]);
