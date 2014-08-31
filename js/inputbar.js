@@ -7,7 +7,8 @@ weechat.directive('inputBar', function() {
         templateUrl: 'directives/input.html',
 
         scope: {
-            inputId: '@inputId'
+            inputId: '@inputId',
+            command: '=command'
         },
 
         controller: ['$rootScope', '$scope', '$element', '$log', 'connection', 'models', function($rootScope,
