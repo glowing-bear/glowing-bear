@@ -1529,9 +1529,19 @@ weechat.directive('inputBar', function() {
                     }
 
                     var bufferNumber = code - 48 - 1 ;
-                    var activeBufferId = Object.keys(models.getBuffers())[bufferNumber];
+                    // Map the buffers to only their numbers and IDs so we don't have to
+                    // copy the entire (possibly very large) buffer object, and then sort
+                    // the buffers according to their WeeChat number
+                    var sortedBuffers = _.map(models.getBuffers(), function(buffer) {
+                        return [buffer.number, buffer.id];
+                    }).sort(function(left, right) {
+                        // By default, Array.prototype.sort() sorts alphabetically.
+                        // Pass an ordering function to sort by first element.
+                        return left[0] - right[0];
+                    });
+                    var activeBufferId = sortedBuffers[bufferNumber];
                     if (activeBufferId) {
-                        models.setActiveBuffer(activeBufferId);
+                        models.setActiveBuffer(activeBufferId[1]);
                         $event.preventDefault();
                     }
                 }
