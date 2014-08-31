@@ -612,9 +612,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Prevent user from accidentally leaving the page
     window.onbeforeunload = function(event) {
         if ($rootScope.connected) {
-            event.preventDefault();
-            // Chrome requires us to set this or it will not show the dialog
-            event.returnValue = "You have an active connection to your WeeChat relay. Please disconnect using the button in the top-right corner or by double-tapping the Escape key.";
+            $scope.disconnect();
         }
         $rootScope.favico.reset();
     };
