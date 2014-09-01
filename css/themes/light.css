@@ -2058,7 +2058,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
 
 /* highlight messages */
 .highlight {
-    color: yellow;
+    color: orange;
     font-weight: bold;
 }
 
