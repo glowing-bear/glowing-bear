@@ -30,7 +30,7 @@ tr.bufferline:hover {
     background-color: #222222;
 }
 
-.danger, .alert-danger, .badge .alert-danger {
+.danger, .alert-danger, .badge .alert-danger, .badge.danger {
     background-color: rgb(217, 83, 79);
     color: #ddd;
 }
@@ -501,13 +501,13 @@ input[type=text], input[type=password], #sendMessage, .badge {
     color: #000000; /* 000 Black */
 }
 .cef-1 {
-    color: #cd0000; /* 001 DarkRed */
+    color: #7f0000; /* 001 DarkRed */
 }
 .cef-2 {
     color: #00cd00; /* 002 DarkGreen */
 }
 .cef-3 {
-    color: #cdcd00; /* 003 DarkYellow */
+    color: #fc7f00; /* 003 Orange */
 }
 .cef-4 {
     color: #0000ee; /* 004 DarkBlue */
@@ -1271,13 +1271,13 @@ input[type=text], input[type=password], #sendMessage, .badge {
     background-color: #000000; /* 000 Black */
 }
 .ceb-1 {
-    background-color: #cd0000; /* 001 DarkRed */
+    background-color: #7f0000; /* 001 DarkRed */
 }
 .ceb-2 {
     background-color: #00cd00; /* 002 DarkGreen */
 }
 .ceb-3 {
-    background-color: #cdcd00; /* 003 DarkYellow */
+    background-color: #fc7f00; /* 003 Orange */
 }
 .ceb-4 {
     background-color: #0000ee; /* 004 DarkBlue */
