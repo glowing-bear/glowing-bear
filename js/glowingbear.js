@@ -248,9 +248,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Save setting for playing sound on notification
     $store.bind($scope, "soundnotification", false);
     // Save setting for font family
-    $store.bind($scope, "fontfamily", utils.getClassStyle('favorite-font', 'fontFamily'));
+    $store.bind($scope, "fontfamily");
     // Save setting for font size
-    $store.bind($scope, "fontsize", utils.getClassStyle('favorite-font', 'fontSize'));
+    $store.bind($scope, "fontsize", "14px");
     // Save setting for readline keybindings
     $store.bind($scope, "readlineBindings", false);
 
