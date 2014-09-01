@@ -514,10 +514,10 @@ input[type=text], input[type=password], #sendMessage, .badge {
     color: #00cdcd; /* 006 DarkCyan */
 }
 .cef-7 {
-    color: #e5e5e5; /* 007 LightGrey */
+    color: #848484; /* 007 LightGrey */
 }
 .cef-8 {
-    color: #7f7f7f; /* 008 DarkGrey */
+    color: #606060; /* 008 DarkGrey */
 }
 .cef-9 {
     color: #ff0000; /* 009 LightRed */
