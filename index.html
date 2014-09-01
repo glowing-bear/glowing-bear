@@ -13,18 +13,18 @@
     <!-- https://w3c.github.io/manifest/ && https://developer.mozilla.org/en-US/docs/Web/Manifest -->
     <link rel="manifest" href="webapp.manifest.json">
     <title ng-bind-template="{{ notificationStatus }}Glowing Bear {{ pageTitle}}"></title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+    <link href="3rdparty/bootstrap.min.css" rel="stylesheet" media="screen">
     <link rel="shortcut icon" sizes="128x128" href="assets/img/glowing_bear_128x128.png">
     <link rel="apple-touch-icon" sizes="128x128" href="assets/img/glowing_bear_128x128.png">
     <link rel="shortcut icon" type="image/png" href="assets/img/favicon.png" >
     <link href="css/glowingbear.css" rel="stylesheet" media="screen">
     <link href="css/themes/dark.css" rel="stylesheet" media="screen" id="themeCSS" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.8/angular.min.js" integrity="sha256-drxfSiYW94qA5Cyx5wrs8T8qV5GB45vES84r+X4zNS0=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.8/angular-route.min.js" integrity="sha256-+rsaX/rEnnh0OQrK9qi+p7qsM8nylkcEfOOhgC3ver0=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.8/angular-sanitize.min.js" integrity="sha256-A5XIWW1Wvws/VV2ZVAhfMVtQKwILF+o/z3zYZ8fhiec=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.8/angular-touch.min.js" integrity="sha256-pe9bCE2Py8HOdaP2c5lLwLDIsWrpn9L9QpSzuMawOM8=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js" integrity="sha256-obZACiHd7gkOk9iIL/pimWMTJ4W/pBsKu+oZnSeBIek=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/lib/js/emojione.min.js" integrity="sha256-9cBkVeU53NiJ9/BdcJta3HbERAmf5X9DE2WvL8V+gDs=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="3rdparty/angular.min.js"></script>
+    <script type="text/javascript" src="3rdparty/angular-route.min.js"></script>
+    <script type="text/javascript" src="3rdparty/angular-sanitize.min.js"></script>
+    <script type="text/javascript" src="3rdparty/angular-touch.min.js"></script>
+    <script type="text/javascript" src="3rdparty/underscore-min.js"></script>
+    <script type="text/javascript" src="3rdparty/emojione.min.js"></script>
     <script type="text/javascript" src="3rdparty/inflate.min.js"></script>
     <script type="text/javascript" src="js/localstorage.js"></script>
     <script type="text/javascript" src="js/weechat.js"></script>
