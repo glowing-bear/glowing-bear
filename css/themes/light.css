@@ -4,7 +4,7 @@ body {
 }
 
 #bufferlines {
-    background-color: #efefef;
+    background-color: #fdfdfd;
 }
 
 html {
@@ -24,7 +24,7 @@ html {
 }
 
 tr.bufferline:hover {
-    background-color: #fff;
+    background-color: #efefef;
 }
 
 .danger, .alert-danger, .badge .alert-danger {
