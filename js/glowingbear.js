@@ -6,7 +6,7 @@ var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatMode
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', 'notifications', 'utils', function ($rootScope, $scope, $store, $timeout, $log, models, connection, notifications, utils) {
 
     $scope.command = '';
-    $scope.themes = ['dark'];
+    $scope.themes = ['dark', 'light'];
 
     // From: http://stackoverflow.com/a/18539624 by StackOverflow user "plantian"
     $rootScope.countWatchers = function () {
