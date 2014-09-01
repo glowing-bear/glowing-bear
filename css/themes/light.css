@@ -4,7 +4,7 @@ body {
 }
 
 #bufferlines {
-    background-color: #fdfdfd;
+    background-color: #efefef;
 }
 
 html {
@@ -125,52 +125,52 @@ input[type=text], input[type=password], #sendMessage, .badge {
 /****************************/
 /* style options, foreground */
 .cof-separator {
-    color: #68b5d4;
+    color: #345A6A;
 }
 .cof-chat {
-    color: #d9d9d9;
+    color: #575757;
 }
 .cof-chat_time {
-    color: #f7f7f7;
+    color: #636363;
 }
 .cof-chat_time_delimiters {
-    color: #cc843b;
+    color: #66421E;
 }
 .cof-chat_prefix_error {
-    color: #ffe377;
+    color: #80723C;
 }
 .cof-chat_prefix_network {
-    color: #fbb1f9;
+    color: #644764;
 }
 .cof-chat_prefix_action {
-    color: #f7f7f7;
+    color: #636363;
 }
 .cof-chat_prefix_join {
-    color: #cdee69;
+    color: #525F2A;
 }
 .cof-chat_prefix_quit {
-    color: #c75646;
+    color: #642B23;
 }
 .cof-chat_prefix_more {
-    color: #fbb1f9;
+    color: #644764;
 }
 .cof-chat_prefix_suffix {
-    color: #cdee69;
+    color: #525F2A;
 }
 .cof-chat_buffer {
-    color: #f7f7f7;
+    color: #4A4A4A;
 }
 .cof-chat_server {
-    color: #cc843b;
+    color: #523518;
 }
 .cof-chat_channel {
-    color: #f7f7f7;
+    color: #636363;
 }
 .cof-chat_nick {
-    color: #77dfd8;
+    color: #305956;
 }
 .cof-chat_nick_self {
-    color: #ffffff;
+    color: #4C4C4C;
     font-weight: bold;
 }
 .cof-chat_nick_other {
@@ -178,62 +178,62 @@ input[type=text], input[type=password], #sendMessage, .badge {
 }
 .cof-invalid {
     /* should never happen */
-    color: #f7f7f7;
+    color: #4A4A4A;
     background-color: transparent;
 }
 .cof-chat_host {
-    color: #77dfd8;
+    color: #305956;
 }
 .cof-chat_delimiters {
-    color: #cdee69;
+    color: #525F2A;
 }
 .cof-chat_highlight {
-    color: #ffe377;
-    background-color: #c8a0d1;
+    color: #665B30;
+    background-color: #504054;
 }
 .cof-chat_read_marker {
-    color: #fbb1f9;
+    color: #644764;
 }
 .cof-chat_text_found {
-    color: #ffe377;
+    color: #665B30;
 }
 .cof-chat_value {
-    color: #77dfd8;
+    color: #305956;
 }
 .cof-chat_prefix_buffer {
-    color: #cc843b;
+    color: #523518;
 }
 .cof-chat_tags {
-    color: #c75646;
+    color: #50221C;
 }
 .cof-chat_inactive_window {
-    color: #5d5d5d;
+    color: #2E2E2E;
 }
 .cof-chat_inactive_buffer {
-    color: #5d5d5d;
+    color: #2E2E2E;
 }
 .cof-chat_prefix_buffer_inactive_buffer {
-    color: #5d5d5d;
+    color: #2E2E2E;
 }
 .cof-chat_nick_offline {
-    color: #5d5d5d;
+    color: #2E2E2E;
 }
 .cof-chat_nick_offline_highlight {
-    color: #f7f7f7;
+    color: #636363;
     background-color: #5d5d5d;
 }
 .cof-chat_nick_prefix {
-    color: #cdee69;
+    color: #525F2A;
 }
 .cof-chat_nick_suffix {
-    color: #cdee69;
+    color: #525F2A;
 }
 .cof-emphasis {
-    color: #ffe377;
-    background-color: #c8a0d1;
+    color: #80723C;
+    background-color: #645068;
 }
 .cof-chat_day_change {
-    color: #77dfd8;
+    color: #305956;
 }
 
 /* style options, background */
@@ -386,58 +386,56 @@ input[type=text], input[type=password], #sendMessage, .badge {
 
 /* WeeChat colors, foreground */
 .cwf-default {
-    color: #d9d9d9;
+    color: #575757;
 }
-.light-theme .cwf-default {
-    color: #282828;
-}
+
 .cwf-black {
     color: #000000;
 }
 .cwf-darkgray {
-    color: #5d5d5d;
+    color: #2E2E2E;
 }
 .cwf-red {
-    color: #c75646;
+    color: #642B23;
 }
 .cwf-lightred {
-    color: #e09690;
+    color: #704B48;
 }
 .cwf-green {
-    color: #8eb33b;
+    color: #475A1E;
 }
 .cwf-lightgreen {
-    color: #cdee69;
+    color: #667734;
 }
 .cwf-brown {
-    color: #b27232;
+    color: #593919;
 }
 .cwf-yellow {
-    color: #ffe377;
+    color: #80723C;
 }
 .cwf-blue {
-    color: #72b3cc;
+    color: #395A66;
 }
 .cwf-lightblue {
-    color: #9cd9f0;
+    color: #4E6C78;
 }
 .cwf-magenta {
-    color: #c8a0d1;
+    color: #504054;
 }
 .cwf-lightmagenta {
-    color: #fbb1f9;
+    color: #644764;
 }
 .cwf-cyan {
-    color: #218693;
+    color: #10434A;
 }
 .cwf-lightcyan {
-    color: #77dfd8;
+    color: #182D2B;
 }
 .cwf-gray {
-    color: #b0b0b0;
+    color: #464646;
 }
 .cwf-white {
-    color: #f7f7f7;
+    color: #4A4A4A;
 }
 
 /* WeeChat colors, background */
@@ -448,49 +446,49 @@ input[type=text], input[type=password], #sendMessage, .badge {
     background-color: #000000;
 }
 .cwb-darkgray {
-    background-color: #5d5d5d;
+    background-color: #2E2E2E;
 }
 .cwb-red {
-    background-color: #c75646;
+    background-color: #642B23;
 }
 .cwb-lightred {
-    background-color: #e09690;
+    background-color: #704B48;
 }
 .cwb-green {
-    background-color: #8eb33b;
+    background-color: #475A1E;
 }
 .cwb-lightgreen {
-    background-color: #cdee69;
+    background-color: #667734;
 }
 .cwb-brown {
-    background-color: #b27232;
+    background-color: #593919;
 }
 .cwb-yellow {
-    background-color: #ffe377;
+    background-color: #80723C;
 }
 .cwb-blue {
-    background-color: #72b3cc;
+    background-color: #395A66;
 }
 .cwb-lightblue {
-    background-color: #9cd9f0;
+    background-color: #4E6C78;
 }
 .cwb-magenta {
-    background-color: #c8a0d1;
+    background-color: #504054;
 }
 .cwb-lightmagenta {
-    background-color: #fbb1f9;
+    background-color: #644764;
 }
 .cwb-cyan {
-    background-color: #218693;
+    background-color: #10434A;
 }
 .cwb-lightcyan {
-    background-color: #77dfd8;
+    background-color: #182D2B;
 }
 .cwb-gray {
-    background-color: #b0b0b0;
+    background-color: #464646;
 }
 .cwb-white {
-    background-color: #f7f7f7;
+    background-color: #4A4A4A;
 }
 
 /* extended colors, foreground */
@@ -528,19 +526,19 @@ input[type=text], input[type=password], #sendMessage, .badge {
     color: #00ff00; /* 010 LightGreen */
 }
 .cef-11 {
-    color: #ffff00; /* 011 LightYellow */
+    color: #666600; /* 011 LightYellow*/
 }
 .cef-12 {
-    color: #5c5cff; /* 012 LightBlue */
+    color: #4E6C78; /* 012 LightBlue */
 }
 .cef-13 {
-    color: #ff00ff; /* 013 LightMagenta */
+    color: #644764; /* 013 LightMagenta */
 }
 .cef-14 {
-    color: #00ffff; /* 014 LightCyan */
+    color: #182D2B; /* 014 LightCyan */
 }
 .cef-15 {
-    color: #ffffff; /* 015 White */
+    color: #4A4A4A; /* 015 White */
 }
 .cef-16 {
     color: #000000; /* 016 Grey0 */

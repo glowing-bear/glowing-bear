@@ -4,7 +4,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
 
     $scope.command = '';
-    $scope.themes = ['dark'];
+    $scope.themes = ['dark', 'light'];
 
     // From: http://stackoverflow.com/a/18539624 by StackOverflow user "plantian"
     $rootScope.countWatchers = function () {
