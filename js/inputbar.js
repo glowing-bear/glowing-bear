@@ -102,9 +102,11 @@ weechat.directive('inputBar', function() {
             };
 
             //XXX THIS DOES NOT BELONG HERE!
-            $rootScope.addMention = function(prefix) {
+            $rootScope.addMention = function(line) {
+                var prefix = line.prefix;
                 // Extract nick from bufferline prefix
-                var nick = prefix[prefix.length - 1].text;
+                var nick = line.fromnick !== undefined ? line.fromnick : prefix[prefix.length - 1].text;
+                if (nick === false) { return; }
 
                 var newValue = $scope.command || '';  // can be undefined, in that case, use the empty string
                 var addColon = newValue.length === 0;
