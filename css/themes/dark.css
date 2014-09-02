@@ -23,7 +23,7 @@ tr.bufferline:hover {
     background-color: #222222;
 }
 
-.danger, .alert-danger, .badge .alert-danger {
+.danger, .alert-danger, .badge .alert-danger, .badge.danger {
     background-color: rgb(217, 83, 79);
     color: #ddd;
 }
