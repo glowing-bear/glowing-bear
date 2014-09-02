@@ -279,14 +279,30 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             };
             textElements.forEach(function(textEl) {
                 textEl.classes = [];
+                var styles = {};
+                var prefix;
 
                 // foreground color
-                var prefix = typeToClassPrefixFg[textEl.fgColor.type];
-                textEl.classes.push(prefix + textEl.fgColor.name);
+                if ('string' === typeof textEl.fgColor.name && textEl.fgColor.name.charAt(0) == '#') {
+                    /*jshint -W069 */
+                    styles['color'] = textEl.fgColor.name;
+                    textEl.classes.push('ctf');
+                    /*jshint +W069 */
+                } else {
+                    prefix = typeToClassPrefixFg[textEl.fgColor.type];
+                    textEl.classes.push(prefix + textEl.fgColor.name);
+                }
 
                 // background color
-                prefix = typeToClassPrefixBg[textEl.bgColor.type];
-                textEl.classes.push(prefix + textEl.bgColor.name);
+                if ('string' === typeof textEl.bgColor.name && textEl.bgColor.name.charAt(0) == '#') {
+                    styles['background-color'] = textEl.bgColor.name;
+                    textEl.classes.push('ctb');
+                } else {
+                    prefix = typeToClassPrefixBg[textEl.bgColor.type];
+                    textEl.classes.push(prefix + textEl.bgColor.name);
+                }
+
+                textEl.styles = styles;
 
                 // attributes
                 if (textEl.attrs.name !== null) {
