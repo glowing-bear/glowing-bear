@@ -386,7 +386,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
 
 /* WeeChat colors, foreground */
 .cwf-default {
-    color: #575757;
+    color: #282828;
 }
 
 .cwf-black {
