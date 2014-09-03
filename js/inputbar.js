@@ -167,7 +167,7 @@ weechat.directive('inputBar', function() {
                     });
                     var activeBufferId = sortedBuffers[bufferNumber];
                     if (activeBufferId) {
-                        models.setActiveBuffer(activeBufferId[1]);
+                        $scope.$parent.setActiveBuffer(activeBufferId[1]);
                         $event.preventDefault();
                     }
                 }
@@ -236,6 +236,9 @@ weechat.directive('inputBar', function() {
                 // Alt+G -> focus on buffer filter input
                 if ($event.altKey && (code === 103 || code === 71)) {
                     $event.preventDefault();
+                    if (!$scope.$parent.isSidebarVisible()) {
+                        $scope.$parent.showSidebar();
+                    }
                     document.getElementById('bufferFilter').focus();
                     return true;
                 }

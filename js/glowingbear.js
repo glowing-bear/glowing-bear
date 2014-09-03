@@ -605,7 +605,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         else if (code === 13) {
             $event.preventDefault();
             if ($scope.filteredBuffers.length > 0) {
-                models.setActiveBuffer($scope.filteredBuffers[0].id);
+                $scope.setActiveBuffer($scope.filteredBuffers[0].id);
             }
             $scope.search = '';
         }
