@@ -326,6 +326,28 @@ table.notimestampseconds td.time span.seconds {
     display: none !important;
 }
 
+#sidebar .showquickkeys .buffer .buffer-quick-key {
+    transition:all linear 1s;
+    -webkit-transition:all ease-out 1s;
+    opacity: 0.7;
+}
+#sidebar .buffer .buffer-quick-key {
+    margin-left: -0.8em;
+    margin-right: -0.2em;
+    font-size: smaller;
+    transition:all linear 2s;
+    -webkit-transition:all ease-in 2s;
+    opacity: 0;
+    text-shadow: -1px 0px 4px rgba(255, 255, 255, 0.4),
+    0px -1px 4px rgba(255, 255, 255, 0.4),
+    1px 0px 4px rgba(255, 255, 255, 0.4),
+    0px 1px 4px rgba(255, 255, 255, 0.4);
+    vertical-align: baseline;
+    display: inline-block;
+    width: 1em;
+    align: right;
+}
+
 .gb-modal {
     z-index: 1000;
     height: 100%;
