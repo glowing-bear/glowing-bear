@@ -148,6 +148,9 @@ weechat.directive('inputBar', function() {
                 // Support different browser quirks
                 var code = $event.keyCode ? $event.keyCode : $event.charCode;
 
+                // reset quick keys display
+                $rootScope.showQuickKeys = false;
+
                 // any other key than Tab resets nick completion iteration
                 var tmpIterCandidate = $scope.iterCandidate;
                 $scope.iterCandidate = null;
@@ -157,19 +160,28 @@ weechat.directive('inputBar', function() {
                     if (code === 48) {
                         code = 58;
                     }
-
                     var bufferNumber = code - 48 - 1 ;
-                    // Map the buffers to only their numbers and IDs so we don't have to
-                    // copy the entire (possibly very large) buffer object, and then sort
-                    // the buffers according to their WeeChat number
-                    var sortedBuffers = _.map(models.getBuffers(), function(buffer) {
-                        return [buffer.number, buffer.id];
-                    }).sort(function(left, right) {
-                        // By default, Array.prototype.sort() sorts alphabetically.
-                        // Pass an ordering function to sort by first element.
-                        return left[0] - right[0];
-                    });
-                    var activeBufferId = sortedBuffers[bufferNumber];
+
+                    var activeBufferId;
+                    // quick select filtered entries
+                    if (($scope.$parent.search.length || $scope.$parent.onlyUnread) && $scope.$parent.filteredBuffers.length) {
+                        var filteredBufferNum = $scope.$parent.filteredBuffers[bufferNumber];
+                        if (filteredBufferNum !== undefined) {
+                            activeBufferId = [filteredBufferNum.number, filteredBufferNum.id];
+                        }
+                    } else {
+                        // Map the buffers to only their numbers and IDs so we don't have to
+                        // copy the entire (possibly very large) buffer object, and then sort
+                        // the buffers according to their WeeChat number
+                        var sortedBuffers = _.map(models.getBuffers(), function(buffer) {
+                            return [buffer.number, buffer.id];
+                        }).sort(function(left, right) {
+                            // By default, Array.prototype.sort() sorts alphabetically.
+                            // Pass an ordering function to sort by first element.
+                            return left[0] - right[0];
+                        });
+                        activeBufferId = sortedBuffers[bufferNumber];
+                    }
                     if (activeBufferId) {
                         $scope.$parent.setActiveBuffer(activeBufferId[1]);
                         $event.preventDefault();
@@ -347,6 +359,29 @@ weechat.directive('inputBar', function() {
                     }
                     $event.preventDefault();
                     return true;
+                }
+                // Alt key down -> display quick key legend
+                if ($event.type === "keydown" && code === 18) {
+                    $rootScope.showQuickKeys = true;
+                    if ($rootScope.quickKeysTimer !== undefined) {
+                        clearTimeout($rootScope.quickKeysTimer);
+                    }
+                    $rootScope.quickKeysTimer = setTimeout(function() {
+                        if ($rootScope.showQuickKeys) {
+                            $rootScope.showQuickKeys = false;
+                            $rootScope.$apply();
+                        }
+                        delete $rootScope.quickKeysTimer;
+                    }, 3000);
+                    return true;
+                }
+            };
+            $rootScope.handleKeyRelease = function($event) {
+                // Alt key up -> remove quick key legend
+                if ($event.keyCode === 18) {
+		    if ($rootScope.showQuickKeys) {
+			$rootScope.showQuickKeys = false;
+		    }
                 }
             };
         }]
