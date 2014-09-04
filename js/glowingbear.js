@@ -108,10 +108,14 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // case where a buffer is opened for the first time ;)
         var minRetainUnread = ab.lines.length - unreadSum + 5;  // do not discard unread lines and keep 5 additional lines for context
         var surplusLines = ab.lines.length - (2 * $scope.lines_per_screen + 10);  // retain up to 2*(screenful + 10) + 10 lines because magic numbers
-        var linesToRemove = Math.max(0, Math.min(minRetainUnread, surplusLines));
-        ab.lines.splice(0, linesToRemove);  // remove the lines from the buffer
-        ab.requestedLines -= linesToRemove;  // to ensure that the correct amount of lines is fetched should more be requested
-        ab.lastSeen -= linesToRemove;  // adjust readmarker
+        var linesToRemove = Math.min(minRetainUnread, surplusLines);
+
+        if (linesToRemove > 0) {
+            ab.lines.splice(0, linesToRemove);  // remove the lines from the buffer
+            ab.requestedLines -= linesToRemove;  // to ensure that the correct amount of lines is fetched should more be requested
+            ab.lastSeen -= linesToRemove;  // adjust readmarker
+            ab.allLinesFetched = false; // we just removed lines, so we don't have all of them. re-enable "fetch more lines"
+        }
 
         $scope.bufferlines = ab.lines;
         $scope.nicklist = ab.nicklist;
