@@ -240,8 +240,14 @@ weechat.directive('inputBar', function() {
                     return true;
                 }
 
+                var caretPos;
+
                 // Arrow up -> go up in history
-                if ($event.type === "keydown" && code === 38) {
+                if ($event.type === "keydown" && code === 38 && document.activeElement === inputNode) {
+                    caretPos = inputNode.selectionStart;
+                    if ($scope.command.slice(0, caretPos).indexOf("\n") !== -1) {
+                        return false;
+                    }
                     $scope.command = models.getActiveBuffer().getHistoryUp($scope.command);
                     // Set cursor to last position. Need 0ms timeout because browser sets cursor
                     // position to the beginning after this key handler returns.
@@ -254,7 +260,11 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Arrow down -> go down in history
-                if ($event.type === "keydown" && code === 40) {
+                if ($event.type === "keydown" && code === 40 && document.activeElement === inputNode) {
+                    caretPos = inputNode.selectionStart;
+                    if ($scope.command.slice(caretPos).indexOf("\n") !== -1) {
+                        return false;
+                    }
                     $scope.command = models.getActiveBuffer().getHistoryDown($scope.command);
                     // We don't need to set the cursor to the rightmost position here, the browser does that for us
                     return true;
@@ -266,10 +276,39 @@ weechat.directive('inputBar', function() {
                     $scope.sendMessage();
                     return true;
                 }
+
+                var bufferlines = document.getElementById("bufferlines");
+                var lines;
+                var i;
+
+                // Page up -> scroll up
+                if ($event.type === "keydown" && code === 33 && document.activeElement === inputNode && !$event.ctrlKey && !$event.altKey && !$event.shiftKey) {
+                    lines = bufferlines.querySelectorAll("tr");
+                    for (i = lines.length - 1; i >= 0; i--) {
+                        if ((lines[i].offsetTop-bufferlines.scrollTop)<bufferlines.clientHeight/2) {
+                            lines[i].scrollIntoView(false);
+                            break;
+                        }
+                    }
+                    return true;
+                }
+
+                // Page down -> scroll down
+                if ($event.type === "keydown" && code === 34 && document.activeElement === inputNode && !$event.ctrlKey && !$event.altKey && !$event.shiftKey) {
+                    lines = bufferlines.querySelectorAll("tr");
+                    for (i = 0; i < lines.length; i++) {
+                        if ((lines[i].offsetTop-bufferlines.scrollTop)>bufferlines.clientHeight/2) {
+                            lines[i].scrollIntoView(true);
+                            break;
+                        }
+                    }
+                    return true;
+                }
+
                 // Some readline keybindings
                 if ($rootScope.readlineBindings && $event.ctrlKey && !$event.altKey && !$event.shiftKey && document.activeElement === inputNode) {
                     // get current caret position
-                    var caretPos = inputNode.selectionStart;
+                    caretPos = inputNode.selectionStart;
                     // Ctrl-a
                     if (code == 65) {
                         inputNode.setSelectionRange(0, 0);
