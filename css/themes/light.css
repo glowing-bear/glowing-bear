@@ -496,22 +496,22 @@ input[type=text], input[type=password], #sendMessage, .badge {
     color: #000000; /* 000 Black */
 }
 .cef-1 {
-    color: #cd0000; /* 001 DarkRed */
+    color: #7f0000; /* 001 DarkRed */
 }
 .cef-2 {
-    color: #00cd00; /* 002 DarkGreen */
+    color: #009300; /* 002 DarkGreen */
 }
 .cef-3 {
-    color: #cdcd00; /* 003 DarkYellow */
+    color: #fc7f00; /* 003 Orange */
 }
 .cef-4 {
     color: #0000ee; /* 004 DarkBlue */
 }
 .cef-5 {
-    color: #cd00cd; /* 005 DarkMagenta */
+    color: #8e00cd; /* 005 DarkMagenta */
 }
 .cef-6 {
-    color: #00cdcd; /* 006 DarkCyan */
+    color: #009393; /* 006 DarkCyan */
 }
 .cef-7 {
     color: #848484; /* 007 LightGrey */
@@ -526,16 +526,16 @@ input[type=text], input[type=password], #sendMessage, .badge {
     color: #00ff00; /* 010 LightGreen */
 }
 .cef-11 {
-    color: #666600; /* 011 LightYellow*/
+    color: #d4d420; /* 011 LightYellow*/
 }
 .cef-12 {
-    color: #4E6C78; /* 012 LightBlue */
+    color: #4E80ff; /* 012 LightBlue */
 }
 .cef-13 {
-    color: #644764; /* 013 LightMagenta */
+    color: #e407e4; /* 013 LightMagenta */
 }
 .cef-14 {
-    color: #182D2B; /* 014 LightCyan */
+    color: #18e1e1; /* 014 LightCyan */
 }
 .cef-15 {
     color: #4A4A4A; /* 015 White */
@@ -1266,22 +1266,22 @@ input[type=text], input[type=password], #sendMessage, .badge {
     background-color: #000000; /* 000 Black */
 }
 .ceb-1 {
-    background-color: #cd0000; /* 001 DarkRed */
+    background-color: #7f0000; /* 001 DarkRed */
 }
 .ceb-2 {
-    background-color: #00cd00; /* 002 DarkGreen */
+    background-color: #009300; /* 002 DarkGreen */
 }
 .ceb-3 {
-    background-color: #cdcd00; /* 003 DarkYellow */
+    background-color: #fc7f00; /* 003 Orange */
 }
 .ceb-4 {
     background-color: #0000ee; /* 004 DarkBlue */
 }
 .ceb-5 {
-    background-color: #cd00cd; /* 005 DarkMagenta */
+    background-color: #8e00cd; /* 005 DarkMagenta */
 }
 .ceb-6 {
-    background-color: #00cdcd; /* 006 DarkCyan */
+    background-color: #009393; /* 006 DarkCyan */
 }
 .ceb-7 {
     background-color: #e5e5e5; /* 007 LightGrey */
@@ -1299,7 +1299,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
     background-color: #ffff00; /* 011 LightYellow */
 }
 .ceb-12 {
-    background-color: #5c5cff; /* 012 LightBlue */
+    background-color: #0080ff; /* 012 LightBlue */
 }
 .ceb-13 {
     background-color: #ff00ff; /* 013 LightMagenta */
