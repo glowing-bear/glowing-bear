@@ -541,6 +541,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             if (models.getActiveBuffer() === buffer) {
                 return true;
             }
+            // Always show core buffer in the list (issue #438)
+            if (buffer.fullName === "core.weechat") {
+                return true;
+            }
             return buffer.unread > 0 || buffer.notification > 0;
         }
         return true;
