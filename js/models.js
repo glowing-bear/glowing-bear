@@ -41,17 +41,30 @@ models.service('models', ['$rootScope', '$filter', 'protocolModule', function($r
          * @param id the previous line id
          * @return whether line was added
          */
+        var insertLineLastIdx;
         var insertLine = function(line, id) {
             if (this.allLinesFetched && id === null) {
                 lines.unshift(line);
                 return true;
             }
-            var splicehere;
-            for (var idx in lines) {
-                if (lines[idx].id === id) {
-                    lines.splice(Number(idx)+1, 0, line);
-                    return true;
+            var spliceafter;
+            if (!insertLineLastIdx || insertLineLastIdx[id] === undefined) {
+                for (var idx in lines) {
+                    if (lines[idx].id === id) {
+                        var idx_ = Number(idx);
+                        insertLineLastIdx = {};
+                        insertLineLastIdx[id] = idx_;
+                        spliceafter = idx_;
+                        break;
+                    }
                 }
+            } else {
+                spliceafter = insertLineLastIdx[id];
+            }
+            if (spliceafter !== undefined) {
+                insertLineLastIdx[line.id] = spliceafter + 1;
+                lines.splice(spliceafter + 1, 0, line);
+                return true;
             }
             return false;
         };
