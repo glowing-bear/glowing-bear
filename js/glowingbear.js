@@ -5,21 +5,105 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.command = '';
 
     // From: http://stackoverflow.com/a/18539624 by StackOverflow user "plantian"
-    $rootScope.countWatchers = function () {
-        var q = [$rootScope], watchers = 0, scope;
+    $rootScope.countWatchers = function (showall) {
+        var q = [0,$rootScope], watchers = 0, scope;
+        var watchSeen = [], scopeSeen = [$rootScope];
+        var msgwin = window.open("", "MsgWin");
+        msgwin.document.write('<html><body>');
+        var level = 0;
+        var levelwatch = [];
         while (q.length > 0) {
             scope = q.pop();
+            level = q.pop();
             if (scope.$$watchers) {
                 watchers += scope.$$watchers.length;
+                if (showall || scope.$$watchers.length) {
+                    msgwin.document.write("<P style='padding-left: "+level+"em;'>("+level+")"+
+                                          "<SPAN style='display:inline-block;width:2em;background-color:lightgray'>"+scope.$$watchers.length+"</SPAN>"+
+                                          "watchers on "+showObjR(scope,1,true)+": "+"\r\n");
+                    msgwin.document.write("<UL style='padding-left: "+(Number(level)+3)+"em;'>"+"\r\n");
+                }
+                for (var x in scope.$$watchers) {
+                    var w = scope.$$watchers[x];
+                    var seenbefore = watchSeen.indexOf(w);
+                    if (seenbefore === -1) {
+                        msgwin.document.write("<LI>"+"("+watchSeen.length+")"+
+                                              showObjR(w)+"</LI>"+"\r\n");
+                        watchSeen.push(w);
+                    } else {
+                        msgwin.document.write("<LI>circular watcher "+seenbefore+"</LI>"+"\r\n");
+                    }
+                }
+                if (showall || scope.$$watchers.length) {
+                    msgwin.document.write("</UL>");
+                }
             }
             if (scope.$$childHead) {
-                q.push(scope.$$childHead);
+                var childseenbefore = scopeSeen.indexOf(scope.$$childHead);
+                if (childseenbefore === -1) {
+                    q.push(level+1);
+                    q.push(scope.$$childHead);
+                    if (showall || (scope.$$childHead.$$watchers && scope.$$childHead.$$watchers.length)) {
+                        msgwin.document.write("<P style='padding-left: "+level+"em;'>("+level+","+
+                                              scopeSeen.length+")"+
+                                              "going down to "+showObjR(scope.$$childHead,0,true)+"\r\n");
+                    }
+                    scopeSeen.push(scope.$$childHead);
+                } else {
+                    msgwin.document.write("<LI>circular child scope "+childseenbefore+"</LI>"+"\r\n");
+                }
             }
             if (scope.$$nextSibling) {
-                q.push(scope.$$nextSibling);
+                var siblingseenbefore = scopeSeen.indexOf(scope.$$nextSibling);
+                if (siblingseenbefore === -1) {
+                    q.push(level);
+                    q.push(scope.$$nextSibling);
+                    if (showall || (scope.$$nextSibling.$$watchers && scope.$$nextSibling.$$watchers.length)) {
+                        msgwin.document.write("<P style='padding-left: "+level+"em;'>("+level+","+
+                                              scopeSeen.length+")"+
+                                              "going side to "+showObjR(scope.$$nextSibling,0,true)+"\r\n");
+                    }
+                    scopeSeen.push(scope.$$nextSibling);
+                } else {
+                    msgwin.document.write("<LI>circular side scope "+siblingseenbefore+"</LI>"+"\r\n");
+                }
             }
         }
+        msgwin.document.write(watchers);
+        msgwin.document.write('</body></html>');
+        msgwin.document.close();
         $log.debug(watchers);
+
+        function showObjR(obj, maxdepth, abbrev, use_i) {
+            var str = [];
+            var tk;
+            var key;
+            Object.getOwnPropertyNames(obj).forEach(function(key) {
+                tk = use_i ? "<i>"+key+"</i>" : "<b>"+key+"</b>";
+                if ("string" == typeof obj[key] || "number" == typeof obj[key] || "boolean" == typeof obj[key]) {
+                    tk += ":" + ("string" === typeof obj[key] ? "\"<tt>" +
+                                 (abbrev ? obj[key].substr(0,13) : obj[key]).replace(/&/g, "&amp;").replace(/</g, "&lt;") +
+                                 (abbrev && obj[key].length > 13 ? "&hellip;" : "") + "</tt>\"" : obj[key]);
+                } else if (obj[key] === null) {
+                    tk += "("+null+")";
+                } else if ("function" == typeof obj[key] && obj[key].name) {
+                    tk += "(function)="+obj[key].name;
+                } else if ("object" == typeof obj[key] && obj[key]) {
+                    if (maxdepth === 0 || (maxdepth !== undefined && (obj[key].constructor||{}).name != "Object")) {
+                        if (obj[key].constructor) {
+                            tk += "["+obj[key].constructor.name+"]";
+                        }
+                    } else {
+                        tk += ":"+showObjR(obj[key], maxdepth !== undefined ? maxdepth - 1 : maxdepth, abbrev, use_i ? undefined : true);
+                    }
+                } else {
+                    tk += "("+(typeof obj[key])+")";
+                }
+                str.push(tk);
+            });
+            return "{" + str.join(", ") + "}" + (obj.constructor ? "["+obj.constructor.name+"]" : "");
+        }
+
     };
 
     $scope.isinstalled = (function() {
