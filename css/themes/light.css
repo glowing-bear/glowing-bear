@@ -85,6 +85,13 @@ select.form-control, select option, input[type=text], input[type=password], #sen
     background: #e7e7e7;
 }
 
+#sidebar .buffer .buffer-quick-key {
+    text-shadow: -1px 0px 4px rgba(0, 0, 0, 0.2),
+    0px -1px 4px rgba(0, 0, 0, 0.2),
+    1px 0px 4px rgba(0, 0, 0, 0.2),
+    0px 1px 4px rgba(0, 0, 0, 0.2);
+}
+
 #nicklist a:hover {
      background: #eee;
 }
