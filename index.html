@@ -233,10 +233,10 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
               <input class="form-control favorite-font" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="Search">
             </form>
           </li>
-          <li class="buffer" ng-class="{'active': buffer.active, 'indent': buffer.indent }" ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray | filter:{fullName:search} | filter:hasUnread | orderBy:predicate))">
+          <li class="buffer" ng-class="{'active': buffer.active, 'indent': buffer.indent, 'channel': buffer.type === 'channel', 'private': buffer.type === 'private'}" ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray | filter:{fullName:search} | filter:hasUnread | orderBy:predicate))">
             <a href="#" ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}">
               <span class="badge pull-right" ng-class="{'danger': buffer.notification}" ng-if="buffer.notification || buffer.unread" ng-bind="buffer.notification || buffer.unread"></span>
-              <span class="buffername">{{ buffer.shortName || buffer.fullName }}</span>
+              <span class="buffername">{{ buffer.trimmedName || buffer.fullName }}</span>
             </a>
           </li>
         </ul>

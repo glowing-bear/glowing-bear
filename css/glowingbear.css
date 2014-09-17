@@ -204,7 +204,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
 
 #sidebar .badge {
     border-radius: 0;
-    margin-right: -15px;
+    margin-right: -10px;
 }
 
 #sidebar ul.indented li.indent span.buffername {
@@ -224,7 +224,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
     overflow-x: hidden;
     right: 0;
     top: 0;
-    padding-top: 35px;
+    padding-top: 39px;
     padding-left: 5px;
     padding-bottom: 35px;
     z-index: 2;
@@ -256,6 +256,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
 .nav-pills > li > a {
     border-radius: 0;
     color: #ddd;
+    padding: 5px 10px;
 }
 .nav-pills > li > a:hover, .nav-pills > li > a:hover span {
     color: #222;
@@ -510,6 +511,24 @@ h2 span, h2 small {
     .panel[data-state=collapsed] .panel-collapse * {
         display: none;
     }
+}
+/* bold hash before channels */
+li.buffer.channel a span:last-of-type:before {
+    color: #888;
+    content: "#";
+    font-weight: bold;
+}
+
+li.buffer.channel.active a span:last-of-type:before {
+    color: #444;
+}
+
+li.buffer.channel.active a:hover span:last-of-type:before {
+    color: #222;
+}
+
+li.buffer.indent.private a {
+    padding-left: 17px;
 }
 
 .make-thinner {
