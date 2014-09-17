@@ -234,13 +234,13 @@ input[type=text], input[type=password], #sendMessage, .badge {
     height: 100%;
     overflow-y: auto;
     width: auto;
-    bottom: 42px;
+    bottom: 35px;      /* input bar */
     padding-top: 42px; /* topbar */
     -webkit-transition:0.35s ease all;
     transition:0.35s ease all;
 }
 #bufferlines > table {
-  margin-top: 35px;
+    margin-top: 35px;
     width: 100%;
 }
 tr.bufferline {
