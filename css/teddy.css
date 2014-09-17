@@ -54,4 +54,20 @@ td.message {
     #sidebar .nav-pills > li > a {
         padding: 10px 15px;
     }
+    /* */
+    /* Tiny layout */
+    /* */
+    @media (max-width: 548px) {
+	#bufferlines > table tr {
+	    display: block;
+	    text-indent: -5ex;
+	    margin-left: 5ex;
+	}
+	#bufferlines td.time span.date,
+	#bufferlines td.prefix,
+	#bufferlines > table td,
+	#bufferlines > table td:last-child {
+	    display: inline;
+	}
+    }
 }
