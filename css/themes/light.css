@@ -1,10 +1,9 @@
 body {
-    background-color: #f7f7f7;
+    background-color: #fdfdfd;
     color: #181818;
 }
-
-#bufferlines {
-    background-color: #fdfdfd;
+#nicklist, .footer {
+    background-color: #f7f7f7;
 }
 
 html {
