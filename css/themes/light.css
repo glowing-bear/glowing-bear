@@ -52,7 +52,7 @@ li.notification {
     background-color:rgba(255, 255, 255, 0.5)
 }
 
-input[type=text], input[type=password], #sendMessage, .badge {
+select.form-control, select option, input[type=text], input[type=password], #sendMessage, .badge {
     color: #333;
     box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.1), 0px 1px 7px 0px rgba(255, 255, 255, 0.8) inset;
     background: none repeat scroll 0% 0% rgba(255, 255, 255, 0.3);
