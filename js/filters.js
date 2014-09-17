@@ -1,8 +1,9 @@
+(function() {
+'use strict';
+
 var weechat = angular.module('weechat');
 
 weechat.filter('toArray', function () {
-    'use strict';
-
     return function (obj) {
         if (!(obj instanceof Object)) {
             return obj;
@@ -15,7 +16,6 @@ weechat.filter('toArray', function () {
 });
 
 weechat.filter('irclinky', ['$filter', function($filter) {
-    'use strict';
     return function(text, target) {
         if (!text) {
             return text;
@@ -37,8 +37,6 @@ weechat.filter('irclinky', ['$filter', function($filter) {
 }]);
 
 weechat.filter('inlinecolour', ['$sce', function($sce) {
-    'use strict';
-
     return function(text) {
         if (!text) {
             return text;
@@ -51,3 +49,4 @@ weechat.filter('inlinecolour', ['$sce', function($sce) {
         return $sce.trustAsHtml(text.replace(hexColourRegex, substitute));
     };
 }]);
+})();

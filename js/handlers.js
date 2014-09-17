@@ -1,3 +1,6 @@
+(function() {
+'use strict';
+
 var weechat = angular.module('weechat');
 
 weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notifications', function($rootScope, $log, models, plugins, notifications) {
@@ -207,3 +210,4 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
     };
 
 }]);
+})();

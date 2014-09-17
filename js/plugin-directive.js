@@ -1,3 +1,6 @@
+(function() {
+'use strict';
+
 var weechat = angular.module('weechat');
 
 weechat.directive('plugin', ['$rootScope', function($rootScope) {
@@ -54,3 +57,4 @@ weechat.directive('plugin', ['$rootScope', function($rootScope) {
         }]
     };
 }]);
+})();

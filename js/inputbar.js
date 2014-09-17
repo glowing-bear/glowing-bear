@@ -1,3 +1,6 @@
+(function() {
+'use strict';
+
 var weechat = angular.module('weechat');
 
 weechat.directive('inputBar', function() {
@@ -11,12 +14,13 @@ weechat.directive('inputBar', function() {
             command: '=command'
         },
 
-        controller: ['$rootScope', '$scope', '$element', '$log', 'connection', 'models', function($rootScope,
+        controller: ['$rootScope', '$scope', '$element', '$log', 'connection', 'models', 'IrcUtils', function($rootScope,
                              $scope,
                              $element, //XXX do we need this? don't seem to be using it
                              $log,
                              connection, //XXX we should eliminate this dependency and use signals instead
-                             models) {
+                             models,
+                             IrcUtils) {
 
             /*
              * Returns the input element
@@ -348,3 +352,4 @@ weechat.directive('inputBar', function() {
         }]
     };
 });
+})();

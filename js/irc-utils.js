@@ -2,14 +2,19 @@
  * Portable utilities for IRC.
  */
 
-var IrcUtils = {
+(function() {
+'use strict';
+
+var IrcUtils = angular.module('IrcUtils', []);
+
+IrcUtils.service('IrcUtils', [function() {
     /**
      * Get a new version of a nick list, sorted by last speaker
      *
      * @param nickList Original nick list
      * @return Sorted nick list
      */
-    _ciNickList: function(nickList) {
+    var _ciNickList = function(nickList) {
 
         var newList = _(nickList).sortBy(function(nickObj) {
             return -nickObj.spokeAt;
@@ -17,7 +22,7 @@ var IrcUtils = {
         newList = _(newList).pluck('name');
 
         return newList;
-    },
+    };
 
     /**
      * Completes a single nick.
@@ -26,7 +31,7 @@ var IrcUtils = {
      * @param nickList Array of current nicks sorted for case insensitive searching
      * @return Completed nick (null if not found)
      */
-    _completeSingleNick: function(candidate, nickList) {
+    var _completeSingleNick = function(candidate, nickList) {
         var foundNick = null;
 
         nickList.some(function(nick) {
@@ -39,7 +44,7 @@ var IrcUtils = {
         });
 
         return foundNick;
-    },
+    };
 
     /**
      * Get the next nick when iterating nicks.
@@ -49,7 +54,7 @@ var IrcUtils = {
      * @param nickList Array of current nicks sorted for case insensitive searching
      * @return Next nick (may be the same)
      */
-    _nextNick: function(iterCandidate, currentNick, nickList) {
+    var _nextNick = function(iterCandidate, currentNick, nickList) {
         var matchingNicks = [];
         var at = null;
         var lcIterCandidate = iterCandidate.toLowerCase();
@@ -63,7 +68,7 @@ var IrcUtils = {
                 if (lcCurrentNick === lcNick) {
                     at = matchingNicks.length - 1;
                 }
-            } 
+            }
             /* Since we aren't sorted any more torhve disabled this:
             else if (matchingNicks.length > 0) {
                 // end of group, no need to check after this
@@ -82,7 +87,7 @@ var IrcUtils = {
             }
             return matchingNicks[at];
         }
-    },
+    };
 
     /**
      * Nicks tab completion.
@@ -98,14 +103,14 @@ var IrcUtils = {
      *      foundNick: completed nick (or null if not possible)
      *      iterCandidate: current iterating candidate
      */
-    completeNick: function(text, caretPos, iterCandidate, nickList, suf) {
+    var completeNick = function(text, caretPos, iterCandidate, nickList, suf) {
         var doIterate = (iterCandidate !== null);
         if (suf === null) {
             suf = ':';
         }
 
         // new nick list to search in
-        var searchNickList = IrcUtils._ciNickList(nickList);
+        var searchNickList = _ciNickList(nickList);
 
         // text before and after caret
         var beforeCaret = text.substring(0, caretPos);
@@ -126,7 +131,7 @@ var IrcUtils = {
         if (m) {
             if (doIterate) {
                 // try iterating
-                newNick = IrcUtils._nextNick(iterCandidate, m[1], searchNickList);
+                newNick = _nextNick(iterCandidate, m[1], searchNickList);
                 beforeCaret = newNick + suf + ' ';
                 return {
                     text: beforeCaret + afterCaret,
@@ -144,7 +149,7 @@ var IrcUtils = {
         m = beforeCaret.match(/^([a-zA-Z0-9_\\\[\]{}^`|-]+)$/);
         if (m) {
             // try completing
-            newNick = IrcUtils._completeSingleNick(m[1], searchNickList);
+            newNick = _completeSingleNick(m[1], searchNickList);
             if (newNick === null) {
                 // no match
                 return ret;
@@ -167,7 +172,7 @@ var IrcUtils = {
         if (m) {
             if (doIterate) {
                 // try iterating
-                newNick = IrcUtils._nextNick(iterCandidate, m[2], searchNickList);
+                newNick = _nextNick(iterCandidate, m[2], searchNickList);
                 beforeCaret = m[1] + newNick + ' ';
                 return {
                     text: beforeCaret + afterCaret,
@@ -185,7 +190,7 @@ var IrcUtils = {
         m = beforeCaret.match(/^(.* )([a-zA-Z0-9_\\\[\]{}^`|-]+)$/);
         if (m) {
             // try completing
-            newNick = IrcUtils._completeSingleNick(m[2], searchNickList);
+            newNick = _completeSingleNick(m[2], searchNickList);
             if (newNick === null) {
                 // no match
                 return ret;
@@ -205,5 +210,10 @@ var IrcUtils = {
 
         // completion not possible
         return ret;
-    }
-};
+    };
+
+    return {
+        'completeNick': completeNick
+    };
+}]);
+})();
