@@ -234,9 +234,10 @@ weechat.factory('connection',
 //XXX move to handlers?
             // delete old lines and add new ones
             var oldLength = buffer.lines.length;
-            // Whether to set the readmarker to the middle position
-            // Don't do that if we didn't get any more lines than we already had
-            var setReadmarker = (buffer.lastSeen >= 0) && (oldLength !== buffer.lines.length);
+            // whether we already had all unread lines
+            var hadAllUnreadLines = buffer.lastSeen >= 0;
+
+            // clear the old lines
             buffer.lines.length = 0;
             // We need to set the number of requested lines to 0 here, because parsing a line
             // increments it. This is needed to also count newly arriving lines while we're
@@ -248,23 +249,19 @@ weechat.factory('connection',
             // Parse the lines
             handlers.handleLineInfo(lineinfo, true);
 
-            if (setReadmarker) {
-                // Read marker was somewhere in the old lines - we don't need it any more,
-                // set it to the boundary between old and new. This way, we stay at the exact
-                // same position in the text through the scrollWithBuffer below
-                buffer.lastSeen = buffer.lines.length - oldLength - 1;
-            } else {
-                // We are currently fetching at least some unread lines, so we need to keep
-                // the read marker position correct
-                buffer.lastSeen -= oldLength;
-            }
+            // Correct the read marker for the lines that were counted twice
+            buffer.lastSeen -= oldLength;
+
             // We requested more lines than we got, no more lines.
             if (linesReceivedCount < numLines) {
                 buffer.allLinesFetched = true;
             }
             $rootScope.loadingLines = false;
-            // Scroll read marker to the center of the screen
-            $rootScope.scrollWithBuffer(true);
+
+            // Only scroll to read marker if we didn't have all unread lines previously, but have them now
+            var scrollToReadmarker = !hadAllUnreadLines && buffer.lastSeen >= 0;
+            // Scroll to correct position
+            $rootScope.scrollWithBuffer(scrollToReadmarker, true);
         });
     };
 

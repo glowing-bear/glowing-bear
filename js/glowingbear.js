@@ -432,7 +432,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         return connection.fetchMoreLines(numLines);
     };
 
-    $rootScope.scrollWithBuffer = function(nonIncremental) {
+    $rootScope.scrollWithBuffer = function(scrollToReadmarker, moreLines) {
         // First, get scrolling status *before* modification
         // This is required to determine where we were in the buffer pre-change
         var bl = document.getElementById('bufferlines');
@@ -443,11 +443,15 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             // Determine if we want to scroll at all
             // Give the check 3 pixels of slack so you don't have to hit
             // the exact spot. This fixes a bug in some browsers
-            if ((nonIncremental && sTop < sVal) || (Math.abs(sTop - sVal) < 3)) {
+            if (((scrollToReadmarker || moreLines) && sTop < sVal) || (Math.abs(sTop - sVal) < 3)) {
                 var readmarker = document.querySelector(".readmarker");
-                if (nonIncremental && readmarker) {
+                if (scrollToReadmarker && readmarker) {
                     // Switching channels, scroll to read marker
                     bl.scrollTop = readmarker.offsetTop - readmarker.parentElement.scrollHeight + readmarker.scrollHeight;
+                } else if (moreLines) {
+                    // We fetched more lines but the read marker is still out of view
+                    // Keep the scroll position constant
+                    bl.scrollTop = bl.scrollHeight - bl.clientHeight - sVal;
                 } else {
                     // New message, scroll with buffer (i.e. to bottom)
                     bl.scrollTop = bl.scrollHeight - bl.clientHeight;
