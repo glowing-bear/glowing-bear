@@ -243,7 +243,9 @@ weechat.directive('inputBar', function() {
                     if (!$scope.$parent.isSidebarVisible()) {
                         $scope.$parent.showSidebar();
                     }
-                    document.getElementById('bufferFilter').focus();
+                    setTimeout(function() {
+                        document.getElementById('bufferFilter').focus();
+                    });
                     return true;
                 }
 
