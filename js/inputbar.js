@@ -292,6 +292,12 @@ weechat.directive('inputBar', function() {
 
                 // Page up -> scroll up
                 if ($event.type === "keydown" && code === 33 && document.activeElement === inputNode && !$event.ctrlKey && !$event.altKey && !$event.shiftKey) {
+                    if (bufferlines.scrollTop === 0) {
+                        if (!$rootScope.loadingLines) {
+                            $scope.$parent.fetchMoreLines();
+                        }
+                        return true;
+                    }
                     lines = bufferlines.querySelectorAll("tr");
                     for (i = lines.length - 1; i >= 0; i--) {
                         if ((lines[i].offsetTop-bufferlines.scrollTop)<bufferlines.clientHeight/2) {
