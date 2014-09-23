@@ -148,16 +148,22 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 // Most relevant when first connecting to properly initalise
                 function() {
                     $timeout(function() {
-                        var bufferlines = document.getElementById("bufferlines");
-                        $rootScope.originalBufferlinesPosition = bufferlines.scrollTop + bufferlines.scrollHeight;
+                        var eob = document.getElementById("end-of-buffer");
+                        var bl = document.getElementById("bufferlines");
+                        $rootScope.updateBufferBottom(true);
+                        $rootScope.scrollWithBuffer(true);
+                        bl.onscroll = _.debounce(function() {
+                            if (!resizing) { $rootScope.updateBufferBottom(); }
+                        }, 80);
                     });
                 }
             );
         }
         notifications.updateTitle(ab);
 
-        $rootScope.scrollWithBuffer(true);
-
+        $timeout(function() {
+            $rootScope.scrollWithBuffer(true);
+        });
         // If user wants to sync hotlist with weechat
         // we will send a /buffer bufferName command every time
         // the user switches a buffer. This will ensure that notifications
@@ -402,8 +408,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
     $scope.calculateNumLines();
 
-    // Recalculate number of lines on resize
-    window.addEventListener("resize", _.debounce(function() {
+    // get animationframe method
+    window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+
+    var resizing = false;
+    var resizeDone = _.debounce(function() {
         // Recalculation fails when not connected
         if ($rootScope.connected) {
             // Show the sidebar if switching away from mobile view, hide it when switching to mobile
@@ -416,16 +425,21 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
             // if we're scrolled to the bottom, scroll down to the same position after the resize
             // most common use case: opening the keyboard on a mobile device
-            var bufferlines = document.getElementById("bufferlines");
-            if ($rootScope.originalBufferlinesPosition === bufferlines.scrollHeight + bufferlines.scrollTop) {
-                $timeout(function() {
-                    bufferlines.scrollTop = bufferlines.scrollHeight;
-                }, 100);
+            if ($rootScope.bufferBottom) {
+                var rescroll = function(){
+                    $rootScope.updateBufferBottom(true);
+                };
+                $timeout(rescroll, 100);
+                window.requestAnimationFrame(rescroll);
             }
-            $rootScope.originalBufferlinesPosition = bufferlines.scrollTop + bufferlines.scrollHeight;
         }
-    }, 100));
-
+        resizing = false;
+    }, 100);
+    // Recalculate number of lines on resize
+    window.addEventListener("resize", function() {
+        resizing = true;
+        resizeDone();
+    });
 
     $rootScope.loadingLines = false;
     $scope.fetchMoreLines = function(numLines) {
@@ -435,6 +449,14 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         return connection.fetchMoreLines(numLines);
     };
 
+    $rootScope.updateBufferBottom = function(bottom) {
+            var eob = document.getElementById("end-of-buffer");
+            var bl = document.getElementById('bufferlines');
+            if (bottom) {
+                eob.scrollIntoView();
+            }
+            $rootScope.bufferBottom = eob.offsetTop <= bl.scrollTop + bl.clientHeight;
+    };
     $rootScope.scrollWithBuffer = function(scrollToReadmarker, moreLines) {
         // First, get scrolling status *before* modification
         // This is required to determine where we were in the buffer pre-change
@@ -447,6 +469,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             // Give the check 3 pixels of slack so you don't have to hit
             // the exact spot. This fixes a bug in some browsers
             if (((scrollToReadmarker || moreLines) && sTop < sVal) || (Math.abs(sTop - sVal) < 3)) {
+                var eob = document.getElementById("end-of-buffer");
                 var readmarker = document.querySelector(".readmarker");
                 if (scrollToReadmarker && readmarker) {
                     // Switching channels, scroll to read marker
@@ -457,15 +480,14 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                     bl.scrollTop = bl.scrollHeight - bl.clientHeight - sVal;
                 } else {
                     // New message, scroll with buffer (i.e. to bottom)
-                    bl.scrollTop = bl.scrollHeight - bl.clientHeight;
+                    eob.scrollIntoView();
                 }
+                $rootScope.updateBufferBottom();
             }
         };
         // Here be scrolling dragons
         $timeout(scroll);
-        $timeout(scroll, 100);
-        $timeout(scroll, 300);
-        $timeout(scroll, 500);
+        window.requestAnimationFrame(scroll);
     };
 
 
@@ -474,6 +496,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $rootScope.sslError = false;
         $rootScope.securityError = false;
         $rootScope.errorMessage = false;
+        $rootScope.bufferBottom = true;
         $scope.connectbutton = 'Connecting ...';
         connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl);
     };
@@ -560,6 +583,17 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Watch model and update show setting when it changes
     $scope.$watch('nonicklist', function() {
         $scope.showNicklist = $scope.updateShowNicklist();
+        // restore bottom view
+        if ($rootScope.connected) {
+            resizing = true;
+            var rescroll = function(){
+                $rootScope.updateBufferBottom($rootScope.bufferBottom);
+            };
+            $timeout(function() {
+                rescroll();
+                resizing = false;
+            }, 500);
+        }
     });
     $scope.showNicklist = false;
     // Utility function that template can use to check if nicklist should
