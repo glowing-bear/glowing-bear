@@ -149,16 +149,33 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 // Most relevant when first connecting to properly initalise
                 function() {
                     $timeout(function() {
-                        var bufferlines = document.getElementById("bufferlines");
-                        $rootScope.originalBufferlinesPosition = bufferlines.scrollTop + bufferlines.scrollHeight;
+                        var bl = document.getElementById("bufferlines");
+                        var lastScrollHeight = bl.scrollHeight;
+                        var scrollHeightObserver = function() {
+                            if (bl) {
+                                var newScrollHeight = bl.scrollHeight;
+                                if (newScrollHeight !== lastScrollHeight) {
+                                    $rootScope.updateBufferBottom($rootScope.bufferBottom);
+                                    lastScrollHeight = newScrollHeight;
+                                }
+                                setTimeout(scrollHeightObserver, 500);
+                            }
+                        };
+                        $rootScope.updateBufferBottom(true);
+                        $rootScope.scrollWithBuffer(true);
+                        bl.onscroll = _.debounce(function() {
+                            $rootScope.updateBufferBottom();
+                        }, 80);
+                        setTimeout(scrollHeightObserver, 500);
                     });
                 }
             );
         }
         notifications.updateTitle(ab);
 
-        $rootScope.scrollWithBuffer(true);
-
+        $timeout(function() {
+            $rootScope.scrollWithBuffer(true);
+        });
         // If user wants to sync hotlist with weechat
         // we will send a /buffer bufferName command every time
         // the user switches a buffer. This will ensure that notifications
@@ -405,6 +422,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
     $scope.calculateNumLines();
 
+    // get animationframe method
+    window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+
     // Recalculate number of lines on resize
     window.addEventListener("resize", _.debounce(function() {
         // Recalculation fails when not connected
@@ -419,16 +439,15 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
             // if we're scrolled to the bottom, scroll down to the same position after the resize
             // most common use case: opening the keyboard on a mobile device
-            var bufferlines = document.getElementById("bufferlines");
-            if ($rootScope.originalBufferlinesPosition === bufferlines.scrollHeight + bufferlines.scrollTop) {
-                $timeout(function() {
-                    bufferlines.scrollTop = bufferlines.scrollHeight;
-                }, 100);
+            if ($rootScope.bufferBottom) {
+                var rescroll = function(){
+                    $rootScope.updateBufferBottom(true);
+                };
+                $timeout(rescroll, 500);
+                window.requestAnimationFrame(rescroll);
             }
-            $rootScope.originalBufferlinesPosition = bufferlines.scrollTop + bufferlines.scrollHeight;
         }
     }, 100));
-
 
     $rootScope.loadingLines = false;
     $scope.fetchMoreLines = function(numLines) {
@@ -438,6 +457,14 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         return connection.fetchMoreLines(numLines);
     };
 
+    $rootScope.updateBufferBottom = function(bottom) {
+            var eob = document.getElementById("end-of-buffer");
+            var bl = document.getElementById('bufferlines');
+            if (bottom) {
+                eob.scrollIntoView();
+            }
+            $rootScope.bufferBottom = eob.offsetTop <= bl.scrollTop + bl.clientHeight;
+    };
     $rootScope.scrollWithBuffer = function(scrollToReadmarker, moreLines) {
         // First, get scrolling status *before* modification
         // This is required to determine where we were in the buffer pre-change
@@ -460,15 +487,15 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                     bl.scrollTop = bl.scrollHeight - bl.clientHeight - sVal;
                 } else {
                     // New message, scroll with buffer (i.e. to bottom)
-                    bl.scrollTop = bl.scrollHeight - bl.clientHeight;
+                    var eob = document.getElementById("end-of-buffer");
+                    eob.scrollIntoView();
                 }
+                $rootScope.updateBufferBottom();
             }
         };
         // Here be scrolling dragons
         $timeout(scroll);
-        $timeout(scroll, 100);
-        $timeout(scroll, 300);
-        $timeout(scroll, 500);
+        window.requestAnimationFrame(scroll);
     };
 
 
@@ -477,6 +504,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $rootScope.sslError = false;
         $rootScope.securityError = false;
         $rootScope.errorMessage = false;
+        $rootScope.bufferBottom = true;
         $scope.connectbutton = 'Connecting ...';
         connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl);
     };
@@ -563,6 +591,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Watch model and update show setting when it changes
     $scope.$watch('nonicklist', function() {
         $scope.showNicklist = $scope.updateShowNicklist();
+        // restore bottom view
+        if ($rootScope.connected && $rootScope.bufferBottom) {
+            $timeout(function(){
+                $rootScope.updateBufferBottom(true);
+            }, 500);
+        }
     });
     $scope.showNicklist = false;
     // Utility function that template can use to check if nicklist should
