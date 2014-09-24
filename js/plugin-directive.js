@@ -25,7 +25,7 @@ weechat.directive('plugin', ['$rootScope', function($rootScope) {
                 $scope.plugin.visible = false;
             };
 
-            $scope.showContent = function() {
+            $scope.showContent = function(automated) {
                 /*
                  * Shows the plugin content.
                  * displayedContent is bound to the DOM.
@@ -42,17 +42,35 @@ weechat.directive('plugin', ['$rootScope', function($rootScope) {
                 $scope.plugin.visible = true;
 
                 // Scroll embed content into view
-                var scroll = function() {
-                    var embed = document.querySelector(".embed_" + $scope.plugin.$$hashKey);
-                    if (embed && embed.scrollIntoViewIfNeeded !== undefined) {
-                        embed.scrollIntoViewIfNeeded();
-                    }
-                };
+                var scroll;
+                if (automated) {
+                    scroll = function() {
+                        var embed = document.querySelector(".embed_" + $scope.plugin.$$hashKey);
+                        var allElems = embed.querySelectorAll('*');
+                        var rescroll = function() {
+                            $rootScope.updateBufferBottom($rootScope.bufferBottom);
+                        };
+                        for (var i = 0; i < allElems.length; ++i) {
+                            allElems[i].onload = rescroll;
+                        }
+                        rescroll();
+                    };
+                } else {
+                    scroll = function() {
+                        var embed = document.querySelector(".embed_" + $scope.plugin.$$hashKey);
+                        if (embed && embed.scrollIntoViewIfNeeded !== undefined) {
+                            embed.scrollIntoViewIfNeeded();
+                            $rootScope.updateBufferBottom();
+                        } else {
+                            $rootScope.updateBufferBottom($rootScope.bufferBottom);
+                        }
+                    };
+                }
                 setTimeout(scroll, 100);
             };
 
             if ($scope.plugin.visible) {
-                $scope.showContent();
+                $scope.showContent(true);
             }
         }]
     };
