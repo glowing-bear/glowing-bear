@@ -33,17 +33,22 @@ weechat.directive('plugin', ['$rootScope', function($rootScope) {
                  * content is shown.
                  */
 
-                // If the plugin is asynchronous / lazy, execute it now and store
-                // the result. This ensures that the callback is executed only once
-                if ($scope.plugin.content instanceof Function) {
-                    $scope.plugin.content = $scope.plugin.content();
+                 var embed = document.querySelector(".embed_" + $scope.plugin.$$hashKey);
+
+                // If the plugin is asynchronous / lazy, execute it now and let it insert itself
+                // TODO store the result between channel switches
+                if ($scope.plugin.content instanceof Function){
+                    // Don't rerun if the result is already there
+                    if (embed.innerHTML === "") {
+                        $scope.plugin.content();
+                    }
+                } else {
+                    $scope.displayedContent = $scope.plugin.content;
                 }
-                $scope.displayedContent = $scope.plugin.content;
                 $scope.plugin.visible = true;
 
                 // Scroll embed content into view
                 var scroll = function() {
-                    var embed = document.querySelector(".embed_" + $scope.plugin.$$hashKey);
                     if (embed && embed.scrollIntoViewIfNeeded !== undefined) {
                         embed.scrollIntoViewIfNeeded();
                     }
