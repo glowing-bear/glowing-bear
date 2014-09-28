@@ -348,7 +348,7 @@ plugins.factory('userPlugins', function() {
                 url = match[0] + '.json';
                 // load gist asynchronously -- return a function here
                 return function() {
-                    var element = document.querySelector('.embed_' + this.$$hashKey);
+                    var element = this.getElement();
                     jsonp(url, function(data) {
                         // Add the gist stylesheet only once
                         if (document.querySelectorAll('link[rel=stylesheet][href="' + data.stylesheet + '"]').length < 1) {
@@ -370,7 +370,7 @@ plugins.factory('userPlugins', function() {
             if (match) {
                 url = 'https://api.twitter.com/1/statuses/oembed.json?id=' + match[2];
                 return function() {
-                    var element = document.querySelector('.embed_' + this.$$hashKey);
+                    var element = this.getElement();
                     jsonp(url, function(data) {
                         // sepearate the HTML into content and script tag
                         var scriptIndex = data.html.indexOf("<script ");

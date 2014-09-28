@@ -21,6 +21,13 @@ weechat.directive('plugin', ['$rootScope', function($rootScope) {
 
             $scope.plugin.visible = $rootScope.auto_display_embedded_content;
 
+            // user-accessible hash key that is a valid CSS class name
+            $scope.plugin.className = "embed_" + $scope.plugin.$$hashKey.replace(':','_');
+
+            $scope.plugin.getElement = function() {
+                return document.querySelector("." + $scope.plugin.className);
+            };
+
             $scope.hideContent = function() {
                 $scope.plugin.visible = false;
             };
@@ -33,7 +40,7 @@ weechat.directive('plugin', ['$rootScope', function($rootScope) {
                  * content is shown.
                  */
 
-                 var embed = document.querySelector(".embed_" + $scope.plugin.$$hashKey);
+                var embed = $scope.plugin.getElement();
 
                 // If the plugin is asynchronous / lazy, execute it now and let it insert itself
                 // TODO store the result between channel switches
