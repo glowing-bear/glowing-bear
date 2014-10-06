@@ -16,14 +16,18 @@ td.message {
     display: inline;
 }
 #bufferlines > table tr {
-    display: flex; align-items: baseline;
+    display: flex;
+    display: -webkit-flex;
+    align-items: baseline;
 }
 #bufferlines > table td {
     display: inline-block;
     flex: none;
+    -webkit-flex: none;
 }
 #bufferlines > table td:last-child {
     flex: auto;
+    -webkit-flex: none;
 }
 
 #sidebar .nav-pills > li > a {
