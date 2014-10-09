@@ -164,6 +164,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
 </pre>
               <p>If WeeChat is already running, you can reload the certificate and private key and set up an encrypted relay on port {{ port || 8000 }} with these WeeChat commands:</p>
 <pre>
+/set relay.network.password yourpassword
 /relay sslcertkey
 /relay add ssl.weechat {{ port || 8000 }}
 </pre>
