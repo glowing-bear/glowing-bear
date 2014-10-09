@@ -120,7 +120,7 @@
               <div>To start using glowing bear, please enable the relay plugin in your WeeChat client:
 <pre>
 /set relay.network.password yourpassword
-/relay add weechat 9001
+/relay add weechat {{ port || 9001 }}
 </pre>
               <span class="label label-danger">WeeChat version 0.4.2 or higher is required.</span><br>
               The communication goes directly between your browser and your WeeChat relay in plain text. Check the instructions below for help on setting up encrypted communication.
@@ -162,10 +162,10 @@ $ mkdir -p ~/.weechat/ssl
 $ cd ~/.weechat/ssl
 $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out relay.pem -subj "/CN={{host || 'your weechat host'}}/"
 </pre>
-              <p>If WeeChat is already running, you can reload the certificate and private key and set up an encrypted relay on port 8000 with these WeeChat commands:</p>
+              <p>If WeeChat is already running, you can reload the certificate and private key and set up an encrypted relay on port {{ port || 8000 }} with these WeeChat commands:</p>
 <pre>
 /relay sslcertkey
-/relay add ssl.weechat 8000
+/relay add ssl.weechat {{ port || 8000 }}
 </pre>
             </div>
           </div>
