@@ -122,10 +122,10 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
  *
  * To create your own plugin, you need to:
  *
- * 1. Define it's contentForMessage function. The contentForMessage
+ * 1. Define its contentForMessage function. The contentForMessage
  *    function takes a string as a parameter and returns a HTML string.
  *
- * 2. Instanciate a Plugin object with contentForMessage function as it's
+ * 2. Instantiate a Plugin object with contentForMessage function as its
  *    argument.
  *
  * 3. Add it to the plugins array.
