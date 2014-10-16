@@ -535,6 +535,12 @@ li.buffer.indent.private a {
     padding-right: -15px;
 }
 
+.settings-help {
+    display: block;
+    margin: -5px 0 -3px 19px;
+    font-size: small;
+}
+
 /* */
 /* Mobile layout */
 /* */

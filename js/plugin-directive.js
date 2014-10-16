@@ -19,7 +19,8 @@ weechat.directive('plugin', ['$rootScope', function($rootScope) {
 
             $scope.displayedContent = "";
 
-            $scope.plugin.visible = $rootScope.auto_display_embedded_content;
+            // Auto-display embedded content only if it isn't NSFW
+            $scope.plugin.visible = $rootScope.auto_display_embedded_content && !$scope.plugin.nsfw;
 
             // user-accessible hash key that is a valid CSS class name
             $scope.plugin.className = "embed_" + $scope.plugin.$$hashKey.replace(':','_');
