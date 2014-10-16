@@ -23,6 +23,9 @@ weechat.filter('irclinky', ['$filter', function($filter) {
 
         var linkiedText = $filter('linky')(text, target);
 
+        // Cordova: need to use window.open instead of href
+        linkiedText = linkiedText.replace(/href="([^"]+)"/gi, "onClick=\"window.open('$1', '_system')\"");
+
         // This regex in no way matches all IRC channel names (they could also begin with &, + or an
         // exclamation mark followed by 5 alphanumeric characters, and are bounded in length by 50).
         // However, it matches all *common* IRC channels while trying to minimise false positives.
@@ -47,6 +50,12 @@ weechat.filter('inlinecolour', ['$sce', function($sce) {
         var substitute = '$1#$2 <div class="colourbox" style="background-color:#$2"></div> $3';
 
         return $sce.trustAsHtml(text.replace(hexColourRegex, substitute));
+    };
+}]);
+
+weechat.filter('unsafe', ['$sce', function($sce) {
+    return function(text) {
+        return $sce.trustAsHtml(text);
     };
 }]);
 })();
