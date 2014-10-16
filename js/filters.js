@@ -124,5 +124,4 @@ weechat.filter('getBufferQuickKeys', function () {
         return obj;
     };
 });
-
 })();

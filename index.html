@@ -185,7 +185,7 @@
           </a>
           <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
         </div>
-        <div class="title" ng-bind-html="activeBuffer().title | linky:'_blank' | DOMfilter:'irclinky'" title="{{activeBuffer().title}}"></div>
+        <div class="title" ng-bind-html="activeBuffer().title | linky:'_system' | DOMfilter:'irclinky'" title="{{activeBuffer().title}}"></div>
         <div class="actions pull-right vertical-line-left">
           <div class="pull-left">
             <a class="settings-toggle" ng-click="showModal('settingsModal')" title="Options menu">
@@ -240,7 +240,7 @@
               <td class="prefix"><a ng-click="addMention(bufferline.prefix)"><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text"></span></a></td><!--
            --><td class="message"><!--
              --><div ng-repeat="metadata in ::bufferline.metadata" plugin data="::metadata"></div><!--
-             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes" ng-bind-html="::part.text | linky:'_blank' | DOMfilter:'irclinky' | DOMfilter:'inlinecolour'"></span>
+             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes" ng-bind-html="::part.text | linky:'_system' | DOMfilter:'irclinky' | DOMfilter:'inlinecolour'"></span>
               </td>
             </tr>
             <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
