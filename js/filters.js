@@ -4,9 +4,18 @@
 var weechat = angular.module('weechat');
 
 weechat.filter('toArray', function () {
-    return function (obj) {
+    return function (obj, storeIdx) {
         if (!(obj instanceof Object)) {
             return obj;
+        }
+
+        if (storeIdx) {
+            return Object.keys(obj).map(function (key, idx) {
+                return Object.defineProperties(obj[key], {
+                    '$key' : { value: key },
+                    '$idx' : { value: idx, configurable: true }
+                });
+            });
         }
 
         return Object.keys(obj).map(function (key) {
@@ -49,4 +58,27 @@ weechat.filter('inlinecolour', ['$sce', function($sce) {
         return $sce.trustAsHtml(text.replace(hexColourRegex, substitute));
     };
 }]);
+
+weechat.filter('getBufferQuickKeys', function () {
+    return function (obj, $scope) {
+        if (!$scope) { return obj; }
+        if (($scope.search !== undefined && $scope.search.length) || $scope.onlyUnread) {
+            obj.forEach(function(buf, idx) {
+                buf.$quickKey = idx < 10 ? (idx + 1) % 10 : '';
+            });
+        } else {
+            _.map(obj, function(buffer, idx) {
+                return [buffer.number, buffer.$idx, idx];
+            }).sort(function(left, right) {
+                // By default, Array.prototype.sort() sorts alphabetically.
+                // Pass an ordering function to sort by first element.
+                return left[0] - right[0] || left[1] - right[1];
+            }).forEach(function(info, keyIdx) {
+                obj[ info[2] ].$quickKey = keyIdx < 10 ? (keyIdx + 1) % 10 : '';
+            });
+        }
+        return obj;
+    };
+});
+
 })();
