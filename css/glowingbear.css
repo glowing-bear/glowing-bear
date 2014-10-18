@@ -263,6 +263,17 @@ td.time {
     font-family: sans-serif;
 }
 
+#reconnect {
+    top: 35px;
+    position: fixed;
+    z-index: 9999;
+    background-color: #eee;
+    color: #333;
+    width: 100%;
+    margin: 0;
+    padding: 5px;
+}
+
 .footer {
     position: fixed;
     bottom: 0;

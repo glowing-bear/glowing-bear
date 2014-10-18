@@ -12,9 +12,12 @@ weechat.factory('connection',
 
     var protocol = new weeChat.Protocol();
 
-    // Takes care of the connection and websocket hooks
+    var connectionData = [];
+    var reconnectTimer;
 
-    var connect = function (host, port, passwd, ssl, noCompression) {
+    // Takes care of the connection and websocket hooks
+    var connect = function (host, port, passwd, ssl, noCompression, successCallback, failCallback) {
+        connectionData = [host, port, passwd, ssl, noCompression];
         var proto = ssl ? 'wss' : 'ws';
         // If host is an IPv6 literal wrap it in brackets
         if (host.indexOf(":") !== -1) {
@@ -79,21 +82,15 @@ weechat.factory('connection',
                     // Connection is successful
                     // Send all the other commands required for initialization
                     _requestBufferInfos().then(function(bufinfo) {
-                        //XXX move to handlers?
-                        var bufferInfos = bufinfo.objects[0].content;
-                        // buffers objects
-                        for (var i = 0; i < bufferInfos.length ; i++) {
-                            var buffer = new models.Buffer(bufferInfos[i]);
-                            models.addBuffer(buffer);
-                            // Switch to first buffer on startup
-                            if (i === 0) {
-                                models.setActiveBuffer(buffer.id);
-                            }
-                        }
+                        handlers.handleBufferInfo(bufinfo);
                     });
 
                     _requestHotlist().then(function(hotlist) {
                         handlers.handleHotlistInfo(hotlist);
+
+                        if (successCallback) {
+                            successCallback();
+                        }
                     });
 
                     _requestSync();
@@ -123,10 +120,19 @@ weechat.factory('connection',
              * Handles websocket disconnection
              */
             $log.info("Disconnected from relay");
+            if ($rootScope.userdisconnect || !$rootScope.waseverconnected) {
+                handleClose(evt);
+                $rootScope.userdisconnect = false;
+            } else {
+                reconnect(evt);
+            }
+        };
+
+        var handleClose = function (evt) {
             ngWebsockets.failCallbacks('disconnection');
             $rootScope.connected = false;
             $rootScope.$emit('relayDisconnect');
-            if (ssl && evt.code === 1006) {
+            if (ssl && evt && evt.code === 1006) {
                 // A password error doesn't trigger onerror, but certificate issues do. Check time of last error.
                 if (typeof $rootScope.lastError !== "undefined" && (Date.now() - $rootScope.lastError) < 1000) {
                     // abnormal disconnect by client, most likely ssl error
@@ -166,11 +172,62 @@ weechat.factory('connection',
             $rootScope.errorMessage = true;
             $rootScope.securityError = true;
             $rootScope.$emit('relayDisconnect');
+
+            if (failCallback) {
+                failCallback();
+            }
         }
 
     };
 
+    var attemptReconnect = function (bufferId, timeout) {
+        $log.info('Attempting to reconnect...');
+        var d = connectionData;
+        connect(d[0], d[1], d[2], d[3], d[4], function() {
+            // on success, update active buffer
+            models.setActiveBuffer(bufferId);
+            $log.info('Sucessfully reconnected to relay');
+            $rootScope.reconnecting = false;
+        }, function() {
+            // on failure, schedule another attempt
+            if (timeout >= 600000) {
+                // If timeout is ten minutes or more, give up
+                $log.info('Failed to reconnect, giving up');
+                handleClose();
+            } else {
+                $log.info('Failed to reconnect, scheduling next attempt in', timeout/1000, 'seconds');
+                // Clear previous timer, if exists
+                if (reconnectTimer !== undefined) {
+                    clearTimeout(reconnectTimer);
+                }
+                reconnectTimer = setTimeout(function() {
+                    // exponential timeout increase
+                    attemptReconnect(bufferId, timeout * 1.5);
+                }, timeout);
+            }
+        });
+    };
+
+
+    var reconnect = function (evt) {
+        if (connectionData.length < 5) {
+            // something is wrong
+            $log.error('Cannot reconnect, connection information is missing');
+            return;
+        }
+
+        $rootScope.reconnecting = true;
+
+        var bufferId = models.getActiveBuffer().id,
+            timeout = 3000;  // start with a three-second timeout
+
+        reconnectTimer = setTimeout(function() {
+            attemptReconnect(bufferId, timeout);
+        }, timeout);
+    };
+
     var disconnect = function() {
+        $rootScope.userdisconnect = true;
         ngWebsockets.send(weeChat.Protocol.formatQuit());
     };
 
@@ -270,7 +327,8 @@ weechat.factory('connection',
         sendMessage: sendMessage,
         sendCoreCommand: sendCoreCommand,
         fetchMoreLines: fetchMoreLines,
-        requestNicklist: requestNicklist
+        requestNicklist: requestNicklist,
+        attemptReconnect: attemptReconnect
     };
 }]);
 })();
