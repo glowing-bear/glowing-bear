@@ -263,6 +263,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $rootScope.connected = false;
     $rootScope.waseverconnected = false;
+    $rootScope.userdisconnect = false;
+    $rootScope.reconnecting = false;
 
     $rootScope.models = models;
 
@@ -502,6 +504,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.disconnect = function() {
         $scope.connectbutton = 'Connect';
         connection.disconnect();
+    };
+    $scope.reconnect = function() {
+        var bufferId = models.getActiveBuffer().id;
+        connection.attemptReconnect(bufferId, 3000);
     };
 
 //XXX this is a bit out of place here, either move up to the rest of the firefox install code or remove
