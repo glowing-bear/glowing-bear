@@ -289,6 +289,9 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
             </tr>
           </tbody>
         </table><span id="end-of-buffer"></span>
+        <div id="reconnect" ng-if="reconnecting">
+          <i class="glyphicon glyphicon-refresh"></i> Reconnecting... <a ng-click="reconnect()">Try now</a>
+        </div>
       </div>
       <div class="footer" ng-class="{'withnicklist': showNicklist}">
         <div input-bar input-id="sendMessage" command="command"></div>
