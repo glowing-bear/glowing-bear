@@ -273,7 +273,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $rootScope.auto_display_embedded_content = $scope.noembed === false;
 
     $scope.isSidebarVisible = function() {
-        return document.getElementById('sidebar').getAttribute('sidebar-state') === 'visible';
+        return document.getElementById('content').getAttribute('sidebar-state') === 'visible';
     };
 
     $scope.showSidebar = function() {
