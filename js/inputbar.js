@@ -362,9 +362,16 @@ weechat.directive('inputBar', function() {
                     $event.preventDefault();
                     return true;
                 }
+
                 // Alt key down -> display quick key legend
-                if ($event.type === "keydown" && code === 18) {
+                if ($event.type === "keydown" && code === 18 && !$event.ctrlKey && !$event.shiftKey) {
                     $rootScope.showQuickKeys = true;
+                }
+            };
+
+            $rootScope.handleKeyRelease = function($event) {
+                // Alt key up -> remove quick key legend
+                if ($event.keyCode === 18) {
                     if ($rootScope.quickKeysTimer !== undefined) {
                         clearTimeout($rootScope.quickKeysTimer);
                     }
@@ -374,16 +381,8 @@ weechat.directive('inputBar', function() {
                             $rootScope.$apply();
                         }
                         delete $rootScope.quickKeysTimer;
-                    }, 3000);
+                    }, 1000);
                     return true;
-                }
-            };
-            $rootScope.handleKeyRelease = function($event) {
-                // Alt key up -> remove quick key legend
-                if ($event.keyCode === 18) {
-		    if ($rootScope.showQuickKeys) {
-			$rootScope.showQuickKeys = false;
-		    }
                 }
             };
         }]
