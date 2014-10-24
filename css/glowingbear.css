@@ -236,6 +236,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
     width: auto;
     bottom: 35px;      /* input bar */
     padding-top: 42px; /* topbar */
+    padding-bottom: 7px;
     -webkit-transition:0.35s ease all;
     transition:0.35s ease all;
 }
