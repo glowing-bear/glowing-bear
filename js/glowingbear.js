@@ -150,7 +150,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 function() {
                     $timeout(function() {
                         var bufferlines = document.getElementById("bufferlines");
-                        $rootScope.originalBufferlinesPosition = bufferlines.scrollTop + bufferlines.scrollHeight;
+                        $rootScope.originalBufferlinesPosition = bufferlines.scrollHeight;
                     });
                 }
             );
@@ -420,12 +420,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             // if we're scrolled to the bottom, scroll down to the same position after the resize
             // most common use case: opening the keyboard on a mobile device
             var bufferlines = document.getElementById("bufferlines");
-            if ($rootScope.originalBufferlinesPosition === bufferlines.scrollHeight + bufferlines.scrollTop) {
+            if ($rootScope.originalBufferlinesPosition === bufferlines.scrollHeight) {
                 $timeout(function() {
-                    bufferlines.scrollTop = bufferlines.scrollHeight;
+                    bufferlines.scrollTop = bufferlines.scrollHeight - bufferlines.clientHeight;
+                    $rootScope.originalBufferlinesPosition = bufferlines.scrollHeight;
                 }, 100);
             }
-            $rootScope.originalBufferlinesPosition = bufferlines.scrollTop + bufferlines.scrollHeight;
         }
     }, 100));
 
