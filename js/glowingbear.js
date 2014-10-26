@@ -285,7 +285,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if (utils.isMobileUi()) {
             // de-focus the input bar when opening the sidebar on mobile, so that the keyboard goes down
             _.each(document.getElementsByTagName('textarea'), function(elem) {
-                elem.blur();
+                $timeout(function(){elem.blur();});
             });
         }
     };
