@@ -35,7 +35,7 @@
     <script type="text/javascript" src="js/plugins.js"></script>
     <script type="text/javascript" src="3rdparty/favico-0.3.5.min.js"></script>
   </head>
-  <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" lang="en-US">
+  <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keyup="handleKeyRelease($event)"  ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" lang="en-US">
     <link ng-href="css/themes/{{theme}}.css" rel="stylesheet" media="screen" />
     <div ng-hide="connected" class="container">
       <h2>
@@ -228,15 +228,16 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
         </div>
       </div>
       <div id="sidebar" data-state="visible" ng-swipe-left="hideSidebar()" class="vertical-line">
-        <ul class="nav nav-pills nav-stacked" ng-class="{'indented': (predicate === 'serverSortKey')}">
+        <ul class="nav nav-pills nav-stacked" ng-class="{'indented': (predicate === 'serverSortKey'), 'showquickkeys': showQuickKeys}">
           <li class="bufferfilter">
             <form role="form">
               <input class="form-control favorite-font" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="Search">
             </form>
           </li>
-          <li class="buffer" ng-class="{'active': buffer.active, 'indent': buffer.indent, 'channel': buffer.type === 'channel', 'private': buffer.type === 'private'}" ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray | filter:{fullName:search} | filter:hasUnread | orderBy:predicate))">
+          <li class="buffer" ng-class="{'active': buffer.active, 'indent': buffer.indent, 'channel': buffer.type === 'channel', 'private': buffer.type === 'private'}" ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray:'withidx' | filter:{fullName:search} | filter:hasUnread | orderBy:predicate | getBufferQuickKeys:this))">
             <a href="#" ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}">
               <span class="badge pull-right" ng-class="{'danger': buffer.notification}" ng-if="buffer.notification || buffer.unread" ng-bind="buffer.notification || buffer.unread"></span>
+              <span class="buffer-quick-key">{{ buffer.$quickKey }}</span>
               <span class="buffername">{{ buffer.trimmedName || buffer.fullName }}</span>
             </a>
           </li>
