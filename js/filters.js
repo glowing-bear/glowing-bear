@@ -36,7 +36,7 @@ weechat.filter('irclinky', ['$filter', function($filter) {
     };
 }]);
 
-weechat.filter('inlinecolour', ['$sce', function($sce) {
+weechat.filter('inlinecolour', function() {
     return function(text) {
         if (!text) {
             return text;
@@ -46,7 +46,53 @@ weechat.filter('inlinecolour', ['$sce', function($sce) {
         var hexColourRegex = /(^|[^&])\#([0-9a-f]{6})($|[^\w'"])/gmi;
         var substitute = '$1#$2 <div class="colourbox" style="background-color:#$2"></div> $3';
 
-        return $sce.trustAsHtml(text.replace(hexColourRegex, substitute));
+        return text.replace(hexColourRegex, substitute);
+    };
+});
+
+// apply a filter to an HTML string's text nodes, and do so with not exceedingly terrible performance
+weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
+    return function(text, filter) {
+        if (!text || !filter) {
+            return text;
+        }
+
+        var filterFunction = $filter(filter);
+        var el = document.createElement('div');
+        el.innerHTML = text;
+
+        // Recursive DOM-walking function applying the filter to the text nodes
+        var process = function(node) {
+            if (node.nodeType === 3) { // text node
+                var value = filterFunction(node.nodeValue);
+                if (value !== node.nodeValue) {
+                    // we changed something. create a new node to replace the current one
+                    // we could also only add its children but that would probably incur
+                    // more overhead than it would gain us
+                    var newNode = document.createElement('span');
+                    newNode.innerHTML = value;
+
+                    var parent = node.parentNode;
+                    var sibling = node.nextSibling;
+                    parent.removeChild(node);
+                    if (sibling) {
+                        parent.insertBefore(newNode, sibling);
+                    } else {
+                        parent.appendChild(newNode);
+                    }
+                }
+            }
+            // recurse
+            node = node.firstChild;
+            while (node) {
+                process(node);
+                node = node.nextSibling;
+            }
+        };
+
+        process(el);
+
+        return $sce.trustAsHtml(el.innerHTML);
     };
 }]);
 })();
