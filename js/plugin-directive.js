@@ -33,7 +33,7 @@ weechat.directive('plugin', ['$rootScope', function($rootScope) {
                 $scope.plugin.visible = false;
             };
 
-            $scope.showContent = function() {
+            $scope.showContent = function(automated) {
                 /*
                  * Shows the plugin content.
                  * displayedContent is bound to the DOM.
@@ -56,16 +56,25 @@ weechat.directive('plugin', ['$rootScope', function($rootScope) {
                 $scope.plugin.visible = true;
 
                 // Scroll embed content into view
-                var scroll = function() {
-                    if (embed && embed.scrollIntoViewIfNeeded !== undefined) {
-                        embed.scrollIntoViewIfNeeded();
-                    }
-                };
-                setTimeout(scroll, 100);
+                var scroll;
+                if (automated) {
+                    var wasBottom = $rootScope.bufferBottom;
+                    scroll = function() {
+                        $rootScope.updateBufferBottom(wasBottom);
+                    };
+                } else {
+                    scroll = function() {
+                        if (embed && embed.scrollIntoViewIfNeeded !== undefined) {
+                            embed.scrollIntoViewIfNeeded();
+                            $rootScope.updateBufferBottom();
+                        }
+                    };
+                }
+                setTimeout(scroll, 500);
             };
 
             if ($scope.plugin.visible) {
-                $scope.showContent();
+                $scope.showContent(true);
             }
         }]
     };
