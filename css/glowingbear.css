@@ -558,6 +558,10 @@ li.buffer.indent.private a {
         min-height: 0%;
     }
 
+    .nav-pills > li > a {
+        padding: 10px 15px;
+    }
+
     #bufferlines {
         height: 100%;
         padding-bottom: 0;
