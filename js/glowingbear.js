@@ -2,6 +2,9 @@
 'use strict';
 
 var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'plugins', 'IrcUtils', 'ngSanitize', 'ngWebsockets', 'ngTouch']);
+weechat.config(['$compileProvider', function ($compileProvider) {
+    $compileProvider.debugInfoEnabled(false);
+}]);
 
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', 'notifications', 'utils', function ($rootScope, $scope, $store, $timeout, $log, models, connection, notifications, utils) {
 
@@ -63,13 +66,23 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     // Enable debug mode if "?debug=1" or "?debug=true" is set
     (function() {
+        var hasReloaded = false;
         window.location.search.substring(1).split('&').forEach(function(f) {
             var segs = f.split('=');
             if (segs[0] === "debug" && ["true", "1"].indexOf(segs[1]) != -1) {
                 $rootScope.debugMode = true;
-                return;
+            } else if (segs[0] === "debugReload" && segs[1] === "1") {
+                hasReloaded = true;
             }
         });
+        // If we haven't reloaded yet, do an angular reload with debug infos
+        // store whether this has happened yet in a GET parameter
+        if ($rootScope.debugMode && !hasReloaded) {
+            document.location.search += "&debugReload=1";
+            setTimeout(function() {
+                angular.reloadWithDebugInfo();
+            }, 0);
+        }
     })();
 
 
