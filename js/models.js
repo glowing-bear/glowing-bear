@@ -30,7 +30,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var notification = 0;
         var unread = 0;
         var lastSeen = -1;
-        var serverSortKey = fullName.replace(/^irc.server.(\w+)/, "irc.$1");
+        var serverSortKey = fullName.replace(/^irc\.server\.(\w+)/, "irc.$1");
         var type = message.local_variables.type;
         var indent = (['channel', 'private'].indexOf(type) >= 0);
 
