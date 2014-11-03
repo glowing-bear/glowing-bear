@@ -154,19 +154,19 @@
           </div>
           <div id="collapseThree" class="panel-collapse collapse in">
             <div class="panel-body">
-              <p>If you check the encryption box, the communication between browser and WeeChat will be encrypted with SSL.</p>
+              <p>If you check the encryption box, the communication between browser and WeeChat will be encrypted with TLS.</p>
               <p><strong>Note</strong>: If you are using a self-signed certificate, you have to visit <a href="https://{{ host }}:{{ port }}/">https://{{ host || 'weechathost' }}:{{ port || 'relayport' }}/</a> in your browser first to add a security exception. You can close that tab once you confirmed the certificate, no content will appear. The necessity of this process is a bug in <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">Firefox</a> and other browsers.</p>
-              <p><strong>Setup</strong>: If you want to use an encrypted session you first have to set up the relay to use SSL. You basically have two options: a self-signed certificate is easier to set up, but requires manual security exceptions. Using a certificate that is trusted by your browser requires more setup, but does not require any security exceptions. As the process for requesting a certificate is different for every certification authority, we detail the method for setting up WeeChat with a self-signed certificate here. To create one, execute the following commands in a shell on the same host and as the user running WeeChat:</p>
+              <p><strong>Setup</strong>: If you want to use an encrypted session you first have to set up the relay to use TLS. You basically have two options: a self-signed certificate is easier to set up, but requires manual security exceptions. Using a certificate that is trusted by your browser requires more setup, but offers greater convenience later on and does not require security exceptions. You can find a guide to set up WeeChat with a free trusted certificate from StartSSL <a href="https://4z2.de/2014/07/06/weechat-trusted-relay">here</a>. Should you wish to use a self-signed certificate instead, execute the following commands in a shell on the same host and as the user running WeeChat:</p>
 <pre>
 $ mkdir -p ~/.weechat/ssl
 $ cd ~/.weechat/ssl
 $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out relay.pem -subj "/CN={{host || 'your weechat host'}}/"
 </pre>
-              <p>If WeeChat is already running, you can reload the certificate and private key and set up an encrypted relay on port {{ port || 8000 }} with these WeeChat commands:</p>
+              <p>If WeeChat is already running, you can reload the certificate and private key and set up an encrypted relay on port {{ port || 9001 }} with these WeeChat commands:</p>
 <pre>
 /set relay.network.password yourpassword
 /relay sslcertkey
-/relay add ssl.weechat {{ port || 8000 }}
+/relay add ssl.weechat {{ port || 9001 }}
 </pre>
             </div>
           </div>
