@@ -1,18 +1,20 @@
-<div ng-show="plugin.visible">
-  <button class="btn btn-primary btn-sm pull-right unselectable"
-          ng-click="hideContent()">
-    Hide {{ ::plugin.name }}
-  </button>
-
-  <div ng-bind-html="displayedContent" class="embed" ng-class="::plugin.className"></div>
-</div>
-
-<div ng-hide="plugin.visible">
-  <button class="btn btn-sm pull-right unselectable"
+<div ng-hide="plugin.visible" class="plugin-btn-container plugin-btn-container-hidden">
+  <button class="btn btn-sm pull-right unselectable plugin-btn plugin-btn-show"
           ng-class="::{
                     'btn-warning': plugin.nsfw,
                     'btn-primary': !plugin.nsfw}"
           ng-click="showContent()">
-          Show {{ ::plugin.name }}
+          ▼
   </button>
+</div>
+
+<div ng-show="plugin.visible">
+  <div class="plugin-btn-container plugin-btn-container-visible">
+    <button class="btn btn-primary btn-sm pull-right unselectable plugin-btn plugin-btn-hide"
+            ng-click="hideContent()">
+      ▲
+    </button>
+  </div>
+
+  <div ng-bind-html="displayedContent" class="embed" ng-class="::plugin.className"></div>
 </div>

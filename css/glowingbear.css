@@ -14,25 +14,132 @@ a {
 td.prefix {
     text-align: right;
     vertical-align: top;
-    padding: 1px 5px 1px 1px;
+    padding: 1px 0px 1px 1px;
     white-space: pre;
     border-right: 1px solid #444;
+    display: inline;
+    border: 0;
 }
+
+td.prefix::after {
+    content: " ";    
+}
+
+
 td.message {
     vertical-align: top;
     width: 100%;
     padding: 1px 1px 1px 5px;
 
--ms-word-break: break-all;
-    word-break: break-all;
+-ms-word-break: normal;
+    word-break: normal;
 
-    /* Non standard for webkit */
-    word-break: break-word;
+-webkit-hyphens: none;
+   -moz-hyphens: none;
+    -ms-hyphens: none;
+        hyphens: none;
 
--webkit-hyphens: auto;
-   -moz-hyphens: auto;
-    -ms-hyphens: auto;
-        hyphens: auto;
+}
+
+
+.nav>li>a {
+    padding: 3px 10px !important;
+}
+
+.nav>li {
+    font-weight: bold; 
+    color: #ab9ba9;
+}
+.nav>li.indent {
+font-weight: normal; 
+
+  color:#ab9ba9;
+}
+    
+#topbar .title {
+    left: 145px !important;
+}
+.footer {
+    margin-left: 145px !important;
+    padding-left: 0px !important;
+}
+textarea#sendMessage {
+    padding-right: 80px !important; 
+    line-height:1;
+}
+
+li.buffer a span.buffername {
+    max-width:100px;
+    text-overflow:ellipsis;
+    display:inline-block;
+    overflow:hidden;
+}
+
+.form-control {
+    font-size: 16px;
+  }
+  
+.withnicklist {
+      margin-right: 150px !important;
+    }
+
+#nicklist
+{ width: 150px; }
+
+a[ng-click="addMention(bufferline.prefix)"]::before {
+ content: "<";
+}
+
+a[ng-click="addMention(bufferline.prefix)"]::after {
+ content: ">";
+}
+
+.plugin-btn-container-hidden {
+  margin-top: -14px;
+}
+.plugin-btn{ 
+  font-size: 8px;
+  padding: 0px 0px;
+}
+.plugin-btn-hide {
+  margin-top: -14px;
+}
+
+.input-group-btn
+{ width: 265px; }
+
+#bufferlines table {
+    border-collapse: separate;
+    border-spacing: 2px 3px;
+}
+
+
+#bufferlines td.time {
+    padding-right: 3px;
+    font-size: 12px;
+}
+
+#bufferlines td.time span.date {
+    display: block;
+    margin-top: -2px;
+}
+
+td.message {
+    vertical-align: top;
+    width: 100%;
+
+/*    padding: 1px 1px 1px 5px;
+*/
+    display: inline;
+    padding: 0px !important;
+
+-ms-word-break: normal;
+    word-break: normal;
+
+-webkit-hyphens: none;
+   -moz-hyphens: none;
+    -ms-hyphens: none;
+        hyphens: none;
 
 }
 
