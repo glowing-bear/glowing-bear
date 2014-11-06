@@ -30,8 +30,6 @@ weechat.filter('irclinky', ['$filter', function($filter) {
             return text;
         }
 
-        var linkiedText = $filter('linky')(text, target);
-
         // This regex in no way matches all IRC channel names (they could also begin with &, + or an
         // exclamation mark followed by 5 alphanumeric characters, and are bounded in length by 50).
         // However, it matches all *common* IRC channels while trying to minimise false positives.
@@ -40,8 +38,8 @@ weechat.filter('irclinky', ['$filter', function($filter) {
         var channelRegex = /(^|[\s,.:;?!"'()+@-])(#+[^\x00\x07\r\n\s,:]*[a-z][^\x00\x07\r\n\s,:]*)/gmi;
         // This is SUPER nasty, but ng-click does not work inside a filter, as the markup has to be $compiled first, which is not possible in filter afaik.
         // Therefore, get the scope, fire the method, and $apply. Yuck. I sincerely hope someone finds a better way of doing this.
-        linkiedText = linkiedText.replace(channelRegex, '$1<a href="#" onclick="var $scope = angular.element(event.target).scope(); $scope.openBuffer(\'$2\'); $scope.$apply();">$2</a>');
-        return linkiedText;
+        var substitute = '$1<a href="#" onclick="var $scope = angular.element(event.target).scope(); $scope.openBuffer(\'$2\'); $scope.$apply();">$2</a>';
+        return text.replace(channelRegex, substitute);
     };
 }]);
 
@@ -66,6 +64,9 @@ weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
             return text;
         }
 
+        // hacky way to pass an extra argument without using .apply, which
+        // would require assembling an argument array. PERFORMANCE!!!
+        var extraArgument = (arguments.length > 2) ? arguments[2] : null;
         var filterFunction = $filter(filter);
         var el = document.createElement('div');
         el.innerHTML = text;
@@ -73,7 +74,7 @@ weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
         // Recursive DOM-walking function applying the filter to the text nodes
         var process = function(node) {
             if (node.nodeType === 3) { // text node
-                var value = filterFunction(node.nodeValue);
+                var value = filterFunction(node.nodeValue, extraArgument);
                 if (value !== node.nodeValue) {
                     // we changed something. create a new node to replace the current one
                     // we could also only add its children but that would probably incur
