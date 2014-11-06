@@ -593,12 +593,12 @@ li.buffer.indent.private a {
 
     #bufferlines td.time {
         padding-right: 3px;
-        font-size: 12px;
+        font-size: 0.8em;
     }
 
     #bufferlines td.time span.date {
         display: block;
-        margin-top: -2px;
+        margin-bottom: -1px;
     }
 
     #bufferlines td.prefix {
@@ -606,7 +606,7 @@ li.buffer.indent.private a {
         padding-right: 5px;
         border: 0;
         font-weight: bold;
-        font-size: 15px;
+        font-size: 1.06em;
     }
 
     #bufferlines td.message {
