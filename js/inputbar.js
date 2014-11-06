@@ -78,6 +78,13 @@ weechat.directive('inputBar', function() {
 
                     // Split the command into multiple commands based on line breaks
                     _.each($scope.command.split(/\r?\n/), function(line) {
+                        // Ask before a /quit
+                        if (line === '/quit' || line.indexOf('/quit ') === 0) {
+                            if (!window.confirm("Are you sure you want to quit WeeChat? This will prevent you from connecting with Glowing Bear until you restart WeeChat on the command line!")) {
+                                // skip this line
+                                return;
+                            }
+                        }
                         connection.sendMessage(line);
                     });
 
