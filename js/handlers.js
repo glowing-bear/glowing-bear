@@ -64,8 +64,13 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         var buffer = obj.pointers[0];
         var old = models.getBuffer(buffer);
         old.fullName = obj.full_name;
-        old.title = obj.title;
+        old.title = models.parseRichText(obj.title);
         old.number = obj.number;
+
+        old.rtitle = "";
+        for (var i = 0; i < old.title.length; ++i) {
+            old.rtitle += old.title[i].text;
+        }
     };
 
     var handleBufferRenamed = function(message) {

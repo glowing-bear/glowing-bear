@@ -52,7 +52,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', function($root
 
         var activeBuffer = models.getActiveBuffer();
         if (activeBuffer) {
-            $rootScope.pageTitle = activeBuffer.shortName + ' | ' + activeBuffer.title;
+            $rootScope.pageTitle = activeBuffer.shortName + ' | ' + activeBuffer.rtitle;
         }
     };
 
