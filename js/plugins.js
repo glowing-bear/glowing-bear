@@ -2,7 +2,10 @@
  * This file contains the plugin definitions
  */
 
-plugins = angular.module('plugins', []);
+(function() {
+'use strict';
+
+var plugins = angular.module('plugins', []);
 
 /*
  * Definition of a user provided plugin with sensible default values
@@ -119,10 +122,10 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
  *
  * To create your own plugin, you need to:
  *
- * 1. Define it's contentForMessage function. The contentForMessage
+ * 1. Define its contentForMessage function. The contentForMessage
  *    function takes a string as a parameter and returns a HTML string.
  *
- * 2. Instanciate a Plugin object with contentForMessage function as it's
+ * 2. Instantiate a Plugin object with contentForMessage function as its
  *    argument.
  *
  * 3. Add it to the plugins array.
@@ -143,7 +146,7 @@ plugins.factory('userPlugins', function() {
         document.body.appendChild(script);
     };
 
-    var urlRegexp = RegExp(/(?:ftp|https?):\/\/\S*[^\s.;,(){}<>]/g);
+    var urlRegexp = new RegExp(/(?:ftp|https?):\/\/\S*[^\s.;,(){}<>]/g);
 
     var urlPlugin = function(callback) {
         return function(message) {
@@ -168,7 +171,7 @@ plugins.factory('userPlugins', function() {
      */
 
     var spotifyPlugin = new Plugin(function(message) {
-        content = [];
+        var content = [];
         var addMatch = function(match) {
             for (var i = 0; match && i < match.length; i++) {
                 var id = match[i].substr(match[i].length - 22, match[i].length);
@@ -345,7 +348,7 @@ plugins.factory('userPlugins', function() {
                 url = match[0] + '.json';
                 // load gist asynchronously -- return a function here
                 return function() {
-                    var element = document.querySelector('.embed_' + this.$$hashKey);
+                    var element = this.getElement();
                     jsonp(url, function(data) {
                         // Add the gist stylesheet only once
                         if (document.querySelectorAll('link[rel=stylesheet][href="' + data.stylesheet + '"]').length < 1) {
@@ -367,7 +370,7 @@ plugins.factory('userPlugins', function() {
             if (match) {
                 url = 'https://api.twitter.com/1/statuses/oembed.json?id=' + match[2];
                 return function() {
-                    var element = document.querySelector('.embed_' + this.$$hashKey);
+                    var element = this.getElement();
                     jsonp(url, function(data) {
                         // sepearate the HTML into content and script tag
                         var scriptIndex = data.html.indexOf("<script ");
@@ -394,3 +397,4 @@ plugins.factory('userPlugins', function() {
 
 
 });
+})();

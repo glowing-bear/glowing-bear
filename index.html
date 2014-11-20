@@ -12,18 +12,18 @@
     <link rel="shortcut icon" sizes="128x128" href="assets/img/glowing_bear_128x128.png">
     <link rel="apple-touch-icon" sizes="128x128" href="assets/img/glowing_bear_128x128.png">
     <link rel="shortcut icon" type="image/png" href="assets/img/favicon.png" >
-    <link href="css/style.css" rel="stylesheet" media="screen">
     <link href="css/glowingbear.css" rel="stylesheet" media="screen">
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular-route.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular-sanitize.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular-touch.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-route.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-sanitize.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-touch.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
     <script type="text/javascript" src="3rdparty/inflate.min.js"></script>
     <script type="text/javascript" src="min.js"></script>
-    <script type="text/javascript" src="3rdparty/favico-0.3.4-mod.min.js"></script>
+    <script type="text/javascript" src="3rdparty/favico-0.3.5.min.js"></script>
   </head>
-  <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" lang="en-US">
+  <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keyup="handleKeyRelease($event)"  ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" lang="en-US">
+    <link ng-href="css/themes/{{theme}}.css" rel="stylesheet" media="screen" />
     <div ng-hide="connected" class="container">
       <h2>
         <img alt="logo" src="assets/img/glowing-bear.svg">
@@ -56,7 +56,7 @@
                   <div class="input-group">
                     <div class="row no-gutter">
                       <div class="col-sm-9">
-                        <input type="text" class="form-control favorite-font" id="host" ng-model="host" placeholder="Address" >
+                        <input type="text" class="form-control favorite-font" id="host" ng-model="host" placeholder="Address" autocapitalize="off">
                       </div>
                       <div class="col-sm-3">
                         <input type="text" class="form-control favorite-font" id="port" ng-model="port" placeholder="Port">
@@ -107,7 +107,7 @@
               <div>To start using glowing bear, please enable the relay plugin in your WeeChat client:
 <pre>
 /set relay.network.password yourpassword
-/relay add weechat 9001
+/relay add weechat {{ port || 9001 }}
 </pre>
               <span class="label label-danger">WeeChat version 0.4.2 or higher is required.</span><br>
               The communication goes directly between your browser and your WeeChat relay in plain text. Check the instructions below for help on setting up encrypted communication.
@@ -116,16 +116,16 @@
               <h3>Shortcuts</h3>
               Glowing Bear has a few shortcuts:
               <ul>
-                <li>ALT-n: Toggle nicklist</li>
-                <li>ALT-l: Focus on input bar</li>
-                <li>ALT-[0-9]: Switch to buffer number N</li>
-                <li>ALT-a: Focus on next buffer with activity</li>
-                <li>ALT-&lt;: Switch to previous active buffer</li>
-                <li>ALT-g: Focus on buffer list filter</li>
-                <li>Esc-Esc: Disconnect (double-tap)</li>
+                <li><kbd>ALT-n</kbd>: Toggle nicklist</li>
+                <li><kbd>ALT-l</kbd>: Focus on input bar</li>
+                <li><kbd>ALT-[0-9]</kbd>: Switch to buffer number N</li>
+                <li><kbd>ALT-a</kbd>: Focus on next buffer with activity</li>
+                <li><kbd>ALT-&lt;</kbd>: Switch to previous active buffer</li>
+                <li><kbd>ALT-g</kbd>: Focus on buffer list filter</li>
+                <li><kbd>Esc-Esc</kbd>: Disconnect (double-tap)</li>
                 <li>Arrow keys: Navigate history</li>
-                <li>Tab key: Complete nick</li>
-                <li>The following readline/emacs style keybindings can be enabled with a setting: <span title="Move cursor to beginning of line">Ctrl-a</span>, <span title="Move cursor to te end of the line">Ctrl-e</span>, <span title="Delete from cursor to beginning of the line">Ctrl-u</span>, <span title="Delete from cursor to the end of the line">Ctrl-k</span>, <span title="Delete from cursor to previous space">Ctrl-w</span></li>
+                <li><kbd>Tab</kbd>: Complete nick</li>
+                <li>The following readline/emacs style keybindings can be enabled with a setting: <span title="Move cursor to beginning of line"><kbd>Ctrl-a</kbd></span>, <span title="Move cursor to te end of the line"><kbd>Ctrl-e</kbd></span>, <span title="Delete from cursor to beginning of the line"><kbd>Ctrl-u</kbd></span>, <span title="Delete from cursor to the end of the line"><kbd>Ctrl-k</kbd></span>, <span title="Delete from cursor to previous space"><kbd>Ctrl-w</kbd></span></li>
               </ul>
               </div>
             </div>
@@ -141,18 +141,19 @@
           </div>
           <div id="collapseThree" class="panel-collapse collapse in">
             <div class="panel-body">
-              <p>If you check the encryption box, the communication between browser and WeeChat will be encrypted with SSL.</p>
+              <p>If you check the encryption box, the communication between browser and WeeChat will be encrypted with TLS.</p>
               <p><strong>Note</strong>: If you are using a self-signed certificate, you have to visit <a href="https://{{ host }}:{{ port }}/">https://{{ host || 'weechathost' }}:{{ port || 'relayport' }}/</a> in your browser first to add a security exception. You can close that tab once you confirmed the certificate, no content will appear. The necessity of this process is a bug in <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">Firefox</a> and other browsers.</p>
-              <p><strong>Setup</strong>: If you want to use an encrypted session you first have to set up the relay to use SSL. You basically have two options: a self-signed certificate is easier to set up, but requires manual security exceptions. Using a certificate that is trusted by your browser requires more setup, but does not require any security exceptions. As the process for requesting a certificate is different for every certification authority, we detail the method for setting up WeeChat with a self-signed certificate here. To create one, execute the following commands in a shell on the same host and as the user running WeeChat:</p>
+              <p><strong>Setup</strong>: If you want to use an encrypted session you first have to set up the relay to use TLS. You basically have two options: a self-signed certificate is easier to set up, but requires manual security exceptions. Using a certificate that is trusted by your browser requires more setup, but offers greater convenience later on and does not require security exceptions. You can find a guide to set up WeeChat with a free trusted certificate from StartSSL <a href="https://4z2.de/2014/07/06/weechat-trusted-relay">here</a>. Should you wish to use a self-signed certificate instead, execute the following commands in a shell on the same host and as the user running WeeChat:</p>
 <pre>
 $ mkdir -p ~/.weechat/ssl
 $ cd ~/.weechat/ssl
 $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out relay.pem -subj "/CN={{host || 'your weechat host'}}/"
 </pre>
-              <p>If WeeChat is already running, you can reload the certificate and private key and set up an encrypted relay on port 8000 with these WeeChat commands:</p>
+              <p>If WeeChat is already running, you can reload the certificate and private key and set up an encrypted relay on port {{ port || 9001 }} with these WeeChat commands:</p>
 <pre>
+/set relay.network.password yourpassword
 /relay sslcertkey
-/relay add ssl.weechat 8000
+/relay add ssl.weechat {{ port || 9001 }}
 </pre>
             </div>
           </div>
@@ -201,7 +202,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </a>
           <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
         </div>
-        <div class="title" ng-bind-html="activeBuffer().title | irclinky:'_blank'" title="{{activeBuffer().title}}"></div>
+        <div class="title" ng-bind-html="activeBuffer().title | linky:'_blank' | DOMfilter:'irclinky'" title="{{activeBuffer().title}}"></div>
         <div class="actions pull-right vertical-line-left">
           <div class="pull-left">
             <a class="settings-toggle" ng-click="showModal('settingsModal')" title="Options menu">
@@ -214,16 +215,17 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
         </div>
       </div>
       <div id="sidebar" data-state="visible" ng-swipe-left="hideSidebar()" class="vertical-line">
-        <ul class="nav nav-pills nav-stacked" ng-class="{'indented': (predicate === 'serverSortKey')}">
+        <ul class="nav nav-pills nav-stacked" ng-class="{'indented': (predicate === 'serverSortKey'), 'showquickkeys': showQuickKeys}">
           <li class="bufferfilter">
             <form role="form">
               <input class="form-control favorite-font" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="Search">
             </form>
           </li>
-          <li class="buffer" ng-class="{'active': buffer.active, 'indent': buffer.indent }" ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray | filter:{fullName:search} | filter:hasUnread | orderBy:predicate))">
+          <li class="buffer" ng-class="{'active': buffer.active, 'indent': buffer.indent, 'channel': buffer.type === 'channel', 'private': buffer.type === 'private'}" ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray:'withidx' | filter:{fullName:search} | filter:hasUnread | orderBy:predicate | getBufferQuickKeys:this))">
             <a href="#" ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}">
               <span class="badge pull-right" ng-class="{'danger': buffer.notification}" ng-if="buffer.notification || buffer.unread" ng-bind="buffer.notification || buffer.unread"></span>
-              <span class="buffername">{{ buffer.shortName || buffer.fullName }}</span>
+              <span class="buffer-quick-key">{{ buffer.$quickKey }}</span>
+              <span class="buffername">{{ buffer.trimmedName || buffer.fullName }}</span>
             </a>
           </li>
         </ul>
@@ -252,10 +254,10 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                   <span class="cof-chat_time cob-chat_time coa-chat_time" ng-bind="::(bufferline.date|date:'HH')"></span><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time" ng-bind="::(bufferline.date|date:'mm')"></span><span class="seconds"><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time" ng-bind="::(bufferline.date|date:'ss')"></span></span>
                 </span>
               </td>
-              <td class="prefix"><a ng-click="addMention(bufferline.prefix)"><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text"></span></a></td>
-              <td class="message">
-                <div ng-repeat="metadata in ::bufferline.metadata" plugin data="::metadata"></div>
-                <span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes" ng-bind-html="::part.text | irclinky:'_blank' | inlinecolour"></span>
+              <td class="prefix"><a ng-click="addMention(bufferline.prefix)"><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text"></span></a></td><!--
+           --><td class="message"><!--
+             --><div ng-repeat="metadata in ::bufferline.metadata" plugin data="::metadata"></div><!--
+             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes" ng-bind-html="::part.text | linky:'_blank' | DOMfilter:'irclinky' | DOMfilter:'inlinecolour'"></span>
               </td>
             </tr>
             <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
@@ -264,10 +266,10 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
               </td>
             </tr>
           </tbody>
-        </table>
+        </table><span id="end-of-buffer"></span>
       </div>
       <div class="footer" ng-class="{'withnicklist': showNicklist}">
-        <div input-bar input-id="sendMessage"></div>
+        <div input-bar input-id="sendMessage" command="command"></div>
       </div>
     </div>
     <div id="soundNotification"></div>
@@ -282,7 +284,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </div>
           <div class="modal-body">
             <ul class="">
-              <li id="fontchoice">
+              <li class="standard-labels">
                 <form class="form-horizontal" role="form">
                   <div class="form-group">
                     <label for="font" class="col-sm-3 control-label make-thinner">Preferred font</label>
@@ -292,11 +294,22 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
 
                     <label for="size" class="col-sm-1 control-label">Size</label>
                     <div class="col-sm-2">
-                      <input type="text" ng-model="fontsize" class="form-control" id="size" placeholder="14px">
+                      <input type="text" ng-model="fontsize" class="form-control" id="size">
                     </div>
                   </div>
                 </form>
               </li>
+              <li class="standard-labels">
+                <form class="form-horizontal" role="form">
+                  <div class="form-group">
+                    <label for="theme" class="col-sm-3 control-label make-thinner">Theme</label>
+                    <div class="col-sm-7">
+                      <select id="theme" class="form-control" ng-model="theme" ng-options="theme for theme in themes"></select>
+                    </div>
+                  </div>
+                </form>
+              </li>
+
               <li>
                 <form class="form-inline" role="form">
                   <div class="checkbox">
@@ -334,7 +347,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                   <div class="checkbox">
                     <label>
                       <input type="checkbox" ng-model="noembed">
-                       Hide embedded content by default
+                       Hide embedded content by default<span class="text-muted settings-help">NSFW content will be hidden</small>
                     </label>
                   </div>
                 </form>

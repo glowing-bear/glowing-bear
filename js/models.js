@@ -2,6 +2,9 @@
  * This file contains the weechat models and various
  * helper methods to work with them.
  */
+(function() {
+'use strict';
+
 var models = angular.module('weechatModels', []);
 
 models.service('models', ['$rootScope', '$filter', function($rootScope, $filter) {
@@ -12,6 +15,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         // weechat properties
         var fullName = message.full_name;
         var shortName = message.short_name;
+        var trimmedName = shortName.replace(/^[#&+]/, '');
         var title = message.title;
         var number = message.number;
         var pointer = message.pointers[0];
@@ -26,7 +30,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var notification = 0;
         var unread = 0;
         var lastSeen = -1;
-        var serverSortKey = fullName.replace(/^irc.server.(\w+)/, "irc.$1");
+        var serverSortKey = fullName.replace(/^irc\.server\.(\w+)/, "irc.$1");
         var type = message.local_variables.type;
         var indent = (['channel', 'private'].indexOf(type) >= 0);
 
@@ -221,6 +225,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             id: pointer,
             fullName: fullName,
             shortName: shortName,
+            trimmedName: trimmedName,
             number: number,
             title: title,
             lines: lines,
@@ -238,6 +243,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             getNicklistByTime: getNicklistByTime,
             serverSortKey: serverSortKey,
             indent: indent,
+            type: type,
             history: history,
             addToHistory: addToHistory,
             getHistoryUp: getHistoryUp,
@@ -282,6 +288,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
                 if (textEl.attrs.name !== null) {
                     textEl.classes.push('coa-' + textEl.attrs.name);
                 }
+                var val;
                 for (var attr in textEl.attrs.override) {
                     val = textEl.attrs.override[attr];
                     if (val) {
@@ -449,7 +456,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         if (key === 'id') {
             activeBuffer = this.model.buffers[bufferId];
         }
-        else { 
+        else {
             activeBuffer = _.find(this.model.buffers, function(buffer) {
                 if (buffer[key] === bufferId) {
                     return buffer;
@@ -526,3 +533,4 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         delete(this.model.buffers[bufferId]);
     };
 }]);
+})();

@@ -1,8 +1,11 @@
 {
+  "browser": true,
+  "devel": true,
   "globals": {
     "angular": false,
-    "$": false,
-    "window": false,
-    "console": false
+    "weeChat": false,
+    "_": false,
+    "Notification": false,
+    "Favico": false
   }
 }
