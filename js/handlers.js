@@ -74,7 +74,10 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         var old = models.getBuffer(buffer);
         old.fullName = obj.full_name;
         old.shortName = obj.short_name;
-        old.trimmedName = obj.short_name.replace(/^[#&+]/, '') || ' ';
+        // If it's a channel, trim away the prefix (#, &, or +). If that is empty and the buffer
+        // has a short name, use a space (because the prefix will be displayed separately, and we don't want
+        // prefix + fullname, which would happen otherwise). Else, use null so that full_name is used
+        old.trimmedName = obj.short_name.replace(/^[#&+]/, '') || (obj.short_name ? ' ' : null);
         old.prefix = ['#', '&', '+'].indexOf(obj.short_name.charAt(0)) >= 0 ? obj.short_name.charAt(0) : '';
     };
 
