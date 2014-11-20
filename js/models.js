@@ -15,7 +15,10 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         // weechat properties
         var fullName = message.full_name;
         var shortName = message.short_name;
-        var trimmedName = shortName.replace(/^[#&+]/, '');
+        // just use a space if the rest of the channel name is empty ('#')
+        var trimmedName = shortName.replace(/^[#&+]/, '') || ' ';
+        // get channel identifier
+        var prefix = ['#', '&', '+'].indexOf(shortName.charAt(0)) >= 0 ? shortName.charAt(0) : '';
         var title = message.title;
         var number = message.number;
         var pointer = message.pointers[0];
@@ -226,6 +229,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             fullName: fullName,
             shortName: shortName,
             trimmedName: trimmedName,
+            prefix: prefix,
             number: number,
             title: title,
             lines: lines,

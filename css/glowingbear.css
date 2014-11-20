@@ -477,8 +477,19 @@ h2 span, h2 small {
 /* bold hash before channels */
 li.buffer.channel a span:last-of-type:before {
     color: #888;
-    content: "#";
     font-weight: bold;
+}
+
+li.buffer.channel_hash a span:last-of-type:before {
+    content: '#';
+}
+
+li.buffer.channel_plus a span:last-of-type:before {
+    content: '+';
+}
+
+li.buffer.channel_ampersand a span:last-of-type:before {
+    content: '&';
 }
 
 li.buffer.channel.active a span:last-of-type:before {
