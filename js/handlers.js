@@ -74,7 +74,8 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         var old = models.getBuffer(buffer);
         old.fullName = obj.full_name;
         old.shortName = obj.short_name;
-        old.trimmedName = obj.short_name.replace(/^[#&+]/, '');
+        old.trimmedName = obj.short_name.replace(/^[#&+]/, '') || ' ';
+        old.prefix = ['#', '&', '+'].indexOf(obj.short_name.charAt(0)) >= 0 ? obj.short_name.charAt(0) : '';
     };
 
     var handleBufferLocalvarChanged = function(message) {
