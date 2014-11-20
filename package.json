@@ -1,7 +1,7 @@
 {
   "name": "glowing-bear",
   "private": true,
-  "version": "0.4.1",
+  "version": "0.4.4",
   "description": "A web client for Weechat",
   "repository": "https://github.com/glowing-bear/glowing-bear",
   "license": "GPLv3",
