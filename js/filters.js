@@ -3,6 +3,13 @@
 
 var weechat = angular.module('weechat');
 
+// Emojifis the string using https://github.com/twitter/twemoji
+weechat.filter('emojify',function() {
+  return function(text) {
+    return twemoji.parse(text);
+  };
+});
+
 weechat.filter('toArray', function () {
     return function (obj, storeIdx) {
         if (!(obj instanceof Object)) {
