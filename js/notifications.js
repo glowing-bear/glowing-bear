@@ -80,9 +80,9 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', function($root
     var createHighlight = function(buffer, message) {
         var title = '';
         var body = '';
-        var numNotifications = buffer.notification;
+        var numNotifications = buffer.textbuffer.notification;
 
-        if (['#', '&', '+', '!'].indexOf(buffer.shortName.charAt(0)) < 0) {
+        if (buffer.type === 'private') {
             if (numNotifications > 1) {
                 title = numNotifications.toString() + ' private messages from ';
             } else {
@@ -96,13 +96,20 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', function($root
                 title = 'Highlight in ';
             }
             var prefix = '';
-            for (var i = 0; i < message.prefix.length; i++) {
-                prefix += message.prefix[i].text;
+            if (message.fromnick !== undefined) {
+                prefix = message.fromnick;
+                if (prefix === false) {
+                    return;
+                }
+            } else {
+                for (var i = 0; i < message.prefix.length; i++) {
+                    prefix += message.prefix[i].text;
+                }
             }
             body = '<' + prefix + '> ' + message.text;
         }
         title += buffer.shortName;
-        title += buffer.fullName.replace(/irc.([^\.]+)\..+/, " ($1)");
+        title += buffer.fullName.replace(/[^\.]+\.([^\.]+)\..+/, " ($1)");
 
         var notification = new Notification(title, {
             body: body,

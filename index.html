@@ -18,11 +18,17 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-sanitize.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-touch.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
+    <script src="//crypto-js.googlecode.com/svn/tags/3.1.2/build/components/core-min.js"></script>
+    <script src="//crypto-js.googlecode.com/svn/tags/3.1.2/build/components/sha256-min.js"></script>
+    <script src="//crypto-js.googlecode.com/svn/tags/3.1.2/build/components/hmac-min.js"></script>
+    <script src="//crypto-js.googlecode.com/svn/tags/3.1.2/build/components/enc-base64-min.js"></script>
     <script type="text/javascript" src="3rdparty/inflate.min.js"></script>
     <script type="text/javascript" src="js/localstorage.js"></script>
     <script type="text/javascript" src="js/weechat.js"></script>
+    <script type="text/javascript" src="js/teddy.js"></script>
     <script type="text/javascript" src="js/irc-utils.js"></script>
     <script type="text/javascript" src="js/glowingbear.js"></script>
+    <script type="text/javascript" src="js/protocolmodule.js"></script>
     <script type="text/javascript" src="js/utils.js"></script>
     <script type="text/javascript" src="js/notifications.js"></script>
     <script type="text/javascript" src="js/filters.js"></script>
@@ -36,12 +42,13 @@
     <script type="text/javascript" src="3rdparty/favico-0.3.5.min.js"></script>
   </head>
   <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keyup="handleKeyRelease($event)"  ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" lang="en-US">
+    <link ng-href="css/{{protocolname | lowercase}}.css" rel="stylesheet" media="screen" />
     <link ng-href="css/themes/{{theme}}.css" rel="stylesheet" media="screen" />
     <div ng-hide="connected" class="container">
       <h2>
         <img alt="logo" src="assets/img/glowing-bear.svg">
         <span>Glowing Bear</span>
-        <small>WeeChat web frontend</small>
+        <small>{{protocolname}} web frontend</small>
       </h2>
       <div class="alert alert-danger" ng-show="errorMessage">
         <strong>Connection error</strong> The client was unable to connect to the WeeChat relay
@@ -138,7 +145,7 @@
                 <li><kbd>Esc-Esc</kbd>: Disconnect (double-tap)</li>
                 <li>Arrow keys: Navigate history</li>
                 <li><kbd>Tab</kbd>: Complete nick</li>
-                <li>The following readline/emacs style keybindings can be enabled with a setting: <span title="Move cursor to beginning of line"><kbd>Ctrl-a</kbd></span>, <span title="Move cursor to te end of the line"><kbd>Ctrl-e</kbd></span>, <span title="Delete from cursor to beginning of the line"><kbd>Ctrl-u</kbd></span>, <span title="Delete from cursor to the end of the line"><kbd>Ctrl-k</kbd></span>, <span title="Delete from cursor to previous space"><kbd>Ctrl-w</kbd></span></li>
+                <li>The following readline/emacs style keybindings can be enabled with a setting: <span title="Move cursor to beginning of line"><kbd>Ctrl-a</kbd></span>, <span title="Move cursor to te end of the line"><kbd>Ctrl-e</kbd></span>, <span title="Delete from cursor to beginning of the line"><kbd>Ctrl-u</kbd></span>, <span title="Delete from cursor to the end of the line"><kbd>Ctrl-k</kbd></span>, <span title="Delete from cursor to previous space"><kbd>Ctrl-w</kbd></span>, <span title="Change buffer items"><kbd>Ctrl-x</kbd></span></li>
               </ul>
               </div>
             </div>
@@ -234,16 +241,16 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
               <input class="form-control favorite-font" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="Search">
             </form>
           </li>
-          <li class="buffer" ng-class="{'active': buffer.active, 'indent': buffer.indent, 'channel': buffer.type === 'channel', 'channel_hash': buffer.prefix === '#', 'channel_plus': buffer.prefix === '+', 'channel_ampersand': buffer.prefix === '&', 'private': buffer.type === 'private'}" ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray:'withidx' | filter:{fullName:search} | filter:hasUnread | orderBy:predicate | getBufferQuickKeys:this))">
+          <li class="buffer" ng-class="{'active': buffer.active, 'indent': buffer.indent, 'channel': buffer.type === 'channel', 'channel_hash': buffer.prefix === '#', 'channel_plus': buffer.prefix === '+', 'channel_ampersand': buffer.prefix === '&', 'private': buffer.type === 'private', 'not-selected': !buffer.itemActive}" ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray:'withidx' | filter:{fullName:search} | filter:hasUnread | orderBy:predicate | getBufferQuickKeys:this))">
             <a href="#" ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}">
-              <span class="badge pull-right" ng-class="{'danger': buffer.notification}" ng-if="buffer.notification || buffer.unread" ng-bind="buffer.notification || buffer.unread"></span>
+              <span class="badge pull-right" ng-class="{'danger': buffer.textbuffer.notification}" ng-if="buffer.itemActive && (buffer.textbuffer.notification || buffer.textbuffer.unread)" ng-bind="buffer.itemActive && (buffer.textbuffer.notification || buffer.textbuffer.unread)"></span>
               <span class="buffer-quick-key">{{ buffer.$quickKey }}</span>
               <span class="buffername">{{ buffer.trimmedName || buffer.fullName }}</span>
             </a>
           </li>
         </ul>
       </div>
-      <div id="bufferlines" class="favorite-font" ng-swipe-right="showSidebar()" ng-swipe-left="hideSidebar()" ng-class="{'withnicklist': showNicklist}">
+      <div id="bufferlines" class="favorite-font" ng-swipe-right="showSidebar()" ng-swipe-left="hideSidebar()" ng-class="{'withnicklist': showNicklist, 'withitems': bufferItems().length > 1}">
         <div id="nicklist" ng-if="showNicklist" ng-swipe-right="closeNick()" class="vertical-line-left">
           <ul class="nicklistgroup list-unstyled" ng-repeat="group in nicklist">
             <li ng-repeat="nick in group.nicks|orderBy:'name'">
@@ -262,15 +269,20 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </tbody>
           <tbody ng-repeat="bufferline in bufferlines">
             <tr class="bufferline">
-              <td class="time">
+              <td class="time" ng-if="::bufferline.strtime === undefined">
                 <span class="date" ng-class="::{'repeated-time': bufferline.shortTime==bufferlines[$index-1].shortTime}">
                   <span class="cof-chat_time cob-chat_time coa-chat_time" ng-bind="::(bufferline.date|date:'HH')"></span><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time" ng-bind="::(bufferline.date|date:'mm')"></span><span class="seconds"><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time" ng-bind="::(bufferline.date|date:'ss')"></span></span>
                 </span>
               </td>
-              <td class="prefix"><a ng-click="addMention(bufferline.prefix)"><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text"></span></a></td><!--
+              <td class="time" ng-if="::bufferline.strtime !== undefined">
+                <span class="date" ng-class="::{'repeated-time': bufferline.shortTime==bufferlines[$index-1].shortTime}">
+                  <span ng-repeat="part in ::bufferline.strtime" class="cof-chat_time cob-chat_time coa-chat_time" ng-class="::part.classes" ng-style="::part.styles" ng-bind-html="::part.text"></span>
+                </span>
+              </td>
+              <td class="prefix"><a ng-click="addMention(bufferline)"><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-style="::part.styles" ng-bind="::part.text"></span></a></td><!--
            --><td class="message"><!--
              --><div ng-repeat="metadata in ::bufferline.metadata" plugin data="::metadata"></div><!--
-             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes" ng-bind-html="::part.text | linky:'_blank' | DOMfilter:'irclinky' | DOMfilter:'inlinecolour'"></span>
+             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes" ng-style="::part.styles" ng-bind-html="::part.text | linky:'_blank' | DOMfilter:'irclinky' | DOMfilter:'inlinecolour'"></span>
               </td>
             </tr>
             <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
@@ -281,7 +293,13 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </tbody>
         </table><span id="end-of-buffer"></span>
       </div>
-      <div class="footer" ng-class="{'withnicklist': showNicklist}">
+      <div class="footer" ng-class="{'withnicklist': showNicklist, 'withitems': bufferItems().length > 1}">
+        <ul id="bufferitems" ng-if="bufferItems().length > 1" class="nav nav-pills" style="overflow: hidden">
+          <li class="bufferitem" ng-class="{'active': buffer.active }" ng-repeat="(key, buffer) in (bufferItems())">
+            <a href="#" ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}">
+              <span class="buffername">{{ buffer.shortName || buffer.fullName }}</span></a>
+          </li>
+        </ul>
         <div input-bar input-id="sendMessage" command="command"></div>
       </div>
     </div>

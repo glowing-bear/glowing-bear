@@ -102,9 +102,11 @@ weechat.directive('inputBar', function() {
             };
 
             //XXX THIS DOES NOT BELONG HERE!
-            $rootScope.addMention = function(prefix) {
+            $rootScope.addMention = function(line) {
+                var prefix = line.prefix;
                 // Extract nick from bufferline prefix
-                var nick = prefix[prefix.length - 1].text;
+                var nick = line.fromnick !== undefined ? line.fromnick : prefix[prefix.length - 1].text;
+                if (nick === false) { return; }
 
                 var newValue = $scope.command || '';  // can be undefined, in that case, use the empty string
                 var addColon = newValue.length === 0;
@@ -180,7 +182,10 @@ weechat.directive('inputBar', function() {
                         // Map the buffers to only their numbers and IDs so we don't have to
                         // copy the entire (possibly very large) buffer object, and then sort
                         // the buffers according to their WeeChat number
-                        var sortedBuffers = _.map(models.getBuffers(), function(buffer) {
+                        var sortedBuffers = _.map(
+                        _.filter(models.getBuffers(), function(itembuffer) {
+                            return itembuffer.itemActive;
+                        }), function(buffer) {
                             return [buffer.number, buffer.id];
                         }).sort(function(left, right) {
                             // By default, Array.prototype.sort() sorts alphabetically.
@@ -369,6 +374,18 @@ weechat.directive('inputBar', function() {
                         setTimeout(function() {
                             inputNode.setSelectionRange(lastSpace, lastSpace);
                         });
+                    // Ctrl-x -> cycle multibuffers
+                    } else if (code == 88) {
+                        var buffers = models.getActiveBufferItems();
+                        if (buffers.length < 2) {
+                            return false;
+                        }
+                        var currentIdx = buffers.indexOf(models.getActiveBuffer());
+                        if (currentIdx > -1) {
+                            models.setActiveBuffer(buffers[(currentIdx + 1) % buffers.length].id);
+                        } else {
+                            return false;
+                        }
                     } else {
                         return false;
                     }

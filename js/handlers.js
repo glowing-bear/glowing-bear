@@ -13,12 +13,13 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
 
     var handleLine = function(line, manually) {
         var message = new models.BufferLine(line);
-        var buffer = models.getBuffer(message.buffer);
+        var itembuffer = models.getTextBuffer(message.buffer);
+        var buffer = itembuffer.textbuffer;
         buffer.requestedLines++;
         // Only react to line if its displayed
         if (message.displayed) {
             message = plugins.PluginManager.contentForMessage(message);
-            buffer.addLine(message);
+            itembuffer.addLine(message);
 
             if (manually) {
                 buffer.lastSeen++;
@@ -29,16 +30,43 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
             }
 
             if (!manually && (!buffer.active || !$rootScope.isWindowFocused())) {
-                if (buffer.notify > 1 && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
+                if (itembuffer.notify > 1 && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
                     buffer.unread++;
                     $rootScope.$emit('notificationChanged');
                 }
 
-                if ((buffer.notify !== 0 && message.highlight) || _.contains(message.tags, 'notify_private')) {
+                if ((itembuffer.notify !== 0 && message.highlight) || _.contains(message.tags, 'notify_private')) {
                     buffer.notification++;
-                    notifications.createHighlight(buffer, message);
+                    notifications.createHighlight(itembuffer, message);
                     $rootScope.$emit('notificationChanged');
                 }
+            }
+        }
+    };
+
+    var handleLineInserted = function(line, previd) {
+        var message = new models.BufferLine(line);
+        var itembuffer = models.getTextBuffer(message.buffer);
+        var buffer = itembuffer.textbuffer;
+        // Only react to line if its displayed
+        if (message.displayed) {
+            message = plugins.PluginManager.contentForMessage(message);
+            if (buffer.insertLine(message, previd)) {
+                buffer.requestedLines++;
+            }
+
+            if (buffer.active) {
+                $rootScope.scrollWithBuffer();
+            }
+        }
+    };
+
+    var handleLineRemoved = function(bufferid, lineid) {
+        var buffer = (models.getTextBuffer(bufferid)||{}).textbuffer;
+        if (buffer === undefined) { return; }
+        if (buffer.removeLine(lineid)) {
+            if (buffer.requestedLines > 0) {
+                buffer.requestedLines--;
             }
         }
     };
@@ -49,6 +77,22 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         });
     };
 
+    var handleBufferLineInserted = function(message) {
+        var prevline = message.prevline;
+        message.objects[0].content.forEach(function(l) {
+            handleLineInserted(l, prevline, false);
+            prevline = l.pointers[0];
+        });
+    };
+
+    var handleBufferLineRemoved = function(message) {
+        for (var buffer in message.lines) {
+            for (var lineIdx in message.lines[buffer]) {
+                handleLineRemoved(buffer, message.lines[buffer][lineIdx]);
+            }
+        }
+    };
+
     var handleBufferOpened = function(message) {
         var bufferMessage = message.objects[0].content[0];
         var buffer = new models.Buffer(bufferMessage);
@@ -57,6 +101,20 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
          * or not we will let user click opened buffers.
         models.setActiveBuffer(buffer.id);
         */
+    };
+
+    var handleBufferActivate = function(message) {
+        var buffer = models.getTextBuffer(message.buffer);
+        models.setActiveBuffer(buffer.id);
+    };
+
+    var handleBufferClearHotlist = function(message) {
+        var buffer = models.getTextBuffer(message.buffer).textbuffer;
+        buffer.unread = 0;
+        buffer.notification = 0;
+
+        // Trigger title and favico update
+        $rootScope.$emit('notificationChanged');
     };
 
     var handleBufferTitleChanged = function(message) {
@@ -79,6 +137,16 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         // prefix + fullname, which would happen otherwise). Else, use null so that full_name is used
         old.trimmedName = obj.short_name.replace(/^[#&+]/, '') || (obj.short_name ? ' ' : null);
         old.prefix = ['#', '&', '+'].indexOf(obj.short_name.charAt(0)) >= 0 ? obj.short_name.charAt(0) : '';
+    };
+
+    var handleBufferItemActive = function(message) {
+        var buffer = models.getBuffer(message.item);
+        if (buffer === undefined) { return; } // does not exist (anymore)
+        models.findTextbuffer(buffer.textbuffer.id);
+        buffer.itemActive = true;
+        if (buffer.textbuffer.active && !buffer.active) {
+            models.setActiveBuffer(buffer.id);
+        }
     };
 
     var handleBufferLocalvarChanged = function(message) {
@@ -118,7 +186,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         }
         var hotlist = message.objects[0].content;
         hotlist.forEach(function(l) {
-            var buffer = models.getBuffer(l.buffer);
+            var buffer = models.getTextBuffer(l.buffer).textbuffer;
             // 1 is message
             buffer.unread += l.count[1];
             // 2 is private
@@ -141,7 +209,8 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         var group = 'root';
         nicklist.forEach(function(n) {
             var buffer = models.getBuffer(n.pointers[0]);
-            if (n.group === 1) {
+            if (buffer === undefined) { // ignore, buffer doesn't exist
+            } else if (n.group === 1) {
                 var g = new models.NickGroup(n);
                 group = g.name;
                 buffer.nicklist[group] = g;
@@ -160,7 +229,8 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         nicklist.forEach(function(n) {
             var buffer = models.getBuffer(n.pointers[0]);
             var d = n._diff;
-            if (n.group === 1) {
+            if (buffer === undefined) { // ignore, buffer doesn't exist
+            } else if (n.group === 1) {
                 group = n.name;
                 if (group === undefined) {
                     var g = new models.NickGroup(n);
@@ -175,6 +245,12 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
                     buffer.delNick(group, nick);
                 } else if (d === 42) { // *
                     buffer.updateNick(group, nick);
+                } else if (d === 64) { // @
+                    buffer.updateNickChangegroup(group, nick);
+                } else if (d === 33) { // !
+                    buffer.delNickAllgroups(nick);
+                } else if (d === 118) { // v
+                    buffer.updateNickRename(n.oldname, n);
                 }
             }
         });
@@ -183,11 +259,16 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
     var eventHandlers = {
         _buffer_closing: handleBufferClosing,
         _buffer_line_added: handleBufferLineAdded,
+        _buffer_line_added_after: handleBufferLineInserted,
+        _buffer_line_removed: handleBufferLineRemoved,
         _buffer_localvar_added: handleBufferLocalvarChanged,
         _buffer_localvar_removed: handleBufferLocalvarChanged,
         _buffer_opened: handleBufferOpened,
         _buffer_title_changed: handleBufferTitleChanged,
         _buffer_renamed: handleBufferRenamed,
+        _buffer_item_active: handleBufferItemActive,
+        _buffer_activate: handleBufferActivate,
+        _buffer_clear_hotlist: handleBufferClearHotlist,
         _nicklist: handleNicklist,
         _nicklist_diff: handleNicklistDiff
     };
@@ -195,6 +276,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
     $rootScope.$on('onMessage', function(event, message) {
         if (_.has(eventHandlers, message.id)) {
             eventHandlers[message.id](message);
+        } else if (_.isEmpty(message)) { // ignore
         } else {
             $log.debug('Unhandled event received: ' + message.id);
         }

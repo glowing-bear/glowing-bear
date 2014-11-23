@@ -4,13 +4,15 @@
 var weechat = angular.module('weechat');
 
 weechat.factory('connection',
-                ['$rootScope', '$log', 'handlers', 'models', 'ngWebsockets', function($rootScope,
+                ['$rootScope', '$log', '$q', 'handlers', 'protocolModule', 'models', 'ngWebsockets', function($rootScope,
          $log,
+         $q,
          handlers,
+         protocolModule,
          models,
          ngWebsockets) {
 
-    var protocol = new weeChat.Protocol();
+    var protocol = new protocolModule.mod();
 
     // Takes care of the connection and websocket hooks
 
@@ -20,7 +22,7 @@ weechat.factory('connection',
         if (host.indexOf(":") !== -1) {
             host = "[" + host + "]";
         }
-        var url = proto + "://" + host + ":" + port + "/weechat";
+        var url = proto + "://" + host + ":" + port + protocolModule.mod.mountpoint;
         $log.debug('Connecting to URL: ', url);
 
         var onopen = function () {
@@ -28,19 +30,41 @@ weechat.factory('connection',
 
             // Helper methods for initialization commands
             var _initializeConnection = function(passwd) {
+                if (protocolModule.mod.challengeAuth) {
+                    return (function (){
+                        var key = Math.random().toString(36).substr(2);
+                        var cb = $q.defer();
+                        ngWebsockets.send(
+                            { challenge: key }
+                        ).then(
+                            function(msg) {
+                                ngWebsockets.send(
+                                    { login: CryptoJS
+                                      .HmacSHA256(passwd, msg.challenge + key)
+                                      .toString(CryptoJS.enc.Base64).replace(/=$/,'') }
+                                ).then(function(message) { cb.resolve(message); });
+                            },
+                            function(error) {
+                                cb.reject(error);
+                            }
+                        );
+                        return cb.promise;
+                    })();
+                }
+
                 // This is not the proper way to do this.
                 // WeeChat does not send a confirmation for the init.
                 // Until it does, We need to "assume" that formatInit
                 // will be received before formatInfo
                 ngWebsockets.send(
-                    weeChat.Protocol.formatInit({
+                    protocolModule.mod.formatInit({
                         password: passwd,
                         compression: noCompression ? 'off' : 'zlib'
                     })
                 );
 
                 return ngWebsockets.send(
-                    weeChat.Protocol.formatInfo({
+                    protocolModule.mod.formatInfo({
                         name: 'version'
                     })
                 );
@@ -48,7 +72,7 @@ weechat.factory('connection',
 
             var _requestHotlist = function() {
                 return ngWebsockets.send(
-                    weeChat.Protocol.formatHdata({
+                    protocolModule.mod.formatHdata({
                         path: "hotlist:gui_hotlist(*)",
                         keys: []
                     })
@@ -57,7 +81,7 @@ weechat.factory('connection',
 
             var _requestBufferInfos = function() {
                 return ngWebsockets.send(
-                    weeChat.Protocol.formatHdata({
+                    protocolModule.mod.formatHdata({
                         path: 'buffer:gui_buffers(*)',
                         keys: ['local_variables,notify,number,full_name,short_name,title']
                     })
@@ -66,7 +90,7 @@ weechat.factory('connection',
 
             var _requestSync = function() {
                 return ngWebsockets.send(
-                    weeChat.Protocol.formatSync({})
+                    protocolModule.mod.formatSync({})
                 );
             };
 
@@ -171,7 +195,7 @@ weechat.factory('connection',
     };
 
     var disconnect = function() {
-        ngWebsockets.send(weeChat.Protocol.formatQuit());
+        ngWebsockets.send(protocolModule.mod.formatQuit());
     };
 
     /*
@@ -180,14 +204,14 @@ weechat.factory('connection',
      * @returns the angular promise
      */
     var sendMessage = function(message) {
-        ngWebsockets.send(weeChat.Protocol.formatInput({
+        ngWebsockets.send(protocolModule.mod.formatInput({
             buffer: models.getActiveBuffer().fullName,
             data: message
         }));
     };
 
     var sendCoreCommand = function(command) {
-        ngWebsockets.send(weeChat.Protocol.formatInput({
+        ngWebsockets.send(protocolModule.mod.formatInput({
             buffer: 'core.weechat',
             data: command
         }));
@@ -197,7 +221,7 @@ weechat.factory('connection',
     var requestNicklist = function(bufferId, callback) {
         bufferId = bufferId || null;
         ngWebsockets.send(
-            weeChat.Protocol.formatNicklist({
+            protocolModule.mod.formatNicklist({
                 buffer: bufferId
             })
         ).then(function(nicklist) {
@@ -211,7 +235,7 @@ weechat.factory('connection',
 
     var fetchMoreLines = function(numLines) {
         $log.debug('Fetching ', numLines, ' lines');
-        var buffer = models.getActiveBuffer();
+        var buffer = models.getActiveBuffer().textbuffer;
         if (numLines === undefined) {
             // Math.max(undefined, *) = NaN -> need a number here
             numLines = 0;
@@ -223,15 +247,20 @@ weechat.factory('connection',
         $rootScope.loadingLines = true;
         // Send hdata request to fetch lines for this particular buffer
         return ngWebsockets.send(
-            weeChat.Protocol.formatHdata({
+            protocolModule.mod.formatHdata({
                 // "0x" is important, otherwise it won't work
-                path: "buffer:0x" + buffer.id + "/own_lines/last_line(-" + numLines + ")/data",
+                path: "buffer:0x" + buffer.id + "/own_lines/last_line(-" + numLines +
+                    (protocolModule.mod.skipLines ? "," + buffer.requestedLines : "") + ")/data",
                 keys: []
             })
         ).then(function(lineinfo) {
 //XXX move to handlers?
             // delete old lines and add new ones
-            var oldLength = buffer.lines.length;
+            var oldLines = buffer.lines.slice(0);
+            var oldLength = oldLines.length;
+            if (!protocolModule.mod.skipLines || oldLines === undefined) {
+                oldLines = [];
+            }
             // whether we already had all unread lines
             var hadAllUnreadLines = buffer.lastSeen >= 0;
 
@@ -242,10 +271,16 @@ weechat.factory('connection',
             // already connected.
             buffer.requestedLines = 0;
             // Count number of lines recieved
-            var linesReceivedCount = lineinfo.objects[0].content.length;
+            var linesReceivedCount = lineinfo.objects[0].content.length + oldLines.length;
 
             // Parse the lines
             handlers.handleLineInfo(lineinfo, true);
+
+            oldLines.forEach(function(message) {
+                buffer.addLine(message);
+                buffer.lastSeen++;
+                buffer.requestedLines++;
+            });
 
             // Correct the read marker for the lines that were counted twice
             buffer.lastSeen -= oldLength;

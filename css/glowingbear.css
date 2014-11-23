@@ -171,8 +171,36 @@ input[type=text], input[type=password], #sendMessage, .badge {
     padding-left: 10px;
 }
 
+#sidebar ul.indented li.indent.not-selected span.buffername {
+    padding-left: 20px;
+}
+
+#sidebar ul li.not-selected span.buffername {
+    padding-left: 5px;
+}
+
 #sidebar.ng-hide {
   width: 0;
+}
+
+#bufferitems {
+    font-size: smaller;
+    overflow-x: hidden;
+    height: 18px;
+}
+
+#bufferitems.nav-pills > li > a {
+    border-radius: 4px;
+    padding: 2px 5px;
+}
+
+.footer.withitems {
+    height: 52px;
+}
+
+#bufferlines.withitems {
+    padding-top: 52px;
+    bottom: 52px;
 }
 
 #nicklist {
@@ -614,7 +642,7 @@ li.buffer.indent.private a {
 
     #bufferlines td.prefix {
         display: inline;
-        padding-right: 5px;
+	padding-right: 5px;
         border: 0;
         font-weight: bold;
         font-size: 1.06em;
