@@ -15,8 +15,10 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         // weechat properties
         var fullName = message.full_name;
         var shortName = message.short_name;
-        // just use a space if the rest of the channel name is empty ('#')
-        var trimmedName = shortName.replace(/^[#&+]/, '') || ' ';
+        // If it's a channel, trim away the prefix (#, &, or +). If that is empty and the buffer
+        // has a short name, use a space (because the prefix will be displayed separately, and we don't want
+        // prefix + fullname, which would happen otherwise). Else, use null so that full_name is used
+        var trimmedName = shortName.replace(/^[#&+]/, '') || (shortName ? ' ' : null);
         // get channel identifier
         var prefix = ['#', '&', '+'].indexOf(shortName.charAt(0)) >= 0 ? shortName.charAt(0) : '';
         var title = message.title;
