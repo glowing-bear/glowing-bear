@@ -130,6 +130,7 @@ describe('filter', function() {
             plugins);
         }));
 
+/*
         it('should recognize gists', inject(function(plugins) {
             expectTheseMessagesToContain([
                 'https://gist.github.com/lorenzhs/e8c1a7d56fa170320eb8',
@@ -138,7 +139,7 @@ describe('filter', function() {
             'Gist',
             plugins);
         }));
-
+*/
         it('should recognize giphy gifs', inject(function(plugins) {
             expectTheseMessagesToContain([
                 'https://giphy.com/gifs/eyes-shocked-bird-feqkVgjJpYtjy/',
@@ -147,7 +148,7 @@ describe('filter', function() {
             'Giphy',
             plugins);
         }));
-
+/*
         it('should recognize tweets', inject(function(plugins) {
             expectTheseMessagesToContain([
                 'https://twitter.com/DFB_Team_EN/statuses/488436782959448065',
@@ -155,6 +156,7 @@ describe('filter', function() {
             'Tweet',
             plugins);
         }));
+*/
 
         it('should recognize vines', inject(function(plugins) {
             expectTheseMessagesToContain([
