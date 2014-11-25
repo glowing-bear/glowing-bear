@@ -135,6 +135,15 @@ weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
     };
 }]);
 
+weechat.filter('linksForCordova', ['$sce', function($sce) {
+    return function (text) {
+        // Cordova: need to use window.open instead of href
+        // XXX TODO this needs to be improved
+        text = text.replace(/<a (rel="[a-z ]+"\s)?(?:target="_[a-z]+"\s)?href="([^"]+)"/gi, "<a $1 onClick=\"window.open('$2', '_system')\"");
+        return $sce.trustAsHtml(text);
+    };
+}]);
+
 weechat.filter('getBufferQuickKeys', function () {
     return function (obj, $scope) {
         if (!$scope) { return obj; }
