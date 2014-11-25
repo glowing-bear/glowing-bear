@@ -331,6 +331,7 @@ plugins.factory('userPlugins', function() {
         }
     });
 
+/*
     // Embed GitHub gists
     var gistPlugin = new UrlPlugin('Gist', function(url) {
         var regexp = /^https:\/\/gist\.github.com\/[^.?]+/i;
@@ -377,6 +378,7 @@ plugins.factory('userPlugins', function() {
             };
         }
     });
+    */
 
     /*
      * Vine plugin
@@ -391,7 +393,7 @@ plugins.factory('userPlugins', function() {
     });
 
     return {
-        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, tweetPlugin, vinePlugin]
+        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, vinePlugin]
     };
 
 

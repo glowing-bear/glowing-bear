@@ -130,6 +130,7 @@ describe('filter', function() {
             plugins);
         }));
 
+/*
         it('should recognize gists', inject(function(plugins) {
             expectTheseMessagesToContain([
                 'https://gist.github.com/lorenzhs/e8c1a7d56fa170320eb8',
@@ -146,6 +147,7 @@ describe('filter', function() {
             'Tweet',
             plugins);
         }));
+*/
 
         it('should recognize vines', inject(function(plugins) {
             expectTheseMessagesToContain([
