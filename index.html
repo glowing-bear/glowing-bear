@@ -188,7 +188,7 @@
           <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
         </div>
         <div class="title" title="{{activeBuffer().rtitle}}">
-          <span ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank' | DOMfilter:'irclinky')"></span>
+          <span ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_system' | linksForCordova | DOMfilter:'irclinky')"></span>
         </div>
         <div class="actions pull-right vertical-line-left">
           <div class="pull-left">
@@ -244,7 +244,7 @@
               <td class="prefix"><a ng-click="addMention(bufferline.prefix)"><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text"></span></a></td><!--
            --><td class="message"><!--
              --><div ng-repeat="metadata in ::bufferline.metadata" plugin data="::metadata"></div><!--
-             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes" ng-bind-html="::part.text | linky:'_blank' | DOMfilter:'irclinky' | DOMfilter:'emojify':enableJSEmoji | DOMfilter:'inlinecolour' "></span>
+             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes" ng-bind-html="::part.text | linky:'_system' | linksForCordova | DOMfilter:'irclinky' | DOMfilter:'emojify':enableJSEmoji | DOMfilter:'inlinecolour' "></span>
               </td>
             </tr>
             <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
