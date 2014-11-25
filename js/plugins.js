@@ -278,8 +278,8 @@ plugins.factory('userPlugins', function() {
             if (url.indexOf("^https?://fukung.net/v/") != -1) {
                 url = url.replace(/.*\//, "http://media.fukung.net/imgs/");
             } else if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
-                // remove protocol specification to load over https if used by g-b
-                url = url.replace(/http:/, "");
+                // always load imgur over https
+                url = url.replace(/http:/, "https://");
             } else if (url.match(/^https:\/\/www\.dropbox\.com\/s\/[a-z0-9]+\/[^?]+$/i)) {
                 // Dropbox requires a get parameter, dl=1
                 // TODO strip an existing dl=0 parameter
@@ -400,6 +400,7 @@ plugins.factory('userPlugins', function() {
         }
     });
 
+/*
     // Embed GitHub gists
     var gistPlugin = new UrlPlugin('Gist', function(url) {
         var regexp = /^https:\/\/gist\.github.com\/[^.?]+/i;
@@ -421,6 +422,7 @@ plugins.factory('userPlugins', function() {
             };
         }
     });
+*/
 
  /* match giphy links and display the assocaited gif images
   * sample input:  http://giphy.com/gifs/eyes-shocked-bird-feqkVgjJpYtjy
@@ -445,6 +447,7 @@ plugins.factory('userPlugins', function() {
         }
     });
 
+    /*
     var tweetPlugin = new UrlPlugin('Tweet', function(url) {
         var regexp = /^https?:\/\/twitter\.com\/(?:#!\/)?(\w+)\/status(?:es)?\/(\d+)/i;
         var match = url.match(regexp);
@@ -469,6 +472,7 @@ plugins.factory('userPlugins', function() {
             };
         }
     });
+    */
 
     /*
      * Vine plugin
@@ -489,7 +493,7 @@ plugins.factory('userPlugins', function() {
     });
 
     return {
-        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, giphyPlugin, tweetPlugin, vinePlugin]
+        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, giphyPlugin, vinePlugin]
     };
 
 
