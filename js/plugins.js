@@ -338,6 +338,7 @@ plugins.factory('userPlugins', function() {
     );
     yrPlugin.name = "meteogram";
 
+/*
     // Embed GitHub gists
     var gistPlugin = new Plugin(
         urlPlugin(function(url) {
@@ -390,9 +391,10 @@ plugins.factory('userPlugins', function() {
         })
     );
     tweetPlugin.name = 'Tweet';
+*/
 
     return {
-        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, tweetPlugin]
+        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin]
     };
 
 
