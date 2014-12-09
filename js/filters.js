@@ -6,14 +6,11 @@ var weechat = angular.module('weechat');
 // Emojifis the string using https://github.com/twitter/twemoji
 weechat.filter('emojify',["$rootScope", function($rootScope) {
   return function(text, $scope) {
-    if($rootScope.enable_JS_Emoji === true)
-       {
+    if($rootScope.enable_JS_Emoji === true) {
         return twemoji.parse(text);
+      } else {
+        return(text);
       }
-      else
-        {
-          return(text);
-        }
   };
 }]);
 
