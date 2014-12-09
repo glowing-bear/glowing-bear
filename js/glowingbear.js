@@ -293,6 +293,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "fontsize", "14px");
     // Save setting for readline keybindings
     $store.bind($scope, "readlineBindings", false);
+    // Save settings for non-native Emoji support
+    $store.bind($scope, "enableJSEmoji", false)
 
     if (!$scope.fontfamily) {
         if (utils.isMobileUi()) {
@@ -302,8 +304,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     }
 
-    // Save setting for displaying embeds in rootScope so it can be used from service
-    $rootScope.auto_display_embedded_content = $scope.noembed === false;
+    $rootScope.enable_JS_Emoji = $scope.enableJSEmoji;
 
     $scope.isSidebarVisible = function() {
         return document.getElementById('content').getAttribute('sidebar-state') === 'visible';
@@ -395,6 +396,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.$watch('readlineBindings', function() {
         $rootScope.readlineBindings = $scope.readlineBindings;
     });
+
+    // Watch enableJSEmoji model and update the rootScope enable_JS_Emoji setting when it changes
+    $scope.$watch('enableJSEmoji', function() {
+      $rootScope.enable_JS_Emoji = $scope.enableJSEmoji;
+    });
+
 
     $scope.setActiveBuffer = function(bufferId, key) {
         // If we are on mobile we need to collapse the menu on sidebar clicks

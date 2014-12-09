@@ -426,6 +426,16 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                   </div>
                 </form>
               </li>
+              <li>
+                <form class="form-inline" role="form">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="enableJSEmoji">
+                      Enable non-native Emoji support <span class="text-muted settings-help">Displays Emoji characters as images</span>
+                    </label>
+                  </div>
+                </form>
+              </li>
             </ul>
           </div>
           <div class="modal-footer">
