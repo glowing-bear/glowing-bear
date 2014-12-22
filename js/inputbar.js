@@ -48,7 +48,7 @@ weechat.directive('inputBar', function() {
                 var input = $scope.command || '';
 
                 // get suffix from options
-                var suffix = $store.get('nickCompletionSuffix')
+                var suffix = $store.get('nickCompletionSuffix');
 
                 // complete nick
                 var nickComp = IrcUtils.completeNick(input, caretPos, $scope.iterCandidate,
