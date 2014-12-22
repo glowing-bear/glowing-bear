@@ -82,6 +82,16 @@ ls.factory("$store", ["$parse", function($parse){
             return true;
         },
         /**
+          * Enumerate all keys
+          */
+        enumerateKeys: function() {
+            var keys = [];
+            for (var i = 0, len = storage.length; i < len; ++i) {
+                keys.push(storage.key(i));
+            }
+            return keys;
+        },
+        /**
          * Bind - lets you directly bind a localStorage value to a $scope variable
          * @param $scope - the current scope you want the variable available in
          * @param key - the name of the variable you are binding

@@ -12,10 +12,12 @@ weechat.config(['$compileProvider', function ($compileProvider) {
     }
 }]);
 
-weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', 'notifications', 'utils', function ($rootScope, $scope, $store, $timeout, $log, models, connection, notifications, utils) {
+weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', 'notifications', 'utils', 'settings',
+    function ($rootScope, $scope, $store, $timeout, $log, models, connection, notifications, utils, settings) {
 
     $scope.command = '';
     $scope.themes = ['dark', 'light'];
+    $scope.settings = settings;
 
     // From: http://stackoverflow.com/a/18539624 by StackOverflow user "plantian"
     $rootScope.countWatchers = function () {
@@ -193,7 +195,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // we will send a /buffer bufferName command every time
         // the user switches a buffer. This will ensure that notifications
         // are cleared in the buffer the user switches to
-        if ($scope.hotlistsync && ab.fullName) {
+        if (settings.hotlistsync && ab.fullName) {
             connection.sendCoreCommand('/buffer ' + ab.fullName);
         }
 
@@ -215,7 +217,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $rootScope.$on('notificationChanged', function() {
         notifications.updateTitle();
 
-        if ($scope.useFavico && $rootScope.favico) {
+        if (settings.useFavico && $rootScope.favico) {
             notifications.updateFavico();
         }
     });
@@ -246,71 +248,30 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $rootScope.iterCandidate = null;
 
-    $store.bind($scope, "host", "localhost");
-    $store.bind($scope, "port", "9001");
-    $store.bind($scope, "proto", "weechat");
-    $store.bind($scope, "ssl", (window.location.protocol === "https:"));
-    $store.bind($scope, "savepassword", false);
-    if ($scope.savepassword) {
-        $store.bind($scope, "password", "");
+    if (settings.savepassword) {
+        $scope.$watch('password', function() {
+            settings.password = $scope.password;
+        });
+        settings.addCallback('password', function(password) {
+            $scope.password = password;
+        });
+        $scope.password = settings.password;
+    } else {
+        settings.password = '';
     }
-    $store.bind($scope, "autoconnect", false);
-
-    // If we are on mobile change some defaults
-    // We use 968 px as the cutoff, which should match the value in glowingbear.css
-    var nonicklist = false;
-    var noembed = false;
-    var showtimestamp = true;
 
     $rootScope.wasMobileUi = false;
-
     if (utils.isMobileUi()) {
-        nonicklist = true;
-        noembed = true;
         $rootScope.wasMobileUi = true;
     }
 
-
-    // Save setting for displaying only buffers with unread messages
-    $store.bind($scope, "onlyUnread", false);
-
-    // Save setting for syncing hotlist
-    $store.bind($scope, "hotlistsync", true);
-    // Save setting for displaying nicklist
-    $store.bind($scope, "nonicklist", nonicklist);
-    // Save setting for displaying embeds
-    $store.bind($scope, "noembed", noembed);
-    // Save setting for channel ordering
-    $store.bind($scope, "orderbyserver", true);
-    // Save setting for updating favicon
-    $store.bind($scope, "useFavico", true);
-    // Save setting for showtimestamp
-    $store.bind($scope, "showtimestamp", showtimestamp);
-    // Save setting for showing seconds on timestamps
-    $store.bind($scope, "showtimestampSeconds", false);
-    // Save setting for playing sound on notification
-    $store.bind($scope, "soundnotification", false);
-    // Save setting for font family
-    $store.bind($scope, "fontfamily");
-    // Save setting for theme
-    $store.bind($scope, "theme", 'dark');
-    // Save setting for font size
-    $store.bind($scope, "fontsize", "14px");
-    // Save setting for readline keybindings
-    $store.bind($scope, "readlineBindings", false);
-    // Save settings for non-native Emoji support
-    $store.bind($scope, "enableJSEmoji", false);
-
-    if (!$scope.fontfamily) {
+    if (!settings.fontfamily) {
         if (utils.isMobileUi()) {
-            $scope.fontfamily = 'sans-serif';
+            settings.fontfamily = 'sans-serif';
         } else {
-            $scope.fontfamily = "Inconsolata, Consolas, Monaco, Ubuntu Mono, monospace";
+            settings.fontfamily = "Inconsolata, Consolas, Monaco, Ubuntu Mono, monospace";
         }
     }
-
-    // Save setting for displaying embeds in rootScope so it can be used from service
-    $rootScope.auto_display_embedded_content = $scope.noembed === false;
 
     $scope.isSidebarVisible = function() {
         return document.getElementById('content').getAttribute('sidebar-state') === 'visible';
@@ -333,9 +294,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             document.getElementById('content').setAttribute('sidebar-state', 'hidden');
         }
     };
-    // This also fires on page load
-    $scope.$watch('autoconnect', function() {
-        if ($scope.autoconnect && !$rootScope.connected && !$rootScope.sslError && !$rootScope.securityError && !$rootScope.errorMessage) {
+    settings.addCallback('autoconnect', function(autoconnect) {
+        if (autoconnect && !$rootScope.connected && !$rootScope.sslError && !$rootScope.securityError && !$rootScope.errorMessage) {
             $scope.connect();
         }
     });
@@ -354,35 +314,31 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Open and close panels while on mobile devices through swiping
     $scope.openNick = function() {
         if (utils.isMobileUi()) {
-            if ($scope.nonicklist) {
-                $scope.nonicklist = false;
+            if (settings.nonicklist) {
+                settings.nonicklist = false;
             }
         }
     };
 
     $scope.closeNick = function() {
         if (utils.isMobileUi()) {
-            if (!$scope.nonicklist) {
-                $scope.nonicklist = true;
+            if (!settings.nonicklist) {
+                settings.nonicklist = true;
             }
         }
     };
 
-    // Watch model and update show setting when it changes
-    $scope.$watch('noembed', function() {
-        $rootScope.auto_display_embedded_content = $scope.noembed === false;
-    });
     // Watch model and update channel sorting when it changes
-    $scope.$watch('orderbyserver', function() {
-        $rootScope.predicate = $scope.orderbyserver ? 'serverSortKey' : 'number';
+    settings.addCallback('orderbyserver', function(orderbyserver) {
+        $rootScope.predicate = orderbyserver ? 'serverSortKey' : 'number';
     });
 
-    $scope.$watch('useFavico', function() {
+    settings.addCallback('useFavico', function(useFavico) {
         // this check is necessary as this is called on page load, too
         if (!$rootScope.connected) {
             return;
         }
-        if ($scope.useFavico) {
+        if (useFavico) {
             notifications.updateFavico();
         } else {
             $rootScope.favico.reset();
@@ -390,17 +346,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     });
 
     // Update font family when changed
-    $scope.$watch('fontfamily', function() {
-        utils.changeClassStyle('favorite-font', 'fontFamily', $scope.fontfamily);
+    settings.addCallback('fontfamily', function(fontfamily) {
+        utils.changeClassStyle('favorite-font', 'fontFamily', fontfamily);
     });
     // Update font size when changed
-    $scope.$watch('fontsize', function() {
-        utils.changeClassStyle('favorite-font', 'fontSize', $scope.fontsize);
-    });
-    // Crude scoping hack. The keypress listener does not live in the same scope as
-    // the checkbox, so we need to transfer this between scopes here.
-    $scope.$watch('readlineBindings', function() {
-        $rootScope.readlineBindings = $scope.readlineBindings;
+    settings.addCallback('fontsize', function(fontsize) {
+        utils.changeClassStyle('favorite-font', 'fontSize', fontsize);
     });
 
     $scope.setActiveBuffer = function(bufferId, key) {
@@ -526,7 +477,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $rootScope.errorMessage = false;
         $rootScope.bufferBottom = true;
         $scope.connectbutton = 'Connecting ...';
-        connection.connect($scope.host, $scope.port, $scope.password, $scope.ssl);
+        connection.connect(settings.host, settings.port, $scope.password, settings.ssl);
     };
     $scope.disconnect = function() {
         $scope.connectbutton = 'Connect';
@@ -594,7 +545,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if ($scope.search && $scope.search !== "") {
             return true;
         }
-        if ($scope.onlyUnread) {
+        if (settings.onlyUnread) {
             // Always show current buffer in list
             if (models.getActiveBuffer() === buffer) {
                 return true;
@@ -609,7 +560,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     // Watch model and update show setting when it changes
-    $scope.$watch('nonicklist', function() {
+    settings.addCallback('nonicklist', function() {
         $scope.showNicklist = $scope.updateShowNicklist();
         // restore bottom view
         if ($rootScope.connected && $rootScope.bufferBottom) {
@@ -628,7 +579,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             return false;
         }
         // Check if option no nicklist is set
-        if ($scope.nonicklist) {
+        if (settings.nonicklist) {
             return false;
         }
         // Check if nicklist is empty
@@ -662,7 +613,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
     // Helper function since the keypress handler is in a different scope
     $rootScope.toggleNicklist = function() {
-        $scope.nonicklist = !$scope.nonicklist;
+        settings.nonicklist = !settings.nonicklist;
     };
 
 

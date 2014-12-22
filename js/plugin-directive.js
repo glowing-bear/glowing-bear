@@ -3,7 +3,7 @@
 
 var weechat = angular.module('weechat');
 
-weechat.directive('plugin', ['$rootScope', function($rootScope) {
+weechat.directive('plugin', ['$rootScope', 'settings', function($rootScope, settings) {
     /*
      * Plugin directive
      * Shows additional plugin content
@@ -20,7 +20,7 @@ weechat.directive('plugin', ['$rootScope', function($rootScope) {
             $scope.displayedContent = "";
 
             // Auto-display embedded content only if it isn't NSFW
-            $scope.plugin.visible = $rootScope.auto_display_embedded_content && !$scope.plugin.nsfw;
+            $scope.plugin.visible = !settings.noembed && !$scope.plugin.nsfw;
 
             // user-accessible hash key that is a valid CSS class name
             $scope.plugin.className = "embed_" + $scope.plugin.$$hashKey.replace(':','_');
