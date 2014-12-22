@@ -1,7 +1,10 @@
 (function() {
 'use strict';
 
-var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'plugins', 'IrcUtils', 'ngSanitize', 'ngWebsockets', 'ngTouch']);
+var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'plugins', 'IrcUtils', 'ngSanitize', 'ngWebsockets', 'ngTouch'], function($compileProvider) {
+    // hacky way to be able to find out if we're in debug mode
+    weechat.compileProvider = $compileProvider;
+});
 weechat.config(['$compileProvider', function ($compileProvider) {
     // hack to determine whether we're executing the tests
     if (typeof(it) === "undefined" && typeof(describe) === "undefined") {
@@ -69,22 +72,16 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     // Enable debug mode if "?debug=1" or "?debug=true" is set
     (function() {
-        var hasReloaded = false;
         window.location.search.substring(1).split('&').forEach(function(f) {
             var segs = f.split('=');
             if (segs[0] === "debug" && ["true", "1"].indexOf(segs[1]) != -1) {
                 $rootScope.debugMode = true;
-            } else if (segs[0] === "debugReload" && segs[1] === "1") {
-                hasReloaded = true;
             }
         });
         // If we haven't reloaded yet, do an angular reload with debug infos
         // store whether this has happened yet in a GET parameter
-        if ($rootScope.debugMode && !hasReloaded) {
-            document.location.search += "&debugReload=1";
-            setTimeout(function() {
-                angular.reloadWithDebugInfo();
-            }, 0);
+        if ($rootScope.debugMode && !weechat.compileProvider.debugInfoEnabled()) {
+            angular.reloadWithDebugInfo();
         }
     })();
 
