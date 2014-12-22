@@ -33,7 +33,7 @@ ls.factory("$store", ["$parse", function($parse){
                 if (val === 'false'){
                     val = false;
                 }
-                if (parseFloat(val) === val && !angular.isObject(val)) {
+                if (parseFloat(val) == val && !angular.isObject(val)) {
                     val = parseFloat(val);
                 }
             } catch(e){
