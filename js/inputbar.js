@@ -135,7 +135,7 @@ weechat.directive('inputBar', function() {
                 }
                 // Add highlight to nicklist
                 newValue += nick;
-                if (addColon) {
+                if ($rootScope.colonNickCompletion && addColon) {
                     newValue += ': ';
                 }
                 $scope.command = newValue;
