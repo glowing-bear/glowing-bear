@@ -285,8 +285,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "showtimestampSeconds", false);
     // Save setting for playing sound on notification
     $store.bind($scope, "soundnotification", false);
-    // Save setting for colon after nick completion
-    $store.bind($scope, "colonNickCompletion", true);
+    // Save setting for nickname completion suffix
+    $store.bind($scope, "nickCompletionSuffix", ':');
     // Save setting for font family
     $store.bind($scope, "fontfamily");
     // Save setting for theme
