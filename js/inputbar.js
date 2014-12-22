@@ -14,8 +14,9 @@ weechat.directive('inputBar', function() {
             command: '=command'
         },
 
-        controller: ['$rootScope', '$scope', '$element', '$log', 'connection', 'models', 'IrcUtils', function($rootScope,
+        controller: ['$rootScope', '$scope', '$store', '$element', '$log', 'connection', 'models', 'IrcUtils', function($rootScope,
                              $scope,
+                             $store,
                              $element, //XXX do we need this? don't seem to be using it
                              $log,
                              connection, //XXX we should eliminate this dependency and use signals instead
@@ -46,9 +47,12 @@ weechat.directive('inputBar', function() {
                 // Empty input makes $scope.command undefined -- use empty string instead
                 var input = $scope.command || '';
 
+                // get suffix from options
+                var suffix = $store.get('nickCompletionSuffix');
+
                 // complete nick
                 var nickComp = IrcUtils.completeNick(input, caretPos, $scope.iterCandidate,
-                                                     activeBuffer.getNicklistByTime(), ':');
+                                                     activeBuffer.getNicklistByTime(), suffix);
 
                 // remember iteration candidate
                 $scope.iterCandidate = nickComp.iterCandidate;
@@ -136,7 +140,7 @@ weechat.directive('inputBar', function() {
                 // Add highlight to nicklist
                 newValue += nick;
                 if (addColon) {
-                    newValue += ': ';
+                    newValue += $store.get('nickCompletionSuffix') + ' ';
                 }
                 $scope.command = newValue;
                 $scope.getInputNode().focus();

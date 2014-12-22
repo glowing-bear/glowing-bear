@@ -315,6 +315,16 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
               <li class="standard-labels">
                 <form class="form-horizontal" role="form">
                   <div class="form-group">
+                    <label for="suffix" class="col-sm-8 control-label">Nick completion suffix</label>
+                    <div class="col-sm-2">
+                      <input type="text" ng-model="nickCompletionSuffix" class="form-control" id="suffix">
+                    </div>
+                  </div>
+                </form>
+              </li>
+              <li class="standard-labels">
+                <form class="form-horizontal" role="form">
+                  <div class="form-group">
                     <label for="theme" class="col-sm-3 control-label make-thinner">Theme</label>
                     <div class="col-sm-7">
                       <select id="theme" class="form-control" ng-model="theme" ng-options="theme for theme in themes"></select>
