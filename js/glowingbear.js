@@ -17,6 +17,26 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $scope.command = '';
     $scope.themes = ['dark', 'light'];
+
+    settings.setDefaults({
+        'theme': 'dark',
+        'host': 'localhost',
+        'port': 9001,
+        'ssl': (window.location.protocol === "https:"),
+        'savepassword': false,
+        'autoconnect': false,
+        'nonicklist': utils.isMobileUi(),
+        'noembed': utils.isMobileUi(),
+        'onlyUnread': false,
+        'hotlistsync': true,
+        'orderbyserver': true,
+        'useFavico': true,
+        'showtimestamp': true,
+        'showtimestampSeconds': false,
+        'fontsize': '14px',
+        'fontfamily': (utils.isMobileUi() ? 'sans-serif' : 'Inconsolata, Consolas, Monaco, Ubuntu Mono, monospace'),
+        'readlineBindings': false
+    });
     $scope.settings = settings;
 
     // From: http://stackoverflow.com/a/18539624 by StackOverflow user "plantian"

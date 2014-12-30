@@ -53,6 +53,15 @@ weechat.factory('settings', ['$store', '$rootScope', function($store, $rootScope
 		}, 0);
 	};
 
+	this.setDefaults = function(defaults) {
+		for (var key in defaults) {
+			// null means the key isn't set
+			if ($store.get(key) === null) {
+				this[key] = defaults[key];
+			}
+		}
+	};
+
 	return this;
 }]);
 
