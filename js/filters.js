@@ -94,13 +94,15 @@ weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
                     } else {
                         parent.appendChild(newNode);
                     }
+                    return newNode;
                 }
             }
             // recurse
+            if (node === undefined || node === null) return;
             node = node.firstChild;
             while (node) {
-                process(node);
-                node = node.nextSibling;
+                var nextNode = process(node);
+                node = (nextNode ? nextNode : node).nextSibling;
             }
         };
 
