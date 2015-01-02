@@ -583,21 +583,23 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         // Find next buffer with activity and switch to it
         var sortedBuffers = _.sortBy(this.getBuffers(), 'number');
         var i, buffer;
-        // Try to find buffer with notification
+        // Look for a buffer with notifications or unread message
+        var unreadBuffer = null;
         for (i in sortedBuffers) {
             buffer = sortedBuffers[i];
             if (buffer.notification > 0) {
                 jumpTo(buffer.id);
-                return;  // return instead of break so that the second for loop isn't executed
-            }
-        }
-        // No notifications, find first buffer with unread lines instead
-        for (i in sortedBuffers) {
-            buffer = sortedBuffers[i];
-            if (buffer.unread > 0) {
-                jumpTo(buffer.id);
                 return;
             }
+
+            if (buffer.unread > 0 && !unreadBuffer) {
+                unreadBuffer = buffer;
+            }
+        }
+
+        if (unreadBuffer) {
+            jumpTo(unreadBuffer.id);
+            return;
         }
 
         // Jump back to first buffer in the series
