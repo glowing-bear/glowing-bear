@@ -71,6 +71,16 @@ describe('filter', function() {
             plugins);
         }));
 
+        it('should recognize html5 videos', inject(function(plugins) {
+            expectTheseMessagesToContain([
+                'http://www.quirksmode.org/html5/videos/big_buck_bunny.mp4',
+                'http://www.quirksmode.org/html5/videos/big_buck_bunny.webm',
+                'http://www.quirksmode.org/html5/videos/big_buck_bunny.ogv',
+            ],
+            'video',
+            plugins);
+        }));
+
         it('should recognize images', inject(function(plugins) {
             expectTheseMessagesToContain([
                 'http://i.imgur.com/BTNIDBR.gif',
