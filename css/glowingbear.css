@@ -320,6 +320,10 @@ div.embed img.embed {
     max-width: 100%;
 }
 
+video.embed {
+    max-width: 100%;
+}
+
 div.colourbox {
     display: inline-block;
     border-radius: 3px;
