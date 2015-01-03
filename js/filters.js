@@ -30,6 +30,13 @@ weechat.filter('irclinky', ['$filter', function($filter) {
             return text;
         }
 
+        // First, escape entities to prevent escaping issues because it's a bad idea
+        // to parse/modify HTML with regexes, which we do a couple of lines down...
+        var entities = {"<": "&lt;", ">": "&gt;", '"': '&quot;', "'": '&#39;', "&": "&amp;", "/": '&#x2F;'};
+        text = text.replace(/[<>"'&\/]/g, function (char) {
+            return entities[char];
+        });
+
         // This regex in no way matches all IRC channel names (they could also begin with &, + or an
         // exclamation mark followed by 5 alphanumeric characters, and are bounded in length by 50).
         // However, it matches all *common* IRC channels while trying to minimise false positives.
@@ -87,13 +94,15 @@ weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
                     } else {
                         parent.appendChild(newNode);
                     }
+                    return newNode;
                 }
             }
             // recurse
+            if (node === undefined || node === null) return;
             node = node.firstChild;
             while (node) {
-                process(node);
-                node = node.nextSibling;
+                var nextNode = process(node);
+                node = (nextNode ? nextNode : node).nextSibling;
             }
         };
 
