@@ -1,6 +1,8 @@
 var weechat = angular.module('weechat');
 
 weechat.factory('notifications', ['$rootScope', '$log', 'models', function($rootScope, $log, models) {
+    var notifications = [];
+
     // Ask for permission to display desktop notifications
     var requestNotificationPermission = function() {
         // Firefox
@@ -109,6 +111,10 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', function($root
             icon: 'assets/img/favicon.png'
         });
 
+        // Save notification, so we can close all outstanding ones when disconnecting
+        notification.id = notifications.length;
+        notifications.push(notification);
+
         // Cancel notification automatically
         var timeout = 15*1000;
         notification.onshow = function() {
@@ -124,6 +130,11 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', function($root
             notification.close();
         };
 
+        // Remove from list of active notifications
+        notification.onclose = function() {
+            delete notifications[this.id];
+        };
+
         if ($rootScope.soundnotification) {
             // TODO fill in a sound file
             var audioFile = "assets/audio/sonar";
@@ -132,10 +143,20 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', function($root
         }
     };
 
+    var cancelAll = function() {
+        while (notifications.length > 0) {
+            var notification = notifications.pop();
+            if (notification !== undefined) {
+                notification.close();
+            }
+        }
+    };
+
     return {
     	requestNotificationPermission: requestNotificationPermission,
     	updateTitle: updateTitle,
     	updateFavico: updateFavico,
     	createHighlight: createHighlight,
+        cancelAll: cancelAll,
     };
 }]);

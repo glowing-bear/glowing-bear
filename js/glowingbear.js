@@ -221,6 +221,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     });
 
     $rootScope.$on('relayDisconnect', function() {
+        // Reset title
+        $rootScope.pageTitle = '';
+        $rootScope.notificationStatus = '';
+        notifications.cancelAll();
+
         models.reinitialize();
         $rootScope.$emit('notificationChanged');
         $scope.connectbutton = 'Connect';
