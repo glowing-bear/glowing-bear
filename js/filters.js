@@ -73,6 +73,9 @@ weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
             return text;
         }
 
+        // hacky way to pass an extra argument without using .apply, which
+        // would require assembling an argument array. PERFORMANCE!!!
+        var extraArgument = (arguments.length > 2) ? arguments[2] : null;
         var filterFunction = $filter(filter);
         var el = document.createElement('div');
         el.innerHTML = text;
@@ -80,7 +83,7 @@ weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
         // Recursive DOM-walking function applying the filter to the text nodes
         var process = function(node) {
             if (node.nodeType === 3) { // text node
-                var value = filterFunction(node.nodeValue);
+                var value = filterFunction(node.nodeValue, extraArgument);
                 if (value !== node.nodeValue) {
                     // we changed something. create a new node to replace the current one
                     // we could also only add its children but that would probably incur
@@ -133,6 +136,17 @@ weechat.filter('getBufferQuickKeys', function () {
             });
         }
         return obj;
+    };
+});
+
+// Emojifis the string using https://github.com/twitter/twemoji
+weechat.filter('emojify', function() {
+    return function(text, enable_JS_Emoji) {
+        if (enable_JS_Emoji === true) {
+            return twemoji.parse(text);
+        } else {
+            return(text);
+        }
     };
 });
 

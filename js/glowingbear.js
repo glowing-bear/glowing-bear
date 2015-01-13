@@ -298,6 +298,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $store.bind($scope, "fontsize", "14px");
     // Save setting for readline keybindings
     $store.bind($scope, "readlineBindings", false);
+    // Save settings for non-native Emoji support
+    $store.bind($scope, "enableJSEmoji", false);
 
     if (!$scope.fontfamily) {
         if (utils.isMobileUi()) {
