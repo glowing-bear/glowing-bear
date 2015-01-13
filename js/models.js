@@ -8,6 +8,48 @@
 var models = angular.module('weechatModels', []);
 
 models.service('models', ['$rootScope', '$filter', function($rootScope, $filter) {
+    var parseRichText = function(text) {
+        var textElements = weeChat.Protocol.rawText2Rich(text),
+            typeToClassPrefixFg = {
+                'option': 'cof-',
+                'weechat': 'cwf-',
+                'ext': 'cef-'
+            },
+            typeToClassPrefixBg = {
+                'option': 'cob-',
+                'weechat': 'cwb-',
+                'ext': 'ceb-'
+            };
+
+        textElements.forEach(function(textEl) {
+            textEl.classes = [];
+
+            // foreground color
+            var prefix = typeToClassPrefixFg[textEl.fgColor.type];
+            textEl.classes.push(prefix + textEl.fgColor.name);
+
+            // background color
+            prefix = typeToClassPrefixBg[textEl.bgColor.type];
+            textEl.classes.push(prefix + textEl.bgColor.name);
+
+            // attributes
+            if (textEl.attrs.name !== null) {
+                textEl.classes.push('coa-' + textEl.attrs.name);
+            }
+            var attr, val;
+            for (attr in textEl.attrs.override) {
+                val = textEl.attrs.override[attr];
+                if (val) {
+                    textEl.classes.push('a-' + attr);
+                } else {
+                    textEl.classes.push('a-no-' + attr);
+                }
+            }
+        });
+        return textElements;
+    };
+    this.parseRichText = parseRichText;
+
     /*
      * Buffer class
      */
@@ -21,7 +63,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var trimmedName = shortName.replace(/^[#&+]/, '') || (shortName ? ' ' : null);
         // get channel identifier
         var prefix = ['#', '&', '+'].indexOf(shortName.charAt(0)) >= 0 ? shortName.charAt(0) : '';
-        var title = message.title;
+        var title = parseRichText(message.title);
         var number = message.number;
         var pointer = message.pointers[0];
         var notify = 3; // Default 3 == message
@@ -42,6 +84,11 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         // Buffer opened message does not include notify level
         if (message.notify !== undefined) {
             notify = message.notify;
+        }
+
+        var rtitle = "";
+        for (var i = 0; i < title.length; ++i) {
+            rtitle += title[i].text;
         }
 
         /*
@@ -234,6 +281,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             prefix: prefix,
             number: number,
             title: title,
+            rtitle: rtitle,
             lines: lines,
             clear: clear,
             requestedLines: requestedLines,
@@ -268,53 +316,11 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var date = message.date;
         var shortTime = $filter('date')(date, 'HH:mm');
 
-        function addClasses(textElements) {
-            var typeToClassPrefixFg = {
-                'option': 'cof-',
-                'weechat': 'cwf-',
-                'ext': 'cef-'
-            };
-            var typeToClassPrefixBg = {
-                'option': 'cob-',
-                'weechat': 'cwb-',
-                'ext': 'ceb-'
-            };
-            textElements.forEach(function(textEl) {
-                textEl.classes = [];
-
-                // foreground color
-                var prefix = typeToClassPrefixFg[textEl.fgColor.type];
-                textEl.classes.push(prefix + textEl.fgColor.name);
-
-                // background color
-                prefix = typeToClassPrefixBg[textEl.bgColor.type];
-                textEl.classes.push(prefix + textEl.bgColor.name);
-
-                // attributes
-                if (textEl.attrs.name !== null) {
-                    textEl.classes.push('coa-' + textEl.attrs.name);
-                }
-                var val;
-                for (var attr in textEl.attrs.override) {
-                    val = textEl.attrs.override[attr];
-                    if (val) {
-                        textEl.classes.push('a-' + attr);
-                    } else {
-                        textEl.classes.push('a-no-' + attr);
-                    }
-                }
-            });
-        }
-
-
-        var prefix = weeChat.Protocol.rawText2Rich(message.prefix);
-        addClasses(prefix);
-
+        var prefix = parseRichText(message.prefix);
         var tags_array = message.tags_array;
         var displayed = message.displayed;
         var highlight = message.highlight;
-        var content = weeChat.Protocol.rawText2Rich(message.message);
-        addClasses(content);
+        var content = parseRichText(message.message);
 
         if (highlight) {
             prefix.forEach(function(textEl) {
