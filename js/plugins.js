@@ -257,7 +257,7 @@ plugins.factory('userPlugins', function() {
             var embed = false;
             // Check the get parameters as well, they might contain an image to load
             var segments = url.split(/[?&]/).forEach(function(param) {
-                if (param.match(/\.(png|gif|jpg|jpeg)$/i)) {
+                if (param.match(/\.(png|gif|jpg|jpeg)(:(small|medium|large))?$/i)) {
                     embed = true;
                 }
             });

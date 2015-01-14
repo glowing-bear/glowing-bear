@@ -80,7 +80,9 @@ describe('filter', function() {
                 'https://4z2.de/gb-mobile-new.png',
                 'http://static.weechat.org/images/screenshots/relay/medium/glowing-bear.png',
                 'http://foo.bar/baz.php?img=trololo.png&dummy=yes',
-                'https://tro.lo.lo/images/rick.png?size=123x45'
+                'https://tro.lo.lo/images/rick.png?size=123x45',
+                'https://pbs.twimg.com/media/B66rbCuIMAAxiFF.jpg:large',
+                'https://pbs.twimg.com/media/B6OZuCYCEAEV8SA.jpg:medium'
             ],
             'image',
             plugins);
