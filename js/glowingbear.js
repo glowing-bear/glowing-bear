@@ -3,7 +3,10 @@
 
 var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'plugins', 'IrcUtils', 'ngSanitize', 'ngWebsockets', 'ngTouch']);
 weechat.config(['$compileProvider', function ($compileProvider) {
-    $compileProvider.debugInfoEnabled(false);
+    // hack to determine whether we're executing the tests
+    if (typeof(it) === "undefined" && typeof(describe) === "undefined") {
+        $compileProvider.debugInfoEnabled(false);
+    }
 }]);
 
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', 'notifications', 'utils', function ($rootScope, $scope, $store, $timeout, $log, models, connection, notifications, utils) {
