@@ -142,6 +142,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
     padding-top: 35px; /* topbar */
     padding-bottom: 1px; /* need to force a padding here */
     font-size: smaller;
@@ -182,6 +183,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
     right: 0;
     top: 0;
     padding-top: 39px;
@@ -233,6 +235,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
     position: relative;
     height: 100%;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     width: auto;
     bottom: 35px;      /* input bar */
     padding-top: 42px; /* topbar */
@@ -355,6 +358,7 @@ table.notimestampseconds td.time span.seconds {
     z-index: 1000;
     height: 100%;
     overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
     position: absolute;
     top: 0;
     left: 0;
