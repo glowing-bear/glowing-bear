@@ -391,8 +391,28 @@ plugins.factory('userPlugins', function() {
     );
     tweetPlugin.name = 'Tweet';
 
+    /*
+     * Vine plugin
+     */
+    var vinePlugin = new Plugin(function(message) {
+
+        var regexp = /https?:\/\/(www\.)?vine.co\/v\/([a-zA-Z0-9]+)(\/.*)?/g;
+        var content = [];
+        var match;
+
+        // Iterate over all matches
+        while ((match = regexp.exec(message)) !== null) {
+            var id = match[2];
+            var embedurl = "https://vine.co/v/" + id + "/embed/simple?audio=1";
+            content.push('<iframe class="vine-embed" src="' + embedurl + '" width="600" height="600" frameborder="0"></iframe><script async src="//platform.vine.co/static/scripts/embed.js" charset="utf-8"></script>');
+        }
+
+        return content;
+    });
+    vinePlugin.name = "Vine";
+
     return {
-        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, tweetPlugin]
+        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, tweetPlugin, vinePlugin]
     };
 
 
