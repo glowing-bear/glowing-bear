@@ -1,9 +1,8 @@
 var weechat = angular.module('weechat');
 
-weechat.factory('notifications', ['$rootScope', '$log', 'models', function($rootScope, $log, models) {
-    var notifications = [];
-
+weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', function($rootScope, $log, models, settings) {
     // Ask for permission to display desktop notifications
+    var notifications = [];
     var requestNotificationPermission = function() {
         // Firefox
         if (window.Notification) {
@@ -135,7 +134,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', function($root
             delete notifications[this.id];
         };
 
-        if ($rootScope.soundnotification) {
+        if (settings.soundnotification) {
             // TODO fill in a sound file
             var audioFile = "assets/audio/sonar";
             var soundHTML = '<audio autoplay="autoplay"><source src="' + audioFile + '.ogg" type="audio/ogg" /><source src="' + audioFile + '.mp3" type="audio/mpeg" /></audio>';
@@ -153,10 +152,10 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', function($root
     };
 
     return {
-    	requestNotificationPermission: requestNotificationPermission,
-    	updateTitle: updateTitle,
-    	updateFavico: updateFavico,
-    	createHighlight: createHighlight,
+        requestNotificationPermission: requestNotificationPermission,
+        updateTitle: updateTitle,
+        updateFavico: updateFavico,
+        createHighlight: createHighlight,
         cancelAll: cancelAll,
     };
 }]);
