@@ -272,12 +272,12 @@ plugins.factory('userPlugins', function() {
      */
     var cloudmusicPlugin = new UrlPlugin('cloud music', function(url) {
         /* SoundCloud http://help.soundcloud.com/customer/portal/articles/247785-what-widgets-can-i-use-from-soundcloud- */
-        if (url.match(/^https?:\/\/soundcloud.com\//)) {
+        if (url.match(/\bsoundcloud.com\//)) {
             return '<iframe width="100%" height="120" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=' + url + '&amp;color=ff6600&amp;auto_play=false&amp;show_artwork=true"></iframe>';
         }
 
         /* MixCloud */
-        if (url.match(/^https?:\/\/([a-z]+\.)?mixcloud.com\//)) {
+        if (url.match(/\bmixcloud.com\//)) {
             return '<iframe width="480" height="60" src="//www.mixcloud.com/widget/iframe/?feed=' + url + '&mini=1&stylecolor=&hide_artwork=&embed_type=widget_standard&hide_tracklist=1&hide_cover=" frameborder="0"></iframe>';
         }
     });
@@ -286,7 +286,7 @@ plugins.factory('userPlugins', function() {
      * Google Maps
      */
     var googlemapPlugin = new UrlPlugin('Google Map', function(url) {
-        if (url.match(/^https?:\/\/maps\.google\./i) || url.match(/^https?:\/\/(?:[\w]+\.)?google\.[\w]+\/maps/i)) {
+        if (url.match(/\bmaps\.google\./i) || url.match(/\bgoogle\.[\w]+\/maps/i)) {
             return '<iframe width="450" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="' + url + '&output=embed"></iframe>';
         }
     });
@@ -295,7 +295,7 @@ plugins.factory('userPlugins', function() {
       * Asciinema plugin
      */
     var asciinemaPlugin = new UrlPlugin('ascii cast', function(url) {
-        var regexp = /^https?:\/\/(?:www\.)?asciinema.org\/a\/(\d+)/i,
+        var regexp = /\basciinema.org\/a\/(\d+)/i,
             match = url.match(regexp);
         if (match) {
             var id = match[1];
@@ -311,7 +311,7 @@ plugins.factory('userPlugins', function() {
     });
 
     var yrPlugin = new UrlPlugin('meteogram', function(url) {
-        var regexp = /^https?:\/\/(?:www\.)?yr\.no\/(place|stad|sted|sadji|paikka)\/(([^\s.;,(){}<>\/]+\/){3,})/;
+        var regexp = /\byr\.no\/(place|stad|sted|sadji|paikka)\/(([^\s.;,(){}<>\/]+\/){3,})/;
         var match = url.match(regexp);
         if (match) {
             var language = match[1];
@@ -324,7 +324,7 @@ plugins.factory('userPlugins', function() {
 
     // Embed GitHub gists
     var gistPlugin = new UrlPlugin('Gist', function(url) {
-        var regexp = /^https:\/\/gist\.github.com\/[^.?]+/i;
+        var regexp = /\bgist\.github.com\/[^.?]+/i;
         var match = url.match(regexp);
         if (match) {
             // get the URL from the match to trim away pseudo file endings and request parameters
@@ -345,7 +345,7 @@ plugins.factory('userPlugins', function() {
     });
 
     var tweetPlugin = new UrlPlugin('Tweet', function(url) {
-        var regexp = /^https?:\/\/twitter\.com\/(?:#!\/)?(\w+)\/status(?:es)?\/(\d+)/i;
+        var regexp = /\btwitter\.com\/(?:#!\/)?(\w+)\/status(?:es)?\/(\d+)/i;
         var match = url.match(regexp);
         if (match) {
             url = 'https://api.twitter.com/1/statuses/oembed.json?id=' + match[2];
@@ -373,7 +373,7 @@ plugins.factory('userPlugins', function() {
      * Vine plugin
      */
     var vinePlugin = new UrlPlugin('Vine', function (url) {
-        var regexp = /^https?:\/\/(www\.)?vine.co\/v\/([a-zA-Z0-9]+)(\/.*)?/i,
+        var regexp = /\bvine.co\/v\/([a-zA-Z0-9]+)(\/.*)?/i,
             match = url.match(regexp);
         if (match) {
             var id = match[2], embedurl = "https://vine.co/v/" + id + "/embed/simple?audio=1";
