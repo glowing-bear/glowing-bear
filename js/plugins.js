@@ -312,15 +312,21 @@ plugins.factory('userPlugins', function() {
     /*
       * Asciinema plugin
      */
-    var asciinemaPlugin = new Plugin(function(message) {
-
-        var regexp = /^https?:\/\/(www\.)?asciinema.org\/a\/(\d+)/;
-        var match = message.match(regexp);
+    var asciinemaPlugin = new Plugin(urlPlugin(function(url) {
+        var regexp = /^https?:\/\/(?:www\.)?asciinema.org\/a\/(\d+)/i;
+        var match = url.match(regexp);
         if (match) {
-            var id = match[3];
-            return "<script type='text/javascript' src='https://asciinema.org/a/" + id + ".js' id='asciicast-" + id + "' async></script>";
+            var id = match[1];
+            return function() {
+                var element = this.getElement();
+                var scriptElem = document.createElement('script');
+                scriptElem.src = 'https://asciinema.org/a/' + id + '.js';
+                scriptElem.id = 'asciicast-' + id;
+                scriptElem.async = true;
+                element.appendChild(scriptElem);
+            };
         }
-    });
+    }));
     asciinemaPlugin.name = "ascii cast";
 
     var yrPlugin = new Plugin(
