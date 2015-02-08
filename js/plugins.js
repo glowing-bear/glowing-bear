@@ -27,19 +27,28 @@ var urlRegexp = /(?:ftp|https?):\/\/\S*[^\s.;,(){}<>]/g;
 /*
  * Definition of a user provided plugin that consumes URLs
  *
- * URL plugins are created by providing a name and a function that
- * that parses a URL and returns any additional content.
+ * URL plugins are created by providing a name, an optional pattern and a
+ * function to call with the URL and optional matches which returns any
+ * additional content.
  */
-var UrlPlugin = function(name, urlCallback) {
+var UrlPlugin = function(name, urlPattern, urlCallback) {
     return {
         contentForMessage: function(message) {
+            var regexp = new RegExp(urlPattern, 'i');
             var urls = message.match(urlRegexp);
             var content = [];
 
             for (var i = 0; urls && i < urls.length; i++) {
-                var result = urlCallback(urls[i]);
-                if (result) {
-                    content.push(result);
+                var url = urls[i];
+                var match = url.match(regexp);
+
+                // Call plugin function only if no pattern or pattern matches
+                // Note that match(/null/i) returns null
+                if (!urlPattern || match) {
+                    var result = urlCallback(url, match);
+                    if (result) {
+                        content.push(result);
+                    }
                 }
             }
             return content;
@@ -198,15 +207,11 @@ plugins.factory('userPlugins', function() {
      *
      * See: https://developers.google.com/youtube/player_parameters
      */
-    var youtubePlugin = new UrlPlugin('YouTube video', function(url) {
-        var regex = /(?:youtube.com|youtu.be)\/(?:v\/|embed\/|watch(?:\?v=|\/))?([a-zA-Z0-9-]+)/i,
-            match = url.match(regex);
-
-        if (match){
-            var token = match[1],
-                embedurl = "https://www.youtube.com/embed/" + token + "?html5=1&iv_load_policy=3&modestbranding=1&rel=0&showinfo=0";
-            return '<iframe width="560" height="315" src="'+ embedurl + '" frameborder="0" allowfullscreen frameborder="0"></iframe>';
-        }
+    var youtubePattern = '(?:youtube.com|youtu.be)/(?:v/|embed/|watch(?:\\?v=|/))?([a-zA-Z0-9-]+)';
+    var youtubePlugin = new UrlPlugin('YouTube video', youtubePattern, function(url, match) {
+        var token = match[1];
+        var embedurl = "https://www.youtube.com/embed/" + token + "?html5=1&iv_load_policy=3&modestbranding=1&rel=0&showinfo=0";
+        return '<iframe width="560" height="315" src="'+ embedurl + '" frameborder="0" allowfullscreen frameborder="0"></iframe>';
     });
 
     /*
@@ -249,42 +254,34 @@ plugins.factory('userPlugins', function() {
     /*
      * Image Preview
      */
-    var imagePlugin = new UrlPlugin('image', function(url) {
-        var embed = false;
-        // Check the get parameters as well, they might contain an image to load
-        var segments = url.split(/[?&]/).forEach(function(param) {
-            if (param.match(/\.(png|gif|jpg|jpeg)(:(small|medium|large))?$/i)) {
-                embed = true;
-            }
-        });
-        if (embed) {
-            /* A fukung.net URL may end by an image extension but is not a direct link. */
-            if (url.indexOf("^https?://fukung.net/v/") != -1) {
-                url = url.replace(/.*\//, "http://media.fukung.net/imgs/");
-            } else if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
-                // remove protocol specification to load over https if used by g-b
-                url = url.replace(/http:/, "");
-            } else if (url.match(/^https:\/\/www\.dropbox\.com\/s\/[a-z0-9]+\/[^?]+$/i)) {
-                // Dropbox requires a get parameter, dl=1
-                // TODO strip an existing dl=0 parameter
-                url = url + "?dl=1";
-            }
-
-            return '<a target="_blank" href="'+url+'"><img class="embed" src="' + url + '"></a>';
+    var imagePattern = '\\.(png|gif|jpg|jpeg)(:(small|medium|large))?\\b';
+    var imagePlugin = new UrlPlugin('image', imagePattern, function(url) {
+        /* A fukung.net URL may end by an image extension but is not a direct link. */
+        if (url.indexOf("^https?://fukung.net/v/") != -1) {
+            url = url.replace(/.*\//, "http://media.fukung.net/imgs/");
+        } else if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
+            // remove protocol specification to load over https if used by g-b
+            url = url.replace(/http:/, "");
+        } else if (url.match(/^https:\/\/www\.dropbox\.com\/s\/[a-z0-9]+\/[^?]+$/i)) {
+            // Dropbox requires a get parameter, dl=1
+            // TODO strip an existing dl=0 parameter
+            url = url + "?dl=1";
         }
+
+        return '<a target="_blank" href="'+url+'"><img class="embed" src="' + url + '"></a>';
     });
 
     /*
      * Cloud Music Embedded Players
      */
-    var cloudmusicPlugin = new UrlPlugin('cloud music', function(url) {
+    var cloudmusicPlugin = new UrlPlugin('cloud music', null, function(url) {
         /* SoundCloud http://help.soundcloud.com/customer/portal/articles/247785-what-widgets-can-i-use-from-soundcloud- */
-        if (url.match(/^https?:\/\/soundcloud.com\//)) {
+        if (url.match(/\bsoundcloud.com\//)) {
             return '<iframe width="100%" height="120" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=' + url + '&amp;color=ff6600&amp;auto_play=false&amp;show_artwork=true"></iframe>';
         }
 
         /* MixCloud */
-        if (url.match(/^https?:\/\/([a-z]+\.)?mixcloud.com\//)) {
+        if (url.match(/\bmixcloud.com\//)) {
             return '<iframe width="480" height="60" src="//www.mixcloud.com/widget/iframe/?feed=' + url + '&mini=1&stylecolor=&hide_artwork=&embed_type=widget_standard&hide_tracklist=1&hide_cover=" frameborder="0"></iframe>';
         }
     });
@@ -292,8 +289,8 @@ plugins.factory('userPlugins', function() {
     /*
      * Google Maps
      */
-    var googlemapPlugin = new UrlPlugin('Google Map', function(url) {
-        if (url.match(/^https?:\/\/maps\.google\./i) || url.match(/^https?:\/\/(?:[\w]+\.)?google\.[\w]+\/maps/i)) {
+    var googlemapPlugin = new UrlPlugin('Google Map', null, function(url) {
+        if (url.match(/\bmaps\.google\./i) || url.match(/\bgoogle\.[\w]+\/maps/i)) {
             return '<iframe width="450" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="' + url + '&output=embed"></iframe>';
         }
     });
@@ -301,91 +298,77 @@ plugins.factory('userPlugins', function() {
     /*
       * Asciinema plugin
      */
-    var asciinemaPlugin = new UrlPlugin('ascii cast', function(url) {
-        var regexp = /^https?:\/\/(?:www\.)?asciinema.org\/a\/(\d+)/i,
-            match = url.match(regexp);
-        if (match) {
-            var id = match[1];
-            return function() {
-                var element = this.getElement();
-                var scriptElem = document.createElement('script');
-                scriptElem.src = 'https://asciinema.org/a/' + id + '.js';
-                scriptElem.id = 'asciicast-' + id;
-                scriptElem.async = true;
-                element.appendChild(scriptElem);
-            };
-        }
+    var asciinemaPattern = '\\basciinema.org/a/(\\d+)';
+    var asciinemaPlugin = new UrlPlugin('ascii cast', asciinemaPattern, function(url, match) {
+        var id = match[1];
+        return function() {
+            var element = this.getElement();
+            var scriptElem = document.createElement('script');
+            scriptElem.src = 'https://asciinema.org/a/' + id + '.js';
+            scriptElem.id = 'asciicast-' + id;
+            scriptElem.async = true;
+            element.appendChild(scriptElem);
+        };
     });
 
-    var yrPlugin = new UrlPlugin('meteogram', function(url) {
-        var regexp = /^https?:\/\/(?:www\.)?yr\.no\/(place|stad|sted|sadji|paikka)\/(([^\s.;,(){}<>\/]+\/){3,})/;
-        var match = url.match(regexp);
-        if (match) {
-            var language = match[1];
-            var location = match[2];
-            var city = match[match.length - 1].slice(0, -1);
-            url = "http://www.yr.no/" + language + "/" + location + "avansert_meteogram.png";
-            return "<img src='" + url + "' alt='Meteogram for " + city + "' />";
-        }
+    var yrPattern = '\\byr.no/(place|stad|sted|sadji|paikka)/(([^\\s.;,(){}<>/]+/){3,})';
+    var yrPlugin = new UrlPlugin('meteogram', yrPattern, function(url, match) {
+        var language = match[1];
+        var location = match[2];
+        var city = match[match.length - 1].slice(0, -1);
+        url = "http://www.yr.no/" + language + "/" + location + "avansert_meteogram.png";
+        return "<img src='" + url + "' alt='Meteogram for " + city + "' />";
     });
 
     // Embed GitHub gists
-    var gistPlugin = new UrlPlugin('Gist', function(url) {
-        var regexp = /^https:\/\/gist\.github.com\/[^.?]+/i;
-        var match = url.match(regexp);
-        if (match) {
-            // get the URL from the match to trim away pseudo file endings and request parameters
-            url = match[0] + '.json';
-            // load gist asynchronously -- return a function here
-            return function() {
-                var element = this.getElement();
-                jsonp(url, function(data) {
-                    // Add the gist stylesheet only once
-                    if (document.querySelectorAll('link[rel=stylesheet][href="' + data.stylesheet + '"]').length < 1) {
-                        var stylesheet = '<link rel="stylesheet" href="' + data.stylesheet + '"></link>';
-                        document.getElementsByTagName('head')[0].innerHTML += stylesheet;
-                    }
-                    element.innerHTML = '<div style="clear:both">' + data.div + '</div>';
-                });
-            };
-        }
+    var gistPattern = '\\bgist\\.github.com/[^.?]+';
+    var gistPlugin = new UrlPlugin('Gist', gistPattern, function(url, match) {
+        // get the URL from the match to trim away pseudo file endings and request parameters
+        url = match[0] + '.json';
+        // load gist asynchronously -- return a function here
+        return function() {
+            var element = this.getElement();
+            jsonp(url, function(data) {
+                // Add the gist stylesheet only once
+                if (document.querySelectorAll('link[rel=stylesheet][href="' + data.stylesheet + '"]').length < 1) {
+                    var stylesheet = '<link rel="stylesheet" href="' + data.stylesheet + '"></link>';
+                    document.getElementsByTagName('head')[0].innerHTML += stylesheet;
+                }
+                element.innerHTML = '<div style="clear:both">' + data.div + '</div>';
+            });
+        };
     });
 
-    var tweetPlugin = new UrlPlugin('Tweet', function(url) {
-        var regexp = /^https?:\/\/twitter\.com\/(?:#!\/)?(\w+)\/status(?:es)?\/(\d+)/i;
-        var match = url.match(regexp);
-        if (match) {
-            url = 'https://api.twitter.com/1/statuses/oembed.json?id=' + match[2];
-            return function() {
-                var element = this.getElement();
-                jsonp(url, function(data) {
-                    // separate the HTML into content and script tag
-                    var scriptIndex = data.html.indexOf("<script ");
-                    var content = data.html.substr(0, scriptIndex);
-                    // Set DNT (Do Not Track)
-                    content = content.replace("<blockquote class=\"twitter-tweet\">", "<blockquote class=\"twitter-tweet\" data-dnt=\"true\">");
-                    element.innerHTML = content;
+    var tweetPattern = '\\btwitter\\.com/(?:#!/)?(\\w+)/status(?:es)?/(\\d+)';
+    var tweetPlugin = new UrlPlugin('Tweet', tweetPattern, function(url, match) {
+        url = 'https://api.twitter.com/1/statuses/oembed.json?id=' + match[2];
+        return function() {
+            var element = this.getElement();
+            jsonp(url, function(data) {
+                // separate the HTML into content and script tag
+                var scriptIndex = data.html.indexOf("<script ");
+                var content = data.html.substr(0, scriptIndex);
+                // Set DNT (Do Not Track)
+                content = content.replace("<blockquote class=\"twitter-tweet\">", "<blockquote class=\"twitter-tweet\" data-dnt=\"true\">");
+                element.innerHTML = content;
 
-                    // The script tag needs to be generated manually or the browser won't load it
-                    var scriptElem = document.createElement('script');
-                    // Hardcoding the URL here, I don't suppose it's going to change anytime soon
-                    scriptElem.src = "//platform.twitter.com/widgets.js";
-                    element.appendChild(scriptElem);
-                });
-            };
-        }
+                // The script tag needs to be generated manually or the browser won't load it
+                var scriptElem = document.createElement('script');
+                // Hardcoding the URL here, I don't suppose it's going to change anytime soon
+                scriptElem.src = "//platform.twitter.com/widgets.js";
+                element.appendChild(scriptElem);
+            });
+        };
     });
 
     /*
      * Vine plugin
      */
-    var vinePlugin = new UrlPlugin('Vine', function (url) {
-        var regexp = /^https?:\/\/(www\.)?vine.co\/v\/([a-zA-Z0-9]+)(\/.*)?/i,
-            match = url.match(regexp);
-        if (match) {
-            var id = match[2], embedurl = "https://vine.co/v/" + id + "/embed/simple?audio=1";
-            return '<iframe class="vine-embed" src="' + embedurl + '" width="600" height="600" frameborder="0"></iframe><script async src="//platform.vine.co/static/scripts/embed.js" charset="utf-8"></script>';
-        }
+    var vinePattern = '\\bvine.co/v/([a-zA-Z0-9]+)(/.*)?';
+    var vinePlugin = new UrlPlugin('Vine', vinePattern, function (url, match) {
+        var id = match[2];
+        var embedurl = "https://vine.co/v/" + id + "/embed/simple?audio=1";
+        return '<iframe class="vine-embed" src="' + embedurl + '" width="600" height="600" frameborder="0"></iframe><script async src="//platform.vine.co/static/scripts/embed.js" charset="utf-8"></script>';
     });
 
     return {
