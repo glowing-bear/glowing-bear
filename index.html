@@ -240,7 +240,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
         <ul class="nav nav-pills nav-stacked" ng-class="{'indented': (predicate === 'serverSortKey'), 'showquickkeys': showQuickKeys}">
           <li class="bufferfilter">
             <form role="form">
-              <input class="form-control favorite-font" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="Search">
+              <input class="form-control favorite-font" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="Search" autocomplete="off">
             </form>
           </li>
           <li class="buffer" ng-class="{'active': buffer.active, 'indent': buffer.indent, 'channel': buffer.type === 'channel', 'channel_hash': buffer.prefix === '#', 'channel_plus': buffer.prefix === '+', 'channel_ampersand': buffer.prefix === '&', 'private': buffer.type === 'private'}" ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray:'withidx' | filter:{fullName:search} | filter:hasUnread | orderBy:predicate | getBufferQuickKeys:this))">
