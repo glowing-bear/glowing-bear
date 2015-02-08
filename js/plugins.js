@@ -189,23 +189,16 @@ plugins.factory('userPlugins', function() {
      *
      * See: https://developers.google.com/youtube/player_parameters
      */
-    var youtubePlugin = new Plugin(function(message) {
+    var youtubePlugin = new Plugin(urlPlugin(function(url) {
+        var regex = /(?:youtube.com|youtu.be)\/(?:v\/|embed\/|watch(?:\?v=|\/))?([a-zA-Z0-9-]+)/i,
+            match = url.match(regex);
 
-        var regExp = /(?:https?:\/\/)?(?:www\.)?(?:youtube.com|youtu.be)\/(?:v\/|embed\/|watch(?:\?v=|\/))?([a-zA-Z0-9-]+)/gm;
-        var match = regExp.exec(message);
-        var content = [];
-
-        // iterate over all matches
-        while (match !== null){
+        if (match){
             var token = match[1];
             var embedurl = "https://www.youtube.com/embed/" + token + "?html5=1&iv_load_policy=3&modestbranding=1&rel=0&showinfo=0";
-            content.push('<iframe width="560" height="315" src="'+ embedurl + '" frameborder="0" allowfullscreen frameborder="0"></iframe>');
-            // next match
-            match = regExp.exec(message);
+            return '<iframe width="560" height="315" src="'+ embedurl + '" frameborder="0" allowfullscreen frameborder="0"></iframe>';
         }
-
-        return content;
-    });
+    }));
     youtubePlugin.name = 'YouTube video';
 
     /*
