@@ -47,7 +47,6 @@ describe('filter', function() {
                 'https://youtu.be/J6vIS8jb6Fs',
                 'http://www.youtube.com/embed/dQw4w9WgXcQ',
                 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-                'youtu.be/dQw4w9WgXcQ'
             ],
             'YouTube video',
             plugins);
