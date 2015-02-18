@@ -1,7 +1,7 @@
 {
   "name": "glowing-bear",
   "private": true,
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "A web client for Weechat",
   "repository": "https://github.com/glowing-bear/glowing-bear",
   "license": "GPLv3",
@@ -18,7 +18,7 @@
   "scripts": {
     "postinstall": "bower install",
 
-    "minify": " uglifyjs js/localstorage.js js/weechat.js js/irc-utils.js js/glowingbear.js js/utils.js js/notifications.js js/filters.js js/handlers.js js/connection.js js/inputbar.js js/plugin-directive.js js/websockets.js js/models.js js/plugins.js -c -m --screw-ie8 -o min.js --source-map min.map",
+    "minify": " uglifyjs js/localstorage.js js/weechat.js js/irc-utils.js js/glowingbear.js js/settings.js js/utils.js js/notifications.js js/filters.js js/handlers.js js/connection.js js/inputbar.js js/plugin-directive.js js/websockets.js js/models.js js/plugins.js -c -m --screw-ie8 -o min.js --source-map min.map",
 
     "prestart": "npm install",
     "start": "http-server -a localhost -p 8000",

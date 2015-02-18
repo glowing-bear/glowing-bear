@@ -10,6 +10,10 @@ ls.factory("$store", ["$parse", function($parse){
     var storage = (typeof window.localStorage === 'undefined') ? undefined : window.localStorage,
         supported = !(typeof storage == 'undefined' || typeof window.JSON == 'undefined');
 
+    if (!supported) {
+        console.log('Warning: localStorage is not supported');
+    }
+
     var privateMethods = {
         /**
          * Pass any type of a string from the localStorage to be parsed so it returns a usable version (like an Object)
@@ -29,7 +33,7 @@ ls.factory("$store", ["$parse", function($parse){
                 if (val === 'false'){
                     val = false;
                 }
-                if (parseFloat(val) === val && !angular.isObject(val)) {
+                if (parseFloat(val) == val && !angular.isObject(val)) {
                     val = parseFloat(val);
                 }
             } catch(e){
@@ -40,77 +44,73 @@ ls.factory("$store", ["$parse", function($parse){
     };
     var publicMethods = {
         /**
-         * Set - let's you set a new localStorage key pair set
+         * Set - lets you set a new localStorage key pair set
          * @param key - a string that will be used as the accessor for the pair
          * @param value - the value of the localStorage item
          * @returns {*} - will return whatever it is you've stored in the local storage
          */
         set: function(key,value){
             if (!supported){
-                try {
-                    $.cookie(key, value);
-                    return value;
-                } catch(e){
-                    console.log('Local Storage not supported, make sure you have the $.cookie supported.');
-                }
+                console.log('Local Storage not supported');
             }
             var saver = JSON.stringify(value);
-             storage.setItem(key, saver);
+            storage.setItem(key, saver);
             return privateMethods.parseValue(saver);
         },
         /**
-         * Get - let's you get the value of any pair you've stored
+         * Get - lets you get the value of any pair you've stored
          * @param key - the string that you set as accessor for the pair
          * @returns {*} - Object,String,Float,Boolean depending on what you stored
          */
         get: function(key){
             if (!supported){
-                try {
-                    return privateMethods.parseValue($.cookie(key));
-                } catch(e){
-                    return null;
-                }
+                return null;
             }
             var item = storage.getItem(key);
             return privateMethods.parseValue(item);
         },
         /**
-         * Remove - let's you nuke a value from localStorage
+         * Remove - lets you nuke a value from localStorage
          * @param key - the accessor value
          * @returns {boolean} - if everything went as planned
          */
         remove: function(key) {
             if (!supported){
-                try {
-                    $.cookie(key, null);
-                    return true;
-                } catch(e){
-                    return false;
-                }
+                return false;
             }
             storage.removeItem(key);
             return true;
         },
         /**
-             * Bind - let's you directly bind a localStorage value to a $scope variable
-             * @param $scope - the current scope you want the variable available in
-             * @param key - the name of the variable you are binding
-             * @param def - the default value (OPTIONAL)
-             * @returns {*} - returns whatever the stored value is
-             */
-            bind: function ($scope, key, def) {
-                if (def === undefined) {
-                    def = '';
-                }
-                if (publicMethods.get(key) === undefined || publicMethods.get(key) === null) {
-                    publicMethods.set(key, def);
-                }
-                $parse(key).assign($scope, publicMethods.get(key));
-                $scope.$watch(key, function (val) {
-                    publicMethods.set(key, val);
-                }, true);
-                return publicMethods.get(key);
+          * Enumerate all keys
+          */
+        enumerateKeys: function() {
+            var keys = [];
+            for (var i = 0, len = storage.length; i < len; ++i) {
+                keys.push(storage.key(i));
             }
+            return keys;
+        },
+        /**
+         * Bind - lets you directly bind a localStorage value to a $scope variable
+         * @param $scope - the current scope you want the variable available in
+         * @param key - the name of the variable you are binding
+         * @param def - the default value (OPTIONAL)
+         * @returns {*} - returns whatever the stored value is
+         */
+        bind: function ($scope, key, def) {
+            if (def === undefined) {
+                def = '';
+            }
+            if (publicMethods.get(key) === undefined || publicMethods.get(key) === null) {
+                publicMethods.set(key, def);
+            }
+            $parse(key).assign($scope, publicMethods.get(key));
+            $scope.$watch(key, function (val) {
+                publicMethods.set(key, val);
+            }, true);
+            return publicMethods.get(key);
+        }
     };
     return publicMethods;
 }]);

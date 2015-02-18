@@ -47,7 +47,6 @@ describe('filter', function() {
                 'https://youtu.be/J6vIS8jb6Fs',
                 'http://www.youtube.com/embed/dQw4w9WgXcQ',
                 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-                'youtu.be/dQw4w9WgXcQ'
             ],
             'YouTube video',
             plugins);
@@ -72,6 +71,16 @@ describe('filter', function() {
             plugins);
         }));
 
+        it('should recognize html5 videos', inject(function(plugins) {
+            expectTheseMessagesToContain([
+                'http://www.quirksmode.org/html5/videos/big_buck_bunny.mp4',
+                'http://www.quirksmode.org/html5/videos/big_buck_bunny.webm',
+                'http://www.quirksmode.org/html5/videos/big_buck_bunny.ogv',
+            ],
+            'video',
+            plugins);
+        }));
+
         it('should recognize images', inject(function(plugins) {
             expectTheseMessagesToContain([
                 'http://i.imgur.com/BTNIDBR.gif',
@@ -80,7 +89,9 @@ describe('filter', function() {
                 'https://4z2.de/gb-mobile-new.png',
                 'http://static.weechat.org/images/screenshots/relay/medium/glowing-bear.png',
                 'http://foo.bar/baz.php?img=trololo.png&dummy=yes',
-                'https://tro.lo.lo/images/rick.png?size=123x45'
+                'https://tro.lo.lo/images/rick.png?size=123x45',
+                'https://pbs.twimg.com/media/B66rbCuIMAAxiFF.jpg:large',
+                'https://pbs.twimg.com/media/B6OZuCYCEAEV8SA.jpg:medium'
             ],
             'image',
             plugins);
@@ -133,6 +144,15 @@ describe('filter', function() {
                 'https://twitter.com/DFB_Team_EN/statuses/488436782959448065',
             ],
             'Tweet',
+            plugins);
+        }));
+
+        it('should recognize vines', inject(function(plugins) {
+            expectTheseMessagesToContain([
+                'https://vine.co/v/hWh262H9HM5',
+                'https://vine.co/v/hWh262H9HM5/embed',
+            ],
+            'Vine',
             plugins);
         }));
 

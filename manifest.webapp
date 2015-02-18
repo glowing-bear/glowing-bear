@@ -15,6 +15,15 @@
     "name": "The Glowing Bear Authors",
     "url": "https://github.com/glowing-bear"
   },
+  "permissions": {
+      "audio-channel-normal" : {
+          "description" : "Needed to play this app's audio content on the normal channel"
+      },
+      "audio-channel-content" : {
+          "description" : "Needed to play this app's audio content on the content channel"
+      },
+      "desktop-notification":{}
+  },
   "default_locale": "en",
-  "version": "0.4.4"
+  "version": "0.4.5"
 }

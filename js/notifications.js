@@ -1,7 +1,8 @@
 var weechat = angular.module('weechat');
 
-weechat.factory('notifications', ['$rootScope', '$log', 'models', function($rootScope, $log, models) {
+weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', function($rootScope, $log, models, settings) {
     // Ask for permission to display desktop notifications
+    var notifications = [];
     var requestNotificationPermission = function() {
         // Firefox
         if (window.Notification) {
@@ -52,7 +53,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', function($root
 
         var activeBuffer = models.getActiveBuffer();
         if (activeBuffer) {
-            $rootScope.pageTitle = activeBuffer.shortName + ' | ' + activeBuffer.title;
+            $rootScope.pageTitle = activeBuffer.shortName + ' | ' + activeBuffer.rtitle;
         }
     };
 
@@ -109,6 +110,10 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', function($root
             icon: 'assets/img/favicon.png'
         });
 
+        // Save notification, so we can close all outstanding ones when disconnecting
+        notification.id = notifications.length;
+        notifications.push(notification);
+
         // Cancel notification automatically
         var timeout = 15*1000;
         notification.onshow = function() {
@@ -124,7 +129,12 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', function($root
             notification.close();
         };
 
-        if ($rootScope.soundnotification) {
+        // Remove from list of active notifications
+        notification.onclose = function() {
+            delete notifications[this.id];
+        };
+
+        if (settings.soundnotification) {
             // TODO fill in a sound file
             var audioFile = "assets/audio/sonar";
             var soundHTML = '<audio autoplay="autoplay"><source src="' + audioFile + '.ogg" type="audio/ogg" /><source src="' + audioFile + '.mp3" type="audio/mpeg" /></audio>';
@@ -132,10 +142,20 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', function($root
         }
     };
 
+    var cancelAll = function() {
+        while (notifications.length > 0) {
+            var notification = notifications.pop();
+            if (notification !== undefined) {
+                notification.close();
+            }
+        }
+    };
+
     return {
-    	requestNotificationPermission: requestNotificationPermission,
-    	updateTitle: updateTitle,
-    	updateFavico: updateFavico,
-    	createHighlight: createHighlight,
+        requestNotificationPermission: requestNotificationPermission,
+        updateTitle: updateTitle,
+        updateFavico: updateFavico,
+        createHighlight: createHighlight,
+        cancelAll: cancelAll,
     };
 }]);

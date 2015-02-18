@@ -14,13 +14,14 @@ weechat.directive('inputBar', function() {
             command: '=command'
         },
 
-        controller: ['$rootScope', '$scope', '$element', '$log', 'connection', 'models', 'IrcUtils', function($rootScope,
+        controller: ['$rootScope', '$scope', '$element', '$log', 'connection', 'models', 'IrcUtils', 'settings', function($rootScope,
                              $scope,
                              $element, //XXX do we need this? don't seem to be using it
                              $log,
                              connection, //XXX we should eliminate this dependency and use signals instead
                              models,
-                             IrcUtils) {
+                             IrcUtils,
+                             settings) {
 
             /*
              * Returns the input element
@@ -340,7 +341,7 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Some readline keybindings
-                if ($rootScope.readlineBindings && $event.ctrlKey && !$event.altKey && !$event.shiftKey && document.activeElement === inputNode) {
+                if (settings.readlineBindings && $event.ctrlKey && !$event.altKey && !$event.shiftKey && document.activeElement === inputNode) {
                     // get current caret position
                     caretPos = inputNode.selectionStart;
                     // Ctrl-a

@@ -7,23 +7,25 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="theme-color" content="#2779d3">
     <title ng-bind-template="{{ notificationStatus }}Glowing Bear {{ pageTitle}}"></title>
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link rel="shortcut icon" sizes="128x128" href="assets/img/glowing_bear_128x128.png">
     <link rel="apple-touch-icon" sizes="128x128" href="assets/img/glowing_bear_128x128.png">
     <link rel="shortcut icon" type="image/png" href="assets/img/favicon.png" >
     <link href="css/glowingbear.css" rel="stylesheet" media="screen">
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-route.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-sanitize.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-touch.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular-route.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular-sanitize.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular-touch.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
+    <script src="//twemoji.maxcdn.com/twemoji.min.js"></script>
     <script type="text/javascript" src="3rdparty/inflate.min.js"></script>
     <script type="text/javascript" src="min.js"></script>
     <script type="text/javascript" src="3rdparty/favico-0.3.5.min.js"></script>
   </head>
   <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keyup="handleKeyRelease($event)"  ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" lang="en-US">
-    <link ng-href="css/themes/{{theme}}.css" rel="stylesheet" media="screen" />
+    <link ng-href="css/themes/{{settings.theme}}.css" rel="stylesheet" media="screen" />
     <div ng-hide="connected" class="container">
       <h2>
         <img alt="logo" src="assets/img/glowing-bear.svg">
@@ -56,10 +58,10 @@
                   <div class="input-group">
                     <div class="row no-gutter">
                       <div class="col-sm-9">
-                        <input type="text" class="form-control favorite-font" id="host" ng-model="host" placeholder="Address" autocapitalize="off">
+                        <input type="text" class="form-control favorite-font" id="host" ng-model="settings.host" placeholder="Address" autocapitalize="off">
                       </div>
                       <div class="col-sm-3">
-                        <input type="text" class="form-control favorite-font" id="port" ng-model="port" placeholder="Port">
+                        <input type="text" class="form-control favorite-font" id="port" ng-model="settings.port" placeholder="Port">
                       </div>
                     </div>
                   </div>
@@ -71,19 +73,19 @@
 
                   <div class="checkbox">
                     <label class="control-label" for="savepassword">
-                        <input type="checkbox" id="savepassword" ng-model="savepassword">
+                        <input type="checkbox" id="savepassword" ng-model="settings.savepassword">
                         Save password in your browser
                     </label>
                   </div>
-                  <div class="checkbox" ng-show="savepassword">
+                  <div class="checkbox" ng-show="settings.savepassword">
                     <label class="control-label" for="autoconnect">
-                        <input type="checkbox" id="autoconnect" ng-model="autoconnect">
+                        <input type="checkbox" id="autoconnect" ng-model="settings.autoconnect">
                         Automatically connect
                     </label>
                   </div>
                   <div class="checkbox">
                     <label class="control-label" for="ssl">
-                      <input type="checkbox" id="ssl" ng-model="ssl">
+                      <input type="checkbox" id="ssl" ng-model="settings.ssl">
                       Encryption. Read instructions for help
                     </label>
                   </div>
@@ -107,7 +109,7 @@
               <div>To start using glowing bear, please enable the relay plugin in your WeeChat client:
 <pre>
 /set relay.network.password yourpassword
-/relay add weechat {{ port || 9001 }}
+/relay add weechat {{ settings.port || 9001 }}
 </pre>
               <span class="label label-danger">WeeChat version 0.4.2 or higher is required.</span><br>
               The communication goes directly between your browser and your WeeChat relay in plain text. Check the instructions below for help on setting up encrypted communication.
@@ -142,18 +144,18 @@
           <div id="collapseThree" class="panel-collapse collapse in">
             <div class="panel-body">
               <p>If you check the encryption box, the communication between browser and WeeChat will be encrypted with TLS.</p>
-              <p><strong>Note</strong>: If you are using a self-signed certificate, you have to visit <a href="https://{{ host }}:{{ port }}/">https://{{ host || 'weechathost' }}:{{ port || 'relayport' }}/</a> in your browser first to add a security exception. You can close that tab once you confirmed the certificate, no content will appear. The necessity of this process is a bug in <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">Firefox</a> and other browsers.</p>
+              <p><strong>Note</strong>: If you are using a self-signed certificate, you have to visit <a href="https://{{ settings.host }}:{{ settings.port }}/">https://{{ settings.host || 'weechathost' }}:{{ settings.port || 'relayport' }}/</a> in your browser first to add a security exception. You can close that tab once you confirmed the certificate, no content will appear. The necessity of this process is a bug in <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">Firefox</a> and other browsers.</p>
               <p><strong>Setup</strong>: If you want to use an encrypted session you first have to set up the relay to use TLS. You basically have two options: a self-signed certificate is easier to set up, but requires manual security exceptions. Using a certificate that is trusted by your browser requires more setup, but offers greater convenience later on and does not require security exceptions. You can find a guide to set up WeeChat with a free trusted certificate from StartSSL <a href="https://4z2.de/2014/07/06/weechat-trusted-relay">here</a>. Should you wish to use a self-signed certificate instead, execute the following commands in a shell on the same host and as the user running WeeChat:</p>
 <pre>
 $ mkdir -p ~/.weechat/ssl
 $ cd ~/.weechat/ssl
-$ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out relay.pem -subj "/CN={{host || 'your weechat host'}}/"
+$ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out relay.pem -subj "/CN={{settings.host || 'your weechat host'}}/"
 </pre>
-              <p>If WeeChat is already running, you can reload the certificate and private key and set up an encrypted relay on port {{ port || 9001 }} with these WeeChat commands:</p>
+              <p>If WeeChat is already running, you can reload the certificate and private key and set up an encrypted relay on port {{ settings.port || 9001 }} with these WeeChat commands:</p>
 <pre>
 /set relay.network.password yourpassword
 /relay sslcertkey
-/relay add ssl.weechat {{ port || 9001 }}
+/relay add ssl.weechat {{ settings.port || 9001 }}
 </pre>
             </div>
           </div>
@@ -173,7 +175,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
               <p>If you have a recent version of Firefox you can install glowing bear as an app. Click the button to install.</p>
               <button class="btn btn-lg btn-primary" ng-click="install()">Install Firefox app <i class="glyphicon glyphicon-chevron-right"></i></button>
               <h3>Chrome</h3>
-              <p>To install glowing bear as an app in Chrome, select <kbd>Menu - Add to home screen</kbd> (Android) or <kbd>Menu - Tools - Create Application Shortcuts</kbd> (desktop version).</p>
+              <p>To install glowing bear as an app in Chrome, select <kbd>Menu - Add to home screen</kbd> (Android) or <kbd>Menu - More tools - Create application shortcuts</kbd> (desktop version).</p>
             </div>
           </div>
         </div>
@@ -198,11 +200,13 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
       <div id="topbar">
         <div class="brand">
           <a href="#" ng-click="toggleSidebar()">
-            <img alt="brand" src="assets/img/favicon.png" title="Connected to {{ host }}:{{ port}}">
+            <img alt="brand" src="assets/img/favicon.png" title="Connected to {{ settings.host }}:{{ settings.port}}">
           </a>
           <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
         </div>
-        <div class="title" ng-bind-html="activeBuffer().title | linky:'_blank' | DOMfilter:'irclinky'" title="{{activeBuffer().title}}"></div>
+        <div class="title" title="{{activeBuffer().rtitle}}">
+          <span ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank' | DOMfilter:'irclinky')"></span>
+        </div>
         <div class="actions pull-right vertical-line-left">
           <div class="pull-left">
             <a class="settings-toggle" ng-click="showModal('settingsModal')" title="Options menu">
@@ -222,7 +226,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
             </form>
           </li>
           <li class="buffer" ng-class="{'active': buffer.active, 'indent': buffer.indent, 'channel': buffer.type === 'channel', 'channel_hash': buffer.prefix === '#', 'channel_plus': buffer.prefix === '+', 'channel_ampersand': buffer.prefix === '&', 'private': buffer.type === 'private'}" ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray:'withidx' | filter:{fullName:search} | filter:hasUnread | orderBy:predicate | getBufferQuickKeys:this))">
-            <a href="#" ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}">
+            <a ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}">
               <span class="badge pull-right" ng-class="{'danger': buffer.notification}" ng-if="buffer.notification || buffer.unread" ng-bind="buffer.notification || buffer.unread"></span>
               <span class="buffer-quick-key">{{ buffer.$quickKey }}</span>
               <span class="buffername">{{ buffer.trimmedName || buffer.fullName }}</span>
@@ -238,7 +242,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
             </li>
           </ul>
         </div>
-        <table ng-class="{'notimestamp':!showtimestamp,'notimestampseconds':!showtimestampSeconds}">
+        <table ng-class="{'notimestamp':!settings.showtimestamp,'notimestampseconds':!settings.showtimestampSeconds}">
           <tbody>
             <tr class="bufferline">
               <td ng-hide="activeBuffer().allLinesFetched" colspan="3">
@@ -257,7 +261,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
               <td class="prefix"><a ng-click="addMention(bufferline.prefix)"><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text"></span></a></td><!--
            --><td class="message"><!--
              --><div ng-repeat="metadata in ::bufferline.metadata" plugin data="::metadata"></div><!--
-             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes" ng-bind-html="::part.text | linky:'_blank' | DOMfilter:'irclinky' | DOMfilter:'inlinecolour'"></span>
+             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes" ng-bind-html="::part.text | linky:'_blank' | DOMfilter:'irclinky' | DOMfilter:'emojify':enableJSEmoji | DOMfilter:'inlinecolour' "></span>
               </td>
             </tr>
             <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
@@ -289,12 +293,12 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                   <div class="form-group">
                     <label for="font" class="col-sm-3 control-label make-thinner">Preferred font</label>
                     <div class="col-sm-4">
-                      <input type="text" ng-model="fontfamily" class="form-control" id="font">
+                      <input type="text" ng-model="settings.fontfamily" class="form-control" id="font">
                     </div>
 
                     <label for="size" class="col-sm-1 control-label">Size</label>
                     <div class="col-sm-2">
-                      <input type="text" ng-model="fontsize" class="form-control" id="size">
+                      <input type="text" ng-model="settings.fontsize" class="form-control" id="size">
                     </div>
                   </div>
                 </form>
@@ -304,7 +308,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                   <div class="form-group">
                     <label for="theme" class="col-sm-3 control-label make-thinner">Theme</label>
                     <div class="col-sm-7">
-                      <select id="theme" class="form-control" ng-model="theme" ng-options="theme for theme in themes"></select>
+                      <select id="theme" class="form-control" ng-model="settings.theme" ng-options="theme for theme in themes"></select>
                     </div>
                   </div>
                 </form>
@@ -314,7 +318,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                 <form class="form-inline" role="form">
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" ng-model="onlyUnread">
+                      <input type="checkbox" ng-model="settings.onlyUnread">
                       Only show buffers with unread messages
                     </label>
                   </div>
@@ -324,17 +328,17 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                 <form class="form-inline" role="form">
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" ng-model="showtimestamp">
+                      <input type="checkbox" ng-model="settings.showtimestamp">
                       Show timestamps
                     </label>
                   </div>
                 </form>
-                <ul ng-show="showtimestamp">
+                <ul ng-show="settings.showtimestamp">
                   <li>
                     <form class="form-inline" role="form">
                       <div class="checkbox">
                         <label>
-                          <input type="checkbox" ng-model="showtimestampSeconds">
+                          <input type="checkbox" ng-model="settings.showtimestampSeconds">
                           Show seconds
                         </label>
                       </div>
@@ -346,8 +350,8 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                 <form class="form-inline" role="form">
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" ng-model="noembed">
-                       Hide embedded content by default<span class="text-muted settings-help">NSFW content will be hidden</span>
+                      <input type="checkbox" ng-model="settings.noembed">
+                       Hide embedded content by default<span class="text-muted settings-help">NSFW content will be hidden regardless of this choice</span>
                     </label>
                   </div>
                 </form>
@@ -356,7 +360,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                 <form class="form-inline" role="form">
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" ng-model="hotlistsync">
+                      <input type="checkbox" ng-model="settings.hotlistsync">
                       Mark messages as read in WeeChat
                     </label>
                   </div>
@@ -366,7 +370,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                 <form class="form-inline" role="form">
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" ng-model="nonicklist">
+                      <input type="checkbox" ng-model="settings.nonicklist">
                       Hide nicklist
                     </label>
                   </div>
@@ -376,7 +380,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                 <form class="form-inline" role="form">
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" ng-model="orderbyserver">
+                      <input type="checkbox" ng-model="settings.orderbyserver">
                       Hierarchical buffer view (order by server)
                     </label>
                   </div>
@@ -386,7 +390,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                 <form class="form-inline" role="form">
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" ng-model="readlineBindings">
+                      <input type="checkbox" ng-model="settings.readlineBindings">
                       Enable common readline keybindings in input bar
                     </label>
                   </div>
@@ -396,7 +400,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                 <form class="form-inline" role="form">
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" ng-model="useFavico">
+                      <input type="checkbox" ng-model="settings.useFavico">
                       Display unread count in favicon
                     </label>
                   </div>
@@ -406,8 +410,18 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                 <form class="form-inline" role="form">
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" ng-model="soundnotification">
+                      <input type="checkbox" ng-model="settings.soundnotification">
                       Play sound on notification
+                    </label>
+                  </div>
+                </form>
+              </li>
+              <li>
+                <form class="form-inline" role="form">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="enableJSEmoji">
+                      Enable non-native Emoji support <span class="text-muted settings-help">Displays Emoji characters as images</span>
                     </label>
                   </div>
                 </form>
