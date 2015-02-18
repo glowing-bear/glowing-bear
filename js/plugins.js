@@ -268,6 +268,15 @@ plugins.factory('userPlugins', function() {
     });
 
     /*
+     * mp4 video Preview
+     */
+    var videoPlugin = new UrlPlugin('video', function(url) {
+        if (url.match(/\.(mp4|webm|ogv)\b/i)) {
+            return '<video class="embed" width="560"><source src="'+url+'"></source></video>';
+        }
+    });
+
+    /*
      * Cloud Music Embedded Players
      */
     var cloudmusicPlugin = new UrlPlugin('cloud music', function(url) {
@@ -382,7 +391,7 @@ plugins.factory('userPlugins', function() {
     });
 
     return {
-        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, tweetPlugin, vinePlugin]
+        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, tweetPlugin, vinePlugin]
     };
 
 
