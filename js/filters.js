@@ -148,15 +148,4 @@ weechat.filter('getBufferQuickKeys', function () {
     };
 });
 
-// Emojifis the string using https://github.com/twitter/twemoji
-weechat.filter('emojify', function() {
-    return function(text, enable_JS_Emoji) {
-        if (enable_JS_Emoji === true) {
-            return twemoji.parse(text);
-        } else {
-            return(text);
-        }
-    };
-});
-
 })();
