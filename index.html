@@ -275,7 +275,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
               <td class="prefix"><a ng-click="addMention(bufferline.prefix)"><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text"></span></a></td><!--
            --><td class="message"><!--
              --><div ng-repeat="metadata in ::bufferline.metadata" plugin data="::metadata"></div><!--
-             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes" ng-bind-html="::part.text | linky:'_blank' | DOMfilter:'irclinky' | DOMfilter:'emojify':enableJSEmoji | DOMfilter:'inlinecolour' "></span>
+             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes" ng-bind-html="::part.text | linky:'_blank' | DOMfilter:'irclinky' | DOMfilter:'emojify':settings.enableJSEmoji | DOMfilter:'inlinecolour' "></span>
               </td>
             </tr>
             <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
@@ -434,7 +434,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                 <form class="form-inline" role="form">
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" ng-model="enableJSEmoji">
+                      <input type="checkbox" ng-model="settings.enableJSEmoji">
                       Enable non-native Emoji support <span class="text-muted settings-help">Displays Emoji characters as images</span>
                     </label>
                   </div>
