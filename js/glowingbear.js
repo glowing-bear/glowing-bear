@@ -281,6 +281,15 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         settings.password = '';
     }
 
+    // Check if user decides to save password, and copy it over
+    settings.addCallback('savepassword', function(newvalue) {
+        if (settings.savepassword) {
+            // Init value in settings module
+            settings.setDefaults({'password': $scope.password});
+            settings.password = $scope.password;
+        }
+    });
+
     $rootScope.wasMobileUi = false;
     if (utils.isMobileUi()) {
         $rootScope.wasMobileUi = true;
