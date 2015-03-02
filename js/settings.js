@@ -57,6 +57,9 @@ weechat.factory('settings', ['$store', '$rootScope', function($store, $rootScope
 		for (var key in defaults) {
 			// null means the key isn't set
 			if ($store.get(key) === null) {
+				// Define property so it will get saved to store
+				defineProperty(key);
+				// Save to settings module AND to store
 				this[key] = defaults[key];
 			}
 		}
