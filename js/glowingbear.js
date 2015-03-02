@@ -35,7 +35,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'showtimestampSeconds': false,
         'fontsize': '14px',
         'fontfamily': (utils.isMobileUi() ? 'sans-serif' : 'Inconsolata, Consolas, Monaco, Ubuntu Mono, monospace'),
-        'readlineBindings': false
+        'readlineBindings': false,
+        'enableJSEmoji': false
     });
     $scope.settings = settings;
 
@@ -279,6 +280,15 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     } else {
         settings.password = '';
     }
+
+    // Check if user decides to save password, and copy it over
+    settings.addCallback('savepassword', function(newvalue) {
+        if (settings.savepassword) {
+            // Init value in settings module
+            settings.setDefaults({'password': $scope.password});
+            settings.password = $scope.password;
+        }
+    });
 
     $rootScope.wasMobileUi = false;
     if (utils.isMobileUi()) {

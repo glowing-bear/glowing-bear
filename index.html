@@ -14,10 +14,10 @@
     <link rel="apple-touch-icon" sizes="128x128" href="assets/img/glowing_bear_128x128.png">
     <link rel="shortcut icon" type="image/png" href="assets/img/favicon.png" >
     <link href="css/glowingbear.css" rel="stylesheet" media="screen">
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular-route.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular-sanitize.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular-touch.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-route.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-sanitize.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-touch.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
     <script src="//twemoji.maxcdn.com/twemoji.min.js"></script>
     <script type="text/javascript" src="3rdparty/inflate.min.js"></script>
@@ -144,7 +144,7 @@
           <div id="collapseThree" class="panel-collapse collapse in">
             <div class="panel-body">
               <p>If you check the encryption box, the communication between browser and WeeChat will be encrypted with TLS.</p>
-              <p><strong>Note</strong>: If you are using a self-signed certificate, you have to visit <a href="https://{{ settings.host }}:{{ settings.port }}/">https://{{ settings.host || 'weechathost' }}:{{ settings.port || 'relayport' }}/</a> in your browser first to add a security exception. You can close that tab once you confirmed the certificate, no content will appear. The necessity of this process is a bug in <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">Firefox</a> and other browsers.</p>
+              <p><strong>Note</strong>: If you are using a self-signed certificate, you have to visit <a href="https://{{ settings.host }}:{{ settings.port }}/weechat">https://{{ settings.host || 'weechathost' }}:{{ settings.port || 'relayport' }}/weechat</a> in your browser first to add a security exception. You can close that tab once you confirmed the certificate, no content will appear. The necessity of this process is a bug in <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">Firefox</a> and other browsers.</p>
               <p><strong>Setup</strong>: If you want to use an encrypted session you first have to set up the relay to use TLS. You basically have two options: a self-signed certificate is easier to set up, but requires manual security exceptions. Using a certificate that is trusted by your browser requires more setup, but offers greater convenience later on and does not require security exceptions. You can find a guide to set up WeeChat with a free trusted certificate from StartSSL <a href="https://4z2.de/2014/07/06/weechat-trusted-relay">here</a>. Should you wish to use a self-signed certificate instead, execute the following commands in a shell on the same host and as the user running WeeChat:</p>
 <pre>
 $ mkdir -p ~/.weechat/ssl
@@ -171,11 +171,15 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           <div id="collapseFour" class="panel-collapse collapse in">
             <div class="panel-body">
               <p>You don't need to install anything to use this app, it should work with any modern browser. Start using it <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">right now</a>! However, there are a few ways to improve integration with your operating system.</p>
-              <h3>Firefox</h3>
-              <p>If you have a recent version of Firefox you can install glowing bear as an app. Click the button to install.</p>
-              <button class="btn btn-lg btn-primary" ng-click="install()">Install Firefox app <i class="glyphicon glyphicon-chevron-right"></i></button>
+              <h3>Mobile Applications</h3>
+              <p>If you're running Android 4.4 or later, you can install our app from the Google Play Store! We also provide an optimized application for Firefox OS devices. If you're using the Firefox browser, keep on reading below -- the Firefox OS app won't work for you</p>
+              <p><a href="https://play.google.com/store/apps/details?id=com.glowing_bear"><img alt="Android app on Google Play" src="https://developer.android.com/images/brand/en_app_rgb_wo_45.png" /></a> <a href="https://marketplace.firefox.com/app/glowing-bear/"><img alt="Firefox OS app in the Firefox Marketplace" src="https://marketplace.cdn.mozilla.net/media/img/mkt/badges/firefox-marketplace_badge-orange_129_45.png" /></a></p>
+              <h3>Firefox Browser</h3>
+              <p>If you have a recent version of Firefox you can install Glowing Bear as a Firefox app. Click the button to install.</p>
+              <p><button class="btn btn-lg btn-primary" ng-click="install()">Install Firefox app <i class="glyphicon glyphicon-chevron-right"></i></button></p>
+              <p>Note for self-signed certificates: Firefox does not share a certificate storage with Firefox apps, so accepting self-signed certificates is a bit tricky.</p>
               <h3>Chrome</h3>
-              <p>To install glowing bear as an app in Chrome, select <kbd>Menu - Add to home screen</kbd> (Android) or <kbd>Menu - More tools - Create application shortcuts</kbd> (desktop version).</p>
+              <p>To install Glowing Bear as an app in Chrome for Android, select <kbd>Menu - Add to home screen</kbd>. In the desktop version of Chrome, click <kbd>Menu - More tools - Create application shortcuts</kbd>.</p>
             </div>
           </div>
         </div>
@@ -222,7 +226,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
         <ul class="nav nav-pills nav-stacked" ng-class="{'indented': (predicate === 'serverSortKey'), 'showquickkeys': showQuickKeys}">
           <li class="bufferfilter">
             <form role="form">
-              <input class="form-control favorite-font" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="Search">
+              <input class="form-control favorite-font" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="Search" autocomplete="off">
             </form>
           </li>
           <li class="buffer" ng-class="{'active': buffer.active, 'indent': buffer.indent, 'channel': buffer.type === 'channel', 'channel_hash': buffer.prefix === '#', 'channel_plus': buffer.prefix === '+', 'channel_ampersand': buffer.prefix === '&', 'private': buffer.type === 'private'}" ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray:'withidx' | filter:{fullName:search} | filter:hasUnread | orderBy:predicate | getBufferQuickKeys:this))">
@@ -261,7 +265,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
               <td class="prefix"><a ng-click="addMention(bufferline.prefix)"><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text"></span></a></td><!--
            --><td class="message"><!--
              --><div ng-repeat="metadata in ::bufferline.metadata" plugin data="::metadata"></div><!--
-             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes" ng-bind-html="::part.text | linky:'_blank' | DOMfilter:'irclinky' | DOMfilter:'emojify':enableJSEmoji | DOMfilter:'inlinecolour' "></span>
+             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes" ng-bind-html="::part.text | linky:'_blank' | DOMfilter:'irclinky' | DOMfilter:'emojify':settings.enableJSEmoji | DOMfilter:'inlinecolour' "></span>
               </td>
             </tr>
             <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
@@ -420,7 +424,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                 <form class="form-inline" role="form">
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" ng-model="enableJSEmoji">
+                      <input type="checkbox" ng-model="settings.enableJSEmoji">
                       Enable non-native Emoji support <span class="text-muted settings-help">Displays Emoji characters as images</span>
                     </label>
                   </div>
