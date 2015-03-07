@@ -134,6 +134,12 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
          */
         var updateNick = function(group, nick) {
             group = nicklist[group];
+            if (group === undefined) {
+                // We are getting nicklist events for a buffer where not yet
+                // have populated the nicklist, so there will be nothing to
+                // update. Just ignore the event.
+                return;
+            }
             for(var i in group.nicks) {
                 if (group.nicks[i].name === nick.name) {
                     group.nicks[i] = nick;
