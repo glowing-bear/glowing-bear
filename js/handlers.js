@@ -190,6 +190,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         _buffer_line_added: handleBufferLineAdded,
         _buffer_localvar_added: handleBufferLocalvarChanged,
         _buffer_localvar_removed: handleBufferLocalvarChanged,
+        _buffer_localvar_changed: handleBufferLocalvarChanged,
         _buffer_opened: handleBufferOpened,
         _buffer_title_changed: handleBufferTitleChanged,
         _buffer_renamed: handleBufferRenamed,
