@@ -150,4 +150,17 @@ weechat.filter('emojify', function() {
     };
 });
 
+weechat.filter('mathjax', function() {
+    return function(text, selector) {
+        if (text.indexOf("$$") != -1 || text.indexOf("\\[") != -1 || text.indexOf("\\(") != -1) {
+            // contains math
+            //var math = document.getElementById("MathExample");
+            var math = document.querySelector(selector);
+            MathJax.Hub.Queue(["Typeset",MathJax.Hub,math]);
+        }
+
+        return text;
+    };
+});
+
 })();

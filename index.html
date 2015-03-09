@@ -36,6 +36,15 @@
     <script type="text/javascript" src="js/models.js"></script>
     <script type="text/javascript" src="js/plugins.js"></script>
     <script type="text/javascript" src="3rdparty/favico-0.3.5.min.js"></script>
+    <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$$','$$'], ["\\(","\\)"] ],
+          displayMath: [ ["\\[","\\]"] ]
+        }
+      });
+    </script>
   </head>
   <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keyup="handleKeyRelease($event)"  ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" lang="en-US">
     <link ng-href="css/themes/{{settings.theme}}.css" rel="stylesheet" media="screen" />
@@ -278,7 +287,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
               <td class="prefix"><a ng-click="addMention(bufferline.prefix)"><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text"></span></a></td><!--
            --><td class="message"><!--
              --><div ng-repeat="metadata in ::bufferline.metadata" plugin data="::metadata"></div><!--
-             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes" ng-bind-html="::part.text | linky:'_blank' | DOMfilter:'irclinky' | DOMfilter:'emojify':settings.enableJSEmoji | DOMfilter:'inlinecolour' "></span>
+             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes.concat(['line-' + part.$$hashKey.replace(':','_')])" ng-bind-html="::part.text | linky:'_blank' | DOMfilter:'irclinky' | DOMfilter:'emojify':settings.enableJSEmoji | DOMfilter:'inlinecolour' | DOMfilter:'mathjax':('.line-' + part.$$hashKey.replace(':','_'))"></span>
               </td>
             </tr>
             <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
