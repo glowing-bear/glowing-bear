@@ -43,6 +43,53 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         }
     };
 
+    var handleBufferInfo = function(message) {
+        var bufferInfos = message.objects[0].content;
+        // buffers objects
+        for (var i = 0; i < bufferInfos.length ; i++) {
+            var bufferId = bufferInfos[i].pointers[0];
+            var buffer = models.getBuffer(bufferId);
+            if (buffer !== undefined) {
+                // We already know this buffer
+                handleBufferUpdate(buffer, bufferInfos[i]);
+            } else {
+                buffer = new models.Buffer(bufferInfos[i]);
+                models.addBuffer(buffer);
+                // Switch to first buffer on startup
+                if (i === 0) {
+                    models.setActiveBuffer(buffer.id);
+                }
+            }
+        }
+    };
+
+    var handleBufferUpdate = function(buffer, message) {
+        if (message.pointers[0] !== buffer.id) {
+            // this is information about some other buffer!
+            return;
+        }
+
+        // weechat properties -- short name can be changed
+        buffer.shortName = message.short_name;
+        buffer.trimmedName = buffer.shortName.replace(/^[#&+]/, '');
+        buffer.title = message.title;
+        buffer.number = message.number;
+
+        // reset these, hotlist info will arrive shortly
+        buffer.notification = 0;
+        buffer.unread = 0;
+        buffer.lastSeen = -1;
+
+        if (message.local_variables.type !== undefined) {
+            buffer.type = message.local_variables.type;
+            buffer.indent = (['channel', 'private'].indexOf(buffer.type) >= 0);
+        }
+
+        if (message.notify !== undefined) {
+            buffer.notify = message.notify;
+        }
+    };
+
     var handleBufferLineAdded = function(message) {
         message.objects[0].content.forEach(function(l) {
             handleLine(l, false);
@@ -216,7 +263,8 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         handleEvent: handleEvent,
         handleLineInfo: handleLineInfo,
         handleHotlistInfo: handleHotlistInfo,
-        handleNicklist: handleNicklist
+        handleNicklist: handleNicklist,
+        handleBufferInfo: handleBufferInfo
     };
 
 }]);
