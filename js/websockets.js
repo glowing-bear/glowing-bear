@@ -110,7 +110,6 @@ function($rootScope, $q) {
             $rootScope.$emit('onMessage', message);
         }
 
-        $rootScope.$apply();
     };
 
     var connect = function(url,

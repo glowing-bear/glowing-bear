@@ -184,10 +184,10 @@ weechat.factory('connection',
         $log.info('Attempting to reconnect...');
         var d = connectionData;
         connect(d[0], d[1], d[2], d[3], d[4], function() {
+            $rootScope.reconnecting = false;
             // on success, update active buffer
             models.setActiveBuffer(bufferId);
             $log.info('Sucessfully reconnected to relay');
-            $rootScope.reconnecting = false;
         }, function() {
             // on failure, schedule another attempt
             if (timeout >= 600000) {
@@ -217,6 +217,8 @@ weechat.factory('connection',
         }
 
         $rootScope.reconnecting = true;
+        // Have to do this to get the reconnect banner to show
+        $rootScope.$apply();
 
         var bufferId = models.getActiveBuffer().id,
             timeout = 3000;  // start with a three-second timeout

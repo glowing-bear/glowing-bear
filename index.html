@@ -289,15 +289,17 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
             </tr>
           </tbody>
         </table><span id="end-of-buffer"></span>
-        <div id="reconnect" ng-if="reconnecting">
-          <i class="glyphicon glyphicon-refresh"></i> Reconnecting... <a ng-click="reconnect()">Try now</a>
-        </div>
       </div>
       <div class="footer" ng-class="{'withnicklist': showNicklist}">
         <div input-bar input-id="sendMessage" command="command"></div>
       </div>
     </div>
     <div id="soundNotification"></div>
+    <div id="reconnect" class="alert alert-danger" ng-click="reconnect()" ng-show="reconnecting">
+        <p><strong>Connection to WeeChat lost</strong></p>
+        <i class="glyphicon glyphicon-refresh"></i>
+        Reconnecting... <a class="btn btn-tiny" ng-click="reconnect()">Click to try to reconnect now</a>
+    </div>
     <div id="settingsModal" class="gb-modal" data-state="hidden">
       <div class="backdrop" ng-click="closeModal($event)"></div>
       <div class="modal-dialog">
