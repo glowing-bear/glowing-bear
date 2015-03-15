@@ -216,6 +216,11 @@ weechat.factory('connection',
             return;
         }
 
+        // reinitialise everything, clear all buffers
+        // TODO: this can be further extended in the future by looking
+        // at the last line in ever buffer and request more buffers from
+        // WeeChat based on that
+        models.reinitialize();
         $rootScope.reconnecting = true;
         // Have to do this to get the reconnect banner to show
         $rootScope.$apply();
