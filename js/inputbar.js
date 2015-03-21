@@ -23,6 +23,11 @@ weechat.directive('inputBar', function() {
                              IrcUtils,
                              settings) {
 
+            // E.g. Turn :smile: into the unicode equivalent
+            $scope.inputChanged = function() {
+                $scope.command = emojione.shortnameToUnicode($scope.command);
+            };
+
             /*
              * Returns the input element
              */
