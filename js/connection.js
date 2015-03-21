@@ -78,7 +78,8 @@ weechat.factory('connection',
             // a version command. If it fails, it means the we
             // did not provide the proper password.
             _initializeConnection(passwd).then(
-                function() {
+                function(version) {
+                    handlers.handleVersionInfo(version);
                     // Connection is successful
                     // Send all the other commands required for initialization
                     _requestBufferInfos().then(function(bufinfo) {
