@@ -377,6 +377,22 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     });
 
+    // To reduce loading times for users who don't want twemoji,
+    // load it only if the setting is enabled.
+    // This also fires when the page is loaded.
+    settings.addCallback('enableJSEmoji', function(enabled) {
+        if (enabled && !$rootScope.twemoji_init) {
+            // Load twemoji only once
+            $rootScope.twemoji_init = true;
+            (function() {
+                var script = document.createElement("script");
+                script.type = "text/javascript";
+                script.src  = "//twemoji.maxcdn.com/twemoji.min.js";
+                document.getElementsByTagName("head")[0].appendChild(script);
+            })();
+        }
+    });
+
     // Update font family when changed
     settings.addCallback('fontfamily', function(fontfamily) {
         utils.changeClassStyle('favorite-font', 'fontFamily', fontfamily);
