@@ -8,6 +8,9 @@
 var models = angular.module('weechatModels', []);
 
 models.service('models', ['$rootScope', '$filter', function($rootScope, $filter) {
+    // WeeChat version
+    this.version = null;
+
     var parseRichText = function(text) {
         var textElements = weeChat.Protocol.rawText2Rich(text),
             typeToClassPrefixFg = {

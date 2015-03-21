@@ -5,6 +5,14 @@ var weechat = angular.module('weechat');
 
 weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notifications', function($rootScope, $log, models, plugins, notifications) {
 
+    var handleVersionInfo = function(message) {
+        console.log(message.objects[0]);
+        var content = message.objects[0].content;
+        var version = content.value;
+        // Store the WeeChat version in models
+        models.version = version;
+    };
+
     var handleBufferClosing = function(message) {
         var bufferMessage = message.objects[0].content[0];
         var bufferId = bufferMessage.pointers[0];
@@ -260,6 +268,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
     };
 
     return {
+        handleVersionInfo: handleVersionInfo,
         handleEvent: handleEvent,
         handleLineInfo: handleLineInfo,
         handleHotlistInfo: handleHotlistInfo,
