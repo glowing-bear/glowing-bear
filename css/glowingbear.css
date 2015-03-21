@@ -547,6 +547,30 @@ img.emoji {
    vertical-align: -0.1em;
 }
 
+@media (min-width: 1400px) {
+    #sidebar[data-state=visible], #sidebar {
+        width: 200px;
+    }
+    .content[sidebar-state="visible"] #bufferlines {
+        margin-left: 205px;
+    }
+    #topbar .title {
+        left: 205px;
+    }
+    .content[sidebar-state=visible] .footer {
+        padding-left: 200px;
+    }
+    #nicklist {
+        width: 140px;
+    }
+    .withnicklist {
+      margin-right: 140px !important; /* nicklist */
+    }
+    .footer.withnicklist {
+        padding-right: 148px !important;
+    }
+}
+
 /* */
 /* Mobile layout */
 /* */
