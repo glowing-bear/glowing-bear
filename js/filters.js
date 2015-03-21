@@ -73,9 +73,11 @@ weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
             return text;
         }
 
-        // hacky way to pass an extra argument without using .apply, which
+        // hacky way to pass extra arguments without using .apply, which
         // would require assembling an argument array. PERFORMANCE!!!
         var extraArgument = (arguments.length > 2) ? arguments[2] : null;
+        var thirdArgument = (arguments.length > 3) ? arguments[3] : null;
+
         var filterFunction = $filter(filter);
         var el = document.createElement('div');
         el.innerHTML = text;
@@ -83,7 +85,7 @@ weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
         // Recursive DOM-walking function applying the filter to the text nodes
         var process = function(node) {
             if (node.nodeType === 3) { // text node
-                var value = filterFunction(node.nodeValue, extraArgument);
+                var value = filterFunction(node.nodeValue, extraArgument, thirdArgument);
                 if (value !== node.nodeValue) {
                     // we changed something. create a new node to replace the current one
                     // we could also only add its children but that would probably incur
@@ -151,10 +153,12 @@ weechat.filter('emojify', function() {
 });
 
 weechat.filter('mathjax', function() {
-    return function(text, selector) {
+    return function(text, selector, enabled) {
+        if (!enabled || typeof(MathJax) === "undefined") {
+            return text;
+        }
         if (text.indexOf("$$") != -1 || text.indexOf("\\[") != -1 || text.indexOf("\\(") != -1) {
             // contains math
-            //var math = document.getElementById("MathExample");
             var math = document.querySelector(selector);
             MathJax.Hub.Queue(["Typeset",MathJax.Hub,math]);
         }
