@@ -573,15 +573,18 @@ img.emoji {
 
     #sidebar[data-state=visible] {
         transform: translate(0,0);
+        -webkit-transform: translate(0,0); /* Safari */
     }
 
     #sidebar[data-state=hidden] {
         transform: translate(-200px,0);
+        -webkit-transform: translate(-200px,0);
     }
 
     .content[sidebar-state=visible] #bufferlines, .content[sidebar-state=visible] .footer {
         margin-left: 0px;
         transform: translate(200px,0);
+        -webkit-transform: translate(200px,0);
     }
 
     #topbar .title {
