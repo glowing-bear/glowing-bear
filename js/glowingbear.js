@@ -418,6 +418,27 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     });
 
+
+    // Inject theme CSS
+    settings.addCallback('theme', function(theme) {
+        // Unload old theme
+        var oldThemeCSS = document.getElementById("themeCSS");
+        if (oldThemeCSS) {
+            oldThemeCSS.parentNode.removeChild(oldThemeCSS);
+        }
+
+        // Load new theme
+        (function() {
+            var elem = document.createElement("link");
+            elem.rel = "stylesheet";
+            elem.href = "css/themes/" + theme + ".css";
+            elem.media = "screen";
+            elem.id = "themeCSS";
+            document.getElementsByTagName("head")[0].appendChild(elem);
+        })();
+    });
+
+
     // Update font family when changed
     settings.addCallback('fontfamily', function(fontfamily) {
         utils.changeClassStyle('favorite-font', 'fontFamily', fontfamily);
