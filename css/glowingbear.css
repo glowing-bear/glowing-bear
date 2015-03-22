@@ -539,12 +539,19 @@ li.buffer.indent.private a {
     user-select: none;
 }
 
-/* Scales emoji to font size */
-img.emoji {
-   height: 1em;
-   width: 1em;
-   margin: 0 .05em 0 .1em;
-   vertical-align: -0.1em;
+.emojione {
+    font-size: inherit;
+    height: 1em;
+    width: 1.1em;
+    min-height: 16px;
+    min-width: 16px;
+    display: inline-block;
+    margin: -.2ex .15em .2ex;
+    line-height: normal;
+    vertical-align: middle;
+}
+img.emojione {
+    width: auto;
 }
 
 @media (min-width: 1400px) {

@@ -141,11 +141,11 @@ weechat.filter('getBufferQuickKeys', function () {
     };
 });
 
-// Emojifis the string using https://github.com/twitter/twemoji
+// Emojifis the string using https://github.com/Ranks/emojione
 weechat.filter('emojify', function() {
     return function(text, enable_JS_Emoji) {
         if (enable_JS_Emoji === true) {
-            return twemoji.parse(text);
+            return emojione.unicodeToImage(text);
         } else {
             return(text);
         }
