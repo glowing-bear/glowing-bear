@@ -228,16 +228,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         // Do this part last since it's not important for the UI
         if (settings.hotlistsync && ab.fullName) {
-            if (parseInt(models.version.charAt(0)) >= 1) {
-                // WeeChat >= 1 supports clearing hotlist with this command
-                connection.sendMessage('/buffer set hotlist -1');
-            } else {
-                // If user wants to sync hotlist with weechat
-                // we will send a /buffer bufferName command every time
-                // the user switches a buffer. This will ensure that notifications
-                // are cleared in the buffer the user switches to
-                connection.sendCoreCommand('/buffer ' + ab.fullName);
-            }
+            connection.sendHotlistClear();
         }
     });
 
