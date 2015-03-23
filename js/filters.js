@@ -144,7 +144,7 @@ weechat.filter('getBufferQuickKeys', function () {
 // Emojifis the string using https://github.com/Ranks/emojione
 weechat.filter('emojify', function() {
     return function(text, enable_JS_Emoji) {
-        if (enable_JS_Emoji === true) {
+        if (enable_JS_Emoji === true && window.emojione !== undefined) {
             return emojione.unicodeToImage(text);
         } else {
             return(text);
