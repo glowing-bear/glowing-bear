@@ -6,7 +6,6 @@ var weechat = angular.module('weechat');
 weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notifications', function($rootScope, $log, models, plugins, notifications) {
 
     var handleVersionInfo = function(message) {
-        console.log(message.objects[0]);
         var content = message.objects[0].content;
         var version = content.value;
         // Store the WeeChat version in models
