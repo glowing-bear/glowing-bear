@@ -15,8 +15,19 @@ td.prefix {
     text-align: right;
     vertical-align: top;
     padding: 1px 5px 1px 1px;
-    white-space: pre;
     border-right: 1px solid #444;
+
+    /* To make lines able to wrap into multiple lines */
+    white-space: pre-wrap;
+    /* For limiting super long nicks in Non-IRC protocols */
+    max-width: 200px;
+
+    /* New style wrapping for chrome */
+    overflow-wrap: break-word;
+-webkit-hyphens: auto;
+   -moz-hyphens: auto;
+    -ms-hyphens: auto;
+        hyphens: auto;
 }
 td.message {
     vertical-align: top;
@@ -679,6 +690,7 @@ img.emojione {
         border: 0;
         font-weight: bold;
         font-size: 1.06em;
+        max-width: auto;
     }
 
     #bufferlines td.message {
