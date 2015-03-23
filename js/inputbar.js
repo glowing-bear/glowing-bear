@@ -104,6 +104,9 @@ weechat.directive('inputBar', function() {
                     $scope.command = '';
                 }
 
+                // Presumable we are reading the messages if we are sending.
+                connection.sendHotlistClear();
+
                 $scope.getInputNode().focus();
             };
 

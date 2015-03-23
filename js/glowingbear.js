@@ -436,6 +436,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if (utils.isMobileUi()) {
             $scope.hideSidebar();
         }
+
+        // Clear the hotlist for this buffer, because presumable you have read
+        // the messages in this buffer before you switched to the new one
+        connection.sendHotlistClear();
+
         return models.setActiveBuffer(bufferId, key);
     };
 
