@@ -220,6 +220,9 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           <a href="#" ng-click="toggleSidebar()">
             <img alt="brand" src="assets/img/favicon.png" title="Connected to {{ settings.host }}:{{ settings.port}}">
           </a>
+          <span class="badge" ng-show="unread > 0">{{unread}}</span>
+          <span class="badge danger" ng-show="notifications > 0">{{notifications}}</span>
+
           <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
         </div>
         <div class="title" title="{{activeBuffer().rtitle}}">

@@ -157,5 +157,6 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
         updateFavico: updateFavico,
         createHighlight: createHighlight,
         cancelAll: cancelAll,
+        unreadCount: unreadCount
     };
 }]);
