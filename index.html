@@ -225,7 +225,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
 
         <div class="title" title="{{activeBuffer().rtitle}}">
           <span class="visible-lg" ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank' | DOMfilter:'irclinky')"></span>
-          <span class="hidden-lg" ng-click="showModal('topicModal')">{{ activeBuffer().trimmedName || activeBuffer().fullName }}</span>
+          <span class="hidden-lg" ng-click="showModal('topicModal')" ng-class="{'active': activeBuffer().active, 'indent': activeBuffer().indent, 'channel': activeBuffer().type === 'channel', 'channel_hash': activeBuffer().prefix === '#', 'channel_plus': activeBuffer().prefix === '+', 'channel_ampersand': activeBuffer().prefix === '&', 'private': activeBuffer().type === 'private'}">{{ activeBuffer().trimmedName || activeBuffer().fullName }}</span>
         </div>
 
         <div class="actions pull-right vertical-line-left">
