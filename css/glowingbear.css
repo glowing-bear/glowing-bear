@@ -620,6 +620,8 @@ img.emojione {
 
     #topbar .title {
         left: 40px;
+        right: 60px;
+        text-align: center;
     }
 
     #topbar .actions {

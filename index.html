@@ -222,9 +222,13 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </a>
           <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
         </div>
+
         <div class="title" title="{{activeBuffer().rtitle}}">
-          <span ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank' | DOMfilter:'irclinky')"></span>
+          <span class="visible-lg" ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank' | DOMfilter:'irclinky')"></span>
+          <span class="hidden-lg">{{ activeBuffer().trimmedName || activeBuffer().fullName }}</span>
+
         </div>
+
         <div class="actions pull-right vertical-line-left">
           <div class="pull-left">
             <a class="settings-toggle" ng-click="showModal('settingsModal')" title="Options menu">
