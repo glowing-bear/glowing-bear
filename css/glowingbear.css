@@ -165,6 +165,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
 #sidebar .badge {
     border-radius: 0;
     margin-right: -10px;
+    padding: 4px 7px;
 }
 
 #sidebar ul.indented li.indent span.buffername {
@@ -209,10 +210,19 @@ input[type=text], input[type=password], #sendMessage, .badge {
     overflow: hidden;
 }
 
+.nav-pills {
+    font-size: 14px;
+}
+
+.nav-pills li+li {
+    margin-top: 0;
+}
+.nav-pills li:nth-child(2n) {
+    background: #232323;
+}
 .nav-pills > li > a {
     border-radius: 0;
     color: #ddd;
-    padding: 5px 10px;
 }
 .nav-pills > li > a:hover, .nav-pills > li > a:hover span {
     color: #222;
@@ -652,10 +662,6 @@ img.emojione {
 
     .navbar {
         min-height: 0%;
-    }
-
-    .nav-pills > li > a {
-        padding: 10px 15px;
     }
 
     #bufferlines {
