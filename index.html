@@ -226,11 +226,9 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           <span ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank' | DOMfilter:'irclinky')"></span>
         </div>
         <div class="actions pull-right vertical-line-left">
-          <div class="pull-left">
-            <a class="settings-toggle" ng-click="showModal('settingsModal')" title="Options menu">
-              <i class="glyphicon glyphicon-cog"></i>
-            </a>
-          </div>
+          <a class="settings-toggle" ng-click="showModal('settingsModal')" title="Options menu">
+            <i class="glyphicon glyphicon-cog"></i>
+          </a>
           <a ng-click="disconnect()" title="Disconnect from WeeChat">
             <i class="glyphicon glyphicon-off"></i>
           </a>
