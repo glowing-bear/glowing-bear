@@ -222,9 +222,12 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </a>
           <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
         </div>
+
         <div class="title" title="{{activeBuffer().rtitle}}">
-          <span ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank' | DOMfilter:'irclinky')"></span>
+          <span class="visible-lg" ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank' | DOMfilter:'irclinky')"></span>
+          <span class="hidden-lg" ng-click="showModal('topicModal')" ng-class="{'active': activeBuffer().active, 'indent': activeBuffer().indent, 'channel': activeBuffer().type === 'channel', 'channel_hash': activeBuffer().prefix === '#', 'channel_plus': activeBuffer().prefix === '+', 'channel_ampersand': activeBuffer().prefix === '&', 'private': activeBuffer().type === 'private'}">{{ activeBuffer().trimmedName || activeBuffer().fullName }}</span>
         </div>
+
         <div class="actions pull-right vertical-line-left">
           <a class="settings-toggle" ng-click="showModal('settingsModal')" title="Options menu">
             <i class="glyphicon glyphicon-cog"></i>
@@ -458,6 +461,21 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                 </form>
               </li>
             </ul>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" ng-click="closeModal($event)">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <div id="topicModal" class="gb-modal" data-state="hidden">
+      <div class="backdrop" ng-click="closeModal($event)"></div>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" ng-click="closeModal($event)" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Channel topic</h4>
+            <p ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank' | DOMfilter:'irclinky')"></p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" ng-click="closeModal($event)">Close</button>

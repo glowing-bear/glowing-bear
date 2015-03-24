@@ -113,6 +113,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
     left: 145px; /* sidebar */
     overflow: hidden;
 }
+
 #topbar .actions {
     margin-left: 5px;
     padding-left: 5px;
@@ -504,20 +505,20 @@ h2 span, h2 small {
     }
 }
 /* bold hash before channels */
-li.buffer.channel a span:last-of-type:before {
+li.buffer.channel a span:last-of-type:before, #topbar .title .channel:before {
     color: #888;
     font-weight: bold;
 }
 
-li.buffer.channel_hash a span:last-of-type:before {
+li.buffer.channel_hash a span:last-of-type:before, #topbar .title .channel_hash:before {
     content: '#';
 }
 
-li.buffer.channel_plus a span:last-of-type:before {
+li.buffer.channel_plus a span:last-of-type:before, #topbar .title .channel_plus:before {
     content: '+';
 }
 
-li.buffer.channel_ampersand a span:last-of-type:before {
+li.buffer.channel_ampersand a span:last-of-type:before, #topbar .title .channel_ampersand:before {
     content: '&';
 }
 
@@ -632,6 +633,8 @@ img.emojione {
 
     #topbar .title {
         left: 40px;
+        right: 60px;
+        text-align: center;
     }
 
     #topbar .brand img {
