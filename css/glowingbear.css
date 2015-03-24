@@ -81,10 +81,6 @@ input[type=text], input[type=password], #sendMessage, .badge {
 .glyphicon {
     top: 0; /* Fixes alignment issue in top bar */
 }
-.glyphicon-off {
-    top: 1px; /* Fixes for relative glyphicon size */
-    font-size: 28px;
-}
 #topbar {
     position: fixed;
     width: 100%;
@@ -97,7 +93,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
 #topbar .brand {
     float: left;
     height: 35px;
-    padding-left: 5px;
+    padding-left: 10px;
 }
 #topbar .brand img {
     height: 32px;
@@ -118,11 +114,11 @@ input[type=text], input[type=password], #sendMessage, .badge {
     margin-left: 5px;
     padding-left: 5px;
     margin-right: 0;
-    padding-right: 5px;
+    padding-right: 10px;
     padding-top: 2px;
     height: 35px;
     line-height: 35px;
-    font-size: 30px;
+    font-size: 16px;
     position: fixed;
     right: 0;
 }
@@ -622,11 +618,12 @@ img.emojione {
         left: 40px;
     }
 
+    #topbar .brand img {
+        height: 20px;
+    }
+
     #topbar .actions {
-        line-height: 35px;
-        height: 35px;
-        font-size: 31px;
-        margin-right: 0;
+        font-size: 16px;
     }
 
     #bufferlines, #nicklist {
