@@ -93,7 +93,10 @@ input[type=text], input[type=password], #sendMessage, .badge {
 #topbar .brand {
     float: left;
     height: 35px;
-    padding-left: 10px;
+}
+#topbar .brand a {
+    display: block;
+    padding: 0 10px;
 }
 #topbar .brand img {
     height: 32px;
@@ -114,17 +117,20 @@ input[type=text], input[type=password], #sendMessage, .badge {
     margin-left: 5px;
     padding-left: 5px;
     margin-right: 0;
-    padding-right: 10px;
-    padding-top: 2px;
+    padding-right: 5px;
     height: 35px;
     line-height: 35px;
     font-size: 16px;
     position: fixed;
     right: 0;
 }
-
 #topbar .actions > * {
-    padding-left: 5px;
+    padding: 0 5px;
+    display: inline-block;
+}
+#topbar .actions .glyphicon {
+    line-height: 35px;
+    top: 0;
 }
 #topbar .dropdown-menu form {
     padding-left: 6px;
