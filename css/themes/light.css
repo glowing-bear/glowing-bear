@@ -61,6 +61,10 @@ select.form-control, select option, input[type=text], input[type=password], #sen
     color: #aaa;
 }
 
+.nav-pills li:nth-child(2n) {
+    background: #e1e1e1;
+}
+
 .nav-pills > li > a {
     color: #222;
 }
