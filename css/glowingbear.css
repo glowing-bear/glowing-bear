@@ -622,6 +622,10 @@ img.emojione {
         left: 40px;
     }
 
+    #topbar .badge {
+        display: none;
+    }
+
     #topbar .actions {
         line-height: 35px;
         height: 35px;
