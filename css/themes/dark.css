@@ -65,6 +65,10 @@ input[type=text], input[type=password], #sendMessage, .badge {
     color: #aaa;
 }
 
+.nav-pills li:nth-child(2n) {
+    background: #232323;
+}
+
 .nav-pills > li > a {
     color: #ddd;
 }
