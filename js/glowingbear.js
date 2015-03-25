@@ -209,6 +209,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             );
         }
         notifications.updateTitle(ab);
+        $scope.notifications = notifications.unreadCount('notification');
+        $scope.unread = notifications.unreadCount('unread');
 
         $timeout(function() {
             $rootScope.scrollWithBuffer(true);
@@ -233,9 +235,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     });
 
     $rootScope.favico = new Favico({animation: 'none'});
+    $scope.notifications = notifications.unreadCount('notification');
+    $scope.unread = notifications.unreadCount('unread');
 
     $rootScope.$on('notificationChanged', function() {
         notifications.updateTitle();
+        $scope.notifications = notifications.unreadCount('notification');
+        $scope.unread = notifications.unreadCount('unread');
 
         if (settings.useFavico && $rootScope.favico) {
             notifications.updateFavico();
