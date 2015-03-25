@@ -426,9 +426,88 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         };
     };
 
+    /*
+     * Buffer switch history
+     */
+    this.History = function() {
+        // The buffer history. Pointers are converted to ints to save space.
+        // This means that we can definitely save the entire history and not
+        // consume absurd amounts of memory, unlike UTF-16 strings of len ≥ 7
+        var history = [];
+        var position = -1;
+        var firstSmartJump = -1;
+        var lastActionOffset = +1; // last is initially forward
+
+        var _return = function(bufferId) {
+            return bufferId.toString(16);
+        };
+
+        var getFirstSmartJump = function() {
+            return _return(history[firstSmartJump]);
+        };
+
+        var resetSmartJump = function() {
+            firstSmartJump = history.length - 1;
+        };
+
+        var smartJump = function() {
+            firstSmartJump--;
+        };
+
+        var getPrevNextBuffer = function(next) {
+            if (next && position < history.length - 1) {
+                return _return(history[position + 1]);
+            } else if (!next && position > 0) {
+                return _return(history[position - 1]);
+            }
+        };
+
+        var getLastDisplayedBuffer = function() {
+            var newPosition = position - lastActionOffset;
+            if (newPosition >= 0 && newPosition < history.length) {
+                return _return(newPosition);
+            }
+        };
+
+        var switchToLastBuffer = function() {
+            lastActionOffset = -lastActionOffset;
+            position += lastActionOffset;
+        };
+
+        var moveInHistory = function(forward) {
+            lastActionOffset = forward ? +1 : -1;
+            position += lastActionOffset;
+        };
+
+        var recordBufferSwitch = function(buffer) {
+            // save buffer pointer as int
+            history.push(parseInt("0x" + buffer.id));
+            firstSmartJump++;
+            position++;
+            lastActionOffset = +1;
+        };
+
+        var get = function() {
+            return {position: position, firstSmartJump: firstSmartJump, history: history};
+        };
+
+        return {
+            getFirstSmartJump: getFirstSmartJump,
+            resetSmartJump: resetSmartJump,
+            smartJump: smartJump,
+            getPrevNextBuffer: getPrevNextBuffer,
+            moveInHistory: moveInHistory,
+            getLastDisplayedBuffer: getLastDisplayedBuffer,
+            switchToLastBuffer: switchToLastBuffer,
+            recordBufferSwitch: recordBufferSwitch,
+            get: get
+        };
+    };
+
 
     var activeBuffer = null;
     var previousBuffer = null;
+    var history = this.History();
 
     this.model = { 'buffers': {} };
 
@@ -452,23 +531,14 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
     };
 
     /*
-     * Returns the previous current active buffer
-     *
-     * @return previous buffer object
-     */
-    this.getPreviousBuffer = function() {
-        return previousBuffer;
-    };
-
-    /*
      * Sets the buffer specifiee by bufferId as active.
      * Deactivates the previous current buffer.
      *
      * @param bufferId id of the new active buffer
      * @return true on success, false if buffer was not found
      */
-    this.setActiveBuffer = function(bufferId, key) {
-        if (key === undefined) {
+    this.setActiveBuffer = function(bufferId, key, isMoveInHistory) {
+        if (!key) {
             key = 'id';
         }
 
@@ -476,8 +546,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
 
         if (key === 'id') {
             activeBuffer = this.model.buffers[bufferId];
-        }
-        else {
+        } else {
             activeBuffer = _.find(this.model.buffers, function(buffer) {
                 if (buffer[key] === bufferId) {
                     return buffer;
@@ -504,9 +573,67 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         activeBuffer.unread = 0;
         activeBuffer.notification = 0;
 
+        if (!isMoveInHistory) {
+            history.recordBufferSwitch(activeBuffer);
+        }
+
         $rootScope.$emit('activeBufferChanged', unreadSum);
         $rootScope.$emit('notificationChanged');
         return true;
+    };
+
+    this.switchToActivityBuffer = function() {
+        var that = this;
+        var jumpTo = function(bufferId) {
+            that.setActiveBuffer(bufferId);
+            history.smartJump();
+        };
+
+        // Find next buffer with activity and switch to it
+        var sortedBuffers = _.sortBy(this.getBuffers(), 'number');
+        var i, buffer;
+        // Look for a buffer with notifications or unread message
+        var unreadBuffer = null;
+        for (i in sortedBuffers) {
+            buffer = sortedBuffers[i];
+            if (buffer.notification > 0) {
+                jumpTo(buffer.id);
+                return;
+            }
+
+            if (buffer.unread > 0 && !unreadBuffer) {
+                unreadBuffer = buffer;
+            }
+        }
+
+        if (unreadBuffer) {
+            jumpTo(unreadBuffer.id);
+            return;
+        }
+
+        // Jump back to first buffer in the series
+        this.setActiveBuffer(history.getFirstSmartJump());
+        history.resetSmartJump();
+    };
+
+    this.switchToPrevNextBuffer = function(forward) {
+        var newBufferId = history.getPrevNextBuffer(forward);
+        if (newBufferId) {
+            this.setActiveBuffer(newBufferId, null, true);
+            history.moveInHistory(forward);
+            return true;
+        }
+        return false;
+    };
+
+    this.switchToLastBuffer = function() {
+        var lastBufferId = history.getLastDisplayedBuffer();
+        if (lastBufferId) {
+            this.setActiveBuffer(lastBufferId, null, true);
+            history.switchToLastBuffer();
+            return true;
+        }
+        return false;
     };
 
     /*

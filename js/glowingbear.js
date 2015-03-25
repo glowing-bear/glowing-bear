@@ -680,28 +680,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         return true;
     };
 
-//XXX not sure whether this belongs here
-    $rootScope.switchToActivityBuffer = function() {
-        // Find next buffer with activity and switch to it
-        var sortedBuffers = _.sortBy($scope.getBuffers(), 'number');
-        var i, buffer;
-        // Try to find buffer with notification
-        for (i in sortedBuffers) {
-            buffer = sortedBuffers[i];
-            if (buffer.notification > 0) {
-                $scope.setActiveBuffer(buffer.id);
-                return;  // return instead of break so that the second for loop isn't executed
-            }
-        }
-        // No notifications, find first buffer with unread lines instead
-        for (i in sortedBuffers) {
-            buffer = sortedBuffers[i];
-            if (buffer.unread > 0) {
-                $scope.setActiveBuffer(buffer.id);
-                return;
-            }
-        }
-    };
     // Helper function since the keypress handler is in a different scope
     $rootScope.toggleNicklist = function() {
         settings.nonicklist = !settings.nonicklist;
