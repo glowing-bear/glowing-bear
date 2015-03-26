@@ -95,7 +95,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
     height: 35px;
 }
 #topbar .brand a {
-    display: block;
+    display: inline-block;
     padding: 0 10px;
 }
 #topbar .brand img {
