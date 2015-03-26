@@ -218,10 +218,10 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
       <div id="topbar">
         <div class="brand">
           <a href="#" ng-click="toggleSidebar()">
-            <img alt="brand" src="assets/img/favicon.png" title="Connected to {{ settings.host }}:{{ settings.port}}">
+            <img class="pull-left" alt="brand" src="assets/img/favicon.png" title="Connected to {{ settings.host }}:{{ settings.port}}">
           </a>
-          <span class="badge" ng-show="unread > 0">{{unread}}</span>
-          <span class="badge danger" ng-show="notifications > 0">{{notifications}}</span>
+          <span class="badge danger pull-right" ng-show="notifications > 0">{{notifications}}</span>
+          <span class="badge pull-right" ng-show="unread > 0">{{unread}}</span>
 
           <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
         </div>
