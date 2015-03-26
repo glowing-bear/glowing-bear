@@ -246,7 +246,7 @@ weechat.factory('connection',
      */
     var sendMessage = function(message) {
         ngWebsockets.send(weeChat.Protocol.formatInput({
-            buffer: models.getActiveBuffer().fullName,
+            buffer: models.getActiveBufferReference(),
             data: message
         }));
     };
