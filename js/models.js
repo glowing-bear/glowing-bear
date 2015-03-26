@@ -461,7 +461,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         if (this.version !== null && parseInt(this.version.charAt(0)) >= 1) {
             // pointers are being validated, they're more reliable than
             // fullName (e.g. if fullName contains spaces)
-            return activeBuffer.id;
+            return "0x"+activeBuffer.id;
         } else {
             return activeBuffer.fullName;
         }
