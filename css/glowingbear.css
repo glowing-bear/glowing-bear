@@ -644,6 +644,10 @@ img.emojione {
         height: 20px;
     }
 
+    #topbar .badge {
+        display: none;
+    }
+
     #topbar .actions {
         font-size: 16px;
     }
