@@ -121,7 +121,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
     padding-right: 5px;
     height: 35px;
     line-height: 35px;
-    font-size: 16px;
+    font-size: 22px;
     position: fixed;
     right: 0;
 }
@@ -638,19 +638,17 @@ img.emojione {
         left: 40px;
         right: 60px;
         text-align: center;
+        font-size: 18px;
     }
 
     #topbar .brand img {
-        height: 20px;
+        height: 28px;
     }
 
     #topbar .badge {
         display: none;
     }
 
-    #topbar .actions {
-        font-size: 16px;
-    }
 
     #bufferlines, #nicklist {
         position: relative;
