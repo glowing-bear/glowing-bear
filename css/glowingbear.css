@@ -382,7 +382,6 @@ table.notimestampseconds td.time span.seconds {
     z-index: 1000;
     height: 100%;
     overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;
     position: absolute;
     top: 0;
     left: 0;
