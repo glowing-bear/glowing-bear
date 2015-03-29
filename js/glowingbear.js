@@ -753,4 +753,13 @@ weechat.config(['$routeProvider',
     }
 ]);
 
+/* To make chrome mobile display the input element we hook events here */
+var input = document.getElementById('sendMessage');
+input.addEventListener('focus', function() {
+    window.location.hash = 'sendMessage';
+});
+input.addEventListener('blur', function() {
+    window.location.hash = '';
+});
+
 })();
