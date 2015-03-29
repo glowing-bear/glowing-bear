@@ -54,9 +54,18 @@ td.message {
 
 #sendMessage {
     width: 100%;
-    height: 36px;
+    height: 35px;
     resize: none;
 }
+
+#sendMessage:focus, #sendMessage:active {
+    border-bottom: 2px solid #555;
+}
+
+.input-group-addon, .input-group-btn {
+    vertical-align: top;
+}
+
 .footer button {
     border-radius: 0;
 }
