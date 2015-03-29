@@ -7,6 +7,10 @@ body {
     overflow: hidden;
 }
 
+.mobile {
+  display: none;
+}
+
 a {
     cursor: pointer;
 }
@@ -598,6 +602,14 @@ img.emojione {
 /* Mobile layout */
 /* */
 @media (max-width: 968px) {
+
+    .mobile {
+      display: inherit;
+    }
+
+    .desktop {
+      display: none;
+    }
 
     #bufferlines table {
         border-collapse: separate;
