@@ -108,8 +108,6 @@ input[type=text], input[type=password], #sendMessage, .badge, .btn-send {
 
 #topbar .actions {
     background: #282828;
-}
-#topbar a {
     color: #666;
 }
 
