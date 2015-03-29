@@ -20,6 +20,10 @@ html {
     color: #333;
 }
 
+.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
+    background-color: #555;
+}
+
 /* fix for mobile firefox which ignores :hover */
 .nav-pills > li > a:active, .nav-pills > li > a:active span {
     background-color: #eee;
@@ -39,6 +43,15 @@ tr.bufferline:hover {
     color: black;
 }
 
+.btn-primary {
+    background-color: #555;
+    border-color: #444;
+}
+.btn-primary:hover {
+    background-color: #666;
+    border-color: #555;
+}
+
 li.notification {
     color: green;
 }
@@ -55,10 +68,15 @@ li.notification {
     background-color:rgba(0, 0, 0, 0.5)
 }
 
-input[type=text], input[type=password], #sendMessage, .badge {
+input[type=text], input[type=password], #sendMessage, .badge, .btn-send {
     color: #ccc;
     box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.8) inset;
     background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.3);
+}
+
+.btn-send:hover, .btn-send:focus {
+    background-color: #555;
+    color: white;
 }
 
 #connection-infos {
@@ -87,6 +105,9 @@ input[type=text], input[type=password], #sendMessage, .badge {
 
 #topbar .actions {
     background: #282828;
+}
+#topbar a {
+    color: #666;
 }
 
 #topbar, #sidebar, .panel, .dropdown-menu, .modal-content {
