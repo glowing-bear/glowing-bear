@@ -20,12 +20,12 @@ html {
     color: #333;
 }
 
-.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
+.nav-pills > li.active > a {
     background-color: #555;
 }
 
 /* fix for mobile firefox which ignores :hover */
-.nav-pills > li > a:active, .nav-pills > li > a:active span {
+.nav-pills > li > a:active, .nav-pills > li > a:active span, .nav-pills > li.active > a:hover {
     background-color: #eee;
     color: #222;
 }
