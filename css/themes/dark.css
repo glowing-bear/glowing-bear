@@ -43,11 +43,11 @@ tr.bufferline:hover {
     color: black;
 }
 
-.btn-primary {
+.btn-default {
     background-color: #555;
     border-color: #444;
 }
-.btn-primary:hover {
+.btn-default:hover {
     background-color: #666;
     border-color: #555;
 }
