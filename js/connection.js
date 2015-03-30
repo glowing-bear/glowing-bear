@@ -130,17 +130,14 @@ weechat.factory('connection',
         };
 
         var handleClose = function (evt) {
-            ngWebsockets.failCallbacks('disconnection');
-            $rootScope.connected = false;
-            $rootScope.$emit('relayDisconnect');
             if (ssl && evt && evt.code === 1006) {
                 // A password error doesn't trigger onerror, but certificate issues do. Check time of last error.
                 if (typeof $rootScope.lastError !== "undefined" && (Date.now() - $rootScope.lastError) < 1000) {
                     // abnormal disconnect by client, most likely ssl error
                     $rootScope.sslError = true;
+                    $rootScope.$apply();
                 }
             }
-            $rootScope.$apply();
         };
 
         var onerror = function (evt) {
@@ -235,8 +232,19 @@ weechat.factory('connection',
     };
 
     var disconnect = function() {
+        $log.info('Disconnecting from relay');
         $rootScope.userdisconnect = true;
         ngWebsockets.send(weeChat.Protocol.formatQuit());
+        // In case the backend doesn't repond we will close from our end
+        var closeTimer = setTimeout(function() {
+            ngWebsockets.disconnect();
+            // We pretend we are not connected anymore
+            // The connection can time out on its own
+            ngWebsockets.failCallbacks('disconnection');
+            $rootScope.connected = false;
+            $rootScope.$emit('relayDisconnect');
+            $rootScope.$apply();
+        });
     };
 
     /*
