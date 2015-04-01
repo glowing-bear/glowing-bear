@@ -42,7 +42,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'fontsize': '14px',
         'fontfamily': (utils.isMobileUi() ? 'sans-serif' : 'Inconsolata, Consolas, Monaco, Ubuntu Mono, monospace'),
         'readlineBindings': false,
-        'enableMathjax': false,
         'customCSS': '',
         "currentlyViewedBuffers":{},
     });
@@ -360,22 +359,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     settings.addCallback('orderbyserver', function(orderbyserver) {
         $rootScope.predicate = orderbyserver ? 'serverSortKey' : 'number';
     });
-
-    // To prevent unnecessary loading times for users who don't
-    // want LaTeX math, load it only if the setting is enabled.
-    // This also fires when the page is loaded if enabled.
-    // Note that this says MathJax but we switched to KaTeX
-    settings.addCallback('enableMathjax', function(enabled) {
-        if (enabled && !$rootScope.mathjax_init) {
-            // Load MathJax only once
-            $rootScope.mathjax_init = true;
-
-            utils.inject_css("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css");
-            utils.inject_script("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.js");
-            utils.inject_script("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/contrib/auto-render.min.js");
-        }
-    });
-
 
     // Inject theme CSS
     settings.addCallback('theme', function(theme) {
