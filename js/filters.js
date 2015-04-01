@@ -150,21 +150,6 @@ weechat.filter('getBufferQuickKeys', function () {
     };
 });
 
-weechat.filter('mathjax', function() {
-    return function(text, selector, enabled) {
-        if (!enabled || typeof(MathJax) === "undefined") {
-            return text;
-        }
-        if (text.indexOf("$$") != -1 || text.indexOf("\\[") != -1 || text.indexOf("\\(") != -1) {
-            // contains math
-            var math = document.querySelector(selector);
-            MathJax.Hub.Queue(["Typeset",MathJax.Hub,math]);
-        }
-
-        return text;
-    };
-});
-
 weechat.filter('prefixlimit', function() {
     return function(input, chars) {
         if (isNaN(chars)) return input;
