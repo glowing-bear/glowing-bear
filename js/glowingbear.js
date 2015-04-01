@@ -41,7 +41,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'fontsize': '14px',
         'fontfamily': (utils.isMobileUi() ? 'sans-serif' : 'Inconsolata, Consolas, Monaco, Ubuntu Mono, monospace'),
         'readlineBindings': false,
-        'enableMathjax': false,
     });
     $scope.settings = settings;
 
@@ -355,31 +354,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Watch model and update channel sorting when it changes
     settings.addCallback('orderbyserver', function(orderbyserver) {
         $rootScope.predicate = orderbyserver ? 'serverSortKey' : 'number';
-    });
-
-
-    // To prevent unnecessary loading times for users who don't
-    // want MathJax, load it only if the setting is enabled.
-    // This also fires when the page is loaded if enabled.
-    settings.addCallback('enableMathjax', function(enabled) {
-        if (enabled && !$rootScope.mathjax_init) {
-            // Load MathJax only once
-            $rootScope.mathjax_init = true;
-            (function () {
-                var head = document.getElementsByTagName("head")[0], script;
-                script = document.createElement("script");
-                script.type = "text/x-mathjax-config";
-                script[(window.opera ? "innerHTML" : "text")] =
-                    "MathJax.Hub.Config({\n" +
-                    "  tex2jax: { inlineMath: [['$$','$$'], ['\\\\(','\\\\)']], displayMath: [['\\\\[','\\\\]']] },\n" +
-                    "});";
-                head.appendChild(script);
-                script = document.createElement("script");
-                script.type = "text/javascript";
-                script.src  = "//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML";
-                head.appendChild(script);
-            })();
-        }
     });
 
 
