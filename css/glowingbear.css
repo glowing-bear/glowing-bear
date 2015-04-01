@@ -259,6 +259,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
     padding-bottom: 7px;
     -webkit-transition:0.2 ease-in-out all;
     transition:0.2s ease-in-out all;
+    -webkit-overflow-scrolling: touch; /* Native scroll on ios */
 }
 #bufferlines > table {
     margin-top: 35px;
