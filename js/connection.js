@@ -270,6 +270,8 @@ weechat.factory('connection',
         if (parseInt(models.version.charAt(0)) >= 1) {
             // WeeChat >= 1 supports clearing hotlist with this command
             sendMessage('/buffer set hotlist -1');
+            // Also move read marker
+            sendMessage('/input set_unread_current_buffer');
         } else {
             // If user wants to sync hotlist with weechat
             // we will send a /buffer bufferName command every time
