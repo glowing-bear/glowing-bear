@@ -244,6 +244,13 @@ input[type=text], input[type=password], #sendMessage, .badge {
     color: #222;
 }
 
+.nav-pills > li > a {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .content {
     height: 100%;
     min-height: 100%;
