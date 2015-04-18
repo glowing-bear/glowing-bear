@@ -104,8 +104,10 @@ weechat.directive('inputBar', function() {
                     $scope.command = '';
                 }
 
-                // Presumable we are reading the messages if we are sending.
-                connection.sendHotlistClear();
+                // New style clearing requires this, old does not
+                if (parseInt(models.version.charAt(0)) >= 1) {
+                    connection.sendHotlistClear();
+                }
 
                 $scope.getInputNode().focus();
             };
