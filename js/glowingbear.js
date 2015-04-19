@@ -445,7 +445,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         // Clear the hotlist for this buffer, because presumable you have read
         // the messages in this buffer before you switched to the new one
-        connection.sendHotlistClear();
+        // this is only needed with new type of clearing since in the old
+        // way WeeChat itself takes care of that part
+        if (parseInt(models.version.charAt(0)) >= 1) {
+            connection.sendHotlistClear();
+        }
 
         return models.setActiveBuffer(bufferId, key);
     };
