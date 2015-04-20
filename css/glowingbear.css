@@ -72,7 +72,7 @@ td.message {
 .panel input, .panel .input-group {
     max-width: 300px;
 }
-input[type=text], input[type=password], #sendMessage, .badge {
+input[type=text], input[type=password], #sendMessage {
     border: 0;
     border-radius: 0;
     margin-bottom: 5px !important;
