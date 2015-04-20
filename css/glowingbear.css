@@ -72,7 +72,7 @@ td.message {
 .panel input, .panel .input-group {
     max-width: 300px;
 }
-input[type=text], input[type=password], #sendMessage, .badge {
+input[type=text], input[type=password], #sendMessage {
     border: 0;
     border-radius: 0;
     margin-bottom: 5px !important;
@@ -242,6 +242,13 @@ input[type=text], input[type=password], #sendMessage, .badge {
     text-decoration: none;
     background-color: #eee;
     color: #222;
+}
+
+.nav-pills > li > a {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .content {
