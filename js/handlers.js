@@ -107,10 +107,6 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         var bufferMessage = message.objects[0].content[0];
         var buffer = new models.Buffer(bufferMessage);
         models.addBuffer(buffer);
-        /* Until we can decide if user asked for this buffer to be opened
-         * or not we will let user click opened buffers.
-        models.setActiveBuffer(buffer.id);
-        */
     };
 
     var handleBufferTitleChanged = function(message) {
@@ -138,6 +134,15 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         // prefix + fullname, which would happen otherwise). Else, use null so that full_name is used
         old.trimmedName = obj.short_name.replace(/^[#&+]/, '') || (obj.short_name ? ' ' : null);
         old.prefix = ['#', '&', '+'].indexOf(obj.short_name.charAt(0)) >= 0 ? obj.short_name.charAt(0) : '';
+
+        // After a buffer openes we get the name change event from relay protocol
+        // Here we check our outgoing commands that openes a buffer and switch
+        // to it if we find the buffer name it the list
+        var position = models.outgoingQueries.indexOf(old.shortName);
+        if (position >= 0) {
+            models.outgoingQueries.splice(position, 1);
+            models.setActiveBuffer(old.id);
+        }
     };
 
     var handleBufferLocalvarChanged = function(message) {

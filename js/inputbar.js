@@ -100,6 +100,19 @@ weechat.directive('inputBar', function() {
                         ab.clear();
                     }
 
+                    // Check against a list of commands that opens a new
+                    // buffer and save the name of the buffer so we can
+                    // also automatically switch to the new buffer in gb
+                    var opencommands = ['/query', '/join', '/j', '/q'];
+                    var spacepos = $scope.command.indexOf(' ');
+                    var firstword = $scope.command.substr(0, spacepos);
+                    var index = opencommands.indexOf(firstword);
+                    if (index >= 0) {
+                        var queryName = $scope.command.substring(spacepos + 1);
+                        // Cache our queries so when a buffer gets opened we can open in UI
+                        models.outgoingQueries.push(queryName);
+                    }
+
                     // Empty the input after it's sent
                     $scope.command = '';
                 }

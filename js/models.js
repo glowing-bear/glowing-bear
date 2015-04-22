@@ -11,6 +11,9 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
     // WeeChat version
     this.version = null;
 
+    // Save outgoing queries
+    this.outgoingQueries = [];
+
     var parseRichText = function(text) {
         var textElements = weeChat.Protocol.rawText2Rich(text),
             typeToClassPrefixFg = {
