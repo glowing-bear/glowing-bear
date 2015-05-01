@@ -22,6 +22,19 @@ td.prefix {
     white-space: pre;
     border-right: 1px solid #444;
 }
+td.repeated-prefix .arrow {
+    display: inline !important;
+}
+td.repeated-prefix .txt {
+    display:none !important;
+}
+td.prefix .arrow {
+    display: none;
+}
+td.prefix .txt {
+    display: inline;
+}
+
 td.message {
     vertical-align: top;
     width: 100%;
