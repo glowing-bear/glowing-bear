@@ -226,6 +226,9 @@ input[type=text], input[type=password], #sendMessage {
     overflow: hidden;
 }
 
+.nav-pills li {
+    min-height: 20px;
+}
 .nav-pills li+li {
     margin-top: 0;
 }
