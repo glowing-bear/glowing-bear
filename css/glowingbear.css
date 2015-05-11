@@ -15,6 +15,10 @@ a {
     cursor: pointer;
 }
 
+.hidden-bracket {
+    font-size: 0px;
+}
+
 td.prefix {
     text-align: right;
     vertical-align: top;
