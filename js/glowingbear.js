@@ -752,6 +752,25 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     };
 
+    $scope.init = function() {
+        if (window.location.hash) {
+            var rawStr = atob(window.location.hash.substring(1));
+            window.location.hash = "";
+            var spl = rawStr.split(":");
+            var host = spl[0];
+            var port = parseInt(spl[1]);
+            var password = spl[2];
+            var ssl = spl.length > 3;
+            notifications.requestNotificationPermission();
+            $rootScope.sslError = false;
+            $rootScope.securityError = false;
+            $rootScope.errorMessage = false;
+            $rootScope.bufferBottom = true;
+            $scope.connectbutton = 'Connecting ...';
+            connection.connect(host, port, password, ssl);
+        }
+    };
+
 }]);
 
 weechat.config(['$routeProvider',
