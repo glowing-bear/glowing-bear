@@ -746,6 +746,35 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     };
 
+    var NickClasses = {"wikibugs": ['collapsed'], 'icinga-wm': ['collapsed']};
+    function nickFromBufferline(bufferline) {
+        if (!bufferline || !bufferline.prefix) {
+            return '';
+        }
+        var prefix = bufferline.prefix;
+        var nick="";
+        for (var i=0; i < prefix.length; i++) {
+            nick += prefix[i].text;
+        }
+        return nick;
+    }
+    $rootScope.bufferlineClassifier = function(bufferlines, index) {
+        var prevNick = nickFromBufferline(bufferlines[index - 1]);
+        var currNick = nickFromBufferline(bufferlines[index]);
+        var classes = NickClasses[currNick] || {};
+        var res = {};
+
+        if (currNick == prevNick) {
+            res['repeated-prefix']=true;
+            if (NickClasses[currNick]){
+                res['collapsed']=true;
+            }
+        }
+        res['nick-'+currNick]=true;
+
+        return res;
+    };
+
 }]);
 
 weechat.config(['$routeProvider',
