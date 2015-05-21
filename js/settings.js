@@ -6,6 +6,13 @@ var weechat = angular.module('weechat');
 weechat.factory('settings', ['$store', '$rootScope', function($store, $rootScope) {
 	var that = this;
 	this.callbacks = {};
+	// This cache is important for two reasons. One, angular hits it up really often
+	// (because it needs to check for changes and it's not very clever about it).
+	// Two, it prevents weird type conversion issues that otherwise arise in
+	// $store.parseValue (e.g. converting "123." to the number 123 even though it
+	// actually was the beginning of an IP address that the user was in the
+	// process of entering)
+	this.cache = {};
 
 	// Define a property for a setting, retrieving it on read
 	// and writing it to localStorage on write
@@ -14,9 +21,13 @@ weechat.factory('settings', ['$store', '$rootScope', function($store, $rootScope
 			enumerable: true,
 			key: key,
 			get: function() {
-				return $store.get(key);
+				if (!(key in this.cache)) {
+					this.cache[key] = $store.get(key);
+				}
+				return this.cache[key];
 			},
 			set: function(newVal) {
+				this.cache[key] = newVal;
 				$store.set(key, newVal);
 				// Call any callbacks
 				var callbacks = that.callbacks[key];
