@@ -746,7 +746,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     };
 
-    var NickClasses = {"wikibugs": ['collapsed'], 'icinga-wm': ['collapsed']};
     function nickFromBufferline(bufferline) {
         if (!bufferline || !bufferline.prefix) {
             return '';
@@ -758,20 +757,17 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
         return nick;
     }
-    $rootScope.bufferlineClassifier = function(bufferlines, index) {
-        var prevNick = nickFromBufferline(bufferlines[index - 1]);
-        var currNick = nickFromBufferline(bufferlines[index]);
-        var classes = NickClasses[currNick] || {};
+    $rootScope.bufferlineClassifier = function(lines, index) {
+        var prevNick = nickFromBufferline(lines[index - 1]);
+        var currNick = nickFromBufferline(lines[index]);
         var res = {};
-
+        if (!currNick || currNick === '') {
+            return res;
+        }
         if (currNick == prevNick) {
             res['repeated-prefix']=true;
-            if (NickClasses[currNick]){
-                res['collapsed']=true;
-            }
         }
         res['nick-'+currNick]=true;
-
         return res;
     };
 
