@@ -16,11 +16,11 @@ describe('Filters', function() {
         }));
 
         it('should linkify IRC channels', inject(function(irclinkyFilter) {
-            expect(irclinkyFilter('#foo')).toEqual('<a href="#" onclick="var $scope = angular.element(event.target).scope(); $scope.openBuffer(\'#foo\'); $scope.$apply();">#foo</a>');
+            expect(irclinkyFilter('#foo')).toEqual('<a href="#" onclick="openBuffer(\'#foo\');">#foo</a>');
         }));
 
         it('should not mess up IRC channels surrounded by HTML entities', inject(function(irclinkyFilter) {
-            expect(irclinkyFilter('<"#foo">')).toEqual('<"<a href="#" onclick="var $scope = angular.element(event.target).scope(); $scope.openBuffer(\'#foo">\'); $scope.$apply();">#foo"></a>');
+            expect(irclinkyFilter('<"#foo">')).toEqual('<"<a href="#" onclick="openBuffer(\'#foo">\');">#foo"></a>');
         }));
     });
 
