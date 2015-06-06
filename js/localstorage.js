@@ -21,6 +21,35 @@ ls.factory("$store", ["$parse", function($parse){
 
     if (!supported) {
         console.log('Warning: localStorage is not supported');
+
+        // Set localstorage to a temporary dummy
+        storage = (function() {
+            var data = {};
+
+            this.setItem = function (key, value) {
+                data[key] = value;
+            };
+
+            this.getItem = function (key) {
+                if (typeof data[key] !== "undefined" ) {
+                    return data[key];
+                } else {
+                    return null;
+                }
+            };
+
+            this.removeItem = function (key) {
+                data[key] = undefined;
+            };
+
+            this.length = function() {
+                return Object.keys(data).length;
+            };
+
+            this.key = function(index) {
+                return Object.keys(data)[index];
+            };
+        })();
     }
 
     var privateMethods = {
