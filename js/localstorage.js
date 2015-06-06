@@ -10,6 +10,15 @@ ls.factory("$store", ["$parse", function($parse){
     var storage = (typeof window.localStorage === 'undefined') ? undefined : window.localStorage,
         supported = !(typeof storage == 'undefined' || typeof window.JSON == 'undefined');
 
+    // Safari reports a localStorage object in incognito mode, but trying
+    // to use it raises an exception. Catch that case.
+    try {
+        storage.setItem('dummy', 'dummy');
+        storage.removeItem('dummy');
+    } catch (error) {
+        supported = false;
+    }
+
     if (!supported) {
         console.log('Warning: localStorage is not supported');
     }
