@@ -30,13 +30,6 @@ weechat.filter('irclinky', ['$filter', function($filter) {
             return text;
         }
 
-        // First, escape entities to prevent escaping issues because it's a bad idea
-        // to parse/modify HTML with regexes, which we do a couple of lines down...
-        var entities = {"<": "&lt;", ">": "&gt;", '"': '&quot;', "'": '&#39;', "&": "&amp;", "/": '&#x2F;'};
-        text = text.replace(/[<>"'&\/]/g, function (char) {
-            return entities[char];
-        });
-
         // This regex in no way matches all IRC channel names (they could also begin with &, + or an
         // exclamation mark followed by 5 alphanumeric characters, and are bounded in length by 50).
         // However, it matches all *common* IRC channels while trying to minimise false positives.
@@ -73,6 +66,15 @@ weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
             return text;
         }
 
+        var escape_html = function(text) {
+            // First, escape entities to prevent escaping issues because it's a bad idea
+            // to parse/modify HTML with regexes, which we do a couple of lines down...
+            var entities = {"<": "&lt;", ">": "&gt;", '"': '&quot;', "'": '&#39;', "&": "&amp;", "/": '&#x2F;'};
+            return text.replace(/[<>"'&\/]/g, function (char) {
+                return entities[char];
+            });
+        };
+
         // hacky way to pass extra arguments without using .apply, which
         // would require assembling an argument array. PERFORMANCE!!!
         var extraArgument = (arguments.length > 2) ? arguments[2] : null;
@@ -85,8 +87,12 @@ weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
         // Recursive DOM-walking function applying the filter to the text nodes
         var process = function(node) {
             if (node.nodeType === 3) { // text node
-                var value = filterFunction(node.nodeValue, extraArgument, thirdArgument);
-                if (value !== node.nodeValue) {
+                // apply the filter to *escaped* HTML, and only commit changes if
+                // it changed the escaped value. This is because setting the result
+                // as innerHTML causes it to be unescaped.
+                var input = escape_html(node.nodeValue);
+                var value = filterFunction(input, extraArgument, thirdArgument);
+                if (value !== input) {
                     // we changed something. create a new node to replace the current one
                     // we could also only add its children but that would probably incur
                     // more overhead than it would gain us
