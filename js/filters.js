@@ -141,6 +141,18 @@ weechat.filter('getBufferQuickKeys', function () {
     };
 });
 
+weechat.filter('escape', ['$sanitize', function($sanitize) {
+    return function(text) {
+        // manual escaping because ng-sanitize is shit
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    };
+}]);
+
 // Emojifis the string using https://github.com/Ranks/emojione
 weechat.filter('emojify', function() {
     return function(text, enable_JS_Emoji) {
