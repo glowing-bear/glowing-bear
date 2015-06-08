@@ -20,7 +20,7 @@ describe('Filters', function() {
         }));
 
         it('should not mess up IRC channels surrounded by HTML entities', inject(function(irclinkyFilter) {
-            expect(irclinkyFilter('<"#foo">')).toEqual('&lt;&quot;<a href="#" onclick="var $scope = angular.element(event.target).scope(); $scope.openBuffer(\'#foo&quot;&gt;\'); $scope.$apply();">#foo&quot;&gt;</a>');
+            expect(irclinkyFilter('<"#foo">')).toEqual('<"<a href="#" onclick="var $scope = angular.element(event.target).scope(); $scope.openBuffer(\'#foo">\'); $scope.$apply();">#foo"></a>');
         }));
     });
 
