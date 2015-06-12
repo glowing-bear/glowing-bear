@@ -179,6 +179,14 @@ weechat.directive('inputBar', function() {
                 // Support different browser quirks
                 var code = $event.keyCode ? $event.keyCode : $event.charCode;
 
+                var altg = $event.getModifierState('AltGraph');
+
+                // Mac OSX behaves differntly for altgr, so we check for that
+                if (altg) {
+                    // We don't handle any anything with altgr
+                    return false;
+                }
+
                 // reset quick keys display
                 $rootScope.showQuickKeys = false;
 
