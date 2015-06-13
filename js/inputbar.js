@@ -179,7 +179,8 @@ weechat.directive('inputBar', function() {
                 // Support different browser quirks
                 var code = $event.keyCode ? $event.keyCode : $event.charCode;
 
-                var altg = $event.getModifierState('AltGraph');
+                // Safari doesn't implement DOM 3 input events yet as of 8.0.6
+                var altg = $event.getModifierState ? $event.getModifierState('AltGraph') : false;
 
                 // Mac OSX behaves differntly for altgr, so we check for that
                 if (altg) {
