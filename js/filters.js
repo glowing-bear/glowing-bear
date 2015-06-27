@@ -24,7 +24,7 @@ weechat.filter('toArray', function () {
     };
 });
 
-weechat.filter('irclinky', ['$filter', function($filter) {
+weechat.filter('irclinky', function() {
     return function(text) {
         if (!text) {
             return text;
@@ -36,12 +36,12 @@ weechat.filter('irclinky', ['$filter', function($filter) {
         // "#1" is much more likely to be "number 1" than "IRC channel #1".
         // Thus, we only match channels beginning with a # and having at least one letter in them.
         var channelRegex = /(^|[\s,.:;?!"'()+@-\~%])(#+[^\x00\x07\r\n\s,:]*[a-z][^\x00\x07\r\n\s,:]*)/gmi;
-        // This is SUPER nasty, but ng-click does not work inside a filter, as the markup has to be $compiled first, which is not possible in filter afaik.
-        // Therefore, get the scope, fire the method, and $apply. Yuck. I sincerely hope someone finds a better way of doing this.
-        var substitute = '$1<a href="#" onclick="var $scope = angular.element(event.target).scope(); $scope.openBuffer(\'$2\'); $scope.$apply();">$2</a>';
+        // Call the method we bound to window.openBuffer when we instantiated
+        // the Weechat controller.
+        var substitute = '$1<a href="#" onclick="openBuffer(\'$2\');">$2</a>';
         return text.replace(channelRegex, substitute);
     };
-}]);
+});
 
 weechat.filter('inlinecolour', function() {
     return function(text) {
