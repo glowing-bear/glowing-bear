@@ -63,6 +63,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         // weechat properties
         var fullName = message.full_name;
         var shortName = message.short_name;
+        var hidden = message.hidden;
         // If it's a channel, trim away the prefix (#, &, or +). If that is empty and the buffer
         // has a short name, use a space (because the prefix will be displayed separately, and we don't want
         // prefix + fullname, which would happen otherwise). Else, use null so that full_name is used
@@ -289,6 +290,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             id: pointer,
             fullName: fullName,
             shortName: shortName,
+            hidden: hidden,
             trimmedName: trimmedName,
             prefix: prefix,
             number: number,

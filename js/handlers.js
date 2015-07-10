@@ -81,6 +81,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         buffer.trimmedName = buffer.shortName.replace(/^[#&+]/, '');
         buffer.title = message.title;
         buffer.number = message.number;
+        buffer.hidden = message.hidden;
 
         // reset these, hotlist info will arrive shortly
         buffer.notification = 0;
@@ -143,6 +144,20 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
             models.outgoingQueries.splice(position, 1);
             models.setActiveBuffer(old.id);
         }
+    };
+
+    var handleBufferHidden = function(message) {
+        var obj = message.objects[0].content[0];
+        var buffer = obj.pointers[0];
+        var old = models.getBuffer(buffer);
+        old.hidden = true;
+    };
+
+    var handleBufferUnhidden = function(message) {
+        var obj = message.objects[0].content[0];
+        var buffer = obj.pointers[0];
+        var old = models.getBuffer(buffer);
+        old.hidden = false;
     };
 
     var handleBufferLocalvarChanged = function(message) {
@@ -253,6 +268,8 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         _buffer_opened: handleBufferOpened,
         _buffer_title_changed: handleBufferTitleChanged,
         _buffer_renamed: handleBufferRenamed,
+        _buffer_hidden: handleBufferHidden,
+        _buffer_unhidden: handleBufferUnhidden,
         _nicklist: handleNicklist,
         _nicklist_diff: handleNicklistDiff
     };

@@ -654,9 +654,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             if (buffer.fullName === "core.weechat") {
                 return true;
             }
-            return buffer.unread > 0 || buffer.notification > 0;
+            return (buffer.unread > 0 || buffer.notification > 0) && !buffer.hidden;
         }
-        return true;
+        return !buffer.hidden;
     };
 
     // Watch model and update show setting when it changes
