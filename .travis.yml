@@ -11,3 +11,4 @@ notifications:
     skip_join: true
     on_success: never
     on_failure: always
+sudo: false
