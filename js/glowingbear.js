@@ -659,7 +659,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 return true;
             }
             // Always show core buffer in the list (issue #438)
-            if (buffer.fullName === "core.weechat") {
+            // Also show server buffers in hierarchical view
+            if (buffer.fullName === "core.weechat" || (settings.orderbyserver && buffer.type === 'server')) {
                 return true;
             }
             return buffer.unread > 0 || buffer.notification > 0;
