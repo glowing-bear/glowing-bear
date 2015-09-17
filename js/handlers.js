@@ -9,7 +9,8 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         var content = message.objects[0].content;
         var version = content.value;
         // Store the WeeChat version in models
-        models.version = version;
+        // this eats things like 1.3-dev -> [1,3]
+        models.version = version.split(".").map(function(c) { return parseInt(c); });
     };
 
     var handleBufferClosing = function(message) {

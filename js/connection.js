@@ -267,7 +267,7 @@ weechat.factory('connection',
     };
 
     var sendHotlistClear = function() {
-        if (parseInt(models.version.charAt(0)) >= 1) {
+        if (models.version[0] >= 1) {
             // WeeChat >= 1 supports clearing hotlist with this command
             sendMessage('/buffer set hotlist -1');
             // Also move read marker

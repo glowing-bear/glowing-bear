@@ -463,7 +463,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
      * @return active buffer pointer (WeeChat 1.0+) or fullname (older versions)
      */
     this.getActiveBufferReference = function() {
-        if (this.version !== null && parseInt(this.version.charAt(0)) >= 1) {
+        if (this.version !== null && this.version[0] >= 1) {
             // pointers are being validated, they're more reliable than
             // fullName (e.g. if fullName contains spaces)
             return "0x"+activeBuffer.id;
