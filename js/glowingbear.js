@@ -15,6 +15,11 @@ weechat.config(['$compileProvider', function ($compileProvider) {
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'connection', 'notifications', 'utils', 'settings',
     function ($rootScope, $scope, $store, $timeout, $log, models, connection, notifications, utils, settings) {
 
+    window.openBuffer = function(channel) {
+        $scope.openBuffer(channel);
+        $scope.$apply();
+    };
+
     $scope.command = '';
     $scope.themes = ['dark', 'light'];
 
@@ -26,7 +31,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'savepassword': false,
         'autoconnect': false,
         'nonicklist': utils.isMobileUi(),
-        'noembed': utils.isMobileUi(),
+        'noembed': true,
         'onlyUnread': false,
         'hotlistsync': true,
         'orderbyserver': true,
@@ -36,7 +41,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'fontsize': '14px',
         'fontfamily': (utils.isMobileUi() ? 'sans-serif' : 'Inconsolata, Consolas, Monaco, Ubuntu Mono, monospace'),
         'readlineBindings': false,
-        'enableJSEmoji': false
+        'enableJSEmoji': (utils.isMobileUi() ? false : true),
+        'enableMathjax': false,
     });
     $scope.settings = settings;
 
@@ -208,17 +214,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             );
         }
         notifications.updateTitle(ab);
+        $scope.notifications = notifications.unreadCount('notification');
+        $scope.unread = notifications.unreadCount('unread');
 
         $timeout(function() {
             $rootScope.scrollWithBuffer(true);
         });
-        // If user wants to sync hotlist with weechat
-        // we will send a /buffer bufferName command every time
-        // the user switches a buffer. This will ensure that notifications
-        // are cleared in the buffer the user switches to
-        if (settings.hotlistsync && ab.fullName) {
-            connection.sendCoreCommand('/buffer ' + ab.fullName);
-        }
 
         // Clear search term on buffer change
         $scope.search = '';
@@ -231,12 +232,21 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 document.getElementById('sendMessage').focus();
             }, 0);
         }
+
+        // Do this part last since it's not important for the UI
+        if (settings.hotlistsync && ab.fullName) {
+            connection.sendHotlistClear();
+        }
     });
 
     $rootScope.favico = new Favico({animation: 'none'});
+    $scope.notifications = notifications.unreadCount('notification');
+    $scope.unread = notifications.unreadCount('unread');
 
     $rootScope.$on('notificationChanged', function() {
         notifications.updateTitle();
+        $scope.notifications = notifications.unreadCount('notification');
+        $scope.unread = notifications.unreadCount('unread');
 
         if (settings.useFavico && $rootScope.favico) {
             notifications.updateFavico();
@@ -264,6 +274,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $rootScope.connected = false;
     $rootScope.waseverconnected = false;
+    $rootScope.userdisconnect = false;
+    $rootScope.reconnecting = false;
 
     $rootScope.models = models;
 
@@ -375,6 +387,51 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     });
 
+    // To prevent unnecessary loading times for users who don't
+    // want MathJax, load it only if the setting is enabled.
+    // This also fires when the page is loaded if enabled.
+    settings.addCallback('enableMathjax', function(enabled) {
+        if (enabled && !$rootScope.mathjax_init) {
+            // Load MathJax only once
+            $rootScope.mathjax_init = true;
+            (function () {
+                var head = document.getElementsByTagName("head")[0], script;
+                script = document.createElement("script");
+                script.type = "text/x-mathjax-config";
+                script[(window.opera ? "innerHTML" : "text")] =
+                    "MathJax.Hub.Config({\n" +
+                    "  tex2jax: { inlineMath: [['$$','$$'], ['\\\\(','\\\\)']], displayMath: [['\\\\[','\\\\]']] },\n" +
+                    "});";
+                head.appendChild(script);
+                script = document.createElement("script");
+                script.type = "text/javascript";
+                script.src  = "//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML";
+                head.appendChild(script);
+            })();
+        }
+    });
+
+
+    // Inject theme CSS
+    settings.addCallback('theme', function(theme) {
+        // Unload old theme
+        var oldThemeCSS = document.getElementById("themeCSS");
+        if (oldThemeCSS) {
+            oldThemeCSS.parentNode.removeChild(oldThemeCSS);
+        }
+
+        // Load new theme
+        (function() {
+            var elem = document.createElement("link");
+            elem.rel = "stylesheet";
+            elem.href = "css/themes/" + theme + ".css";
+            elem.media = "screen";
+            elem.id = "themeCSS";
+            document.getElementsByTagName("head")[0].appendChild(elem);
+        })();
+    });
+
+
     // Update font family when changed
     settings.addCallback('fontfamily', function(fontfamily) {
         utils.changeClassStyle('favorite-font', 'fontFamily', fontfamily);
@@ -390,6 +447,15 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if (utils.isMobileUi()) {
             $scope.hideSidebar();
         }
+
+        // Clear the hotlist for this buffer, because presumable you have read
+        // the messages in this buffer before you switched to the new one
+        // this is only needed with new type of clearing since in the old
+        // way WeeChat itself takes care of that part
+        if (models.version[0] >= 1) {
+            connection.sendHotlistClear();
+        }
+
         return models.setActiveBuffer(bufferId, key);
     };
 
@@ -398,9 +464,17 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         fullName = fullName.substring(0, fullName.lastIndexOf('.') + 1) + bufferName;  // substitute the last part
 
         if (!$scope.setActiveBuffer(fullName, 'fullName')) {
-            var command = 'join';
+            // WeeChat 0.4.0+ supports /join -noswitch
+            // As Glowing Bear requires 0.4.2+, we don't need to check the version
+            var command = 'join -noswitch';
+
+            // Check if it's a query and we need to use /query instead
             if (['#', '&', '+', '!'].indexOf(bufferName.charAt(0)) < 0) {  // these are the characters a channel name can start with (RFC 2813-2813)
                 command = 'query';
+                // WeeChat 1.2+ supports /query -noswitch. See also #577 (different context)
+                if ((models.version[0] == 1 && models.version[1] >= 2) || models.version[1] > 1) {
+                    command += " -noswitch";
+                }
             }
             connection.sendMessage('/' + command + ' ' + bufferName);
         }
@@ -513,6 +587,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $scope.connectbutton = 'Connect';
         connection.disconnect();
     };
+    $scope.reconnect = function() {
+        var bufferId = models.getActiveBuffer().id;
+        connection.attemptReconnect(bufferId, 3000);
+    };
 
 //XXX this is a bit out of place here, either move up to the rest of the firefox install code or remove
     $scope.install = function() {
@@ -581,12 +659,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 return true;
             }
             // Always show core buffer in the list (issue #438)
-            if (buffer.fullName === "core.weechat") {
+            // Also show server buffers in hierarchical view
+            if (buffer.fullName === "core.weechat" || (settings.orderbyserver && buffer.type === 'server')) {
                 return true;
             }
-            return buffer.unread > 0 || buffer.notification > 0;
+            return (buffer.unread > 0 || buffer.notification > 0) && !buffer.hidden;
         }
-        return true;
+        return !buffer.hidden;
     };
 
     // Watch model and update show setting when it changes
@@ -678,6 +757,25 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 $scope.disconnect();
             }
             $scope.favico.reset();
+        }
+    };
+
+    $scope.init = function() {
+        if (window.location.hash) {
+            var rawStr = atob(window.location.hash.substring(1));
+            window.location.hash = "";
+            var spl = rawStr.split(":");
+            var host = spl[0];
+            var port = parseInt(spl[1]);
+            var password = spl[2];
+            var ssl = spl.length > 3;
+            notifications.requestNotificationPermission();
+            $rootScope.sslError = false;
+            $rootScope.securityError = false;
+            $rootScope.errorMessage = false;
+            $rootScope.bufferBottom = true;
+            $scope.connectbutton = 'Connecting ...';
+            connection.connect(host, port, password, ssl);
         }
     };
 

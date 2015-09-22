@@ -7,8 +7,18 @@ body {
     overflow: hidden;
 }
 
+.mobile {
+  display: none;
+}
+
 a {
     cursor: pointer;
+}
+
+.hidden-bracket {
+  position: absolute;
+  left: -1000px;
+  overflow: hidden;
 }
 
 td.prefix {
@@ -50,16 +60,25 @@ td.message {
 
 #sendMessage {
     width: 100%;
-    height: 36px;
+    height: 35px;
     resize: none;
 }
+
+#sendMessage:focus, #sendMessage:active {
+    border-bottom: 2px solid #555;
+}
+
+.input-group-addon, .input-group-btn {
+    vertical-align: top;
+}
+
 .footer button {
     border-radius: 0;
 }
 .panel input, .panel .input-group {
     max-width: 300px;
 }
-input[type=text], input[type=password], #sendMessage, .badge {
+input[type=text], input[type=password], #sendMessage {
     border: 0;
     border-radius: 0;
     margin-bottom: 5px !important;
@@ -81,10 +100,6 @@ input[type=text], input[type=password], #sendMessage, .badge {
 .glyphicon {
     top: 0; /* Fixes alignment issue in top bar */
 }
-.glyphicon-off {
-    top: 1px; /* Fixes for relative glyphicon size */
-    font-size: 28px;
-}
 #topbar {
     position: fixed;
     width: 100%;
@@ -97,7 +112,10 @@ input[type=text], input[type=password], #sendMessage, .badge {
 #topbar .brand {
     float: left;
     height: 35px;
-    padding-left: 5px;
+}
+#topbar .brand a {
+    display: inline-block;
+    padding: 0 10px;
 }
 #topbar .brand img {
     height: 32px;
@@ -114,21 +132,25 @@ input[type=text], input[type=password], #sendMessage, .badge {
     left: 145px; /* sidebar */
     overflow: hidden;
 }
+
 #topbar .actions {
     margin-left: 5px;
     padding-left: 5px;
     margin-right: 0;
     padding-right: 5px;
-    padding-top: 2px;
     height: 35px;
     line-height: 35px;
-    font-size: 30px;
+    font-size: 22px;
     position: fixed;
     right: 0;
 }
-
 #topbar .actions > * {
-    padding-left: 5px;
+    padding: 0 5px;
+    display: inline-block;
+}
+#topbar .actions .glyphicon {
+    line-height: 35px;
+    top: 0;
 }
 #topbar .dropdown-menu form {
     padding-left: 6px;
@@ -165,6 +187,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
 #sidebar .badge {
     border-radius: 0;
     margin-right: -10px;
+    padding: 4px 7px;
 }
 
 #sidebar ul.indented li.indent span.buffername {
@@ -209,6 +232,12 @@ input[type=text], input[type=password], #sendMessage, .badge {
     overflow: hidden;
 }
 
+.nav-pills li {
+    min-height: 20px;
+}
+.nav-pills li+li {
+    margin-top: 0;
+}
 .nav-pills > li > a {
     border-radius: 0;
     color: #ddd;
@@ -224,6 +253,13 @@ input[type=text], input[type=password], #sendMessage, .badge {
     color: #222;
 }
 
+.nav-pills > li > a {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .content {
     height: 100%;
     min-height: 100%;
@@ -237,8 +273,9 @@ input[type=text], input[type=password], #sendMessage, .badge {
     bottom: 35px;      /* input bar */
     padding-top: 42px; /* topbar */
     padding-bottom: 7px;
-    -webkit-transition:0.35s ease all;
-    transition:0.35s ease all;
+    -webkit-transition:0.2 ease-in-out all;
+    transition:0.2s ease-in-out all;
+    -webkit-overflow-scrolling: touch; /* Native scroll on ios */
 }
 #bufferlines > table {
     margin-top: 35px;
@@ -263,13 +300,26 @@ td.time {
     font-family: sans-serif;
 }
 
+#reconnect {
+    top: 35px;
+    position: fixed;
+    z-index: 9999;
+    width: 80%;
+    margin: 0;
+    padding: 5px;
+    left: 10%;
+}
+#reconnect a {
+    color: white;
+}
+
 .footer {
     position: fixed;
     bottom: 0;
     height: 35px;
     width: 100%;
-    -webkit-transition:0.35s ease all;
-    transition:0.35s ease all;
+    -webkit-transition:0.2s ease-in-out all;
+    transition:0.2s ease-in-out all;
     z-index: 1;
 }
 .content[sidebar-state=visible] .footer {
@@ -332,8 +382,8 @@ table.notimestampseconds td.time span.seconds {
 }
 
 #sidebar .showquickkeys .buffer .buffer-quick-key {
-    transition: all ease 0.5s;
-    -webkit-transition: all ease 0.5s;
+    transition: all ease-in-out 0.5s;
+    -webkit-transition: all ease-in-out 0.5s;
     transition-delay: 0.2s;
     -webkit-transition-delay: 0.2s;
     opacity: 0.7;
@@ -342,8 +392,8 @@ table.notimestampseconds td.time span.seconds {
     margin-left: -0.7em;
     margin-right: -0.2em;
     font-size: smaller;
-    transition: all ease 0.5s;
-    -webkit-transition: all ease 0.5s;
+    transition: all ease-in-out 0.5s;
+    -webkit-transition: all ease-in-out 0.5s;
     opacity: 0;
     text-shadow: -1px 0px 4px rgba(255, 255, 255, 0.4),
     0px -1px 4px rgba(255, 255, 255, 0.4),
@@ -479,20 +529,20 @@ h2 span, h2 small {
     }
 }
 /* bold hash before channels */
-li.buffer.channel a span:last-of-type:before {
+li.buffer.channel a span:last-of-type:before, #topbar .title .channel:before {
     color: #888;
     font-weight: bold;
 }
 
-li.buffer.channel_hash a span:last-of-type:before {
+li.buffer.channel_hash a span:last-of-type:before, #topbar .title .channel_hash:before {
     content: '#';
 }
 
-li.buffer.channel_plus a span:last-of-type:before {
+li.buffer.channel_plus a span:last-of-type:before, #topbar .title .channel_plus:before {
     content: '+';
 }
 
-li.buffer.channel_ampersand a span:last-of-type:before {
+li.buffer.channel_ampersand a span:last-of-type:before, #topbar .title .channel_ampersand:before {
     content: '&';
 }
 
@@ -526,18 +576,66 @@ li.buffer.indent.private a {
     user-select: none;
 }
 
-/* Scales emoji to font size */
-img.emoji {
-   height: 1em;
-   width: 1em;
-   margin: 0 .05em 0 .1em;
-   vertical-align: -0.1em;
+.emojione {
+    font-size: inherit;
+    height: 1em;
+    width: 1.1em;
+    min-height: 16px;
+    min-width: 16px;
+    display: inline-block;
+    margin: -.2ex .15em .2ex;
+    line-height: normal;
+    vertical-align: middle;
+}
+img.emojione {
+    width: auto;
+}
+
+@media (min-width: 1400px) {
+    #sidebar[data-state=visible], #sidebar {
+        width: 200px;
+    }
+    .content[sidebar-state="visible"] #bufferlines {
+        margin-left: 205px;
+    }
+    #topbar .title {
+        left: 205px;
+    }
+    .content[sidebar-state=visible] .footer {
+        padding-left: 200px;
+    }
+
+    .nav-pills {
+        font-size: 14px;
+    }
+
+    .nav-pills li a {
+        padding: 10px 15px;
+    }
+
+    #nicklist {
+        width: 140px;
+    }
+    .withnicklist {
+      margin-right: 140px !important; /* nicklist */
+    }
+    .footer.withnicklist {
+        padding-right: 148px !important;
+    }
 }
 
 /* */
 /* Mobile layout */
 /* */
 @media (max-width: 968px) {
+
+    .mobile {
+      display: inherit;
+    }
+
+    .desktop {
+      display: none;
+    }
 
     #bufferlines table {
         border-collapse: separate;
@@ -549,6 +647,7 @@ img.emoji {
         bottom: 0px;
         top: 0px;
         padding-bottom: 35px;
+        width: 200px;
     }
 
     #sidebar.in, #sidebar.collapsing {
@@ -558,27 +657,36 @@ img.emoji {
     }
 
     #sidebar[data-state=visible] {
-        width: 200px;
+        transform: translate(0,0);
+        -webkit-transform: translate(0,0); /* Safari */
     }
 
     #sidebar[data-state=hidden] {
-        left: -200px;
+        transform: translate(-200px,0);
+        -webkit-transform: translate(-200px,0);
     }
 
     .content[sidebar-state=visible] #bufferlines, .content[sidebar-state=visible] .footer {
         margin-left: 0px;
+        transform: translate(200px,0);
+        -webkit-transform: translate(200px,0);
     }
 
     #topbar .title {
         left: 40px;
+        right: 60px;
+        text-align: center;
+        font-size: 18px;
     }
 
-    #topbar .actions {
-        line-height: 35px;
-        height: 35px;
-        font-size: 31px;
-        margin-right: 0;
+    #topbar .brand img {
+        height: 28px;
     }
+
+    #topbar .badge {
+        display: none;
+    }
+
 
     #bufferlines, #nicklist {
         position: relative;
@@ -605,7 +713,11 @@ img.emoji {
         min-height: 0%;
     }
 
-    .nav-pills > li > a {
+    .nav-pills {
+        font-size: 14px;
+    }
+
+    .nav-pills li a {
         padding: 10px 15px;
     }
 

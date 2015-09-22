@@ -12,9 +12,12 @@ weechat.factory('connection',
 
     var protocol = new weeChat.Protocol();
 
-    // Takes care of the connection and websocket hooks
+    var connectionData = [];
+    var reconnectTimer;
 
-    var connect = function (host, port, passwd, ssl, noCompression) {
+    // Takes care of the connection and websocket hooks
+    var connect = function (host, port, passwd, ssl, noCompression, successCallback, failCallback) {
+        connectionData = [host, port, passwd, ssl, noCompression];
         var proto = ssl ? 'wss' : 'ws';
         // If host is an IPv6 literal wrap it in brackets
         if (host.indexOf(":") !== -1) {
@@ -59,7 +62,7 @@ weechat.factory('connection',
                 return ngWebsockets.send(
                     weeChat.Protocol.formatHdata({
                         path: 'buffer:gui_buffers(*)',
-                        keys: ['local_variables,notify,number,full_name,short_name,title']
+                        keys: ['local_variables,notify,number,full_name,short_name,title,hidden']
                     })
                 );
             };
@@ -75,25 +78,20 @@ weechat.factory('connection',
             // a version command. If it fails, it means the we
             // did not provide the proper password.
             _initializeConnection(passwd).then(
-                function() {
+                function(version) {
+                    handlers.handleVersionInfo(version);
                     // Connection is successful
                     // Send all the other commands required for initialization
                     _requestBufferInfos().then(function(bufinfo) {
-                        //XXX move to handlers?
-                        var bufferInfos = bufinfo.objects[0].content;
-                        // buffers objects
-                        for (var i = 0; i < bufferInfos.length ; i++) {
-                            var buffer = new models.Buffer(bufferInfos[i]);
-                            models.addBuffer(buffer);
-                            // Switch to first buffer on startup
-                            if (i === 0) {
-                                models.setActiveBuffer(buffer.id);
-                            }
-                        }
+                        handlers.handleBufferInfo(bufinfo);
                     });
 
                     _requestHotlist().then(function(hotlist) {
                         handlers.handleHotlistInfo(hotlist);
+
+                        if (successCallback) {
+                            successCallback();
+                        }
                     });
 
                     _requestSync();
@@ -123,17 +121,23 @@ weechat.factory('connection',
              * Handles websocket disconnection
              */
             $log.info("Disconnected from relay");
-            ngWebsockets.failCallbacks('disconnection');
-            $rootScope.connected = false;
-            $rootScope.$emit('relayDisconnect');
-            if (ssl && evt.code === 1006) {
+            if ($rootScope.userdisconnect || !$rootScope.waseverconnected) {
+                handleClose(evt);
+                $rootScope.userdisconnect = false;
+            } else {
+                reconnect(evt);
+            }
+        };
+
+        var handleClose = function (evt) {
+            if (ssl && evt && evt.code === 1006) {
                 // A password error doesn't trigger onerror, but certificate issues do. Check time of last error.
                 if (typeof $rootScope.lastError !== "undefined" && (Date.now() - $rootScope.lastError) < 1000) {
                     // abnormal disconnect by client, most likely ssl error
                     $rootScope.sslError = true;
+                    $rootScope.$apply();
                 }
             }
-            $rootScope.$apply();
         };
 
         var onerror = function (evt) {
@@ -166,12 +170,81 @@ weechat.factory('connection',
             $rootScope.errorMessage = true;
             $rootScope.securityError = true;
             $rootScope.$emit('relayDisconnect');
+
+            if (failCallback) {
+                failCallback();
+            }
         }
 
     };
 
+    var attemptReconnect = function (bufferId, timeout) {
+        $log.info('Attempting to reconnect...');
+        var d = connectionData;
+        connect(d[0], d[1], d[2], d[3], d[4], function() {
+            $rootScope.reconnecting = false;
+            // on success, update active buffer
+            models.setActiveBuffer(bufferId);
+            $log.info('Sucessfully reconnected to relay');
+        }, function() {
+            // on failure, schedule another attempt
+            if (timeout >= 600000) {
+                // If timeout is ten minutes or more, give up
+                $log.info('Failed to reconnect, giving up');
+                handleClose();
+            } else {
+                $log.info('Failed to reconnect, scheduling next attempt in', timeout/1000, 'seconds');
+                // Clear previous timer, if exists
+                if (reconnectTimer !== undefined) {
+                    clearTimeout(reconnectTimer);
+                }
+                reconnectTimer = setTimeout(function() {
+                    // exponential timeout increase
+                    attemptReconnect(bufferId, timeout * 1.5);
+                }, timeout);
+            }
+        });
+    };
+
+
+    var reconnect = function (evt) {
+        if (connectionData.length < 5) {
+            // something is wrong
+            $log.error('Cannot reconnect, connection information is missing');
+            return;
+        }
+
+        // reinitialise everything, clear all buffers
+        // TODO: this can be further extended in the future by looking
+        // at the last line in ever buffer and request more buffers from
+        // WeeChat based on that
+        models.reinitialize();
+        $rootScope.reconnecting = true;
+        // Have to do this to get the reconnect banner to show
+        $rootScope.$apply();
+
+        var bufferId = models.getActiveBuffer().id,
+            timeout = 3000;  // start with a three-second timeout
+
+        reconnectTimer = setTimeout(function() {
+            attemptReconnect(bufferId, timeout);
+        }, timeout);
+    };
+
     var disconnect = function() {
+        $log.info('Disconnecting from relay');
+        $rootScope.userdisconnect = true;
         ngWebsockets.send(weeChat.Protocol.formatQuit());
+        // In case the backend doesn't repond we will close from our end
+        var closeTimer = setTimeout(function() {
+            ngWebsockets.disconnect();
+            // We pretend we are not connected anymore
+            // The connection can time out on its own
+            ngWebsockets.failCallbacks('disconnection');
+            $rootScope.connected = false;
+            $rootScope.$emit('relayDisconnect');
+            $rootScope.$apply();
+        });
     };
 
     /*
@@ -181,7 +254,7 @@ weechat.factory('connection',
      */
     var sendMessage = function(message) {
         ngWebsockets.send(weeChat.Protocol.formatInput({
-            buffer: models.getActiveBuffer().fullName,
+            buffer: models.getActiveBufferReference(),
             data: message
         }));
     };
@@ -193,6 +266,20 @@ weechat.factory('connection',
         }));
     };
 
+    var sendHotlistClear = function() {
+        if (models.version[0] >= 1) {
+            // WeeChat >= 1 supports clearing hotlist with this command
+            sendMessage('/buffer set hotlist -1');
+            // Also move read marker
+            sendMessage('/input set_unread_current_buffer');
+        } else {
+            // If user wants to sync hotlist with weechat
+            // we will send a /buffer bufferName command every time
+            // the user switches a buffer. This will ensure that notifications
+            // are cleared in the buffer the user switches to
+            sendCoreCommand('/buffer ' + models.getActiveBuffer().fullName);
+        }
+    };
 
     var requestNicklist = function(bufferId, callback) {
         bufferId = bufferId || null;
@@ -269,8 +356,10 @@ weechat.factory('connection',
         disconnect: disconnect,
         sendMessage: sendMessage,
         sendCoreCommand: sendCoreCommand,
+        sendHotlistClear: sendHotlistClear,
         fetchMoreLines: fetchMoreLines,
-        requestNicklist: requestNicklist
+        requestNicklist: requestNicklist,
+        attemptReconnect: attemptReconnect
     };
 }]);
 })();

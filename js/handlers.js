@@ -5,6 +5,14 @@ var weechat = angular.module('weechat');
 
 weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notifications', function($rootScope, $log, models, plugins, notifications) {
 
+    var handleVersionInfo = function(message) {
+        var content = message.objects[0].content;
+        var version = content.value;
+        // Store the WeeChat version in models
+        // this eats things like 1.3-dev -> [1,3]
+        models.version = version.split(".").map(function(c) { return parseInt(c); });
+    };
+
     var handleBufferClosing = function(message) {
         var bufferMessage = message.objects[0].content[0];
         var bufferId = bufferMessage.pointers[0];
@@ -43,6 +51,54 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         }
     };
 
+    var handleBufferInfo = function(message) {
+        var bufferInfos = message.objects[0].content;
+        // buffers objects
+        for (var i = 0; i < bufferInfos.length ; i++) {
+            var bufferId = bufferInfos[i].pointers[0];
+            var buffer = models.getBuffer(bufferId);
+            if (buffer !== undefined) {
+                // We already know this buffer
+                handleBufferUpdate(buffer, bufferInfos[i]);
+            } else {
+                buffer = new models.Buffer(bufferInfos[i]);
+                models.addBuffer(buffer);
+                // Switch to first buffer on startup
+                if (i === 0) {
+                    models.setActiveBuffer(buffer.id);
+                }
+            }
+        }
+    };
+
+    var handleBufferUpdate = function(buffer, message) {
+        if (message.pointers[0] !== buffer.id) {
+            // this is information about some other buffer!
+            return;
+        }
+
+        // weechat properties -- short name can be changed
+        buffer.shortName = message.short_name;
+        buffer.trimmedName = buffer.shortName.replace(/^[#&+]/, '');
+        buffer.title = message.title;
+        buffer.number = message.number;
+        buffer.hidden = message.hidden;
+
+        // reset these, hotlist info will arrive shortly
+        buffer.notification = 0;
+        buffer.unread = 0;
+        buffer.lastSeen = -1;
+
+        if (message.local_variables.type !== undefined) {
+            buffer.type = message.local_variables.type;
+            buffer.indent = (['channel', 'private'].indexOf(buffer.type) >= 0);
+        }
+
+        if (message.notify !== undefined) {
+            buffer.notify = message.notify;
+        }
+    };
+
     var handleBufferLineAdded = function(message) {
         message.objects[0].content.forEach(function(l) {
             handleLine(l, false);
@@ -53,10 +109,6 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         var bufferMessage = message.objects[0].content[0];
         var buffer = new models.Buffer(bufferMessage);
         models.addBuffer(buffer);
-        /* Until we can decide if user asked for this buffer to be opened
-         * or not we will let user click opened buffers.
-        models.setActiveBuffer(buffer.id);
-        */
     };
 
     var handleBufferTitleChanged = function(message) {
@@ -84,6 +136,29 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         // prefix + fullname, which would happen otherwise). Else, use null so that full_name is used
         old.trimmedName = obj.short_name.replace(/^[#&+]/, '') || (obj.short_name ? ' ' : null);
         old.prefix = ['#', '&', '+'].indexOf(obj.short_name.charAt(0)) >= 0 ? obj.short_name.charAt(0) : '';
+
+        // After a buffer openes we get the name change event from relay protocol
+        // Here we check our outgoing commands that openes a buffer and switch
+        // to it if we find the buffer name it the list
+        var position = models.outgoingQueries.indexOf(old.shortName);
+        if (position >= 0) {
+            models.outgoingQueries.splice(position, 1);
+            models.setActiveBuffer(old.id);
+        }
+    };
+
+    var handleBufferHidden = function(message) {
+        var obj = message.objects[0].content[0];
+        var buffer = obj.pointers[0];
+        var old = models.getBuffer(buffer);
+        old.hidden = true;
+    };
+
+    var handleBufferUnhidden = function(message) {
+        var obj = message.objects[0].content[0];
+        var buffer = obj.pointers[0];
+        var old = models.getBuffer(buffer);
+        old.hidden = false;
     };
 
     var handleBufferLocalvarChanged = function(message) {
@@ -190,9 +265,12 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         _buffer_line_added: handleBufferLineAdded,
         _buffer_localvar_added: handleBufferLocalvarChanged,
         _buffer_localvar_removed: handleBufferLocalvarChanged,
+        _buffer_localvar_changed: handleBufferLocalvarChanged,
         _buffer_opened: handleBufferOpened,
         _buffer_title_changed: handleBufferTitleChanged,
         _buffer_renamed: handleBufferRenamed,
+        _buffer_hidden: handleBufferHidden,
+        _buffer_unhidden: handleBufferUnhidden,
         _nicklist: handleNicklist,
         _nicklist_diff: handleNicklistDiff
     };
@@ -212,10 +290,12 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
     };
 
     return {
+        handleVersionInfo: handleVersionInfo,
         handleEvent: handleEvent,
         handleLineInfo: handleLineInfo,
         handleHotlistInfo: handleHotlistInfo,
-        handleNicklist: handleNicklist
+        handleNicklist: handleNicklist,
+        handleBufferInfo: handleBufferInfo
     };
 
 }]);

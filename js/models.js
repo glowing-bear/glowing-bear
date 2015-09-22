@@ -8,6 +8,12 @@
 var models = angular.module('weechatModels', []);
 
 models.service('models', ['$rootScope', '$filter', function($rootScope, $filter) {
+    // WeeChat version
+    this.version = null;
+
+    // Save outgoing queries
+    this.outgoingQueries = [];
+
     var parseRichText = function(text) {
         var textElements = weeChat.Protocol.rawText2Rich(text),
             typeToClassPrefixFg = {
@@ -57,6 +63,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         // weechat properties
         var fullName = message.full_name;
         var shortName = message.short_name;
+        var hidden = message.hidden;
         // If it's a channel, trim away the prefix (#, &, or +). If that is empty and the buffer
         // has a short name, use a space (because the prefix will be displayed separately, and we don't want
         // prefix + fullname, which would happen otherwise). Else, use null so that full_name is used
@@ -134,6 +141,12 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
          */
         var updateNick = function(group, nick) {
             group = nicklist[group];
+            if (group === undefined) {
+                // We are getting nicklist events for a buffer where not yet
+                // have populated the nicklist, so there will be nothing to
+                // update. Just ignore the event.
+                return;
+            }
             for(var i in group.nicks) {
                 if (group.nicks[i].name === nick.name) {
                     group.nicks[i] = nick;
@@ -277,6 +290,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             id: pointer,
             fullName: fullName,
             shortName: shortName,
+            hidden: hidden,
             trimmedName: trimmedName,
             prefix: prefix,
             number: number,
@@ -440,6 +454,22 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
      */
     this.getActiveBuffer = function() {
         return activeBuffer;
+    };
+
+    /*
+     * Returns a reference to the currently active buffer that
+     * WeeChat understands without crashing, even if it's invalid
+     *
+     * @return active buffer pointer (WeeChat 1.0+) or fullname (older versions)
+     */
+    this.getActiveBufferReference = function() {
+        if (this.version !== null && this.version[0] >= 1) {
+            // pointers are being validated, they're more reliable than
+            // fullName (e.g. if fullName contains spaces)
+            return "0x"+activeBuffer.id;
+        } else {
+            return activeBuffer.fullName;
+        }
     };
 
     /*

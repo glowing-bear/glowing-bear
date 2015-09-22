@@ -9,6 +9,15 @@ var IrcUtils = angular.module('IrcUtils', []);
 
 IrcUtils.service('IrcUtils', [function() {
     /**
+     * Escape a string for usage in a larger regexp
+     * @param str String to escape
+     * @return Escaped string
+     */
+     var escapeRegExp = function(str) {
+         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+     };
+
+    /**
      * Get a new version of a nick list, sorted by last speaker
      *
      * @param nickList Original nick list
@@ -63,7 +72,7 @@ IrcUtils.service('IrcUtils', [function() {
         // collect matching nicks
         for (var i = 0; i < nickList.length; ++i) {
             var lcNick = nickList[i].toLowerCase();
-            if (lcNick.search(lcIterCandidate) === 0) {
+            if (lcNick.search(escapeRegExp(lcIterCandidate)) === 0) {
                 matchingNicks.push(nickList[i]);
                 if (lcCurrentNick === lcNick) {
                     at = matchingNicks.length - 1;
@@ -149,7 +158,7 @@ IrcUtils.service('IrcUtils', [function() {
         m = beforeCaret.match(/^([a-zA-Z0-9_\\\[\]{}^`|-]+)$/);
         if (m) {
             // try completing
-            newNick = _completeSingleNick(m[1], searchNickList);
+            newNick = _completeSingleNick(escapeRegExp(m[1]), searchNickList);
             if (newNick === null) {
                 // no match
                 return ret;

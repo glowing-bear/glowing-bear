@@ -23,6 +23,11 @@ weechat.directive('inputBar', function() {
                              IrcUtils,
                              settings) {
 
+            // E.g. Turn :smile: into the unicode equivalent
+            $scope.inputChanged = function() {
+                $scope.command = emojione.shortnameToUnicode($scope.command);
+            };
+
             /*
              * Returns the input element
              */
@@ -95,8 +100,26 @@ weechat.directive('inputBar', function() {
                         ab.clear();
                     }
 
+                    // Check against a list of commands that opens a new
+                    // buffer and save the name of the buffer so we can
+                    // also automatically switch to the new buffer in gb
+                    var opencommands = ['/query', '/join', '/j', '/q'];
+                    var spacepos = $scope.command.indexOf(' ');
+                    var firstword = $scope.command.substr(0, spacepos);
+                    var index = opencommands.indexOf(firstword);
+                    if (index >= 0) {
+                        var queryName = $scope.command.substring(spacepos + 1);
+                        // Cache our queries so when a buffer gets opened we can open in UI
+                        models.outgoingQueries.push(queryName);
+                    }
+
                     // Empty the input after it's sent
                     $scope.command = '';
+                }
+
+                // New style clearing requires this, old does not
+                if (models.version[0] >= 1) {
+                    connection.sendHotlistClear();
                 }
 
                 $scope.getInputNode().focus();
@@ -155,6 +178,15 @@ weechat.directive('inputBar', function() {
 
                 // Support different browser quirks
                 var code = $event.keyCode ? $event.keyCode : $event.charCode;
+
+                // Safari doesn't implement DOM 3 input events yet as of 8.0.6
+                var altg = $event.getModifierState ? $event.getModifierState('AltGraph') : false;
+
+                // Mac OSX behaves differntly for altgr, so we check for that
+                if (altg) {
+                    // We don't handle any anything with altgr
+                    return false;
+                }
 
                 // reset quick keys display
                 $rootScope.showQuickKeys = false;

@@ -22,6 +22,11 @@ html {
     background-color: #222;
 }
 
+.btn-send {
+    background: none repeat scroll 0% 0% rgba(255, 255, 255, 0.3);
+    color: #428BCA;
+}
+
 tr.bufferline:hover {
     background-color: #efefef;
 }
@@ -59,6 +64,10 @@ select.form-control, select option, input[type=text], input[type=password], #sen
 
 #connection-infos {
     color: #aaa;
+}
+
+.nav-pills li:nth-child(2n) {
+    background: #e1e1e1;
 }
 
 .nav-pills > li > a {

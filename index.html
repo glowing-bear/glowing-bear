@@ -7,6 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Glowing Bear">
     <meta name="theme-color" content="#2779d3">
     <title ng-bind-template="{{ notificationStatus }}Glowing Bear {{ pageTitle}}"></title>
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -14,18 +15,18 @@
     <link rel="apple-touch-icon" sizes="128x128" href="assets/img/glowing_bear_128x128.png">
     <link rel="shortcut icon" type="image/png" href="assets/img/favicon.png" >
     <link href="css/glowingbear.css" rel="stylesheet" media="screen">
+    <link href="css/themes/dark.css" rel="stylesheet" media="screen" id="themeCSS" />
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-route.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-sanitize.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-touch.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
-    <script src="//twemoji.maxcdn.com/twemoji.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/emojione/1.4.0/lib/js/emojione.min.js"></script>
     <script type="text/javascript" src="3rdparty/inflate.min.js"></script>
     <script type="text/javascript" src="min.js"></script>
     <script type="text/javascript" src="3rdparty/favico-0.3.5.min.js"></script>
   </head>
-  <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keyup="handleKeyRelease($event)"  ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" lang="en-US">
-    <link ng-href="css/themes/{{settings.theme}}.css" rel="stylesheet" media="screen" />
+  <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keyup="handleKeyRelease($event)"  ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" ng-init="init()" lang="en-US">
     <div ng-hide="connected" class="container">
       <h2>
         <img alt="logo" src="assets/img/glowing-bear.svg">
@@ -206,17 +207,21 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           <a href="#" ng-click="toggleSidebar()">
             <img alt="brand" src="assets/img/favicon.png" title="Connected to {{ settings.host }}:{{ settings.port}}">
           </a>
+          <span class="badge" ng-show="unread > 0">{{unread}}</span>
+          <span class="badge danger" ng-show="notifications > 0">{{notifications}}</span>
+
           <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
         </div>
+
         <div class="title" title="{{activeBuffer().rtitle}}">
-          <span ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank' | DOMfilter:'irclinky')"></span>
+          <span class="desktop" ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank' | DOMfilter:'irclinky')"></span>
+          <span class="mobile" ng-click="showModal('topicModal')" ng-class="{'active': activeBuffer().active, 'channel': activeBuffer().type === 'channel', 'channel_hash': activeBuffer().prefix === '#', 'channel_plus': activeBuffer().prefix === '+', 'channel_ampersand': activeBuffer().prefix === '&'}">{{ activeBuffer().trimmedName || activeBuffer().fullName }}</span>
         </div>
+
         <div class="actions pull-right vertical-line-left">
-          <div class="pull-left">
-            <a class="settings-toggle" ng-click="showModal('settingsModal')" title="Options menu">
-              <i class="glyphicon glyphicon-cog"></i>
-            </a>
-          </div>
+          <a class="settings-toggle" ng-click="showModal('settingsModal')" title="Options menu">
+            <i class="glyphicon glyphicon-cog"></i>
+          </a>
           <a ng-click="disconnect()" title="Disconnect from WeeChat">
             <i class="glyphicon glyphicon-off"></i>
           </a>
@@ -262,10 +267,10 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                   <span class="cof-chat_time cob-chat_time coa-chat_time" ng-bind="::(bufferline.date|date:'HH')"></span><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time" ng-bind="::(bufferline.date|date:'mm')"></span><span class="seconds"><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time" ng-bind="::(bufferline.date|date:'ss')"></span></span>
                 </span>
               </td>
-              <td class="prefix"><a ng-click="addMention(bufferline.prefix)"><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text"></span></a></td><!--
+              <td class="prefix"><a ng-click="addMention(bufferline.prefix)"><span class="hidden-bracket">&lt;</span><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text|prefixlimit:25"></span><span class="hidden-bracket">&gt;</span></a></td><!--
            --><td class="message"><!--
              --><div ng-repeat="metadata in ::bufferline.metadata" plugin data="::metadata"></div><!--
-             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes" ng-bind-html="::part.text | linky:'_blank' | DOMfilter:'irclinky' | DOMfilter:'emojify':settings.enableJSEmoji | DOMfilter:'inlinecolour' "></span>
+             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes.concat(['line-' + part.$$hashKey.replace(':','_')])" ng-bind-html="::part.text | linky:'_blank' | DOMfilter:'irclinky' | DOMfilter:'emojify':settings.enableJSEmoji | DOMfilter:'inlinecolour' | DOMfilter:'mathjax':('.line-' + part.$$hashKey.replace(':','_')):settings.enableMathjax"></span>
               </td>
             </tr>
             <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
@@ -281,6 +286,11 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
       </div>
     </div>
     <div id="soundNotification"></div>
+    <div id="reconnect" class="alert alert-danger" ng-click="reconnect()" ng-show="reconnecting">
+        <p><strong>Connection to WeeChat lost</strong></p>
+        <i class="glyphicon glyphicon-refresh"></i>
+        Reconnecting... <a class="btn btn-tiny" ng-click="reconnect()">Click to try to reconnect now</a>
+    </div>
     <div id="settingsModal" class="gb-modal" data-state="hidden">
       <div class="backdrop" ng-click="closeModal($event)"></div>
       <div class="modal-dialog">
@@ -430,7 +440,32 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                   </div>
                 </form>
               </li>
+               <li>
+                <form class="form-inline" role="form">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="settings.enableMathjax">
+                      Enable LaTeX math rendering
+                    </label>
+                  </div>
+                </form>
+              </li>
             </ul>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" ng-click="closeModal($event)">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <div id="topicModal" class="gb-modal" data-state="hidden">
+      <div class="backdrop" ng-click="closeModal($event)"></div>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" ng-click="closeModal($event)" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Channel topic</h4>
+            <p ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank' | DOMfilter:'irclinky')"></p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" ng-click="closeModal($event)">Close</button>

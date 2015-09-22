@@ -24,7 +24,7 @@ weechat.filter('toArray', function () {
     };
 });
 
-weechat.filter('irclinky', ['$filter', function($filter) {
+weechat.filter('irclinky', function() {
     return function(text) {
         if (!text) {
             return text;
@@ -36,12 +36,12 @@ weechat.filter('irclinky', ['$filter', function($filter) {
         // "#1" is much more likely to be "number 1" than "IRC channel #1".
         // Thus, we only match channels beginning with a # and having at least one letter in them.
         var channelRegex = /(^|[\s,.:;?!"'()+@-\~%])(#+[^\x00\x07\r\n\s,:]*[a-z][^\x00\x07\r\n\s,:]*)/gmi;
-        // This is SUPER nasty, but ng-click does not work inside a filter, as the markup has to be $compiled first, which is not possible in filter afaik.
-        // Therefore, get the scope, fire the method, and $apply. Yuck. I sincerely hope someone finds a better way of doing this.
-        var substitute = '$1<a href="#" onclick="var $scope = angular.element(event.target).scope(); $scope.openBuffer(\'$2\'); $scope.$apply();">$2</a>';
+        // Call the method we bound to window.openBuffer when we instantiated
+        // the Weechat controller.
+        var substitute = '$1<a href="#" onclick="openBuffer(\'$2\');">$2</a>';
         return text.replace(channelRegex, substitute);
     };
-}]);
+});
 
 weechat.filter('inlinecolour', function() {
     return function(text) {
@@ -75,9 +75,11 @@ weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
             });
         };
 
-        // hacky way to pass an extra argument without using .apply, which
+        // hacky way to pass extra arguments without using .apply, which
         // would require assembling an argument array. PERFORMANCE!!!
         var extraArgument = (arguments.length > 2) ? arguments[2] : null;
+        var thirdArgument = (arguments.length > 3) ? arguments[3] : null;
+
         var filterFunction = $filter(filter);
         var el = document.createElement('div');
         el.innerHTML = text;
@@ -89,7 +91,7 @@ weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
                 // it changed the escaped value. This is because setting the result
                 // as innerHTML causes it to be unescaped.
                 var input = escape_html(node.nodeValue);
-                var value = filterFunction(input, extraArgument);
+                var value = filterFunction(input, extraArgument, thirdArgument);
                 if (value !== input) {
                     // we changed something. create a new node to replace the current one
                     // we could also only add its children but that would probably incur
@@ -145,14 +147,41 @@ weechat.filter('getBufferQuickKeys', function () {
     };
 });
 
-// Emojifis the string using https://github.com/twitter/twemoji
+// Emojifis the string using https://github.com/Ranks/emojione
 weechat.filter('emojify', function() {
     return function(text, enable_JS_Emoji) {
-        if (enable_JS_Emoji === true) {
-            return twemoji.parse(text);
+        if (enable_JS_Emoji === true && window.emojione !== undefined) {
+            return emojione.unicodeToImage(text);
         } else {
             return(text);
         }
+    };
+});
+
+weechat.filter('mathjax', function() {
+    return function(text, selector, enabled) {
+        if (!enabled || typeof(MathJax) === "undefined") {
+            return text;
+        }
+        if (text.indexOf("$$") != -1 || text.indexOf("\\[") != -1 || text.indexOf("\\(") != -1) {
+            // contains math
+            var math = document.querySelector(selector);
+            MathJax.Hub.Queue(["Typeset",MathJax.Hub,math]);
+        }
+
+        return text;
+    };
+});
+
+weechat.filter('prefixlimit', function() {
+    return function(input, chars) {
+        if (isNaN(chars)) return input;
+        if (chars <= 0) return '';
+        if (input && input.length > chars) {
+            input = input.substring(0, chars);
+            return input + '+';
+        }
+        return input;
     };
 });
 

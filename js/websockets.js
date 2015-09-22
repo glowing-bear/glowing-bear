@@ -109,8 +109,9 @@ function($rootScope, $q) {
             // otherwise emit it
             $rootScope.$emit('onMessage', message);
         }
-
+        // Make sure all UI is updated with new data
         $rootScope.$apply();
+
     };
 
     var connect = function(url,
