@@ -200,6 +200,8 @@ plugins.factory('userPlugins', function() {
      */
     var youtubePlugin = new UrlPlugin('YouTube video', function(url) {
         var regex = /(?:youtube.com|youtu.be)\/(?:v\/|embed\/|watch(?:\?v=|\/))?([a-zA-Z0-9-]+)/i,
+        var youtu_be_regex = 
+        var youtube_regex = 
             match = url.match(regex);
 
         if (match){
@@ -358,17 +360,14 @@ plugins.factory('userPlugins', function() {
   * sample output: https://media.giphy.com/media/feqkVgjJpYtjy/giphy.gif
   */
     var giphyPlugin = new UrlPlugin('Giphy', function(url) {
-        var regex = /^https?:\/\/giphy.com\/gifs\/.*-.*\/?/i;
-        if (url.match(regex)) {
-            /* if the url does not contain a trailing slash, add it */
-            if (! url.match(/\/$/i)) { url = url + "/"; }
-            /* upgrade any http links to tls, yeah crypto */
+        var regex = /^https?:\/\/giphy.com\/gifs\/.*-(.*)\/?/i;
+        // on match, id will contain the entire url in [0] and the giphy id in [1]
+        var id = url.match(regex);
+        if (id) {
+            var src = "https://media.giphy.com/media/" + id[1] + "/giphy.gif";
+            /* upgrade any http url to tls, yeah crypto */
             if (url.match(/^http:/i)) { url.replace(/http:/, "https:"); }
-            /* change the url to refrence the giphy cdn url, not the userfacing webserver */
-            url = url.replace(/\/giphy.com\//i,"/media.giphy.com/");
-            url = url.replace(/\/gifs\/.*-/i,"/media/");
-            url = url + "giphy.gif";
-            return '<a target="_blank" href="'+url+'"><img class="embed" src="' + url + '"></a>';
+            return '<a target="_blank" href="'+url+'"><img class="embed" src="' + src + '"></a>';
         }
     });
 
