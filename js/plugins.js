@@ -353,6 +353,25 @@ plugins.factory('userPlugins', function() {
         }
     });
 
+ /* match giphy links and display the assocaited gif images
+  * sample input:  http://giphy.com/gifs/eyes-shocked-bird-feqkVgjJpYtjy
+  * sample output: https://media.giphy.com/media/feqkVgjJpYtjy/giphy.gif
+  */
+    var giphyPlugin = new UrlPlugin('Giphy', function(url) {
+        var regex = /^https?:\/\/giphy.com\/gifs\/.*-.*\/?/i;
+        if (url.match(regex)) {
+            /* if the url does not contain a trailing slash, add it */
+            if (! url.match(/\/$/i)) { url = url + "/"; }
+            /* upgrade any http links to tls, yeah crypto */
+            if (url.match(/^http:/i)) { url.replace(/http:/, "https:"); }
+            /* change the url to refrence the giphy cdn url, not the userfacing webserver */
+            url = url.replace(/\/giphy.com\//i,"/media.giphy.com/");
+            url = url.replace(/\/gifs\/.*-/i,"/media/");
+            url = url + "giphy.gif";
+            return '<a target="_blank" href="'+url+'"><img class="embed" src="' + url + '"></a>';
+        }
+    });
+
     var tweetPlugin = new UrlPlugin('Tweet', function(url) {
         var regexp = /^https?:\/\/twitter\.com\/(?:#!\/)?(\w+)\/status(?:es)?\/(\d+)/i;
         var match = url.match(regexp);
@@ -391,7 +410,7 @@ plugins.factory('userPlugins', function() {
     });
 
     return {
-        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, tweetPlugin, vinePlugin]
+        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, giphyPlugin, tweetPlugin, vinePlugin]
     };
 
 
