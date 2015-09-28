@@ -363,8 +363,6 @@ plugins.factory('userPlugins', function() {
         var id = url.match(regex);
         if (id) {
             var src = "https://media.giphy.com/media/" + id[1] + "/giphy.gif";
-            /* upgrade any http url to tls, yeah crypto */
-            if (url.match(/^http:/i)) { url.replace(/^http:/, "https:"); }
             return '<a target="_blank" href="'+url+'"><img class="embed" src="' + src + '"></a>';
         }
     });
