@@ -43,6 +43,9 @@
     <script type="text/javascript" src="3rdparty/favico-0.3.5.min.js"></script>
   </head>
   <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keyup="handleKeyRelease($event)"  ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" ng-init="init()" lang="en-US">
+    <div class="alert alert-danger upload-error" ng-show="uploadError">
+      <p><strong>Upload error:</strong> Image upload failed.</p>
+    </div>
     <div ng-hide="connected" class="container">
       <h2>
         <img alt="logo" src="assets/img/glowing-bear.svg">

@@ -30,6 +30,10 @@ weechat.factory('imgur', ['$rootScope', function($rootScope) {
                 // Set client ID (Glowing Bear)
                 var clientId = "164efef8979cd4b";
 
+		// Progress bar DOM elment
+		var progressBar = document.getElementById("imgur-upload-progress");
+		progressBar.style.width = '0';
+
 		// Create new form data
 		var fd = new FormData();
 		fd.append("image", base64img); // Append the file
@@ -46,27 +50,67 @@ weechat.factory('imgur', ['$rootScope', function($rootScope) {
 		xhttp.setRequestHeader("Accept", "application/json");
 
 		// Handler for response
-		xhttp.onreadystatechange = function() {
+		xhttp.onload = function() {
+
+			progressBar.style.display = 'none';
 
 			// Check state and response status
-			if (xhttp.readyState == 4 && xhttp.status == 200) {
+			if(xhttp.status === 200) {
 
 				// Get response text
 				var response = JSON.parse(xhttp.responseText);
 
 				// Send link as message
 				if( response.data && response.data.link ) {
+
 					if (callback && typeof(callback) === "function") {
 						callback(response.data.link);
 					}
+
+				} else {
+					showErrorMsg();
 				}
+
+			} else {
+				showErrorMsg();
 			}
 
 		};
 
+		if( "upload" in xhttp ) {
+
+			// Set progress
+			xhttp.upload.onprogress = function (event) {
+
+				// Check if we can compute progress
+				if (event.lengthComputable) {
+					// Complete in percent
+					var complete = (event.loaded / event.total * 100 | 0);
+
+					// Set progress bar width
+					progressBar.style.display = 'block';
+					progressBar.style.width = complete + '%';
+				}
+			};
+
+		}
+
 		// Send request with form data
 		xhttp.send(fd);
 
+	};
+
+	var showErrorMsg = function() {
+		// Show error msg
+		$rootScope.uploadError = true;
+		$rootScope.$apply();
+
+		// Hide after 5 seconds
+		setTimeout(function(){
+			// Hide error msg
+			$rootScope.uploadError = false;
+			$rootScope.$apply();
+		}, 5000);
 	};
 
 	return {

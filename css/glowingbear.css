@@ -176,6 +176,14 @@ input[type=text], input[type=password], #sendMessage {
     padding-right: 6px;
 }
 
+.upload-error {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 4;
+}
+
 #sidebar {
     position: fixed;
     width: 140px;
@@ -347,6 +355,21 @@ td.time {
 }
 .footer.withnicklist {
     padding-right: 100px;
+}
+
+#inputform {
+    position: relative;
+}
+
+#imgur-upload-progress {
+    display: none;
+    content: " ";
+    width: 0%;
+    height: 5px;
+    position: absolute;
+    top: -5px;
+    left: 0;
+    background: #428BCA;
 }
 
 /* fix for mobile firefox which ignores :hover */
