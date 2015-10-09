@@ -3,7 +3,10 @@
     <textarea id="{{inputId}}" class="form-control favorite-font" ng-trim="false" rows="1" ng-change="inputChanged()" autocomplete="on" ng-model="command" ng-focus="hideSidebar()">
     </textarea>
     <span class="input-group-btn">
-      <button class="btn btn-send-image unselectable"><i class="glyphicon glyphicon-picture"></i></button>
+      <label class="btn btn-send-image unselectable" for="imgur-upload" title="Send image">
+        <i class="glyphicon glyphicon-picture"></i>
+        <input type="file" accept="image/*" title="Send image" id="imgur-upload" class="imgur-upload" file-change="uploadImage($event, files)">
+      </label>
       <button class="btn btn-send unselectable"><i class="glyphicon glyphicon-send"></i></button>
     </span>
   </div>

@@ -14,11 +14,12 @@ weechat.directive('inputBar', function() {
             command: '=command'
         },
 
-        controller: ['$rootScope', '$scope', '$element', '$log', 'connection', 'models', 'IrcUtils', 'settings', function($rootScope,
+        controller: ['$rootScope', '$scope', '$element', '$log', 'connection', 'imgur', 'models', 'IrcUtils', 'settings', function($rootScope,
                              $scope,
                              $element, //XXX do we need this? don't seem to be using it
                              $log,
                              connection, //XXX we should eliminate this dependency and use signals instead
+                             imgur,
                              models,
                              IrcUtils,
                              settings) {
@@ -69,6 +70,13 @@ weechat.directive('inputBar', function() {
                 }, 0);
             };
 
+            $scope.uploadImage = function( $event, files ) {
+                // Get file
+                var file = files[0];
+
+                // Process image
+                imgur.process(file);
+            };
 
             // Send the message to the websocket
             $scope.sendMessage = function() {

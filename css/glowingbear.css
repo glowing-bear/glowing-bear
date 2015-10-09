@@ -84,6 +84,25 @@ input[type=text], input[type=password], #sendMessage {
     margin-bottom: 5px !important;
 }
 
+.btn-send-image {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.imgur-upload {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    cursor: inherit;
+    font-size: 1000px !important;
+    height: 300px;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    filter: ~"alpha(opacity=0)";
+}
+
 .input-group {
     width: 100%;
 }
