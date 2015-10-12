@@ -29,9 +29,16 @@ weechat.factory('imgur', ['$rootScope', function($rootScope) {
         // Set client ID (Glowing Bear)
         var clientId = "164efef8979cd4b";
 
-        // Progress bar DOM elment
-        var progressBar = document.getElementById("imgur-upload-progress");
-        progressBar.style.width = '0';
+        // Progress bars container
+        var progressBars = document.getElementById("imgur-upload-progress"),
+            currentProgressBar = document.createElement("div");
+
+        // Set progress bar attributes
+        currentProgressBar.className='imgur-progress-bar';
+        currentProgressBar.style.width = '0';
+
+        // Append progress bar
+        progressBars.appendChild(currentProgressBar);
 
         // Create new form data
         var fd = new FormData();
@@ -51,7 +58,8 @@ weechat.factory('imgur', ['$rootScope', function($rootScope) {
         // Handler for response
         xhttp.onload = function() {
 
-            progressBar.style.display = 'none';
+            // Remove progress bar
+            currentProgressBar.parentNode.removeChild(currentProgressBar);
 
             // Check state and response status
             if(xhttp.status === 200) {
@@ -87,8 +95,7 @@ weechat.factory('imgur', ['$rootScope', function($rootScope) {
                     var complete = (event.loaded / event.total * 100 | 0);
 
                     // Set progress bar width
-                    progressBar.style.display = 'block';
-                    progressBar.style.width = complete + '%';
+                    currentProgressBar.style.width = complete + '%';
                 }
             };
 

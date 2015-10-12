@@ -21,20 +21,25 @@ weechat.directive('imgurDrop', ['connection','imgur', function(connection, imgur
                 e.stopPropagation();
                 e.preventDefault();
 
-                // Check files length
-                if (files.length > 0) {
-                    // Sorry only one file
-                    var file = files[0];
+                // Send image url after upload
+                var sendImageUrl = function(imageUrl) {
 
-                    // Upload to imgur
-                    imgur.process(file, function(imageUrl) {
+                    // Send image
+                    if(imageUrl !== undefined && imageUrl !== '') {
+                        connection.sendMessage(String(imageUrl));
+                    }
 
-                        // Send image
-                        if(imageUrl !== undefined && imageUrl !== '') {
-                            connection.sendMessage( String(imageUrl) );
-                        }
+                };
 
-                    });
+                // Check files
+                if(typeof files !== "undefined" && files.length > 0) {
+
+                    // Loop through files
+                    for (var i = 0; i < files.length; i++) {
+                        // Upload to imgur
+                        imgur.process(files[i], sendImageUrl);
+                    }
+
                 }
             };
         }

@@ -70,12 +70,9 @@ weechat.directive('inputBar', function() {
                 }, 0);
             };
 
-            $scope.uploadImage = function( $event, files ) {
-                // Get file
-                var file = files[0];
-
-                // Process image
-                imgur.process(file, function(imageUrl) {
+            $scope.uploadImage = function($event, files) {
+                // Send image url after upload
+                var sendImageUrl = function(imageUrl) {
 
                     // Send image
                     if(imageUrl !== undefined && imageUrl !== '') {
@@ -98,10 +95,21 @@ weechat.directive('inputBar', function() {
                             inputNode.focus();
                             var pos = $scope.command.length - suffix.length;
                             inputNode.setSelectionRange(pos, pos);
+                            // force refresh?
+                            $scope.$apply();
                         }, 0);
                     }
 
-                });
+                };
+
+                if(typeof files !== "undefined" && files.length > 0) {
+                    // Loop through files
+                    for (var i = 0; i < files.length; i++) {
+                        // Process image
+                        imgur.process(files[i], sendImageUrl);
+                    }
+
+                }
             };
 
             // Send the message to the websocket
