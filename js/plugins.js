@@ -57,7 +57,7 @@ var UrlPlugin = function(name, urlCallback) {
  * to display when messages are received.
  *
  */
-plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
+    plugins.service('plugins', ['userPlugins', '$sce', '$sanitize', function(userPlugins, $sce, $sanitize) {
 
     /*
      * Defines the plugin manager object
@@ -85,7 +85,7 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
          */
         var contentForMessage = function(message) {
             message.metadata = [];
-
+            message.text = $sanitize(message.text);
             var addPluginContent = function(content, pluginName, num) {
                 if (num) {
                     pluginName += " " + num;
@@ -110,7 +110,9 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
                     nsfw = true;
                 }
 
-                var pluginContent = plugins[i].contentForMessage(message.text);
+                var pluginContent = plugins[i].contentForMessage(
+                    message.text
+                );
                 if (pluginContent && pluginContent !== []) {
 
                     if (pluginContent instanceof Array) {
