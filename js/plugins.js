@@ -57,7 +57,7 @@ var UrlPlugin = function(name, urlCallback) {
  * to display when messages are received.
  *
  */
-plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
+    plugins.service('plugins', ['userPlugins', '$sce', '$sanitize', function(userPlugins, $sce, $sanitize) {
 
     /*
      * Defines the plugin manager object
@@ -85,7 +85,7 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
          */
         var contentForMessage = function(message) {
             message.metadata = [];
-
+            message.text = $sanitize(message.text);
             var addPluginContent = function(content, pluginName, num) {
                 if (num) {
                     pluginName += " " + num;
@@ -110,7 +110,9 @@ plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
                     nsfw = true;
                 }
 
-                var pluginContent = plugins[i].contentForMessage(message.text);
+                var pluginContent = plugins[i].contentForMessage(
+                    message.text
+                );
                 if (pluginContent && pluginContent !== []) {
 
                     if (pluginContent instanceof Array) {
@@ -353,6 +355,20 @@ plugins.factory('userPlugins', function() {
         }
     });
 
+ /* match giphy links and display the assocaited gif images
+  * sample input:  http://giphy.com/gifs/eyes-shocked-bird-feqkVgjJpYtjy
+  * sample output: https://media.giphy.com/media/feqkVgjJpYtjy/giphy.gif
+  */
+    var giphyPlugin = new UrlPlugin('Giphy', function(url) {
+        var regex = /^https?:\/\/giphy.com\/gifs\/.*-(.*)\/?/i;
+        // on match, id will contain the entire url in [0] and the giphy id in [1]
+        var id = url.match(regex);
+        if (id) {
+            var src = "https://media.giphy.com/media/" + id[1] + "/giphy.gif";
+            return '<a target="_blank" href="'+url+'"><img class="embed" src="' + src + '"></a>';
+        }
+    });
+
     var tweetPlugin = new UrlPlugin('Tweet', function(url) {
         var regexp = /^https?:\/\/twitter\.com\/(?:#!\/)?(\w+)\/status(?:es)?\/(\d+)/i;
         var match = url.match(regexp);
@@ -391,7 +407,7 @@ plugins.factory('userPlugins', function() {
     });
 
     return {
-        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, tweetPlugin, vinePlugin]
+        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, giphyPlugin, tweetPlugin, vinePlugin]
     };
 
 
