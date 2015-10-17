@@ -57,7 +57,7 @@ var UrlPlugin = function(name, urlCallback) {
  * to display when messages are received.
  *
  */
-    plugins.service('plugins', ['userPlugins', '$sce', '$sanitize', function(userPlugins, $sce, $sanitize) {
+    plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
 
     /*
      * Defines the plugin manager object
@@ -85,7 +85,6 @@ var UrlPlugin = function(name, urlCallback) {
          */
         var contentForMessage = function(message) {
             message.metadata = [];
-            // message.text = $sanitize(message.text);
             var addPluginContent = function(content, pluginName, num) {
                 if (num) {
                     pluginName += " " + num;
@@ -187,7 +186,6 @@ plugins.factory('userPlugins', function() {
         var addMatch = function(match) {
             for (var i = 0; match && i < match.length; i++) {
                 var id = match[i].substr(match[i].length - 22, match[i].length);
-                // content.push('<iframe src="//embed.spotify.com/?uri=spotify:track:' + id + '" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>');
                 var element = angular.element('<iframe></iframe>')
                                      .attr('src', '//embed.spotify.com/?uri=spotify:track:' + id)
                                      .attr('width', '300')
@@ -221,7 +219,6 @@ plugins.factory('userPlugins', function() {
                                  .attr('frameborder', '0')
                                  .attr('allowfullscreen', 'true');
             return element.prop('outerHTML');
-            // return '<iframe width="560" height="315" src="'+ embedurl + '" frameborder="0" allowfullscreen frameborder="0"></iframe>';
         }
     });
 
@@ -245,7 +242,6 @@ plugins.factory('userPlugins', function() {
                                  .attr('height', '270')
                                  .attr('frameborder', '0');
             return element.prop('outerHTML');
-            // return '<iframe frameborder="0" width="480" height="270" src="' + embedurl + '"></iframe>';
         }
 
         return null;
@@ -268,7 +264,6 @@ plugins.factory('userPlugins', function() {
                                  .attr('height', '270')
                                  .attr('frameborder', '0');
             return element.prop('outerHTML');
-            // return '<iframe frameborder="0" width="480" height="270" src="' + embedurl + '"></iframe>';
         }
 
         return null;
@@ -297,7 +292,6 @@ plugins.factory('userPlugins', function() {
                                                 .addClass('embed')
                                                 .attr('src', url));
             return element.prop('outerHTML');
-            // return '<a target="_blank" href="'+url+'"><img class="embed" src="' + url + '"></a>';
         }
     });
 
@@ -312,7 +306,6 @@ plugins.factory('userPlugins', function() {
                                  .append(angular.element('<source></source>')
                                                 .attr('src', url));
             return element.prop('outerHTML');
-            // return '<video class="embed" width="560"><source src="'+url+'"></source></video>';
         }
     });
 
@@ -330,7 +323,6 @@ plugins.factory('userPlugins', function() {
                              .attr('frameborder', 'no')
                              .attr('src', 'https://w.soundcloud.com/player/?url=' + url + '&amp;color=ff6600&amp;auto_play=false&amp;show_artwork=true');
             return element.prop('outerHTML');
-            // return '<iframe width="100%" height="120" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=' + url + '&amp;color=ff6600&amp;auto_play=false&amp;show_artwork=true"></iframe>';
         }
 
         /* MixCloud */
@@ -341,7 +333,6 @@ plugins.factory('userPlugins', function() {
                              .attr('frameborder', '0')
                              .attr('src', '//www.mixcloud.com/widget/iframe/?feed=' + url + '&mini=1&stylecolor=&hide_artwork=&embed_type=widget_standard&hide_tracklist=1&hide_cover=');
             return element.prop('outerHTML');
-            // return '<iframe width="480" height="60" src="//www.mixcloud.com/widget/iframe/?feed=' + url + '&mini=1&stylecolor=&hide_artwork=&embed_type=widget_standard&hide_tracklist=1&hide_cover=" frameborder="0"></iframe>';
         }
     });
 
@@ -358,7 +349,6 @@ plugins.factory('userPlugins', function() {
                                  .attr('marginheight', '0')
                                  .attr('src', url + '&output=embed');
             return element.prop('outerHTML');
-            // return '<iframe width="450" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="' + url + '&output=embed"></iframe>';
         }
     });
 
@@ -393,7 +383,6 @@ plugins.factory('userPlugins', function() {
                                  .attr('src', url)
                                  .attr('alt', 'Meteogram for ' + city);
             return element.prop('outerHTML');
-            // return "<img src='" + url + "' alt='Meteogram for " + city + "' />";
         }
     });
 
@@ -436,7 +425,6 @@ plugins.factory('userPlugins', function() {
                                                 .addClass('embed')
                                                 .attr('src', src));
             return element.prop('outerHTML');
-            // return '<a target="_blank" href="'+url+'"><img class="embed" src="' + src + '"></a>';
         }
     });
 
@@ -480,7 +468,6 @@ plugins.factory('userPlugins', function() {
                                  .attr('height', '600')
                                  .attr('frameborder', '0');
             return element.prop('outerHTML') + '<script async src="//platform.vine.co/static/scripts/embed.js" charset="utf-8"></script>';
-            // return '<iframe class="vine-embed" src="' + embedurl + '" width="600" height="600" frameborder="0"></iframe>;
         }
     });
 
