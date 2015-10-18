@@ -57,7 +57,7 @@ var UrlPlugin = function(name, urlCallback) {
  * to display when messages are received.
  *
  */
-    plugins.service('plugins', ['userPlugins', '$sce', '$sanitize', function(userPlugins, $sce, $sanitize) {
+    plugins.service('plugins', ['userPlugins', '$sce', function(userPlugins, $sce) {
 
     /*
      * Defines the plugin manager object
@@ -85,7 +85,6 @@ var UrlPlugin = function(name, urlCallback) {
          */
         var contentForMessage = function(message) {
             message.metadata = [];
-            message.text = $sanitize(message.text);
             var addPluginContent = function(content, pluginName, num) {
                 if (num) {
                     pluginName += " " + num;
@@ -187,7 +186,13 @@ plugins.factory('userPlugins', function() {
         var addMatch = function(match) {
             for (var i = 0; match && i < match.length; i++) {
                 var id = match[i].substr(match[i].length - 22, match[i].length);
-                content.push('<iframe src="//embed.spotify.com/?uri=spotify:track:' + id + '" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>');
+                var element = angular.element('<iframe></iframe>')
+                                     .attr('src', '//embed.spotify.com/?uri=spotify:track:' + id)
+                                     .attr('width', '300')
+                                     .attr('height', '80')
+                                     .attr('frameborder', '0')
+                                     .attr('allowtransparency', 'true');
+                content.push(element.prop('outerHTML'));
             }
         };
         addMatch(message.match(/spotify:track:([a-zA-Z-0-9]{22})/g));
@@ -206,8 +211,14 @@ plugins.factory('userPlugins', function() {
 
         if (match){
             var token = match[1],
-                embedurl = "https://www.youtube.com/embed/" + token + "?html5=1&iv_load_policy=3&modestbranding=1&rel=0&showinfo=0";
-            return '<iframe width="560" height="315" src="'+ embedurl + '" frameborder="0" allowfullscreen frameborder="0"></iframe>';
+                embedurl = "https://www.youtube.com/embed/" + token + "?html5=1&iv_load_policy=3&modestbranding=1&rel=0&showinfo=0",
+                element = angular.element('<iframe></iframe>')
+                                 .attr('src', embedurl)
+                                 .attr('width', '560')
+                                 .attr('height', '315')
+                                 .attr('frameborder', '0')
+                                 .attr('allowfullscreen', 'true');
+            return element.prop('outerHTML');
         }
     });
 
@@ -225,7 +236,12 @@ plugins.factory('userPlugins', function() {
         if (match) {
             var id = match[1];
             var embedurl = 'https://www.dailymotion.com/embed/video/' + id + '?html&controls=html&startscreen=html&info=0&logo=0&related=0';
-            return '<iframe frameborder="0" width="480" height="270" src="' + embedurl + '"></iframe>';
+            var element = angular.element('<iframe></iframe>')
+                                 .attr('src', embedurl)
+                                 .attr('width', '480')
+                                 .attr('height', '270')
+                                 .attr('frameborder', '0');
+            return element.prop('outerHTML');
         }
 
         return null;
@@ -242,7 +258,12 @@ plugins.factory('userPlugins', function() {
         if (match) {
             var id = match[1];
             var embedurl = 'http://www.allocine.fr/_video/iblogvision.aspx?cmedia=' + id;
-            return '<iframe frameborder="0" width="480" height="270" src="' + embedurl + '"></iframe>';
+            var element = angular.element('<iframe></iframe>')
+                                 .attr('src', embedurl)
+                                 .attr('width', '480')
+                                 .attr('height', '270')
+                                 .attr('frameborder', '0');
+            return element.prop('outerHTML');
         }
 
         return null;
@@ -264,8 +285,13 @@ plugins.factory('userPlugins', function() {
                 // TODO strip an existing dl=0 parameter
                 url = url + "?dl=1";
             }
-
-            return '<a target="_blank" href="'+url+'"><img class="embed" src="' + url + '"></a>';
+            var element = angular.element('<a></a>')
+                                 .attr('target', '_blank')
+                                 .attr('href', url)
+                                 .append(angular.element('<img>')
+                                                .addClass('embed')
+                                                .attr('src', url));
+            return element.prop('outerHTML');
         }
     });
 
@@ -274,7 +300,12 @@ plugins.factory('userPlugins', function() {
      */
     var videoPlugin = new UrlPlugin('video', function(url) {
         if (url.match(/\.(mp4|webm|ogv)\b/i)) {
-            return '<video class="embed" width="560"><source src="'+url+'"></source></video>';
+            var element = angular.element('<video></video>')
+                                 .addClass('embed')
+                                 .attr('width', '560')
+                                 .append(angular.element('<source></source>')
+                                                .attr('src', url));
+            return element.prop('outerHTML');
         }
     });
 
@@ -283,13 +314,25 @@ plugins.factory('userPlugins', function() {
      */
     var cloudmusicPlugin = new UrlPlugin('cloud music', function(url) {
         /* SoundCloud http://help.soundcloud.com/customer/portal/articles/247785-what-widgets-can-i-use-from-soundcloud- */
+        var element;
         if (url.match(/^https?:\/\/soundcloud.com\//)) {
-            return '<iframe width="100%" height="120" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=' + url + '&amp;color=ff6600&amp;auto_play=false&amp;show_artwork=true"></iframe>';
+            element = angular.element('<iframe></iframe>')
+                             .attr('width', '100%')
+                             .attr('height', '120')
+                             .attr('scrolling', 'no')
+                             .attr('frameborder', 'no')
+                             .attr('src', 'https://w.soundcloud.com/player/?url=' + url + '&amp;color=ff6600&amp;auto_play=false&amp;show_artwork=true');
+            return element.prop('outerHTML');
         }
 
         /* MixCloud */
         if (url.match(/^https?:\/\/([a-z]+\.)?mixcloud.com\//)) {
-            return '<iframe width="480" height="60" src="//www.mixcloud.com/widget/iframe/?feed=' + url + '&mini=1&stylecolor=&hide_artwork=&embed_type=widget_standard&hide_tracklist=1&hide_cover=" frameborder="0"></iframe>';
+            element = angular.element('<iframe></iframe>')
+                             .attr('width', '480')
+                             .attr('height', '60')
+                             .attr('frameborder', '0')
+                             .attr('src', '//www.mixcloud.com/widget/iframe/?feed=' + url + '&mini=1&stylecolor=&hide_artwork=&embed_type=widget_standard&hide_tracklist=1&hide_cover=');
+            return element.prop('outerHTML');
         }
     });
 
@@ -298,7 +341,14 @@ plugins.factory('userPlugins', function() {
      */
     var googlemapPlugin = new UrlPlugin('Google Map', function(url) {
         if (url.match(/^https?:\/\/maps\.google\./i) || url.match(/^https?:\/\/(?:[\w]+\.)?google\.[\w]+\/maps/i)) {
-            return '<iframe width="450" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="' + url + '&output=embed"></iframe>';
+            var element = angular.element('<iframe></iframe>')
+                                 .attr('width', '450')
+                                 .attr('height', '350')
+                                 .attr('frameborder', '0')
+                                 .attr('scrolling', 'no')
+                                 .attr('marginheight', '0')
+                                 .attr('src', url + '&output=embed');
+            return element.prop('outerHTML');
         }
     });
 
@@ -329,7 +379,10 @@ plugins.factory('userPlugins', function() {
             var location = match[2];
             var city = match[match.length - 1].slice(0, -1);
             url = "http://www.yr.no/" + language + "/" + location + "avansert_meteogram.png";
-            return "<img src='" + url + "' alt='Meteogram for " + city + "' />";
+            var element = angular.element('<img>')
+                                 .attr('src', url)
+                                 .attr('alt', 'Meteogram for ' + city);
+            return element.prop('outerHTML');
         }
     });
 
@@ -365,7 +418,13 @@ plugins.factory('userPlugins', function() {
         var id = url.match(regex);
         if (id) {
             var src = "https://media.giphy.com/media/" + id[1] + "/giphy.gif";
-            return '<a target="_blank" href="'+url+'"><img class="embed" src="' + src + '"></a>';
+            var element = angular.element('<a></a>')
+                                 .attr('target', '_blank')
+                                 .attr('href', url)
+                                 .append(angular.element('<img>')
+                                                .addClass('embed')
+                                                .attr('src', src));
+            return element.prop('outerHTML');
         }
     });
 
@@ -402,7 +461,13 @@ plugins.factory('userPlugins', function() {
             match = url.match(regexp);
         if (match) {
             var id = match[2], embedurl = "https://vine.co/v/" + id + "/embed/simple?audio=1";
-            return '<iframe class="vine-embed" src="' + embedurl + '" width="600" height="600" frameborder="0"></iframe><script async src="//platform.vine.co/static/scripts/embed.js" charset="utf-8"></script>';
+            var element = angular.element('<iframe></iframe>')
+                                 .addClass('vine-embed')
+                                 .attr('src', embedurl)
+                                 .attr('width', '600')
+                                 .attr('height', '600')
+                                 .attr('frameborder', '0');
+            return element.prop('outerHTML') + '<script async src="//platform.vine.co/static/scripts/embed.js" charset="utf-8"></script>';
         }
     });
 
