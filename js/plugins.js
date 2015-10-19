@@ -285,13 +285,16 @@ plugins.factory('userPlugins', function() {
                 // TODO strip an existing dl=0 parameter
                 url = url + "?dl=1";
             }
-            var element = angular.element('<a></a>')
-                                 .attr('target', '_blank')
-                                 .attr('href', url)
-                                 .append(angular.element('<img>')
-                                                .addClass('embed')
-                                                .attr('src', url));
-            return element.prop('outerHTML');
+            return function() {
+                var element = this.getElement();
+                var imgElem = angular.element('<a></a>')
+                                     .attr('target', '_blank')
+                                     .attr('href', url)
+                                     .append(angular.element('<img>')
+                                                    .addClass('embed')
+                                                    .attr('src', url));
+                element.innerHTML = imgElem.prop('outerHTML');
+            };
         }
     });
 
@@ -300,12 +303,15 @@ plugins.factory('userPlugins', function() {
      */
     var videoPlugin = new UrlPlugin('video', function(url) {
         if (url.match(/\.(mp4|webm|ogv)\b/i)) {
-            var element = angular.element('<video></video>')
-                                 .addClass('embed')
-                                 .attr('width', '560')
-                                 .append(angular.element('<source></source>')
-                                                .attr('src', url));
-            return element.prop('outerHTML');
+            return function() {
+                var element = this.getElement();
+                var velement = angular.element('<video></video>')
+                                     .addClass('embed')
+                                     .attr('width', '560')
+                                     .append(angular.element('<source></source>')
+                                                    .attr('src', url));
+                element.innerHTML = velement.prop('outerHTML');
+            };
         }
     });
 
@@ -375,14 +381,17 @@ plugins.factory('userPlugins', function() {
         var regexp = /^https?:\/\/(?:www\.)?yr\.no\/(place|stad|sted|sadji|paikka)\/(([^\s.;,(){}<>\/]+\/){3,})/;
         var match = url.match(regexp);
         if (match) {
-            var language = match[1];
-            var location = match[2];
-            var city = match[match.length - 1].slice(0, -1);
-            url = "http://www.yr.no/" + language + "/" + location + "avansert_meteogram.png";
-            var element = angular.element('<img>')
-                                 .attr('src', url)
-                                 .attr('alt', 'Meteogram for ' + city);
-            return element.prop('outerHTML');
+            return function() {
+                var element = this.getElement();
+                var language = match[1];
+                var location = match[2];
+                var city = match[match.length - 1].slice(0, -1);
+                url = "http://www.yr.no/" + language + "/" + location + "avansert_meteogram.png";
+                var ielement = angular.element('<img>')
+                                     .attr('src', url)
+                                     .attr('alt', 'Meteogram for ' + city);
+                element.innerHTML = ielement.prop('outerHTML');
+            };
         }
     });
 
@@ -418,13 +427,16 @@ plugins.factory('userPlugins', function() {
         var id = url.match(regex);
         if (id) {
             var src = "https://media.giphy.com/media/" + id[1] + "/giphy.gif";
-            var element = angular.element('<a></a>')
-                                 .attr('target', '_blank')
-                                 .attr('href', url)
-                                 .append(angular.element('<img>')
-                                                .addClass('embed')
-                                                .attr('src', src));
-            return element.prop('outerHTML');
+            return function() {
+                var element = this.getElement();
+                var gelement = angular.element('<a></a>')
+                                     .attr('target', '_blank')
+                                     .attr('href', url)
+                                     .append(angular.element('<img>')
+                                                    .addClass('embed')
+                                                    .attr('src', src));
+                element.innerHTML = gelement.prop('outerHTML');
+            };
         }
     });
 
