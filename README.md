@@ -16,7 +16,7 @@ Please note that the above instructions set up an *unencrypted* relay, and all y
 
 You can run Glowing Bear in many ways: use it like any other webpage, as an app in Firefox (choose "Install app" on the landing page) or Chrome ("Tools", then "Create application shortcuts"), or a full-screen Chrome app on Android ("Add to homescreen"). We also provide an [Android app](https://play.google.com/store/apps/details?id=com.glowing_bear) that you can install from the Google Play Store, and a [Firefox OS app](https://marketplace.firefox.com/app/glowing-bear/) in the Firefox Marketplace.
 
-<a href="https://play.google.com/store/apps/details?id=com.glowing_bear"><img alt="Android app on Google Play" src="https://developer.android.com/images/brand/en_app_rgb_wo_45.png" /></a><a href="https://marketplace.firefox.com/app/glowing-bear/"><img alt="Firefox OS app in the Firefox Marketplace" src="https://marketplace.cdn.mozilla.net/media/img/mkt/badges/firefox-marketplace_badge-orange_129_45.png" /></a>
+<a href="https://play.google.com/store/apps/details?id=com.glowing_bear"><img alt="Android app on Google Play" src="/assets/img/badge_playstore.png" /></a><a href="https://marketplace.firefox.com/app/glowing-bear/"><img alt="Firefox OS app in the Firefox Marketplace" src="/assets/img/badge_firefoxos.png" /></a>
 
 ##Screenshots
 
