@@ -75,7 +75,33 @@ weechat.directive('inputBar', function() {
                 var file = files[0];
 
                 // Process image
-                imgur.process(file);
+                imgur.process(file, function(imageUrl) {
+
+                    // Send image
+                    if(imageUrl !== undefined && imageUrl !== '') {
+                        // caret position in the input bar
+                        var inputNode = $scope.getInputNode(),
+                            caretPos = inputNode.selectionStart;
+
+                        var prefix = $scope.command.substring(0, caretPos),
+                            suffix = $scope.command.substring(caretPos, $scope.command.length);
+                        // Add spaces if missing
+                        if (prefix.length > 0 && prefix[prefix.length - 1] !== ' ') {
+                            prefix += ' ';
+                        }
+                        if (suffix.length > 0 && suffix[0] !== ' ') {
+                            suffix = ' '.concat(suffix);
+                        }
+                        $scope.command = prefix + String(imageUrl) + suffix;
+
+                        setTimeout(function() {
+                            inputNode.focus();
+                            var pos = $scope.command.length - suffix.length;
+                            inputNode.setSelectionRange(pos, pos);
+                        }, 0);
+                    }
+
+                });
             };
 
             // Send the message to the websocket

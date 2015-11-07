@@ -5,7 +5,7 @@ var weechat = angular.module('weechat');
 
 weechat.factory('imgur', ['$rootScope', function($rootScope) {
 
-	var process = function(image) {
+	var process = function(image, callback) {
 
 		// Is it an image?
 		if (!image || !image.type.match(/image.*/)) return;
@@ -16,7 +16,7 @@ weechat.factory('imgur', ['$rootScope', function($rootScope) {
 		// When image is read
 		reader.onload = function (event) {
 			var image = event.target.result.split(',')[1];
-			upload(image);
+			upload(image, callback);
 		};
 
 		// Read image as data url
@@ -25,7 +25,7 @@ weechat.factory('imgur', ['$rootScope', function($rootScope) {
 	};
 
 	// Upload image to imgur from base64
-	var upload = function( base64img ) {
+	var upload = function( base64img, callback ) {
 
                 // Set client ID (Glowing Bear)
                 var clientId = "164efef8979cd4b";
@@ -54,9 +54,12 @@ weechat.factory('imgur', ['$rootScope', function($rootScope) {
 				// Get response text
 				var response = JSON.parse(xhttp.responseText);
 
-				// Open image in new window
-				window.open(response.data.link, '_blank');
-
+				// Send link as message
+				if( response.data && response.data.link ) {
+					if (callback && typeof(callback) === "function") {
+						callback(response.data.link);
+					}
+				}
 			}
 
 		};
