@@ -1,9 +1,14 @@
-<form class="form form-horizontal" id="inputform" ng-submit="sendMessage()">
+<form class="form form-horizontal" id="inputform" ng-submit="sendMessage()" imgur-drop>
   <div class="input-group">
     <textarea id="{{inputId}}" class="form-control favorite-font" ng-trim="false" rows="1" ng-change="inputChanged()" autocomplete="on" ng-model="command" ng-focus="hideSidebar()">
     </textarea>
     <span class="input-group-btn">
+      <label class="btn btn-send-image unselectable" for="imgur-upload" title="Send image">
+        <i class="glyphicon glyphicon-picture"></i>
+        <input type="file" accept="image/*" multiple title="Send image" id="imgur-upload" class="imgur-upload" file-change="uploadImage($event, files)">
+      </label>
       <button class="btn btn-send unselectable"><i class="glyphicon glyphicon-send"></i></button>
     </span>
   </div>
+  <div id="imgur-upload-progress"></div>
 </form>
