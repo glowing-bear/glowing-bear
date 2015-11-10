@@ -21,7 +21,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.command = '';
-    $scope.themes = ['dark', 'light'];
+    $scope.themes = ['black','dark', 'light'];
 
     settings.setDefaults({
         'theme': 'dark',
