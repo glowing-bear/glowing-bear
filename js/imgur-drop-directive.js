@@ -3,7 +3,7 @@
 
 var weechat = angular.module('weechat');
 
-weechat.directive('imgurDrop', ['connection','imgur', function(connection, imgur) {
+weechat.directive('imgurDrop', ['connection','imgur','$rootScope', function(connection, imgur, $rootScope) {
     return {
         restrict: 'A',
         link: function($scope, element, attr) {
@@ -26,7 +26,7 @@ weechat.directive('imgurDrop', ['connection','imgur', function(connection, imgur
 
                     // Send image
                     if(imageUrl !== undefined && imageUrl !== '') {
-                        connection.sendMessage(String(imageUrl));
+                        $rootScope.insertAtCaret(String(imageUrl));
                     }
 
                 };

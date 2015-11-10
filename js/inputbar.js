@@ -70,36 +70,38 @@ weechat.directive('inputBar', function() {
                 }, 0);
             };
 
+            $rootScope.insertAtCaret = function(toInsert) {
+                // caret position in the input bar
+                var inputNode = $scope.getInputNode(),
+                    caretPos = inputNode.selectionStart;
+
+                var prefix = $scope.command.substring(0, caretPos),
+                    suffix = $scope.command.substring(caretPos, $scope.command.length);
+                // Add spaces if missing
+                if (prefix.length > 0 && prefix[prefix.length - 1] !== ' ') {
+                    prefix += ' ';
+                }
+                if (suffix.length > 0 && suffix[0] !== ' ') {
+                    suffix = ' '.concat(suffix);
+                }
+                $scope.command = prefix + toInsert + suffix;
+
+                setTimeout(function() {
+                    inputNode.focus();
+                    var pos = $scope.command.length - suffix.length;
+                    inputNode.setSelectionRange(pos, pos);
+                    // force refresh?
+                    $scope.$apply();
+                }, 0);
+            };
+
             $scope.uploadImage = function($event, files) {
                 // Send image url after upload
                 var sendImageUrl = function(imageUrl) {
-
                     // Send image
                     if(imageUrl !== undefined && imageUrl !== '') {
-                        // caret position in the input bar
-                        var inputNode = $scope.getInputNode(),
-                            caretPos = inputNode.selectionStart;
-
-                        var prefix = $scope.command.substring(0, caretPos),
-                            suffix = $scope.command.substring(caretPos, $scope.command.length);
-                        // Add spaces if missing
-                        if (prefix.length > 0 && prefix[prefix.length - 1] !== ' ') {
-                            prefix += ' ';
-                        }
-                        if (suffix.length > 0 && suffix[0] !== ' ') {
-                            suffix = ' '.concat(suffix);
-                        }
-                        $scope.command = prefix + String(imageUrl) + suffix;
-
-                        setTimeout(function() {
-                            inputNode.focus();
-                            var pos = $scope.command.length - suffix.length;
-                            inputNode.setSelectionRange(pos, pos);
-                            // force refresh?
-                            $scope.$apply();
-                        }, 0);
+                        $rootScope.insertAtCaret(String(imageUrl));
                     }
-
                 };
 
                 if(typeof files !== "undefined" && files.length > 0) {
