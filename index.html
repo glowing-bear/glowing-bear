@@ -33,14 +33,20 @@
     <script type="text/javascript" src="js/filters.js"></script>
     <script type="text/javascript" src="js/handlers.js"></script>
     <script type="text/javascript" src="js/connection.js"></script>
+    <script type="text/javascript" src="js/file-change.js"></script>
+    <script type="text/javascript" src="js/imgur-drop-directive.js"></script>
     <script type="text/javascript" src="js/inputbar.js"></script>
     <script type="text/javascript" src="js/plugin-directive.js"></script>
     <script type="text/javascript" src="js/websockets.js"></script>
     <script type="text/javascript" src="js/models.js"></script>
     <script type="text/javascript" src="js/plugins.js"></script>
+    <script type="text/javascript" src="js/imgur.js"></script>
     <script type="text/javascript" src="3rdparty/favico-0.3.5.min.js"></script>
   </head>
   <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keyup="handleKeyRelease($event)"  ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" ng-init="init()" lang="en-US">
+    <div class="alert alert-danger upload-error" ng-show="uploadError">
+      <p><strong>Upload error:</strong> Image upload failed.</p>
+    </div>
     <div ng-hide="connected" class="container">
       <h2>
         <img alt="logo" src="assets/img/glowing-bear.svg">
@@ -257,7 +263,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </li>
         </ul>
       </div>
-      <div id="bufferlines" class="favorite-font" ng-swipe-right="showSidebar()" ng-swipe-left="hideSidebar()" ng-class="{'withnicklist': showNicklist}">
+      <div id="bufferlines" class="favorite-font" ng-swipe-right="showSidebar()" ng-swipe-left="hideSidebar()" ng-class="{'withnicklist': showNicklist}" imgur-drop>
         <div id="nicklist" ng-if="showNicklist" ng-swipe-right="closeNick()" class="vertical-line-left">
           <ul class="nicklistgroup list-unstyled" ng-repeat="group in nicklist">
             <li ng-repeat="nick in group.nicks|orderBy:'name'">

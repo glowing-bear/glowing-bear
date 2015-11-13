@@ -22,7 +22,8 @@ html {
     background-color: #222;
 }
 
-.btn-send {
+.btn-send,
+.btn-send-image, {
     background: none repeat scroll 0% 0% rgba(255, 255, 255, 0.3);
     color: #428BCA;
 }
@@ -257,7 +258,7 @@ select.form-control, select option, input[type=text], input[type=password], #sen
 .cob-chat {
 }
 .cob-chat_time {
-    color: #999; 
+    color: #999;
 }
 .cob-chat_time_delimiters {
 }
