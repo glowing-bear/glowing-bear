@@ -72,12 +72,13 @@ input[type=text], input[type=password], #sendMessage, .badge {
     box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.8) inset;
 }
 
-input[type=text], input[type=password], #sendMessage, .badge, .btn-send {
+input[type=text], input[type=password], #sendMessage, .badge, .btn-send, .btn-send-image {
     color: #ccc;
     background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.3);
 }
 
-.btn-send:hover, .btn-send:focus {
+.btn-send:hover, .btn-send:focus,
+.btn-send-image:hover, .btn-send-image:focus {
     background-color: #555;
     color: white;
 }
@@ -271,7 +272,7 @@ input[type=text], input[type=password], #sendMessage, .badge, .btn-send {
 .cob-chat {
 }
 .cob-chat_time {
-    color: #999; 
+    color: #999;
 }
 .cob-chat_time_delimiters {
 }
