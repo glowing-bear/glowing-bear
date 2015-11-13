@@ -302,7 +302,27 @@ plugins.factory('userPlugins', function() {
      * mp4 video Preview
      */
     var videoPlugin = new UrlPlugin('video', function(url) {
-        if (url.match(/\.(mp4|webm|ogv)\b/i)) {
+        if (url.match(/\.(mp4|webm|ogv|gifv)\b/i)) {
+            if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
+                // remove protocol specification to load over https if used by g-b
+                url = url.replace(/\.(gifv)\b/i, ".webm");}
+            return function() {
+                var element = this.getElement();
+                var velement = angular.element('<video autoplay loop muted></video>')
+                                     .addClass('embed')
+                                     .attr('width', '560')
+                                     .append(angular.element('<source></source>')
+                                                    .attr('src', url));
+                element.innerHTML = velement.prop('outerHTML');
+            };
+        }
+    });
+    
+    var gifvPlugin = new UrlPlugin('gifV video', function(url) {
+        if (url.match(/\.(gifv)\b/i)) {
+            if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
+                // remove protocol specification to load over https if used by g-b
+                url = url.replace(/gifv/, "webm");}
             return function() {
                 var element = this.getElement();
                 var velement = angular.element('<video></video>')
@@ -314,7 +334,6 @@ plugins.factory('userPlugins', function() {
             };
         }
     });
-
     /*
      * Cloud Music Embedded Players
      */
