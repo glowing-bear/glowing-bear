@@ -318,22 +318,7 @@ plugins.factory('userPlugins', function() {
         }
     });
     
-    var gifvPlugin = new UrlPlugin('gifV video', function(url) {
-        if (url.match(/\.(gifv)\b/i)) {
-            if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
-                // remove protocol specification to load over https if used by g-b
-                url = url.replace(/gifv/, "webm");}
-            return function() {
-                var element = this.getElement();
-                var velement = angular.element('<video></video>')
-                                     .addClass('embed')
-                                     .attr('width', '560')
-                                     .append(angular.element('<source></source>')
-                                                    .attr('src', url));
-                element.innerHTML = velement.prop('outerHTML');
-            };
-        }
-    });
+
     /*
      * Cloud Music Embedded Players
      */
