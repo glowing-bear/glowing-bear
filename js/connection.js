@@ -20,7 +20,7 @@ weechat.factory('connection',
         connectionData = [host, port, passwd, ssl, noCompression];
         var proto = ssl ? 'wss' : 'ws';
         // If host is an IPv6 literal wrap it in brackets
-        if (host.indexOf(":") !== -1) {
+        if (host.indexOf(":") !== -1 && host[0] !== "[" && host[host.length-1] !== "]") {
             host = "[" + host + "]";
         }
         var url = proto + "://" + host + ":" + port + "/weechat";
