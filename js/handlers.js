@@ -19,12 +19,39 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         models.closeBuffer(bufferId);
     };
 
+    // inject a fake buffer line for date change
+    var injectDateChangeMessage = function(message, buffer, date) {
+        var content = "Date changed to " + date.toDateString();
+        var line = {
+            buffer: buffer,
+            date: date,
+            prefix: '—',
+            tags_array: [],
+            displayed: true,
+            highlight: 0,
+            message: content
+        };
+        var new_message = new models.BufferLine(line);
+        buffer.addLine(new_message);
+    };
+
     var handleLine = function(line, manually) {
         var message = new models.BufferLine(line);
         var buffer = models.getBuffer(message.buffer);
         buffer.requestedLines++;
         // Only react to line if its displayed
         if (message.displayed) {
+            // Check for date change
+            if (buffer.lines.length > 0) {
+                var previous_date = new Date(buffer.lines[buffer.lines.length - 1].date),
+                    current_date = new Date(message.date);
+                previous_date.setHours(0, 0, 0, 0);
+                current_date.setHours(0, 0, 0, 0);
+                if (previous_date.valueOf() !== current_date.valueOf()) {
+                     injectDateChangeMessage(message, buffer, current_date);
+                }
+            }
+
             message = plugins.PluginManager.contentForMessage(message);
             buffer.addLine(message);
 
