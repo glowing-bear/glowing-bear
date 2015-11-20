@@ -290,7 +290,7 @@
                     var ret = {};
                     var optionCode = parseInt(m[1]);
 
-                    if (optionCode > 43) {
+                    if (optionCode >= WeeChatProtocol._colorsOptionsNames.length) {
                         // should never happen
                         return {
                             fgColor: null,
