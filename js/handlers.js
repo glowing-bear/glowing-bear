@@ -21,11 +21,11 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
 
     // inject a fake buffer line for date change
     var injectDateChangeMessage = function(message, buffer, date) {
-        var content = "Date changed to " + date.toDateString();
+        var content = "\u001943Date changed to " + date.toDateString();
         var line = {
             buffer: buffer,
             date: date,
-            prefix: '—',
+            prefix: '\u001943\u2500\u2500',
             tags_array: [],
             displayed: true,
             highlight: 0,
@@ -47,8 +47,24 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
                     current_date = new Date(message.date);
                 previous_date.setHours(0, 0, 0, 0);
                 current_date.setHours(0, 0, 0, 0);
-                if (previous_date.valueOf() !== current_date.valueOf()) {
-                     injectDateChangeMessage(message, buffer, current_date);
+                var dateDifference =
+                    Math.round((current_date - previous_date)/(24*60*60*1000));
+                if (dateDifference !== 0) {
+                    console.log(dateDifference);
+                    // if it's a small, positive number display a message
+                    // for each one. Otherwise, just display one big
+                    // date change message
+                    // The range [1,5] was chosen arbitrarily
+                    if (dateDifference >= 1 && dateDifference <= 5) {
+                        var prev_date_clone = previous_date;
+                        for (var i = 1; i <= dateDifference; ++i) {
+                            prev_date_clone.setDate(prev_date_clone.getDate()+1);
+                            injectDateChangeMessage(message, buffer,
+                                                    prev_date_clone);
+                        }
+                    } else {
+                        injectDateChangeMessage(message, buffer, current_date);
+                    }
                 }
             }
 
