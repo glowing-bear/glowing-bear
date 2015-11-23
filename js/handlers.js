@@ -20,26 +20,32 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
     };
 
     // inject a fake buffer line for date change
-    var injectDateChangeMessage = function(message, buffer, d1, d2) {
-        var d1_plus_one = d1;
-        d1_plus_one.setDate(d1_plus_one.getDate() + 1);
-        d1.setHours(0, 0, 0, 0);
-        d2.setHours(0, 0, 0, 0);
+    var injectDateChangeMessage = function(message, buffer, old_date, new_date) {
+        var old_date_plus_one = old_date;
+        old_date_plus_one.setDate(old_date.getDate() + 1);
+
+        new_date.setHours(0, 0, 0, 0);
+        old_date.setHours(0, 0, 0, 0);
         // it's not always true that a date with time 00:00:00
         // plus one day will be time 00:00:00
-        d1_plus_one.setHours(0, 0, 0, 0);
-        var content = "";
-        if (d1_plus_one.valueOf() === d2.valueOf()) {
-            content = "\u001943Date changed to " + d2.toDateString();
-        } else {
-            var date_diff = Math.round((d2 - d1)/(24*60*60*1000));
-            date_diff = date_diff >= 0 ? date_diff : date_diff + 1;
-            content = "\u001943Date changed to " + d2.toDateString();
-            content += " (" + date_diff + " days from " + d1.toDateString() + ")";
+        old_date_plus_one.setHours(0, 0, 0, 0);
+
+        var content = "\u001943" + // styling
+            "Date changed to " + new_date.toDateString();
+        // Comparing dates in javascript is beyond tedious
+        if (old_date_plus_one.valueOf() !== new_date.valueOf()) {
+            var date_diff = Math.round((new_date - old_date)/(24*60*60*1000));
+            if (date_diff < 0) {
+                date_diff = -1*(date_diff + 1);
+                content += " (" + date_diff + " days before " + old_date.toDateString() + ")";
+            } else {
+                content += " (" + date_diff + " days have passed since  " + old_date.toDateString() + ")";
+            }
         }
+
         var line = {
             buffer: buffer,
-            date: d2,
+            date: new_date,
             prefix: '\u001943\u2500\u2500',
             tags_array: [],
             displayed: true,
