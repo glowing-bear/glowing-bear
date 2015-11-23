@@ -20,12 +20,27 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
     };
 
     // inject a fake buffer line for date change
-    var injectDateChangeMessage = function(message, buffer, date) {
-        var content = "Date changed to " + date.toDateString();
+    var injectDateChangeMessage = function(message, buffer, d1, d2) {
+        var d1_plus_one = d1;
+        d1_plus_one.setDate(d1_plus_one.getDate() + 1);
+        d1.setHours(0, 0, 0, 0);
+        d2.setHours(0, 0, 0, 0);
+        // it's not always true that a date with time 00:00:00
+        // plus one day will be time 00:00:00
+        d1_plus_one.setHours(0, 0, 0, 0);
+        var content = "";
+        if (d1_plus_one.valueOf() === d2.valueOf()) {
+            content = "\u001943Date changed to " + d2.toDateString();
+        } else {
+            var date_diff = Math.round((d2 - d1)/(24*60*60*1000));
+            date_diff = date_diff >= 0 ? date_diff : date_diff + 1;
+            content = "\u001943Date changed to " + d2.toDateString();
+            content += " (" + date_diff + " days from " + d1.toDateString() + ")";
+        }
         var line = {
             buffer: buffer,
-            date: date,
-            prefix: '—',
+            date: d2,
+            prefix: '\u001943\u2500\u2500',
             tags_array: [],
             displayed: true,
             highlight: 0,
@@ -48,7 +63,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
                 previous_date.setHours(0, 0, 0, 0);
                 current_date.setHours(0, 0, 0, 0);
                 if (previous_date.valueOf() !== current_date.valueOf()) {
-                     injectDateChangeMessage(message, buffer, current_date);
+                    injectDateChangeMessage(message, buffer, previous_date, current_date);
                 }
             }
 
