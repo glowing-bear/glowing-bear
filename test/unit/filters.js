@@ -22,6 +22,13 @@ describe('Filters', function() {
         it('should not mess up IRC channels surrounded by HTML entities', inject(function(irclinkyFilter) {
             expect(irclinkyFilter('<"#foo">')).toEqual('<"<a href="#" onclick="openBuffer(\'#foo">\');">#foo"></a>');
         }));
+
+        it('should not touch links created by `linky`', inject(function(linkyFilter, DOMfilterFilter) {
+            var url = 'http://foo.bar/#baz',
+                link = linkyFilter(url, '_blank'),
+                result = DOMfilterFilter(link, 'irclinky').$$unwrapTrustedValue();
+            expect(result).toEqual(link);
+        }));
     });
 
     describe('inlinecolour', function() {
@@ -62,4 +69,19 @@ describe('Filters', function() {
         }));
     });
 
+    describe('DOMfilter', function() {
+        it('should run a filter on all text nodes', inject(function(DOMfilterFilter) {
+            var dom = 'a<p>b<i>c<b>d</b>e<b>f</b>g</i>h</p>i',
+                expected = '<span>A</span><p><span>B</span><i><span>C</span><b><span>D</span></b><span>E</span><b><span>F</span></b><span>G</span></i><span>H</span></p><span>I</span>',
+                result = DOMfilterFilter(dom, 'uppercase').$$unwrapTrustedValue();
+            expect(result).toEqual(expected);
+        }));
+
+        it('should pass additional arguments to the filter', inject(function(DOMfilterFilter) {
+            var dom = '1<p>2</p>3.14159265',
+                expected = '<span>1.00</span><p><span>2.00</span></p><span>3.14</span>',
+                result = DOMfilterFilter(dom, 'number', 2).$$unwrapTrustedValue();
+            expect(result).toEqual(expected);
+        }));
+    });
 });
