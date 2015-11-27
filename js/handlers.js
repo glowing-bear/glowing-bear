@@ -20,7 +20,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
     };
 
     // inject a fake buffer line for date change
-    var injectDateChangeMessage = function(message, buffer, old_date, new_date) {
+    var injectDateChangeMessage = function(buffer, old_date, new_date) {
         var old_date_plus_one = old_date;
         old_date_plus_one.setDate(old_date.getDate() + 1);
 
@@ -56,6 +56,15 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         buffer.addLine(new_message);
     };
 
+    // wrapper to do the logic checking
+    var injectDateChangeMessageIfNeeded = function(buffer, previous_date, current_date) {
+        previous_date.setHours(0, 0, 0, 0);
+        current_date.setHours(0, 0, 0, 0);
+        if (previous_date.valueOf() !== current_date.valueOf()) {
+            injectDateChangeMessage(buffer, previous_date, current_date);
+        }
+    };
+
     var handleLine = function(line, manually) {
         var message = new models.BufferLine(line);
         var buffer = models.getBuffer(message.buffer);
@@ -66,11 +75,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
             if (buffer.lines.length > 0) {
                 var previous_date = new Date(buffer.lines[buffer.lines.length - 1].date),
                     current_date = new Date(message.date);
-                previous_date.setHours(0, 0, 0, 0);
-                current_date.setHours(0, 0, 0, 0);
-                if (previous_date.valueOf() !== current_date.valueOf()) {
-                    injectDateChangeMessage(message, buffer, previous_date, current_date);
-                }
+                injectDateChangeMessageIfNeeded(buffer, previous_date, current_date);
             }
 
             message = plugins.PluginManager.contentForMessage(message);
@@ -235,6 +240,13 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         lines.forEach(function(l) {
             handleLine(l, manually);
         });
+        if (message.objects[0].content.length > 0) {
+            var last_line =
+                message.objects[0].content[message.objects[0].content.length-1];
+            var last_message = new models.BufferLine(last_line);
+            var buffer = models.getBuffer(last_message.buffer);
+            injectDateChangeMessageIfNeeded(buffer, last_message.date, new Date());
+        }
     };
 
     /*
