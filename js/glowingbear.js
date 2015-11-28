@@ -214,8 +214,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             );
         }
         notifications.updateTitle(ab);
-        $scope.notifications = notifications.unreadCount('notification');
-        $scope.unread = notifications.unreadCount('unread');
+        setTimeout(function(){
+            $scope.notifications = notifications.unreadCount('notification');
+            $scope.unread = notifications.unreadCount('unread');
+        });
 
         $timeout(function() {
             $rootScope.scrollWithBuffer(true);
