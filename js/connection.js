@@ -282,10 +282,13 @@ weechat.factory('connection',
     };
 
     var requestNicklist = function(bufferId, callback) {
-        bufferId = bufferId || null;
+        // Prevent requesting nicklist for all buffers if bufferId is invalid
+        if (!bufferId) {
+            return;
+        }
         ngWebsockets.send(
             weeChat.Protocol.formatNicklist({
-                buffer: bufferId
+                buffer: "0x"+bufferId
             })
         ).then(function(nicklist) {
             handlers.handleNicklist(nicklist);
