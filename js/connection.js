@@ -62,7 +62,7 @@ weechat.factory('connection',
                 return ngWebsockets.send(
                     weeChat.Protocol.formatHdata({
                         path: 'buffer:gui_buffers(*)',
-                        keys: ['local_variables,notify,number,full_name,short_name,title,hidden']
+                        keys: ['local_variables,notify,number,full_name,short_name,title,hidden,type']
                     })
                 );
             };
