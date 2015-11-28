@@ -261,11 +261,14 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
             handleLine(l, manually);
         });
         if (message.objects[0].content.length > 0) {
-            var last_line =
+            // fiddle out the buffer ID and take the last line's date
+            var last_object =
                 message.objects[0].content[message.objects[0].content.length-1];
-            var last_message = new models.BufferLine(last_line);
-            var buffer = models.getBuffer(last_message.buffer);
-            injectDateChangeMessageIfNeeded(buffer, last_message.date, new Date());
+            var buffer = models.getBuffer(last_object.buffer);
+            if (buffer.lines.length > 0) {
+                var last_date = new Date(buffer.lines[buffer.lines.length - 1].date);
+                injectDateChangeMessageIfNeeded(buffer, last_date, new Date());
+            }
         }
     };
 
