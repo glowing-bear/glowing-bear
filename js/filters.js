@@ -61,10 +61,15 @@ weechat.filter('inlinecolour', function() {
 
 // apply a filter to an HTML string's text nodes, and do so with not exceedingly terrible performance
 weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
+    // To prevent nested anchors, we need to know if a filter is going to create them.
+    // Here's a list of names. See #681 for more information.
+    var filtersThatCreateAnchors = ['irclinky'];
+
     return function(text, filter) {
         if (!text || !filter) {
             return text;
         }
+        var createsAnchor = filtersThatCreateAnchors.indexOf(filter) > -1;
 
         var escape_html = function(text) {
             // First, escape entities to prevent escaping issues because it's a bad idea
@@ -92,6 +97,7 @@ weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
                 // as innerHTML causes it to be unescaped.
                 var input = escape_html(node.nodeValue);
                 var value = filterFunction(input, extraArgument, thirdArgument);
+
                 if (value !== input) {
                     // we changed something. create a new node to replace the current one
                     // we could also only add its children but that would probably incur
@@ -114,7 +120,11 @@ weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
             if (node === undefined || node === null) return;
             node = node.firstChild;
             while (node) {
-                var nextNode = process(node);
+                var nextNode;
+                // do not recurse inside links if the filter would create a nested link
+                if (!(createsAnchor && node.tagName === 'A')) {
+                    nextNode = process(node);
+                }
                 node = (nextNode ? nextNode : node).nextSibling;
             }
         };
