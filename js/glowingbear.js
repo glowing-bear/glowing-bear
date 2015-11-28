@@ -168,7 +168,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         // Send a request for the nicklist if it hasn't been loaded yet
         if (!ab.nicklistRequested()) {
-            connection.requestNicklist(ab.fullName, function() {
+            connection.requestNicklist(ab.id, function() {
                 $scope.showNicklist = $scope.updateShowNicklist();
                 // Scroll after nicklist has been loaded, as it may break long lines
                 $rootScope.scrollWithBuffer(true);
