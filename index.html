@@ -240,10 +240,10 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
         </div>
 
         <div class="actions pull-right vertical-line-left">
-          <a class="settings-toggle" ng-click="showModal('settingsModal')" title="Options menu">
+          <a class="settings-toggle" ng-click="showModal('settingsModal')" title="Options menu" href="#">
             <i class="glyphicon glyphicon-cog"></i>
           </a>
-          <a ng-click="disconnect()" title="Disconnect from WeeChat">
+          <a ng-click="disconnect()" title="Disconnect from WeeChat" href="#">
             <i class="glyphicon glyphicon-off"></i>
           </a>
         </div>
@@ -256,7 +256,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
             </form>
           </li>
           <li class="buffer" ng-class="{'active': buffer.active, 'indent': buffer.indent, 'channel': buffer.type === 'channel', 'channel_hash': buffer.prefix === '#', 'channel_plus': buffer.prefix === '+', 'channel_ampersand': buffer.prefix === '&', 'private': buffer.type === 'private'}" ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray:'withidx' | filter:{fullName:search} | filter:hasUnread | orderBy:predicate | getBufferQuickKeys:this))">
-            <a ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}">
+            <a ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}" href="#">
               <span class="badge pull-right" ng-class="{'danger': buffer.notification}" ng-if="buffer.notification || buffer.unread" ng-bind="buffer.notification || buffer.unread"></span>
               <span class="buffer-quick-key">{{ buffer.$quickKey }}</span>
               <span class="buffername">{{ buffer.trimmedName || buffer.fullName }}</span>
@@ -276,7 +276,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           <tbody>
             <tr class="bufferline">
               <td ng-hide="activeBuffer().allLinesFetched" colspan="3">
-                <a class="fetchmorelines" ng-click="fetchMoreLines()" ng-hide="loadingLines">Fetch more lines</a>
+                <a class="fetchmorelines" ng-click="fetchMoreLines()" ng-hide="loadingLines" href="#">Fetch more lines</a>
                 <span ng-show="loadingLines">Fetching more lines...</span>
               </td>
             </tr>
@@ -310,7 +310,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
     <div id="reconnect" class="alert alert-danger" ng-click="reconnect()" ng-show="reconnecting">
         <p><strong>Connection to WeeChat lost</strong></p>
         <i class="glyphicon glyphicon-refresh"></i>
-        Reconnecting... <a class="btn btn-tiny" ng-click="reconnect()">Click to try to reconnect now</a>
+        Reconnecting... <a class="btn btn-tiny" ng-click="reconnect()" href="#">Click to try to reconnect now</a>
     </div>
     <div id="settingsModal" class="gb-modal" data-state="hidden">
       <div class="backdrop" ng-click="closeModal($event)"></div>
