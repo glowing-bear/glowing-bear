@@ -19,75 +19,69 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         models.closeBuffer(bufferId);
     };
 
-    // inject a fake buffer line for date change
-    var injectDateChangeMessage = function(buffer, old_date, new_date) {
-        var old_date_plus_one = old_date;
-        old_date_plus_one.setDate(old_date.getDate() + 1);
-
-        new_date.setHours(0, 0, 0, 0);
+    // inject a fake buffer line for date change if needed
+    var injectDateChangeMessageIfNeeded = function(buffer, old_date, new_date) {
         old_date.setHours(0, 0, 0, 0);
-        // it's not always true that a date with time 00:00:00
-        // plus one day will be time 00:00:00
-        old_date_plus_one.setHours(0, 0, 0, 0);
+        new_date.setHours(0, 0, 0, 0);
+        // Check if the date changed
+        if (old_date.valueOf() !== new_date.valueOf()) {
+            var old_date_plus_one = old_date;
+            old_date_plus_one.setDate(old_date.getDate() + 1);
+            // it's not always true that a date with time 00:00:00
+            // plus one day will be time 00:00:00
+            old_date_plus_one.setHours(0, 0, 0, 0);
 
-        var content = "\u001943"; // this colour corresponds to chat_day_change
-        content += new_date.toLocaleDateString(window.navigator.language,
-                                               {weekday: "long"});
-        // if you're testing different date formats,
-        // make sure to test different locales such as "en-US",
-        // "en-US-u-ca-persian" (which has different weekdays, year 0, and an ERA)
-        // "ja-JP-u-ca-persian-n-thai" (above, diff numbering, diff text)
-        var extra_date_format = {
-            day: "numeric",
-            month: "long"
-        };
-        if (new_date.getYear() !== old_date.getYear()) {
-            extra_date_format.year = "numeric";
-        }
-        content += " (";
-        content += new_date.toLocaleDateString(window.navigator.language,
-                                               extra_date_format);
-        // Result should be something like
-        // Friday (November 27)
-        // or if the year is different,
-        // Friday (November 27, 2015)
-
-        // Comparing dates in javascript is beyond tedious
-        if (old_date_plus_one.valueOf() !== new_date.valueOf()) {
-            var date_diff = Math.round((new_date - old_date)/(24*60*60*1000)) + 1;
-            if (date_diff < 0) {
-                date_diff = -1*(date_diff);
-                if (date_diff === 1) {
-                    content += ", 1 day before";
-                } else {
-                    content += ", " + date_diff + " days before";
-                }
-            } else {
-                content += ", " + date_diff + " days later";
+            var content = "\u001943"; // this colour corresponds to chat_day_change
+            // Add day of the week
+            content += new_date.toLocaleDateString(window.navigator.language,
+                                                   {weekday: "long"});
+            // if you're testing different date formats,
+            // make sure to test different locales such as "en-US",
+            // "en-US-u-ca-persian" (which has different weekdays, year 0, and an ERA)
+            // "ja-JP-u-ca-persian-n-thai" (above, diff numbering, diff text)
+            var extra_date_format = {
+                day: "numeric",
+                month: "long"
+            };
+            if (new_date.getYear() !== old_date.getYear()) {
+                extra_date_format.year = "numeric";
             }
-            // Result: Friday (November 27, 5 days later)
-        }
-        content += ")";
+            content += " (";
+            content += new_date.toLocaleDateString(window.navigator.language,
+                                                   extra_date_format);
+            // Result should be something like
+            // Friday (November 27)
+            // or if the year is different,
+            // Friday (November 27, 2015)
 
-        var line = {
-            buffer: buffer,
-            date: new_date,
-            prefix: '\u001943\u2500',
-            tags_array: [],
-            displayed: true,
-            highlight: 0,
-            message: content
-        };
-        var new_message = new models.BufferLine(line);
-        buffer.addLine(new_message);
-    };
+            // Comparing dates in javascript is beyond tedious
+            if (old_date_plus_one.valueOf() !== new_date.valueOf()) {
+                var date_diff = Math.round((new_date - old_date)/(24*60*60*1000)) + 1;
+                if (date_diff < 0) {
+                    date_diff = -1*(date_diff);
+                    if (date_diff === 1) {
+                        content += ", 1 day before";
+                    } else {
+                        content += ", " + date_diff + " days before";
+                    }
+                } else {
+                    content += ", " + date_diff + " days later";
+                }
+                // Result: Friday (November 27, 5 days later)
+            }
+            content += ")";
 
-    // wrapper to do the logic checking
-    var injectDateChangeMessageIfNeeded = function(buffer, previous_date, current_date) {
-        previous_date.setHours(0, 0, 0, 0);
-        current_date.setHours(0, 0, 0, 0);
-        if (previous_date.valueOf() !== current_date.valueOf()) {
-            injectDateChangeMessage(buffer, previous_date, current_date);
+            var line = {
+                buffer: buffer,
+                date: new_date,
+                prefix: '\u001943\u2500',
+                tags_array: [],
+                displayed: true,
+                highlight: 0,
+                message: content
+            };
+            var new_message = new models.BufferLine(line);
+            buffer.addLine(new_message);
         }
     };
 
@@ -99,9 +93,9 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         if (message.displayed) {
             // Check for date change
             if (buffer.lines.length > 0) {
-                var previous_date = new Date(buffer.lines[buffer.lines.length - 1].date),
-                    current_date = new Date(message.date);
-                injectDateChangeMessageIfNeeded(buffer, previous_date, current_date);
+                var old_date = new Date(buffer.lines[buffer.lines.length - 1].date),
+                    new_date = new Date(message.date);
+                injectDateChangeMessageIfNeeded(buffer, old_date, new_date);
             }
 
             message = plugins.PluginManager.contentForMessage(message);
