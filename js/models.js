@@ -85,6 +85,9 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var unread = 0;
         var lastSeen = -1;
         var serverSortKey = fullName.replace(/^irc\.server\.(\w+)/, "irc.$1");
+        // There are two kinds of types: bufferType (free vs formatted) and
+        // the kind of type that distinguishes queries from channels etc
+        var bufferType = message.type;
         var type = message.local_variables.type;
         var indent = (['channel', 'private'].indexOf(type) >= 0);
 
@@ -311,6 +314,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             getNicklistByTime: getNicklistByTime,
             serverSortKey: serverSortKey,
             indent: indent,
+            bufferType: bufferType,
             type: type,
             history: history,
             addToHistory: addToHistory,
