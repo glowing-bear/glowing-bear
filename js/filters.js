@@ -120,7 +120,7 @@ weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
             if (node === undefined || node === null) return;
             node = node.firstChild;
             while (node) {
-                var nextNode;
+                var nextNode = null;
                 // do not recurse inside links if the filter would create a nested link
                 if (!(createsAnchor && node.tagName === 'A')) {
                     nextNode = process(node);
