@@ -294,6 +294,14 @@ weechat.directive('inputBar', function() {
                     return true;
                 }
 
+                // Alt+Arrow up/down -> switch to prev/next adjacent buffer
+                if ($event.altKey && !$event.ctrlKey && (code === 38 || code === 40)) {
+                    $event.preventDefault();
+                    var direction = code - 39;
+                    $rootScope.switchToAdjacentBuffer(direction);
+                    return true;
+                }
+
                 // Alt+L -> focus on input bar
                 if ($event.altKey && (code === 76 || code === 108)) {
                     $event.preventDefault();

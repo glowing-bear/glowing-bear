@@ -84,7 +84,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var notification = 0;
         var unread = 0;
         var lastSeen = -1;
-        var serverSortKey = fullName.replace(/^irc\.server\.(\w+)/, "irc.$1");
+        var serverSortKey = fullName.replace(/^irc\.server\.(\w+)/, "irc.$1").toLowerCase();
         // There are two kinds of types: bufferType (free vs formatted) and
         // the kind of type that distinguishes queries from channels etc
         var bufferType = message.type;
