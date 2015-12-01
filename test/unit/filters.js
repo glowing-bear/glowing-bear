@@ -83,5 +83,13 @@ describe('Filters', function() {
                 result = DOMfilterFilter(dom, 'number', 2).$$unwrapTrustedValue();
             expect(result).toEqual(expected);
         }));
+
+        it('should never lock up like in bug #688', inject(function(linkyFilter, DOMfilterFilter) {
+            var msg = '#crash http://google.com',
+                linked = linkyFilter(msg),
+                irclinked = DOMfilterFilter(linked, 'irclinky');
+            // With the bug, the DOMfilterFilter call ends up in an infinite loop.
+            // I.e. if we ever got this far, the bug is fixed.
+        }));
     });
 });
