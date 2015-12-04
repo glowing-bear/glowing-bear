@@ -727,6 +727,18 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         settings.nonicklist = !settings.nonicklist;
     };
 
+    $rootScope.switchToAdjacentBuffer = function(direction) {
+        // direction is +1 for next buffer, -1 for previous buffer
+        var sortedBuffers = _.sortBy($scope.getBuffers(), $rootScope.predicate);
+        var activeBuffer = models.getActiveBuffer();
+        var index = sortedBuffers.indexOf(activeBuffer);
+        if (index >= 0) {
+            var newBuffer = sortedBuffers[index + direction];
+            if (newBuffer) {
+                $scope.setActiveBuffer(newBuffer.id);
+            }
+        }
+    };
 
     $scope.handleSearchBoxKey = function($event) {
         // Support different browser quirks
