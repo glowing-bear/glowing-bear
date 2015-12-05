@@ -83,7 +83,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
         var body = '';
         var numNotifications = buffer.notification;
 
-        if (['#', '&', '+', '!'].indexOf(buffer.shortName.charAt(0)) < 0) {
+        if (buffer.type === "private") {
             if (numNotifications > 1) {
                 title = numNotifications.toString() + ' private messages from ';
             } else {
@@ -102,8 +102,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
             }
             body = '<' + prefix + '> ' + message.text;
         }
-        title += buffer.shortName;
-        title += buffer.fullName.replace(/irc.([^\.]+)\..+/, " ($1)");
+        title += buffer.shortName + " (" + buffer.server + ")";
 
         var notification = new Notification(title, {
             body: body,
