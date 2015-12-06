@@ -248,6 +248,11 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
             // Update indentation status
             old.type = localvars.type;
             old.indent = (['channel', 'private'].indexOf(localvars.type) >= 0);
+            // Update serverSortKey and related variables
+            old.plugin = localvars.plugin;
+            old.server = localvars.server;
+            old.serverSortKey = old.plugin + "." + old.server +
+                (old.type === "server" ? "" :  ("." + old.shortName));
         }
     };
 
