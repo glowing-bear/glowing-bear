@@ -29,6 +29,7 @@ td.prefix {
     border-right: 1px solid #444;
 }
 td.message {
+    overflow: hidden;
     vertical-align: top;
     width: 100%;
     padding: 1px 1px 1px 5px;
@@ -772,7 +773,13 @@ img.emojione {
         padding-bottom: 0;
     }
 
+    #bufferlines tr.bufferline {
+        display: block;
+        overflow: hidden;
+    }
+
     #bufferlines td.time {
+        display: inline-block;
         padding-right: 3px;
         font-size: 0.8em;
     }
