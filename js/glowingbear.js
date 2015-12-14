@@ -264,8 +264,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         models.reinitialize();
         $rootScope.$emit('notificationChanged');
         $scope.connectbutton = 'Connect';
+        $scope.connectbuttonicon = 'glyphicon-chevron-right';
     });
     $scope.connectbutton = 'Connect';
+    $scope.connectbuttonicon = 'glyphicon-chevron-right';
 
     $scope.getBuffers = models.getBuffers.bind(models);
 
@@ -582,11 +584,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $rootScope.securityError = false;
         $rootScope.errorMessage = false;
         $rootScope.bufferBottom = true;
-        $scope.connectbutton = 'Connecting ...';
+        $scope.connectbutton = 'Connecting';
+        $scope.connectbuttonicon = 'glyphicon-refresh glyphicon-spin';
         connection.connect(settings.host, settings.port, $scope.password, settings.ssl);
     };
     $scope.disconnect = function() {
         $scope.connectbutton = 'Connect';
+        $scope.connectbuttonicon = 'glyphicon-chevron-right';
         connection.disconnect();
     };
     $scope.reconnect = function() {
@@ -788,7 +792,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             $rootScope.securityError = false;
             $rootScope.errorMessage = false;
             $rootScope.bufferBottom = true;
-            $scope.connectbutton = 'Connecting ...';
+            $scope.connectbutton = 'Connecting';
+            $scope.connectbuttonicon = 'glyphicon-chevron-right';
             connection.connect(host, port, password, ssl);
         }
     };
