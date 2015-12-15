@@ -112,7 +112,7 @@
                     </label>
                   </div>
                 </div>
-                <button class="btn btn-lg btn-primary" ng-click="connect()">{{ connectbutton }} <i class="glyphicon glyphicon-chevron-right"></i></button>
+                <button class="btn btn-lg btn-primary" ng-click="connect()">{{ connectbutton }}  <i ng-class="connectbuttonicon" class="glyphicon"></i></button>
               </form>
             </div>
           </div>
@@ -276,8 +276,8 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           <tbody>
             <tr class="bufferline">
               <td ng-hide="activeBuffer().allLinesFetched" colspan="3">
-                <a class="fetchmorelines" ng-click="fetchMoreLines()" ng-hide="loadingLines" href="#">Fetch more lines</a>
-                <span ng-show="loadingLines">Fetching more lines...</span>
+                <a class="fetchmorelines btn btn-xs btn-primary" ng-click="fetchMoreLines()" ng-hide="loadingLines" href="#">Fetch more lines</a>
+                <span ng-show="loadingLines">Fetching more lines <i class="glyphicon glyphicon-refresh glyphicon-spin"></i></span>
               </td>
             </tr>
           </tbody>
@@ -310,7 +310,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
     <div id="reconnect" class="alert alert-danger" ng-click="reconnect()" ng-show="reconnecting">
         <p><strong>Connection to WeeChat lost</strong></p>
         <i class="glyphicon glyphicon-refresh"></i>
-        Reconnecting... <a class="btn btn-tiny" ng-click="reconnect()" href="#">Click to try to reconnect now</a>
+        Reconnecting... <i class="glyphicon glyphicon-spin glyphicon-refresh"></i> <a class="btn btn-xs" ng-click="reconnect()" href="#">Click to try to reconnect now</a>
     </div>
     <div id="settingsModal" class="gb-modal" data-state="hidden">
       <div class="backdrop" ng-click="closeModal($event)"></div>
