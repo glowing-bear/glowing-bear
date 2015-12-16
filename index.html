@@ -22,7 +22,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.14/angular-sanitize.min.js" integrity="sha384-0OmuvEhJmh/6RfC56L4w0ZtIvs0kopopRyAaAluCvY4lly5pTF2hMn+KINuSZIZs" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.14/angular-touch.min.js" integrity="sha384-WyeuAeEWG8LaHWjvJTrDCKXXh649ja15yOBbVKMf/0pSN8ZY1QOzqYfmlkdLGEtE" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js" integrity="sha384-nXjwhL1LfWUDVHxQ2R0rHpbr/E6lfCFXR4kfcPHp1eLGH1dH/mZohGINd44EzEya" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/emojione/1.4.0/lib/js/emojione.min.js" integrity="sha384-+foW7Ch8OP8prRgwrFSp5mtgFfOFvUsk/MUa6KXBALvzZceaVH84mwP0/VDHH7su" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/emojione/1.5.2/lib/js/emojione.min.js" integrity="sha256-wfKnJbFR8QUkJfuWkG27toyVBuXiBNJptVvlDDseWtg=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="3rdparty/inflate.min.js"></script>
     <script type="text/javascript" src="js/localstorage.js"></script>
     <script type="text/javascript" src="js/weechat.js"></script>
@@ -456,7 +456,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                   <div class="checkbox">
                     <label>
                       <input type="checkbox" ng-model="settings.enableJSEmoji">
-                      Enable non-native Emoji support <span class="text-muted settings-help">Displays Emoji characters as images</span>
+                      Enable non-native Emoji support <span class="text-muted settings-help">Displays Emoji characters as images. Emoji provided free by <a href="http://emojione.com">http://emojione.com</a></span>
                     </label>
                   </div>
                 </form>
