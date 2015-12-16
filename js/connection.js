@@ -17,6 +17,7 @@ weechat.factory('connection',
 
     // Takes care of the connection and websocket hooks
     var connect = function (host, port, passwd, ssl, noCompression, successCallback, failCallback) {
+        $rootScope.passwordError = false;
         connectionData = [host, port, passwd, ssl, noCompression];
         var proto = ssl ? 'wss' : 'ws';
         // If host is an IPv6 literal wrap it in brackets
@@ -98,11 +99,8 @@ weechat.factory('connection',
                     $log.info("Connected to relay");
                     $rootScope.connected = true;
                 },
-                function() {
-                    // Connection got closed, lets check if we ever was connected successfully
-                    if (!$rootScope.waseverconnected) {
-                        $rootScope.passwordError = true;
-                    }
+                function(e) {
+                    handleWrongPassword();
                 }
             );
 
@@ -121,12 +119,14 @@ weechat.factory('connection',
              * Handles websocket disconnection
              */
             $log.info("Disconnected from relay");
+            $rootScope.$emit('relayDisconnect');
             if ($rootScope.userdisconnect || !$rootScope.waseverconnected) {
                 handleClose(evt);
                 $rootScope.userdisconnect = false;
             } else {
                 reconnect(evt);
             }
+            handleWrongPassword();
         };
 
         var handleClose = function (evt) {
@@ -137,6 +137,14 @@ weechat.factory('connection',
                     $rootScope.sslError = true;
                     $rootScope.$apply();
                 }
+            }
+        };
+
+        var handleWrongPassword = function() {
+            // Connection got closed, lets check if we ever was connected successfully
+            if (!$rootScope.waseverconnected && !$rootScope.errorMessage) {
+                $rootScope.passwordError = true;
+                $rootScope.$apply();
             }
         };
 
