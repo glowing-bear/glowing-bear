@@ -13,6 +13,27 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         models.version = version.split(".").map(function(c) { return parseInt(c); });
     };
 
+    var handleConfValue = function(message) {
+        var infolist = message.objects[0].content;
+        for (var i = 0; i < infolist.length ; i++) {
+            var key, val;
+            var item = infolist[i];
+            for (var j = 0; j < item.length ; j++) {
+                var confitem = item[j];
+                if (confitem.full_name) {
+                    key = confitem.full_name;
+                }
+                if (confitem.value) {
+                    val = confitem.value;
+                }
+            }
+            if (key && val) {
+                $log.debug('Setting wconfig "' + key + '" to value "' + val + '"');
+                models.wconfig[key] = val;
+            }
+        }
+    };
+
     var handleBufferClosing = function(message) {
         var bufferMessage = message.objects[0].content[0];
         var bufferId = bufferMessage.pointers[0];
@@ -392,6 +413,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
 
     return {
         handleVersionInfo: handleVersionInfo,
+        handleConfValue: handleConfValue,
         handleEvent: handleEvent,
         handleLineInfo: handleLineInfo,
         handleHotlistInfo: handleHotlistInfo,

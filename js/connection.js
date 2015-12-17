@@ -99,7 +99,7 @@ weechat.factory('connection',
                     $log.info("Connected to relay");
                     $rootScope.connected = true;
                 },
-                function(e) {
+                function() {
                     handleWrongPassword();
                 }
             );
@@ -306,6 +306,17 @@ weechat.factory('connection',
         });
     };
 
+    var fetchConfValue = function(name) {
+        ngWebsockets.send(
+            weeChat.Protocol.formatInfolist({
+                name: "option",
+                pointer: 0,
+                args: name
+            })
+        ).then(function(i) {
+            handlers.handleConfValue(i);
+        });
+    };
 
     var fetchMoreLines = function(numLines) {
         $log.debug('Fetching ', numLines, ' lines');

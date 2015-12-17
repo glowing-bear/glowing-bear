@@ -11,6 +11,9 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
     // WeeChat version
     this.version = null;
 
+    // WeeChat configuration values
+    this.wconfig = {};
+
     // Save outgoing queries
     this.outgoingQueries = [];
 
