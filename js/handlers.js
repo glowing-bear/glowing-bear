@@ -29,6 +29,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         new_date.setHours(0, 0, 0, 0);
         // Check if the date changed
         if (old_date.valueOf() !== new_date.valueOf()) {
+            ++buffer.lastSeen
             var old_date_plus_one = old_date;
             old_date_plus_one.setDate(old_date.getDate() + 1);
             // it's not always true that a date with time 00:00:00
