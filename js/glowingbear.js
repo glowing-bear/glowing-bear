@@ -23,6 +23,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.command = '';
     $scope.themes = ['dark', 'light'];
 
+    // Initialise all our settings, this needs to include all settings
+    // or else they won't be saved to the localStorage.
     settings.setDefaults({
         'theme': 'dark',
         'host': 'localhost',
@@ -38,6 +40,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'useFavico': true,
         'showtimestamp': true,
         'showtimestampSeconds': false,
+        'soundnotification': true,
         'fontsize': '14px',
         'fontfamily': (utils.isMobileUi() ? 'sans-serif' : 'Inconsolata, Consolas, Monaco, Ubuntu Mono, monospace'),
         'readlineBindings': false,
