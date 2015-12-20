@@ -1,0 +1,33 @@
+{
+    "lang": "en-US",
+    "name": "Glowing Bear",
+    "short_name": "Glowing Bear",
+    "icons": [{
+        "src": "assets/img/glowing_bear_60x60.png",
+        "sizes": "60x60",
+        "type": "image/webapp"
+    }, {
+    "src": "assets/img/glowing_bear_90x90.png",
+    "sizes": "90x90"
+    }, {
+    "src": "assets/img/glowing_bear_128x128.png",
+    "sizes": "128x128"
+    }],
+    "splash_screens": [{
+        "src": "assets/img/glowing_bear_128x128.png",
+        "sizes": "128x128"
+    }],
+    "scope": "/glowing-bear/",
+    "start_url": "/glowing-bear/index.html",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "theme_color": "#181818",
+    "background_color": "#333",
+    "prefer_related_applications": "false",
+    "chrome_related_applications": [{
+        "platform": "web"
+    }, {
+    "platform": "android",
+    "location": "https://play.google.com/store/apps/details?id=com.glowing_bear"
+    }]
+}
