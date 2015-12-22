@@ -35,7 +35,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
         }
     };
 
-    var showNotification = function(title, body) {
+    var showNotification = function(buffer, title, body) {
         if (serviceworker) {
             navigator.serviceWorker.ready.then(function(registration) {
                 registration.showNotification(title, {
@@ -157,7 +157,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
         }
         title += buffer.shortName + " (" + buffer.server + ")";
 
-        showNotification(title, body);
+        showNotification(buffer, title, body);
 
         if (settings.soundnotification) {
             // TODO fill in a sound file
