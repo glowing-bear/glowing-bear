@@ -41,7 +41,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
                 registration.showNotification(title, {
                     body: body,
                     icon: 'assets/img/glowing_bear_128x128.png',
-                    vibrate: [200, 100, 200, 100, 200, 100, 200],
+                    vibrate: [200, 100],
                     tag: 'gb-highlight-vib'
                 });
             });
