@@ -539,6 +539,17 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         return connection.fetchMoreLines(numLines);
     };
 
+    $scope.infiniteScroll = function() {
+        // Check if we are already fetching
+        if ($rootScope.loadingLines) {
+            return;
+        }
+        var buffer = models.getActiveBuffer();
+        if (!buffer.allLinesFetched) {
+            $scope.fetchMoreLines();
+        }
+    };
+
     $rootScope.updateBufferBottom = function(bottom) {
             var eob = document.getElementById("end-of-buffer");
             var bl = document.getElementById('bufferlines');
