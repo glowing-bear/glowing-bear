@@ -21,7 +21,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.command = '';
-    $scope.themes = ['dark', 'light'];
+    $scope.themes = ['black','dark', 'light'];
 
     // Initialise all our settings, this needs to include all settings
     // or else they won't be saved to the localStorage.
