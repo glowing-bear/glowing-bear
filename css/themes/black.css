@@ -1,0 +1,22 @@
+@import "dark.css";
+
+body, .modal-content {
+   background-color: #000;
+}
+
+#topbar, #sidebar, .panel, .dropdown-menu, #topbar .actions {
+    background: #080808;
+}
+
+.nav-pills li:nth-child(2n) {
+    background: #000;
+}
+
+.form-control option, input.form-control, select.form-control {
+   color: #ccc;
+   background: #080808;
+}
+
+.close, .close:hover, .close:focus {
+    color: #ddd;
+}

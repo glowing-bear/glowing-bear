@@ -10,6 +10,11 @@ body {
     border: 0px none;
 }
 
+.form-control option {
+   color: #eee;
+   background: #282828;
+}
+
 html {
     background-color: inherit;
 }

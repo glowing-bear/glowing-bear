@@ -370,12 +370,12 @@ td.time {
     left: 0;
 }
 
-    .imgur-progress-bar {
-        width: 0%;
-        height: 5px;
-        margin-top: 1px;
-        background: #428BCA;
-    }
+.imgur-progress-bar {
+    width: 0%;
+    height: 5px;
+    margin-top: 1px;
+    background: #428BCA;
+}
 
 /* fix for mobile firefox which ignores :hover */
 .nav-pills > li > a:active, .nav-pills > li > a:active span {
