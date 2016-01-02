@@ -49,22 +49,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     });
     $scope.settings = settings;
 
-    // From: http://stackoverflow.com/a/18539624 by StackOverflow user "plantian"
     $rootScope.countWatchers = function () {
-        var q = [$rootScope], watchers = 0, scope;
-        while (q.length > 0) {
-            scope = q.pop();
-            if (scope.$$watchers) {
-                watchers += scope.$$watchers.length;
-            }
-            if (scope.$$childHead) {
-                q.push(scope.$$childHead);
-            }
-            if (scope.$$nextSibling) {
-                q.push(scope.$$nextSibling);
-            }
-        }
-        $log.debug(watchers);
+        $log.debug($rootScope.$$watchersCount);
     };
 
     $scope.isinstalled = (function() {
