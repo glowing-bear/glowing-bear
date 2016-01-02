@@ -280,10 +280,25 @@ plugins.factory('userPlugins', function() {
             } else if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
                 // remove protocol specification to load over https if used by g-b
                 url = url.replace(/http:/, "");
-            } else if (url.match(/^https:\/\/www\.dropbox\.com\/s\/[a-z0-9]+\/[^?]+$/i)) {
+            } else if (url.match(/^https:\/\/www\.dropbox\.com\/s\/[a-z0-9]+\//i)) {
                 // Dropbox requires a get parameter, dl=1
-                // TODO strip an existing dl=0 parameter
-                url = url + "?dl=1";
+                var dbox_url = document.createElement("a");
+                dbox_url.href = url;
+                var base_url = dbox_url.protocol + '//' + dbox_url.host + dbox_url.pathname + '?';
+                var dbox_params = dbox_url.search.substring(1).split('&');
+                var dl_added = false;
+                for (var i = 0; i < dbox_params.length; i++) {
+                    if (dbox_params[i].split('=')[0] === "dl") {
+                        dbox_params[i] = "dl=1";
+                        dl_added = true;
+                        // we continue looking at the other parameters in case
+                        // it's specified twice or something
+                    }
+                }
+                if (!dl_added) {
+                    dbox_params.push("dl=1");
+                }
+                url = base_url + dbox_params.join('&');
             }
             return function() {
                 var element = this.getElement();
