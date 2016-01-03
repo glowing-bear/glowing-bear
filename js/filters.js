@@ -161,7 +161,14 @@ weechat.filter('getBufferQuickKeys', function () {
 weechat.filter('emojify', function() {
     return function(text, enable_JS_Emoji) {
         if (enable_JS_Emoji === true && window.emojione !== undefined) {
-            return emojione.unicodeToImage(text);
+            // Emoji live in the D800-DFFF surrogate plane; only bother passing
+            // this range to CPU-expensive unicodeToImage();
+            var emojiRegex = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
+            if (emojiRegex.test(text)) {
+                return emojione.unicodeToImage(text);
+            } else {
+                return(text);
+            }
         } else {
             return(text);
         }
