@@ -98,7 +98,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
             content += ")";
 
             var line = {
-                buffer: buffer,
+                buffer: buffer.id,
                 date: new_date,
                 prefix: '\u001943\u2500',
                 tags_array: [],
