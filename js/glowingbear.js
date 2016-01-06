@@ -761,6 +761,23 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     };
 
+    $rootScope.supports_formatting_date = (function() {
+        // function toLocaleDateStringSupportsLocales taken from MDN:
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString#Checking_for_support_for_locales_and_options_arguments
+        try {
+            new Date().toLocaleDateString('i');
+        } catch (e) {
+            if (e.name !== 'RangeError') {
+                $log.info("Browser does not support toLocaleDateString()," +
+                          " falling back to en-US");
+            }
+            return e.name === 'RangeError';
+        }
+        $log.info("Browser does not support toLocaleDateString()," +
+                  " falling back to en-US");
+        return false;
+    })();
+
     // Prevent user from accidentally leaving the page
     window.onbeforeunload = function(event) {
 

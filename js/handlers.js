@@ -59,8 +59,16 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
 
             var content = "\u001943"; // this colour corresponds to chat_day_change
             // Add day of the week
-            content += new_date.toLocaleDateString(window.navigator.language,
-                                                   {weekday: "long"});
+            if ($rootScope.supports_formatting_date) {
+                content += new_date.toLocaleDateString(window.navigator.language,
+                                                       {weekday: "long"});
+            } else {
+                // Gross code that only does English dates ew gross
+                var dow_to_word = [
+                    "Sunday", "Monday", "Tuesday",
+                    "Wednesday", "Thursday", "Friday", "Saturday"];
+                content += dow_to_word[new_date.getDay()];
+            }
             // if you're testing different date formats,
             // make sure to test different locales such as "en-US",
             // "en-US-u-ca-persian" (which has different weekdays, year 0, and an ERA)
@@ -73,8 +81,20 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
                 extra_date_format.year = "numeric";
             }
             content += " (";
-            content += new_date.toLocaleDateString(window.navigator.language,
-                                                   extra_date_format);
+            if ($rootScope.supports_formatting_date) {
+                content += new_date.toLocaleDateString(window.navigator.language,
+                                                       extra_date_format);
+            } else {
+                // ew ew not more gross code
+                var month_to_word = [
+                    "January", "February", "March", "April",
+                    "May", "June", "July", "August",
+                    "September", "October", "November", "December"];
+                content += month_to_word[new_date.getMonth()] + " " + new_date.getDate().toString();
+                if (extra_date_format.year === "numeric") {
+                    content += ", " + new_date.getFullYear().toString();
+                }
+            }
             // Result should be something like
             // Friday (November 27)
             // or if the year is different,
