@@ -41,7 +41,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
     };
 
     // inject a fake buffer line for date change if needed
-    var injectDateChangeMessageIfNeeded = function(buffer, old_date, new_date) {
+    var injectDateChangeMessageIfNeeded = function(buffer, manually, old_date, new_date) {
         if (buffer.bufferType === 1) {
             // Don't add date change messages to free buffers
             return;
@@ -50,9 +50,10 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         new_date.setHours(0, 0, 0, 0);
         // Check if the date changed
         if (old_date.valueOf() !== new_date.valueOf()) {
-            if (buffer.lastSeen + 1 < buffer.lines.length) {
-                // if the date change should be injected below the read marker,
-                // adjust the read marker up to make sure it stays under the read marker
+            if (manually) {
+                // if the message that caused this date change to be sent
+                // would increment buffer.lastSeen, we should increment as
+                // well.
                 ++buffer.lastSeen;
             }
             var old_date_plus_one = old_date;
@@ -145,7 +146,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
             if (buffer.lines.length > 0) {
                 var old_date = new Date(buffer.lines[buffer.lines.length - 1].date),
                     new_date = new Date(message.date);
-                injectDateChangeMessageIfNeeded(buffer, old_date, new_date);
+                injectDateChangeMessageIfNeeded(buffer, manually, old_date, new_date);
             }
 
             message = plugins.PluginManager.contentForMessage(message);
@@ -330,7 +331,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
             var buffer = models.getBuffer(last_line.buffer);
             if (buffer.lines.length > 0) {
                 var last_date = new Date(buffer.lines[buffer.lines.length - 1].date);
-                injectDateChangeMessageIfNeeded(buffer, last_date, new Date());
+                injectDateChangeMessageIfNeeded(buffer, true, last_date, new Date());
             }
         }
     };
