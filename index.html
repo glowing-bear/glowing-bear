@@ -352,6 +352,17 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                 </form>
               </li>
 
+              <li class="standard-labels">
+                <form class="form-horizontal" role="form">
+                  <div class="form-group">
+                    <label for="custom-css" class="col-sm-3 control-label make-thinner">Custom CSS</label>
+                    <div class="col-sm-7">
+                      <textarea id="custom-css" class="form-control" ng-model="settings.customCSS"></textarea>
+                    </div>
+                  </div>
+                </form>
+              </li>
+
               <li>
                 <form class="form-inline" role="form">
                   <div class="checkbox">
