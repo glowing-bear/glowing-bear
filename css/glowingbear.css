@@ -594,11 +594,7 @@ li.buffer.channel_ampersand a span:last-of-type:before, #topbar .title .channel_
 }
 
 li.buffer.channel.active a span:last-of-type:before {
-    color: #444;
-}
-
-li.buffer.channel.active a:hover span:last-of-type:before {
-    color: #222;
+    color: #aaa;
 }
 
 li.buffer.indent.private a {
