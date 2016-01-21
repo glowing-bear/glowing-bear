@@ -23,7 +23,7 @@ var Plugin = function(name, contentForMessage) {
 
 
 // Regular expression that detects URLs for UrlPlugin
-var urlRegexp = /(?:ftp|https?):\/\/\S*[^\s.;,(){}<>]/g;
+var urlRegexp = /(?:(?:https?|ftp):\/\/|www\.|ftp\.)\S*[^\s.;,(){}<>]/g;
 /*
  * Definition of a user provided plugin that consumes URLs
  *
