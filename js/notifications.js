@@ -45,7 +45,28 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
                     tag: 'gb-highlight-vib'
                 });
             });
+        } else if (typeof Windows !== 'undefined' && typeof Windows.UI !== 'undefined' && typeof Windows.UI.Notifications !== 'undefined') {
+
+            var winNotifications = Windows.UI.Notifications;
+            var toastNotifier = winNotifications.ToastNotificationManager.createToastNotifier();
+            var template = winNotifications.ToastTemplateType.toastText02;
+            var toastXml = winNotifications.ToastNotificationManager.getTemplateContent(template);
+            var toastTextElements = toastXml.getElementsByTagName("text");
+
+            toastTextElements[0].appendChild(toastXml.createTextNode(title));
+            toastTextElements[1].appendChild(toastXml.createTextNode(body));
+
+            var toast = new winNotifications.ToastNotification(toastXml);
+
+            toast.onactivated = function() {
+                models.setActiveBuffer(buffer.id);
+                window.focus();
+            };
+
+            toastNotifier.show(toast);
+
         } else {
+
             var notification = new Notification(title, {
                 body: body,
                 icon: 'assets/img/favicon.png'
@@ -74,7 +95,9 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
             notification.onclose = function() {
                 delete notifications[this.id];
             };
+
         }
+
     };
 
 
