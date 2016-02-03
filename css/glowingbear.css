@@ -15,6 +15,10 @@ a {
     cursor: pointer;
 }
 
+.version {
+   margin-right: 1em;
+}
+
 .hidden-bracket {
   position: absolute;
   left: -1000px;
