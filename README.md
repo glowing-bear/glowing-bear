@@ -44,7 +44,10 @@ Here's a simple example using the python simple web server:
 ```bash
 git clone https://github.com/glowing-bear/glowing-bear
 cd glowing-bear
+# python 2.*
 python -m SimpleHTTPServer
+# or python 3.*
+python -m http.server
 ```
 
 Now you can point your browser to [http://localhost:8000](http://localhost:8000)!
