@@ -46,6 +46,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'readlineBindings': false,
         'enableJSEmoji': (utils.isMobileUi() ? false : true),
         'enableMathjax': false,
+        'customCSS': '',
     });
     $scope.settings = settings;
 
@@ -422,6 +423,24 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             elem.id = "themeCSS";
             document.getElementsByTagName("head")[0].appendChild(elem);
         })();
+    });
+
+    settings.addCallback('customCSS', function(css) {
+        // We need to delete the old tag and add a new one so that the browser
+        // notices the change. Thus, first remove old custom CSS.
+        var old_css = document.getElementById('custom-css-tag');
+        if (old_css) {
+            old_css.parentNode.removeChild(old_css);
+        }
+
+        // Create new CSS tag
+        var new_css = document.createElement("style");
+        new_css.type = "text/css";
+        new_css.id = "custom-css-tag";
+        new_css.appendChild(document.createTextNode(css));
+        // Append it to the <head> tag
+        var heads = document.getElementsByTagName("head");
+        heads[0].appendChild(new_css);
     });
 
 
