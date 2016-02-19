@@ -314,6 +314,24 @@ plugins.factory('userPlugins', function() {
     });
 
     /*
+     * audio Preview
+     */
+    var audioPlugin = new UrlPlugin('audio', function(url) {
+        if (url.match(/\.(mp3|ogg|wav)\b/i)) {
+            return function() {
+                var element = this.getElement();
+                var aelement = angular.element('<audio controls></audio>')
+                                     .addClass('embed')
+                                     .attr('width', '560')
+                                     .append(angular.element('<source></source>')
+                                                    .attr('src', url));
+                element.innerHTML = aelement.prop('outerHTML');
+            };
+        }
+    });
+
+
+    /*
      * mp4 video Preview
      */
     var videoPlugin = new UrlPlugin('video', function(url) {
@@ -504,7 +522,7 @@ plugins.factory('userPlugins', function() {
     });
 
     return {
-        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, giphyPlugin, tweetPlugin, vinePlugin]
+        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, audioPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, giphyPlugin, tweetPlugin, vinePlugin]
     };
 
 
