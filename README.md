@@ -24,6 +24,9 @@ Running as Chrome application in a separate window on Windows and as Android app
 
 ![Glowing bear screenshot](https://4z2.de/glowingbear.png)
 
+Are you good with design? We'd love your help!
+![Glowing Bear screenshot with lots of Comic Sans MS](https://4z2.de/glowing-bear3.png)
+
 ##How it Works
 
 What follows is a more technical explanation of how Glowing Bear works, and you don't need to understand it to use it.
