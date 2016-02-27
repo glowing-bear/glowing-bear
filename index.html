@@ -8,25 +8,31 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="Glowing Bear">
-    <meta name="theme-color" content="#2779d3">
+    <meta name="theme-color" content="#181818">
+    <meta http-equiv="x-dns-prefetch-control" content="off">
+    <!-- https://w3c.github.io/manifest/ && https://developer.mozilla.org/en-US/docs/Web/Manifest -->
+    <link rel="manifest" href="webapp.manifest.json">
     <title ng-bind-template="{{ notificationStatus }}Glowing Bear {{ pageTitle}}"></title>
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="screen" integrity="sha384-7tY7Dc2Q8WQTKGz2Fa0vC4dWQo07N4mJjKvHfIGnxuC4vPqFGFQppd9b3NWpf18/" crossorigin="anonymous">
     <link rel="shortcut icon" sizes="128x128" href="assets/img/glowing_bear_128x128.png">
     <link rel="apple-touch-icon" sizes="128x128" href="assets/img/glowing_bear_128x128.png">
     <link rel="shortcut icon" type="image/png" href="assets/img/favicon.png" >
     <link href="css/glowingbear.css" rel="stylesheet" media="screen">
     <link href="css/themes/dark.css" rel="stylesheet" media="screen" id="themeCSS" />
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-route.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-sanitize.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-touch.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/emojione/1.4.0/lib/js/emojione.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular.min.js" integrity="sha384-r1y8TJcloKTvouxnYsi4PJAx+nHNr90ibsEn3zznzDzWBN9X3o3kbHLSgcIPtzAp" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular-route.min.js" integrity="sha384-fQQcs0/yvL0uyyzpXoTKfcQl5e9GYh7GKIft35qSjfKXSILYNI6YZOM0Ju94DY+/" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular-sanitize.min.js" integrity="sha384-79uolbJAcWnfqb2Oi/w0fEz2NdE5lvY1p+TSew6D3XC7PlZY1OGuvGBiwjZhFvOg" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular-touch.min.js" integrity="sha384-bnrVwYH8/uQCvK9n+xYQKdf1xtgSNHBYcy0djCofRUPvAt93iEhBfHlngRP/aXsg" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js" integrity="sha384-nXjwhL1LfWUDVHxQ2R0rHpbr/E6lfCFXR4kfcPHp1eLGH1dH/mZohGINd44EzEya" crossorigin="anonymous"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.1.0/lib/js/emojione.min.js" integrity="sha384-pJb7FFLYTcgO7KbgirAXNIHFIKzywqq4LIcWx9cavPapYWdCH5mcYptrkpHHEkH1" crossorigin="anonymous"></script>
     <script type="text/javascript" src="3rdparty/inflate.min.js"></script>
     <script type="text/javascript" src="min.js"></script>
     <script type="text/javascript" src="3rdparty/favico-0.3.5.min.js"></script>
   </head>
   <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keyup="handleKeyRelease($event)"  ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" ng-init="init()" lang="en-US">
+    <div class="alert alert-danger upload-error" ng-show="uploadError">
+      <p><strong>Upload error:</strong> Image upload failed.</p>
+    </div>
     <div ng-hide="connected" class="container">
       <h2>
         <img alt="logo" src="assets/img/glowing-bear.svg">
@@ -91,7 +97,7 @@
                     </label>
                   </div>
                 </div>
-                <button class="btn btn-lg btn-primary" ng-click="connect()">{{ connectbutton }} <i class="glyphicon glyphicon-chevron-right"></i></button>
+                <button class="btn btn-lg btn-primary" ng-click="connect()">{{ connectbutton }}  <i ng-class="connectbuttonicon" class="glyphicon"></i></button>
               </form>
             </div>
           </div>
@@ -150,7 +156,7 @@
 <pre>
 $ mkdir -p ~/.weechat/ssl
 $ cd ~/.weechat/ssl
-$ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out relay.pem -subj "/CN={{settings.host || 'your weechat host'}}/"
+$ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out relay.pem -sha256 -subj "/CN={{settings.host || 'your weechat host'}}/"
 </pre>
               <p>If WeeChat is already running, you can reload the certificate and private key and set up an encrypted relay on port {{ settings.port || 9001 }} with these WeeChat commands:</p>
 <pre>
@@ -174,7 +180,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
               <p>You don't need to install anything to use this app, it should work with any modern browser. Start using it <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">right now</a>! However, there are a few ways to improve integration with your operating system.</p>
               <h3>Mobile Applications</h3>
               <p>If you're running Android 4.4 or later, you can install our app from the Google Play Store! We also provide an optimized application for Firefox OS devices. If you're using the Firefox browser, keep on reading below -- the Firefox OS app won't work for you</p>
-              <p><a href="https://play.google.com/store/apps/details?id=com.glowing_bear"><img alt="Android app on Google Play" src="https://developer.android.com/images/brand/en_app_rgb_wo_45.png" /></a> <a href="https://marketplace.firefox.com/app/glowing-bear/"><img alt="Firefox OS app in the Firefox Marketplace" src="https://marketplace.cdn.mozilla.net/media/img/mkt/badges/firefox-marketplace_badge-orange_129_45.png" /></a></p>
+              <p><a href="https://play.google.com/store/apps/details?id=com.glowing_bear"><img alt="Android app on Google Play" src="assets/img/badge_playstore.png" /></a> <a href="https://marketplace.firefox.com/app/glowing-bear/"><img alt="Firefox OS app in the Firefox Marketplace" src="assets/img/badge_firefoxos.png" /></a></p>
               <h3>Firefox Browser</h3>
               <p>If you have a recent version of Firefox you can install Glowing Bear as a Firefox app. Click the button to install.</p>
               <p><button class="btn btn-lg btn-primary" ng-click="install()">Install Firefox app <i class="glyphicon glyphicon-chevron-right"></i></button></p>
@@ -219,10 +225,10 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
         </div>
 
         <div class="actions pull-right vertical-line-left">
-          <a class="settings-toggle" ng-click="showModal('settingsModal')" title="Options menu">
+          <a class="settings-toggle" ng-click="showModal('settingsModal')" title="Options menu" href="#">
             <i class="glyphicon glyphicon-cog"></i>
           </a>
-          <a ng-click="disconnect()" title="Disconnect from WeeChat">
+          <a ng-click="disconnect()" title="Disconnect from WeeChat" href="#">
             <i class="glyphicon glyphicon-off"></i>
           </a>
         </div>
@@ -235,7 +241,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
             </form>
           </li>
           <li class="buffer" ng-class="{'active': buffer.active, 'indent': buffer.indent, 'channel': buffer.type === 'channel', 'channel_hash': buffer.prefix === '#', 'channel_plus': buffer.prefix === '+', 'channel_ampersand': buffer.prefix === '&', 'private': buffer.type === 'private'}" ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray:'withidx' | filter:{fullName:search} | filter:hasUnread | orderBy:predicate | getBufferQuickKeys:this))">
-            <a ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}">
+            <a ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}" href="#">
               <span class="badge pull-right" ng-class="{'danger': buffer.notification}" ng-if="buffer.notification || buffer.unread" ng-bind="buffer.notification || buffer.unread"></span>
               <span class="buffer-quick-key">{{ buffer.$quickKey }}</span>
               <span class="buffername">{{ buffer.trimmedName || buffer.fullName }}</span>
@@ -243,7 +249,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </li>
         </ul>
       </div>
-      <div id="bufferlines" class="favorite-font" ng-swipe-right="showSidebar()" ng-swipe-left="hideSidebar()" ng-class="{'withnicklist': showNicklist}">
+      <div id="bufferlines" class="favorite-font" ng-swipe-right="showSidebar()" ng-swipe-left="hideSidebar()" ng-class="{'withnicklist': showNicklist}" when-scrolled="infiniteScroll()" imgur-drop>
         <div id="nicklist" ng-if="showNicklist" ng-swipe-right="closeNick()" class="vertical-line-left">
           <ul class="nicklistgroup list-unstyled" ng-repeat="group in nicklist">
             <li ng-repeat="nick in group.nicks|orderBy:'name'">
@@ -255,8 +261,8 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           <tbody>
             <tr class="bufferline">
               <td ng-hide="activeBuffer().allLinesFetched" colspan="3">
-                <a class="fetchmorelines" ng-click="fetchMoreLines()" ng-hide="loadingLines">Fetch more lines</a>
-                <span ng-show="loadingLines">Fetching more lines...</span>
+                <a class="fetchmorelines btn btn-xs btn-primary" ng-click="fetchMoreLines()" ng-hide="loadingLines" href="#">Fetch more lines</a>
+                <span ng-show="loadingLines">Fetching more lines <i class="glyphicon glyphicon-refresh glyphicon-spin"></i></span>
               </td>
             </tr>
           </tbody>
@@ -289,7 +295,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
     <div id="reconnect" class="alert alert-danger" ng-click="reconnect()" ng-show="reconnecting">
         <p><strong>Connection to WeeChat lost</strong></p>
         <i class="glyphicon glyphicon-refresh"></i>
-        Reconnecting... <a class="btn btn-tiny" ng-click="reconnect()">Click to try to reconnect now</a>
+        Reconnecting... <i class="glyphicon glyphicon-spin glyphicon-refresh"></i> <a class="btn btn-xs" ng-click="reconnect()" href="#">Click to try to reconnect now</a>
     </div>
     <div id="settingsModal" class="gb-modal" data-state="hidden">
       <div class="backdrop" ng-click="closeModal($event)"></div>
@@ -297,6 +303,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" ng-click="closeModal($event)" aria-hidden="true">&times;</button>
+            <span class="pull-right version">Glowing Bear version 0.6.0</span>
             <h4 class="modal-title">Settings</h4>
             <p>Settings will be stored in your browser.</p>
           </div>
@@ -323,6 +330,17 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                     <label for="theme" class="col-sm-3 control-label make-thinner">Theme</label>
                     <div class="col-sm-7">
                       <select id="theme" class="form-control" ng-model="settings.theme" ng-options="theme for theme in themes"></select>
+                    </div>
+                  </div>
+                </form>
+              </li>
+
+              <li class="standard-labels">
+                <form class="form-horizontal" role="form">
+                  <div class="form-group">
+                    <label for="custom-css" class="col-sm-3 control-label make-thinner">Custom CSS</label>
+                    <div class="col-sm-7">
+                      <textarea id="custom-css" class="form-control" ng-model="settings.customCSS"></textarea>
                     </div>
                   </div>
                 </form>
@@ -435,7 +453,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                   <div class="checkbox">
                     <label>
                       <input type="checkbox" ng-model="settings.enableJSEmoji">
-                      Enable non-native Emoji support <span class="text-muted settings-help">Displays Emoji characters as images</span>
+                      Enable non-native Emoji support <span class="text-muted settings-help">Displays Emoji characters as images. Emoji provided free by <a href="http://emojione.com">http://emojione.com</a></span>
                     </label>
                   </div>
                 </form>

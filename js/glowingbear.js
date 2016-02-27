@@ -21,8 +21,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.command = '';
-    $scope.themes = ['dark', 'light'];
+    $scope.themes = ['dark', 'light', 'black'];
 
+    // Initialise all our settings, this needs to include all settings
+    // or else they won't be saved to the localStorage.
     settings.setDefaults({
         'theme': 'dark',
         'host': 'localhost',
@@ -38,30 +40,18 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'useFavico': true,
         'showtimestamp': true,
         'showtimestampSeconds': false,
+        'soundnotification': true,
         'fontsize': '14px',
         'fontfamily': (utils.isMobileUi() ? 'sans-serif' : 'Inconsolata, Consolas, Monaco, Ubuntu Mono, monospace'),
         'readlineBindings': false,
         'enableJSEmoji': (utils.isMobileUi() ? false : true),
         'enableMathjax': false,
+        'customCSS': '',
     });
     $scope.settings = settings;
 
-    // From: http://stackoverflow.com/a/18539624 by StackOverflow user "plantian"
     $rootScope.countWatchers = function () {
-        var q = [$rootScope], watchers = 0, scope;
-        while (q.length > 0) {
-            scope = q.pop();
-            if (scope.$$watchers) {
-                watchers += scope.$$watchers.length;
-            }
-            if (scope.$$childHead) {
-                q.push(scope.$$childHead);
-            }
-            if (scope.$$nextSibling) {
-                q.push(scope.$$nextSibling);
-            }
-        }
-        $log.debug(watchers);
+        $log.debug($rootScope.$$watchersCount);
     };
 
     $scope.isinstalled = (function() {
@@ -168,7 +158,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         // Send a request for the nicklist if it hasn't been loaded yet
         if (!ab.nicklistRequested()) {
-            connection.requestNicklist(ab.fullName, function() {
+            connection.requestNicklist(ab.id, function() {
                 $scope.showNicklist = $scope.updateShowNicklist();
                 // Scroll after nicklist has been loaded, as it may break long lines
                 $rootScope.scrollWithBuffer(true);
@@ -214,8 +204,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             );
         }
         notifications.updateTitle(ab);
-        $scope.notifications = notifications.unreadCount('notification');
-        $scope.unread = notifications.unreadCount('unread');
+        setTimeout(function(){
+            $scope.notifications = notifications.unreadCount('notification');
+            $scope.unread = notifications.unreadCount('unread');
+        });
 
         $timeout(function() {
             $rootScope.scrollWithBuffer(true);
@@ -262,8 +254,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         models.reinitialize();
         $rootScope.$emit('notificationChanged');
         $scope.connectbutton = 'Connect';
+        $scope.connectbuttonicon = 'glyphicon-chevron-right';
     });
     $scope.connectbutton = 'Connect';
+    $scope.connectbuttonicon = 'glyphicon-chevron-right';
 
     $scope.getBuffers = models.getBuffers.bind(models);
 
@@ -431,6 +425,24 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         })();
     });
 
+    settings.addCallback('customCSS', function(css) {
+        // We need to delete the old tag and add a new one so that the browser
+        // notices the change. Thus, first remove old custom CSS.
+        var old_css = document.getElementById('custom-css-tag');
+        if (old_css) {
+            old_css.parentNode.removeChild(old_css);
+        }
+
+        // Create new CSS tag
+        var new_css = document.createElement("style");
+        new_css.type = "text/css";
+        new_css.id = "custom-css-tag";
+        new_css.appendChild(document.createTextNode(css));
+        // Append it to the <head> tag
+        var heads = document.getElementsByTagName("head");
+        heads[0].appendChild(new_css);
+    });
+
 
     // Update font family when changed
     settings.addCallback('fontfamily', function(fontfamily) {
@@ -532,6 +544,17 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         return connection.fetchMoreLines(numLines);
     };
 
+    $scope.infiniteScroll = function() {
+        // Check if we are already fetching
+        if ($rootScope.loadingLines) {
+            return;
+        }
+        var buffer = models.getActiveBuffer();
+        if (!buffer.allLinesFetched) {
+            $scope.fetchMoreLines();
+        }
+    };
+
     $rootScope.updateBufferBottom = function(bottom) {
             var eob = document.getElementById("end-of-buffer");
             var bl = document.getElementById('bufferlines');
@@ -580,11 +603,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $rootScope.securityError = false;
         $rootScope.errorMessage = false;
         $rootScope.bufferBottom = true;
-        $scope.connectbutton = 'Connecting ...';
+        $scope.connectbutton = 'Connecting';
+        $scope.connectbuttonicon = 'glyphicon-refresh glyphicon-spin';
         connection.connect(settings.host, settings.port, $scope.password, settings.ssl);
     };
     $scope.disconnect = function() {
         $scope.connectbutton = 'Connect';
+        $scope.connectbuttonicon = 'glyphicon-chevron-right';
         connection.disconnect();
     };
     $scope.reconnect = function() {
@@ -725,6 +750,18 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         settings.nonicklist = !settings.nonicklist;
     };
 
+    $rootScope.switchToAdjacentBuffer = function(direction) {
+        // direction is +1 for next buffer, -1 for previous buffer
+        var sortedBuffers = _.sortBy($scope.getBuffers(), $rootScope.predicate);
+        var activeBuffer = models.getActiveBuffer();
+        var index = sortedBuffers.indexOf(activeBuffer);
+        if (index >= 0) {
+            var newBuffer = sortedBuffers[index + direction];
+            if (newBuffer) {
+                $scope.setActiveBuffer(newBuffer.id);
+            }
+        }
+    };
 
     $scope.handleSearchBoxKey = function($event) {
         // Support different browser quirks
@@ -742,6 +779,23 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             $scope.search = '';
         }
     };
+
+    $rootScope.supports_formatting_date = (function() {
+        // function toLocaleDateStringSupportsLocales taken from MDN:
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString#Checking_for_support_for_locales_and_options_arguments
+        try {
+            new Date().toLocaleDateString('i');
+        } catch (e) {
+            if (e.name !== 'RangeError') {
+                $log.info("Browser does not support toLocaleDateString()," +
+                          " falling back to en-US");
+            }
+            return e.name === 'RangeError';
+        }
+        $log.info("Browser does not support toLocaleDateString()," +
+                  " falling back to en-US");
+        return false;
+    })();
 
     // Prevent user from accidentally leaving the page
     window.onbeforeunload = function(event) {
@@ -774,7 +828,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             $rootScope.securityError = false;
             $rootScope.errorMessage = false;
             $rootScope.bufferBottom = true;
-            $scope.connectbutton = 'Connecting ...';
+            $scope.connectbutton = 'Connecting';
+            $scope.connectbuttonicon = 'glyphicon-chevron-right';
             connection.connect(host, port, password, ssl);
         }
     };

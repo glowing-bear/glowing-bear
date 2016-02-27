@@ -16,13 +16,16 @@ Please note that the above instructions set up an *unencrypted* relay, and all y
 
 You can run Glowing Bear in many ways: use it like any other webpage, as an app in Firefox (choose "Install app" on the landing page) or Chrome ("Tools", then "Create application shortcuts"), or a full-screen Chrome app on Android ("Add to homescreen"). We also provide an [Android app](https://play.google.com/store/apps/details?id=com.glowing_bear) that you can install from the Google Play Store, and a [Firefox OS app](https://marketplace.firefox.com/app/glowing-bear/) in the Firefox Marketplace.
 
-<a href="https://play.google.com/store/apps/details?id=com.glowing_bear"><img alt="Android app on Google Play" src="https://developer.android.com/images/brand/en_app_rgb_wo_45.png" /></a><a href="https://marketplace.firefox.com/app/glowing-bear/"><img alt="Firefox OS app in the Firefox Marketplace" src="https://marketplace.cdn.mozilla.net/media/img/mkt/badges/firefox-marketplace_badge-orange_129_45.png" /></a>
+<a href="https://play.google.com/store/apps/details?id=com.glowing_bear"><img alt="Android app on Google Play" src="/assets/img/badge_playstore.png" /></a><a href="https://marketplace.firefox.com/app/glowing-bear/"><img alt="Firefox OS app in the Firefox Marketplace" src="/assets/img/badge_firefoxos.png" /></a>
 
 ##Screenshots
 
 Running as Chrome application in a separate window on Windows and as Android app:
 
 ![Glowing bear screenshot](https://4z2.de/glowingbear.png)
+
+Are you good with design? We'd love your help!
+![Glowing Bear screenshot with lots of Comic Sans MS](https://4z2.de/glowing-bear3.png)
 
 ##How it Works
 
@@ -44,7 +47,10 @@ Here's a simple example using the python simple web server:
 ```bash
 git clone https://github.com/glowing-bear/glowing-bear
 cd glowing-bear
+# python 2.*
 python -m SimpleHTTPServer
+# or python 3.*
+python -m http.server
 ```
 
 Now you can point your browser to [http://localhost:8000](http://localhost:8000)!
@@ -83,4 +89,4 @@ If you wish to submit code, we try to make the contribution process as simple as
 
  We'd also like to ask you to join our IRC channel, #glowing-bear on freenode, so we can discuss your ideas and changes.
 
-If you're curious about the projects we're using, here's a list: [AngularJS](https://angularjs.org/), [Bootstrap](http://getbootstrap.com/), [Underscore](http://underscorejs.org/), [favico.js](http://lab.ejci.net/favico.js/), [twemoji](https://github.com/twitter/twemoji), and [zlib.js](https://github.com/imaya/zlib.js). Technology-wise, [WebSockets](http://en.wikipedia.org/wiki/WebSocket) are the most important part, but we also use [local storage](https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Storage#localStorage), the [Notification Web API](https://developer.mozilla.org/en/docs/Web/API/notification), and last (but not least) [Apache Cordova](https://cordova.apache.org/) for our mobile app.
+If you're curious about the projects we're using, here's a list: [AngularJS](https://angularjs.org/), [Bootstrap](http://getbootstrap.com/), [Underscore](http://underscorejs.org/), [favico.js](http://lab.ejci.net/favico.js/), Emoji provided free by [Emoji One](http://emojione.com/), and [zlib.js](https://github.com/imaya/zlib.js). Technology-wise, [WebSockets](http://en.wikipedia.org/wiki/WebSocket) are the most important part, but we also use [local storage](https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Storage#localStorage), the [Notification Web API](https://developer.mozilla.org/en/docs/Web/API/notification), and last (but not least) [Apache Cordova](https://cordova.apache.org/) for our mobile app.

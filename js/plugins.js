@@ -23,7 +23,7 @@ var Plugin = function(name, contentForMessage) {
 
 
 // Regular expression that detects URLs for UrlPlugin
-var urlRegexp = /(?:ftp|https?):\/\/\S*[^\s.;,(){}<>]/g;
+var urlRegexp = /(?:(?:https?|ftp):\/\/|www\.|ftp\.)\S*[^\s.;,(){}<>]/g;
 /*
  * Definition of a user provided plugin that consumes URLs
  *
@@ -280,10 +280,25 @@ plugins.factory('userPlugins', function() {
             } else if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
                 // remove protocol specification to load over https if used by g-b
                 url = url.replace(/http:/, "");
-            } else if (url.match(/^https:\/\/www\.dropbox\.com\/s\/[a-z0-9]+\/[^?]+$/i)) {
+            } else if (url.match(/^https:\/\/www\.dropbox\.com\/s\/[a-z0-9]+\//i)) {
                 // Dropbox requires a get parameter, dl=1
-                // TODO strip an existing dl=0 parameter
-                url = url + "?dl=1";
+                var dbox_url = document.createElement("a");
+                dbox_url.href = url;
+                var base_url = dbox_url.protocol + '//' + dbox_url.host + dbox_url.pathname + '?';
+                var dbox_params = dbox_url.search.substring(1).split('&');
+                var dl_added = false;
+                for (var i = 0; i < dbox_params.length; i++) {
+                    if (dbox_params[i].split('=')[0] === "dl") {
+                        dbox_params[i] = "dl=1";
+                        dl_added = true;
+                        // we continue looking at the other parameters in case
+                        // it's specified twice or something
+                    }
+                }
+                if (!dl_added) {
+                    dbox_params.push("dl=1");
+                }
+                url = base_url + dbox_params.join('&');
             }
             return function() {
                 var element = this.getElement();
@@ -299,13 +314,35 @@ plugins.factory('userPlugins', function() {
     });
 
     /*
+     * audio Preview
+     */
+    var audioPlugin = new UrlPlugin('audio', function(url) {
+        if (url.match(/\.(mp3|ogg|wav)\b/i)) {
+            return function() {
+                var element = this.getElement();
+                var aelement = angular.element('<audio controls></audio>')
+                                     .addClass('embed')
+                                     .attr('width', '560')
+                                     .append(angular.element('<source></source>')
+                                                    .attr('src', url));
+                element.innerHTML = aelement.prop('outerHTML');
+            };
+        }
+    });
+
+
+    /*
      * mp4 video Preview
      */
     var videoPlugin = new UrlPlugin('video', function(url) {
-        if (url.match(/\.(mp4|webm|ogv)\b/i)) {
+        if (url.match(/\.(mp4|webm|ogv|gifv)\b/i)) {
+            if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
+                // remove protocol specification to load over https if used by g-b
+                url = url.replace(/\.(gifv)\b/i, ".webm");
+            }
             return function() {
                 var element = this.getElement();
-                var velement = angular.element('<video></video>')
+                var velement = angular.element('<video autoplay loop muted></video>')
                                      .addClass('embed')
                                      .attr('width', '560')
                                      .append(angular.element('<source></source>')
@@ -314,6 +351,7 @@ plugins.factory('userPlugins', function() {
             };
         }
     });
+    
 
     /*
      * Cloud Music Embedded Players
@@ -484,7 +522,7 @@ plugins.factory('userPlugins', function() {
     });
 
     return {
-        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, giphyPlugin, tweetPlugin, vinePlugin]
+        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, audioPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, giphyPlugin, tweetPlugin, vinePlugin]
     };
 
 

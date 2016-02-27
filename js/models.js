@@ -11,6 +11,9 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
     // WeeChat version
     this.version = null;
 
+    // WeeChat configuration values
+    this.wconfig = {};
+
     // Save outgoing queries
     this.outgoingQueries = [];
 
@@ -84,9 +87,21 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var notification = 0;
         var unread = 0;
         var lastSeen = -1;
-        var serverSortKey = fullName.replace(/^irc\.server\.(\w+)/, "irc.$1");
+        // There are two kinds of types: bufferType (free vs formatted) and
+        // the kind of type that distinguishes queries from channels etc
+        var bufferType = message.type;
         var type = message.local_variables.type;
         var indent = (['channel', 'private'].indexOf(type) >= 0);
+
+        var plugin = message.local_variables.plugin;
+        var server = message.local_variables.server;
+        // Server buffers have this "irc.server.freenode" naming schema, which
+        // messes the sorting up. We need it to be "irc.freenode" instead.
+        var serverSortKey = plugin + "." + server +
+            (type === "server" ? "" :  ("." + shortName));
+        // Lowercase it so alt+up/down traverses buffers in the same order
+        // angular's sortBy directive puts them in
+        serverSortKey = serverSortKey.toLowerCase();
 
         // Buffer opened message does not include notify level
         if (message.notify !== undefined) {
@@ -311,7 +326,10 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             getNicklistByTime: getNicklistByTime,
             serverSortKey: serverSortKey,
             indent: indent,
+            bufferType: bufferType,
             type: type,
+            plugin: plugin,
+            server: server,
             history: history,
             addToHistory: addToHistory,
             getHistoryUp: getHistoryUp,

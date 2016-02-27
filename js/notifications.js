@@ -1,8 +1,9 @@
 var weechat = angular.module('weechat');
 
 weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', function($rootScope, $log, models, settings) {
-    // Ask for permission to display desktop notifications
+    var serviceworker = false;
     var notifications = [];
+    // Ask for permission to display desktop notifications
     var requestNotificationPermission = function() {
         // Firefox
         if (window.Notification) {
@@ -22,6 +23,81 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
                 window.webkitNotifications.requestPermission();
             }
         }
+
+        if ('serviceWorker' in navigator) {
+            $log.info('Service Worker is supported');
+            navigator.serviceWorker.register('serviceworker.js').then(function(reg) {
+                $log.info('Service Worker install:', reg);
+                serviceworker = true;
+            }).catch(function(err) {
+                $log.info('Service Worker err:', err);
+            });
+        }
+    };
+
+    var showNotification = function(buffer, title, body) {
+        if (serviceworker) {
+            navigator.serviceWorker.ready.then(function(registration) {
+                registration.showNotification(title, {
+                    body: body,
+                    icon: 'assets/img/glowing_bear_128x128.png',
+                    vibrate: [200, 100],
+                    tag: 'gb-highlight-vib'
+                });
+            });
+        } else if (typeof Windows !== 'undefined' && typeof Windows.UI !== 'undefined' && typeof Windows.UI.Notifications !== 'undefined') {
+
+            var winNotifications = Windows.UI.Notifications;
+            var toastNotifier = winNotifications.ToastNotificationManager.createToastNotifier();
+            var template = winNotifications.ToastTemplateType.toastText02;
+            var toastXml = winNotifications.ToastNotificationManager.getTemplateContent(template);
+            var toastTextElements = toastXml.getElementsByTagName("text");
+
+            toastTextElements[0].appendChild(toastXml.createTextNode(title));
+            toastTextElements[1].appendChild(toastXml.createTextNode(body));
+
+            var toast = new winNotifications.ToastNotification(toastXml);
+
+            toast.onactivated = function() {
+                models.setActiveBuffer(buffer.id);
+                window.focus();
+            };
+
+            toastNotifier.show(toast);
+
+        } else {
+
+            var notification = new Notification(title, {
+                body: body,
+                icon: 'assets/img/favicon.png'
+            });
+
+            // Save notification, so we can close all outstanding ones when disconnecting
+            notification.id = notifications.length;
+            notifications.push(notification);
+
+            // Cancel notification automatically
+            var timeout = 15*1000;
+            notification.onshow = function() {
+                setTimeout(function() {
+                    notification.close();
+                }, timeout);
+            };
+
+            // Click takes the user to the buffer
+            notification.onclick = function() {
+                models.setActiveBuffer(buffer.id);
+                window.focus();
+                notification.close();
+            };
+
+            // Remove from list of active notifications
+            notification.onclose = function() {
+                delete notifications[this.id];
+            };
+
+        }
+
     };
 
 
@@ -83,7 +159,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
         var body = '';
         var numNotifications = buffer.notification;
 
-        if (['#', '&', '+', '!'].indexOf(buffer.shortName.charAt(0)) < 0) {
+        if (buffer.type === "private") {
             if (numNotifications > 1) {
                 title = numNotifications.toString() + ' private messages from ';
             } else {
@@ -102,37 +178,9 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
             }
             body = '<' + prefix + '> ' + message.text;
         }
-        title += buffer.shortName;
-        title += buffer.fullName.replace(/irc.([^\.]+)\..+/, " ($1)");
+        title += buffer.shortName + " (" + buffer.server + ")";
 
-        var notification = new Notification(title, {
-            body: body,
-            icon: 'assets/img/favicon.png'
-        });
-
-        // Save notification, so we can close all outstanding ones when disconnecting
-        notification.id = notifications.length;
-        notifications.push(notification);
-
-        // Cancel notification automatically
-        var timeout = 15*1000;
-        notification.onshow = function() {
-            setTimeout(function() {
-                notification.close();
-            }, timeout);
-        };
-
-        // Click takes the user to the buffer
-        notification.onclick = function() {
-            models.setActiveBuffer(buffer.id);
-            window.focus();
-            notification.close();
-        };
-
-        // Remove from list of active notifications
-        notification.onclose = function() {
-            delete notifications[this.id];
-        };
+        showNotification(buffer, title, body);
 
         if (settings.soundnotification) {
             // TODO fill in a sound file

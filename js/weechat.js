@@ -23,9 +23,7 @@
             'buf': this._getString,
             'arr': this._getArray,
             'htb': this._getHashTable,
-            'inl': function() {
-                this._warnUnimplemented('infolist');
-            }
+            'inl': this._getInfolist,
         };
 
         // string value for some object types
@@ -290,7 +288,7 @@
                     var ret = {};
                     var optionCode = parseInt(m[1]);
 
-                    if (optionCode > 43) {
+                    if (optionCode >= WeeChatProtocol._colorsOptionsNames.length) {
                         // should never happen
                         return {
                             fgColor: null,
@@ -697,6 +695,37 @@
         parts.push(params.name);
 
         return WeeChatProtocol._formatCmd(params.id, 'info', parts);
+    };
+
+    /**
+     * Formats an infolist command.
+     *
+     * @param params Parameters:
+     *            id: command ID (optional)
+     *            name: infolist name (mandatory)
+     *            pointer: optional
+     *            arguments: optional
+     * @return Formatted infolist command string
+     */
+    WeeChatProtocol.formatInfolist = function(params) {
+        var defaultParams = {
+            id: null,
+            pointer: null,
+            args: null
+
+        };
+        var parts = [];
+
+        params = WeeChatProtocol._mergeParams(defaultParams, params);
+        parts.push(params.name);
+        if (params.pointer !== null) {
+            parts.push(params.pointer);
+        }
+        if (params.pointer !== null) {
+            parts.push(params.args);
+        }
+
+        return WeeChatProtocol._formatCmd(params.id, 'infolist', parts);
     };
 
     /**
@@ -1138,6 +1167,35 @@
 
             for (var i = 0; i < count; i++) {
                 values.push(self._runType(type));
+            }
+
+            return values;
+        },
+
+        /**
+         * Reads an infolist object from the current set of data
+         *
+         * @return Array
+         */
+        _getInfolist: function() {
+            var self = this;
+            var name;
+            var count;
+            var values;
+
+            name = this._getString();
+            count = this._getInt();
+            values = [];
+
+            for (var i = 0; i < count; i++) {
+                var itemcount = self._getInt();
+                var litem = [];
+                for (var j = 0; j < itemcount; j++) {
+                    var item = {};
+                    item[self._getString()] = self._runType(self._getType());
+                    litem.push(item);
+                }
+                values.push(litem);
             }
 
             return values;

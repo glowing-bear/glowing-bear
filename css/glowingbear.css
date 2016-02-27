@@ -15,6 +15,10 @@ a {
     cursor: pointer;
 }
 
+.version {
+   margin-right: 1em;
+}
+
 .hidden-bracket {
   position: absolute;
   left: -1000px;
@@ -29,6 +33,7 @@ td.prefix {
     border-right: 1px solid #444;
 }
 td.message {
+    overflow: hidden;
     vertical-align: top;
     width: 100%;
     padding: 1px 1px 1px 5px;
@@ -82,6 +87,25 @@ input[type=text], input[type=password], #sendMessage {
     border: 0;
     border-radius: 0;
     margin-bottom: 5px !important;
+}
+
+.btn-send-image {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.imgur-upload {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    cursor: inherit;
+    font-size: 1000px !important;
+    height: 300px;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    filter: ~"alpha(opacity=0)";
 }
 
 .input-group {
@@ -155,6 +179,14 @@ input[type=text], input[type=password], #sendMessage {
 #topbar .dropdown-menu form {
     padding-left: 6px;
     padding-right: 6px;
+}
+
+.upload-error {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 4;
 }
 
 #sidebar {
@@ -328,6 +360,25 @@ td.time {
 }
 .footer.withnicklist {
     padding-right: 100px;
+}
+
+#inputform {
+    position: relative;
+}
+
+#imgur-upload-progress {
+    width: 100%;
+    height: auto;
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+}
+
+.imgur-progress-bar {
+    width: 0%;
+    height: 5px;
+    margin-top: 1px;
+    background: #428BCA;
 }
 
 /* fix for mobile firefox which ignores :hover */
@@ -547,11 +598,7 @@ li.buffer.channel_ampersand a span:last-of-type:before, #topbar .title .channel_
 }
 
 li.buffer.channel.active a span:last-of-type:before {
-    color: #444;
-}
-
-li.buffer.channel.active a:hover span:last-of-type:before {
-    color: #222;
+    color: #aaa;
 }
 
 li.buffer.indent.private a {
@@ -589,6 +636,31 @@ li.buffer.indent.private a {
 }
 img.emojione {
     width: auto;
+}
+
+.glyphicon-spin {
+  -webkit-animation: spin 1000ms infinite linear;
+  animation: spin 1000ms infinite linear;
+}
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
 }
 
 @media (min-width: 1400px) {
@@ -726,7 +798,13 @@ img.emojione {
         padding-bottom: 0;
     }
 
+    #bufferlines tr.bufferline {
+        display: block;
+        overflow: hidden;
+    }
+
     #bufferlines td.time {
+        display: inline-block;
         padding-right: 3px;
         font-size: 0.8em;
     }
