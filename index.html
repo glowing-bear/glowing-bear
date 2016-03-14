@@ -39,6 +39,10 @@
         <span>Glowing Bear</span>
         <small>WeeChat web frontend</small>
       </h2>
+      <div class="alert alert-info alert-dismissable" ng-show="!settings.hideTLSinfo">
+        <a href="#" class="close" ng-click="settings.hideTLSinfo=true;" aria-label="close">&times;</a>
+        <strong>We now support TLS!</strong> If you're using an encrypted relay, you should change your bookmarks to <a href="https://www.glowing-bear.org" style="">http<span style="color:#090; font-weight:bold">s</span>://www.glowing-bear.org</a>
+      </div>
       <div class="alert alert-danger" ng-show="errorMessage">
         <strong>Connection error</strong> The client was unable to connect to the WeeChat relay
       </div>
