@@ -38,18 +38,16 @@ td.message {
     width: 100%;
     padding: 1px 1px 1px 5px;
 
--ms-word-break: break-all;
-    word-break: break-all;
+    -ms-word-break: normal;
+    word-break: normal;
 
-    /* Non standard for webkit */
-    word-break: break-word;
-
--webkit-hyphens: auto;
-   -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
     -ms-hyphens: auto;
         hyphens: auto;
 
 }
+
 
 #readmarker {
     margin-top: 5px;
