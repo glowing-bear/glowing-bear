@@ -612,6 +612,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $scope.connectbuttonicon = 'glyphicon-chevron-right';
         connection.disconnect();
     };
+    $scope.leave = function() {
+        connection.sendMessage("/leave");
+    };
     $scope.reconnect = function() {
         var bufferId = models.getActiveBuffer().id;
         connection.attemptReconnect(bufferId, 3000);

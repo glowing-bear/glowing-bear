@@ -244,6 +244,9 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
         </div>
 
         <div class="actions pull-right vertical-line-left">
+          <a ng-click="leave()" ng-if="activeBuffer().type === 'channel' || activeBuffer().type === 'private'" title="Leave {{ activeBuffer().trimmedName || activeBuffer().fullName }}" href="#">
+            <i class="glyphicon glyphicon-remove"></i>
+          </a>
           <a class="settings-toggle" ng-click="showModal('settingsModal')" title="Options menu" href="#">
             <i class="glyphicon glyphicon-cog"></i>
           </a>
