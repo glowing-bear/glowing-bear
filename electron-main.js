@@ -7,7 +7,9 @@
     const ipcMain = require('electron').ipcMain;
     const Menu = require('menu');
 
-    const template = [
+    var template;
+
+    template = [
     {
         label: 'Edit',
         submenu: [
@@ -168,8 +170,6 @@
                 }
                 );
     }
-    var menu = Menu.buildFromTemplate(template);
-    Menu.setApplicationMenu(menu);
 
     // Keep a global reference of the window object, if you don't, the window will
     // be closed automatically when the JavaScript object is garbage collected.
@@ -181,6 +181,10 @@
     });
 
     app.on('ready', function() {
+
+        var menu = Menu.buildFromTemplate(template);
+        Menu.setApplicationMenu(menu);
+
         mainWindow = new BrowserWindow({width: 1280, height: 800, 'min-width': 1024, 'min-height': 600, 'autoHideMenuBar': true, 'web-security': true, 'java': false, 'icon':'file://'+__dirname + 'assets/img/favicon.png'});
         mainWindow.loadUrl('file://' + __dirname + '/electron-start.html');
         /*
