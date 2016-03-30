@@ -107,7 +107,7 @@
         submenu: [
         {
             label: 'Learn More',
-            click: function() { require('electron').shell.openExternal('https://github.com/glowing-bear/glowing-bear') }
+            click: function() { require('electron').shell.openExternal('https://github.com/glowing-bear/glowing-bear'); }
         },
         ]
     },
