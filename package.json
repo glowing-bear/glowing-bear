@@ -33,7 +33,7 @@
     "preprotractor": "npm run update-webdriver",
     "protractor": "protractor test/protractor-conf.js",
     "build-electron-windows": "electron-packager . \"Glowing Bear\" --platform=win32 --arch=ia32 --version=0.37.3 --overwrite --icon=assets/img/favicon.ico --asar=true --version-string.FileDescription=\"Glowing Bear\"",
-    "build-electron-darwin": "electron-packager . \"Glowing Bear\" --platform=darwin --arch=x64 --version=0.37.3 --overwrite --asar=true --version-string.FileDescription=\"Glowing Bear\"",
+    "build-electron-darwin": "electron-packager . \"Glowing Bear\" --platform=darwin --arch=x64 --version=0.37.3 --overwrite --version-string.FileDescription=\"Glowing Bear\"",
     "update-index-async": "node -e \"require('shelljs/global'); sed('-i', /\\/\\/@@NG_LOADER_START@@[\\s\\S]*\\/\\/@@NG_LOADER_END@@/, '//@@NG_LOADER_START@@\\n' + cat('app/bower_components/angular-loader/angular-loader.min.js') + '\\n//@@NG_LOADER_END@@', 'app/index-async.html');\""
   }
 }
