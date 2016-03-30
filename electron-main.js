@@ -114,7 +114,7 @@
     ];
 
     if (process.platform == 'darwin') {
-        var name = require('electron').remote.app.getName();
+        var name = app.getName();
         template.unshift({
             label: name,
             submenu: [
