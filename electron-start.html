@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <script>
+onload = function() {
+  const ipc= require('electron').ipcRenderer;
+
+  var webview = document.getElementById("glowingbear");
+
+  var handleconsole = function(e) {
+    if(e.message.substring(0,7) == "badge: ") {
+      ipc.send('badge', e.message.substring(7));
+    }else{
+      console.log("webview: " + e.message);
+    }
+  }
+  var handlenewwindow = function(e) {
+    require('shell').openExternal(e.url);
+  }
+  var handletitleset = function(e) {
+    document.title = e.title;
+  }
+  webview.addEventListener("console-message", handleconsole);
+  webview.addEventListener("new-window", handlenewwindow);
+  webview.addEventListener("page-title-set", handletitleset);
+}
+    </script>
+  </head>
+  <body>
+    <webview id="glowingbear" src="index.html" style="position:fixed; top:0; left:0; bottom:0; right:0;"></webview>
+  </body>
+</html>
