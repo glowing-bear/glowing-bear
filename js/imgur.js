@@ -71,7 +71,7 @@ weechat.factory('imgur', ['$rootScope', function($rootScope) {
                 if( response.data && response.data.link ) {
 
                     if (callback && typeof(callback) === "function") {
-                        callback(response.data.link);
+                        callback(response.data.link.replace(/^http:/, "https:"));
                     }
 
                 } else {
