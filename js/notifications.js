@@ -141,17 +141,29 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
                     bgColor: '#d00',
                     textColor: '#fff'
             });
+            updateBadge(notifications);
         } else {
             var unread = unreadCount('unread');
             if (unread === 0) {
                 $rootScope.favico.reset();
+                updateBadge('');
             } else {
                 $rootScope.favico.badge(unread, {
                     bgColor: '#5CB85C',
                     textColor: '#ff0'
                 });
+                updateBadge(".");
             }
         }
+    };
+
+    var updateBadge = function(value) {
+
+        // Get ipc
+        if (typeof setElectronBadge === 'function') {
+            setElectronBadge(value);
+        }
+
     };
 
     /* Function gets called from bufferLineAdded code if user should be notified */
@@ -204,6 +216,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
         requestNotificationPermission: requestNotificationPermission,
         updateTitle: updateTitle,
         updateFavico: updateFavico,
+        updateBadge: updateBadge,
         createHighlight: createHighlight,
         cancelAll: cancelAll,
         unreadCount: unreadCount

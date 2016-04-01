@@ -378,6 +378,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             notifications.updateFavico();
         } else {
             $rootScope.favico.reset();
+            notifications.updateBadge('');
         }
     });
 
