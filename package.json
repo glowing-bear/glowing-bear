@@ -32,7 +32,7 @@
     "update-webdriver": "webdriver-manager update",
     "preprotractor": "npm run update-webdriver",
     "protractor": "protractor test/protractor-conf.js",
-    "use-local-files": "find bower_components \\( -name \"*min.js\" -o -name \"*min.css\" \\) -exec cp {} 3rdparty \\; ; cp -r bower_components/bootstrap/fonts . ; sed -i 's,https://cdnjs.cloudflare.com/ajax/libs/[^\"]*/,3rdparty/,g' index.html ; sed -i 's, integrity=\".*\" crossorigin=\"anonymous\",,' index.html",
+    "use-local-files": "find bower_components \\( -name \"*min.js\" -o -name \"*min.css\" \\) -exec cp {} 3rdparty \\; ; cp -r bower_components/bootstrap/fonts . ;  p bower_components/emojione/assets/sprites/emojione.sprites.svg 3rdparty; sed -i 's,https://cdnjs.cloudflare.com/ajax/libs/[^\"]*/,3rdparty/,g' index.html ; sed -i 's, integrity=\".*\" crossorigin=\"anonymous\",,' index.html",
     "build-electron-windows": "electron-packager . \"Glowing Bear\" --platform=win32 --arch=ia32 --version=0.37.2 --overwrite --icon=assets/img/favicon.ico --asar=true --version-string.FileDescription=\"Glowing Bear\" --ignore=node_modules --ignore=test",
     "build-electron-darwin": "electron-packager . \"Glowing Bear\" --platform=darwin --arch=x64 --version=0.37.3 --overwrite --icon=assets/img/glowing-bear.icns --version-string.FileDescription=\"Glowing Bear\" --ignore=node_modules --ignore=test",
     "build-electron-linux":  "electron-packager . \"Glowing Bear\" --platform=linux --arch=x64 --version=0.37.3 --overwrite --icon=assets/img/favicon.ico --version-string.FileDescription=\"Glowing Bear\" --ignore=node_modules --ignore=test",
