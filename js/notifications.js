@@ -141,25 +141,30 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
                     bgColor: '#d00',
                     textColor: '#fff'
             });
+            // Set badge to notifications count
             updateBadge(notifications);
         } else {
             var unread = unreadCount('unread');
             if (unread === 0) {
                 $rootScope.favico.reset();
+                // Remove badge form app icon
                 updateBadge('');
             } else {
                 $rootScope.favico.badge(unread, {
                     bgColor: '#5CB85C',
                     textColor: '#ff0'
                 });
+                // Set app badge to "." when only unread and no notifications
                 updateBadge(".");
             }
         }
     };
 
+    // Update app badge (electron only)
     var updateBadge = function(value) {
 
-        // Get ipc
+        // Send new value to preloaded global function
+        // if it exists
         if (typeof setElectronBadge === 'function') {
             setElectronBadge(value);
         }

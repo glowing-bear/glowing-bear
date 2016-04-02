@@ -188,6 +188,7 @@
         mainWindow = new BrowserWindow({width: 1280, height: 800, 'min-width': 1024, 'min-height': 600, 'autoHideMenuBar': true, 'web-security': true, 'java': false, 'icon':'file://'+__dirname + 'assets/img/favicon.png'});
         mainWindow.loadUrl('file://' + __dirname + '/electron-start.html');
 
+        // Listen for badge changes
         ipcMain.on('badge', function(event, arg) {
             if (process.platform === "darwin") {
                 app.dock.setBadge(String(arg));
