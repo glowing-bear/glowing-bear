@@ -14,3 +14,6 @@ var setElectronBadge = function(value) {
 
 // Export global variables and functions
 global.setElectronBadge = setElectronBadge;
+
+// Let Glowing Bear know it's running as an electron app
+window.is_electron = 1;
