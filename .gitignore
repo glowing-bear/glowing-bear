@@ -1,2 +1,6 @@
 bower_components/
 node_modules/
+
+# Electron stuff
+fonts/
+Glowing\ Bear-*/
