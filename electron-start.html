@@ -1,27 +1,32 @@
+<!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
     <script>
 onload = function() {
-  const ipc= require('electron').ipcRenderer;
+    const ipc= require('electron').ipcRenderer;
+    const remote = require('electron').remote;
+    const nativeImage = require('electron').nativeImage;
 
-  var webview = document.getElementById("glowingbear");
+    var webview = document.getElementById("glowingbear");
 
-  var handleconsole = function(e) {
-    if(e.message.substring(0,7) == "badge: ") {
-      ipc.send('badge', e.message.substring(7));
-    }else{
-      console.log("webview: " + e.message);
+    var handleconsole = function(e) {
+        console.log("webview: " + e.message);
     }
-  }
-  var handlenewwindow = function(e) {
-    require('shell').openExternal(e.url);
-  }
-  var handletitleset = function(e) {
-    document.title = e.title;
-  }
-  webview.addEventListener("console-message", handleconsole);
-  webview.addEventListener("new-window", handlenewwindow);
-  webview.addEventListener("page-title-set", handletitleset);
+    var handlenewwindow = function(e) {
+        require('shell').openExternal(e.url);
+    }
+    var handletitleset = function(e) {
+        document.title = e.title;
+    }
+    webview.addEventListener("console-message", handleconsole);
+    webview.addEventListener("new-window", handlenewwindow);
+    webview.addEventListener("page-title-set", handletitleset);
+
+    ipc.on('browser-window-focus', function() {
+        setTimeout(function() { webview.focus(); }, 0);
+        setTimeout(function() { webview.executeJavaScript("document.getElementById(\"sendMessage\").focus();") }, 0);
+    });
 }
     </script>
   </head>
