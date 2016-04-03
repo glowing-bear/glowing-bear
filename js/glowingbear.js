@@ -382,26 +382,17 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     });
 
     // To prevent unnecessary loading times for users who don't
-    // want MathJax, load it only if the setting is enabled.
+    // want LaTeX math, load it only if the setting is enabled.
     // This also fires when the page is loaded if enabled.
+    // Note that this says MathJax but we switched to KaTeX
     settings.addCallback('enableMathjax', function(enabled) {
         if (enabled && !$rootScope.mathjax_init) {
             // Load MathJax only once
             $rootScope.mathjax_init = true;
-            (function () {
-                var head = document.getElementsByTagName("head")[0], script;
-                script = document.createElement("script");
-                script.type = "text/x-mathjax-config";
-                script[(window.opera ? "innerHTML" : "text")] =
-                    "MathJax.Hub.Config({\n" +
-                    "  tex2jax: { inlineMath: [['$$','$$'], ['\\\\(','\\\\)']], displayMath: [['\\\\[','\\\\]']] },\n" +
-                    "});";
-                head.appendChild(script);
-                script = document.createElement("script");
-                script.type = "text/javascript";
-                script.src  = "//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML";
-                head.appendChild(script);
-            })();
+
+            utils.inject_css("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css");
+            utils.inject_script("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.js");
+            utils.inject_script("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/contrib/auto-render.min.js");
         }
     });
 
@@ -415,14 +406,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
 
         // Load new theme
-        (function() {
-            var elem = document.createElement("link");
-            elem.rel = "stylesheet";
-            elem.href = "css/themes/" + theme + ".css";
-            elem.media = "screen";
-            elem.id = "themeCSS";
-            document.getElementsByTagName("head")[0].appendChild(elem);
-        })();
+        utils.inject_css("css/themes/" + theme + ".css", "themeCSS");
     });
 
     settings.addCallback('customCSS', function(css) {
