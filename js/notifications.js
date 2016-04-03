@@ -25,7 +25,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
         }
 
         // Check for serviceWorker support, and also disable serviceWorker if we're running in electron process, since that's just problematic and not necessary, since gb then already is in a separate process
-        if ('serviceWorker' in navigator && (typeof window !== 'undefined' && window.process && window.process.type === "renderer")) {
+        if ('serviceWorker' in navigator && window.is_electron !== 1) {
             $log.info('Service Worker is supported');
             navigator.serviceWorker.register('serviceworker.js').then(function(reg) {
                 $log.info('Service Worker install:', reg);
