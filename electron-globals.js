@@ -5,9 +5,9 @@ var ipc = require('electron').ipcRenderer;
 
 // Set app bagde
 var setElectronBadge = function(value) {
-	// Check ipc
+    // Check ipc
     if (ipc && typeof ipc.send === 'function') {
-    	// Send new badge value
+        // Send new badge value
         ipc.send('badge', value);
     }
 };
