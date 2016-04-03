@@ -5,6 +5,7 @@
     const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
 
     const ipcMain = require('electron').ipcMain;
+    const nativeImage = require('electron').nativeImage;
     const Menu = require('menu');
 
     var template;
@@ -176,8 +177,7 @@
     var mainWindow = null;
 
     app.on('browser-window-focus', function(e, w) {
-        w.webContents.executeJavaScript('setTimeout(function() { document.getElementById("glowingbear").focus(); }, 0);');
-        w.webContents.executeJavaScript('setTimeout(function() { document.getElementById("glowingbear").executeJavaScript("document.getElementById(\\"sendMessage\\").focus();") }, 0);');
+        w.webContents.send('browser-window-focus');
     });
 
     app.on('ready', function() {
@@ -185,15 +185,29 @@
         var menu = Menu.buildFromTemplate(template);
         Menu.setApplicationMenu(menu);
 
-        mainWindow = new BrowserWindow({width: 1280, height: 800, 'min-width': 1024, 'min-height': 600, 'autoHideMenuBar': true, 'web-security': true, 'java': false, 'icon':'file://'+__dirname + 'assets/img/favicon.png'});
+        mainWindow = new BrowserWindow({width: 1280, height: 800, 'min-width': 1024, 'min-height': 600, 'autoHideMenuBar': true, 'web-security': true, 'java': false, 'accept-first-mouse': true, defaultEncoding: 'UTF-8', 'icon':'file://'+__dirname + '/assets/img/favicon.png'});
         mainWindow.loadUrl('file://' + __dirname + '/electron-start.html');
+        mainWindow.focus();
 
         // Listen for badge changes
         ipcMain.on('badge', function(event, arg) {
             if (process.platform === "darwin") {
                 app.dock.setBadge(String(arg));
             }
+            else if (process.platform === "win32") {
+                // If we get a . it means there's unread messages. We don't care about that
+                if (arg === '.') {
+                    return;
+                }
+                let n = parseInt(arg, 10);
+                if (n > 0) {
+                    mainWindow.setOverlayIcon(__dirname + '/assets/img/favicon.ico', String(arg));
+                } else {
+                    mainWindow.setOverlayIcon(null, '');
+                }
+            }
         });
+
         mainWindow.on('devtools-opened', function() {
             mainWindow.webContents.executeJavaScript("document.getElementById('glowingbear').openDevTools();");
         });
