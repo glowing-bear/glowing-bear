@@ -175,15 +175,23 @@ weechat.filter('emojify', function() {
     };
 });
 
-weechat.filter('mathjax', function() {
+weechat.filter('latexmath', function() {
     return function(text, selector, enabled) {
-        if (!enabled || typeof(MathJax) === "undefined") {
+        if (!enabled || typeof(katex) === "undefined") {
             return text;
         }
         if (text.indexOf("$$") != -1 || text.indexOf("\\[") != -1 || text.indexOf("\\(") != -1) {
-            // contains math
-            var math = document.querySelector(selector);
-            MathJax.Hub.Queue(["Typeset",MathJax.Hub,math]);
+            // contains math -> delayed rendering
+            setTimeout(function() {
+                var math = document.querySelector(selector);
+                renderMathInElement(math, {
+                    delimiters: [
+                        {left: "$$", right: "$$", display: false},
+                        {left: "\\[", right: "\\]", display: true},
+                        {left: "\\(", right: "\\)", display: false}
+                    ]
+                });
+            });
         }
 
         return text;
