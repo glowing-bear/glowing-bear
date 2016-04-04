@@ -285,6 +285,12 @@ input[type=text], input[type=password], #sendMessage {
     color: #222;
 }
 
+.nav-pills > li.highlight > a, .nav-pills > li.highlight > a span {
+    text-decoration: none;
+    color: #fff;
+    background: #428BCA;
+}
+
 .nav-pills > li > a {
     display: block;
     overflow: hidden;

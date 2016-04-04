@@ -35,6 +35,11 @@ html {
     color: #222;
 }
 
+.nav-pills > li.highlight > a, .nav-pills > li.highlight > a span {
+    color: #fff;
+    background: #428BCA;
+}
+
 tr.bufferline:hover {
     background-color: #222222;
 }
