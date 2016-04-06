@@ -196,7 +196,7 @@
             }
             else if (process.platform === "win32") {
                 // If we get a . it means there's unread messages. We don't care about that
-                if (arg === '.') {
+                if (arg === '.' || arg === '•') {
                     return;
                 }
                 let n = parseInt(arg, 10);
