@@ -155,7 +155,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
                     textColor: '#ff0'
                 });
                 // Set app badge to "." when only unread and no notifications
-                updateBadge(".");
+                updateBadge("•");
             }
         }
     };
