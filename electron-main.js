@@ -195,11 +195,11 @@
                 app.dock.setBadge(String(arg));
             }
             else if (process.platform === "win32") {
-                // If we get a . it means there's unread messages. We don't care about that
-                if (arg === '.' || arg === '•') {
+                let n = parseInt(arg, 10);
+                // Only show notifications with number
+                if (isNaN(n)) {
                     return;
                 }
-                let n = parseInt(arg, 10);
                 if (n > 0) {
                     mainWindow.setOverlayIcon(__dirname + '/assets/img/favicon.ico', String(arg));
                 } else {
