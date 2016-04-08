@@ -750,17 +750,39 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.handleSearchBoxKey = function($event) {
         // Support different browser quirks
         var code = $event.keyCode ? $event.keyCode : $event.charCode;
+
         // Handle escape
         if (code === 27) {
             $event.preventDefault();
             $scope.search = '';
         } // Handle enter
         else if (code === 13) {
+            var index;
             $event.preventDefault();
             if ($scope.filteredBuffers.length > 0) {
-                $scope.setActiveBuffer($scope.filteredBuffers[0].id);
+                // Go to highlighted buffer if available
+                // or first one
+                if ($scope.search_highlight_key) {
+                    index = $scope.search_highlight_key;
+                } else {
+                    index = 0;
+                }
+                $scope.setActiveBuffer($scope.filteredBuffers[index].id);
             }
             $scope.search = '';
+        } // Handle arrow up
+        else if (code === 38) {
+            $event.preventDefault();
+            if ($scope.search_highlight_key && $scope.search_highlight_key > 0) {
+                $scope.search_highlight_key = $scope.search_highlight_key - 1;
+            }
+        } // Handle arrow down and tab
+        else if (code === 40 || code === 9) {
+            $event.preventDefault();
+            $scope.search_highlight_key = $scope.search_highlight_key + 1;
+        } // Set highlight key to zero on all other keypress
+        else {
+            $scope.search_highlight_key = 0;
         }
     };
 
