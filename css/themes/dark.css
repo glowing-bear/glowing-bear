@@ -160,6 +160,15 @@ input[type=text], input[type=password], #sendMessage, .badge, .btn-send, .btn-se
     border-bottom-color: #121212;
 }
 
+button.close {
+    color: #ddd;
+    opacity: 1;
+}
+
+button.close:hover {
+    color: #ddd;
+}
+
 /****************************/
 /* Weechat colors and style */
 /****************************/
