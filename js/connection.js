@@ -15,6 +15,9 @@ weechat.factory('connection',
     var connectionData = [];
     var reconnectTimer;
 
+    // Global connection lock to prevent multiple connections from being opened
+    var locked = false;
+
     // Takes care of the connection and websocket hooks
     var connect = function (host, port, passwd, ssl, noCompression, successCallback, failCallback) {
         $rootScope.passwordError = false;
@@ -120,6 +123,7 @@ weechat.factory('connection',
              */
             $log.info("Disconnected from relay");
             $rootScope.$emit('relayDisconnect');
+            locked = false;
             if ($rootScope.userdisconnect || !$rootScope.waseverconnected) {
                 handleClose(evt);
                 $rootScope.userdisconnect = false;
@@ -154,6 +158,7 @@ weechat.factory('connection',
              * the relay.
              */
             $log.error("Relay error", evt);
+            locked = false;  // release connection lock
             $rootScope.lastError = Date.now();
 
             if (evt.type === "error" && this.readyState !== 1) {
@@ -161,6 +166,13 @@ weechat.factory('connection',
                 $rootScope.errorMessage = true;
             }
         };
+
+        if (locked) {
+            // We already have an open connection
+            $log.debug("Aborting connection (lock in use)");
+        }
+        // Kinda need a compare-and-swap here...
+        locked = true;
 
         try {
             ngWebsockets.connect(url,
@@ -173,6 +185,7 @@ weechat.factory('connection',
                          'onerror': onerror
                      });
         } catch(e) {
+            locked = false;
             $log.debug("Websocket caught DOMException:", e);
             $rootScope.lastError = Date.now();
             $rootScope.errorMessage = true;
@@ -250,6 +263,7 @@ weechat.factory('connection',
             // The connection can time out on its own
             ngWebsockets.failCallbacks('disconnection');
             $rootScope.connected = false;
+            locked = false;  // release the connection lock
             $rootScope.$emit('relayDisconnect');
             $rootScope.$apply();
         });
