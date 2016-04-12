@@ -33,7 +33,6 @@ td.prefix {
     border-right: 1px solid #444;
 }
 td.message {
-    line-height: 1.4;
     overflow: hidden;
     vertical-align: top;
     width: 100%;

@@ -1,0 +1,5 @@
+@import "dark.css";
+
+td.message {
+    line-height: 1.4;
+}
