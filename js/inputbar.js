@@ -223,9 +223,12 @@ weechat.directive('inputBar', function() {
                 // Support different browser quirks
                 var code = $event.keyCode ? $event.keyCode : $event.charCode;
 
+                // A KeyboardEvent property representing the physical key that was pressed, ignoring the keyboard layout and ignoring whether any modifier keys were active.
+                // Not supported in Edge or Safari at the time of writing this, but supported in Firefox and Chrome.
+                var key = $event.code;
+
                 // Safari doesn't implement DOM 3 input events yet as of 8.0.6
                 var altg = $event.getModifierState ? $event.getModifierState('AltGraph') : false;
-
                 // Mac OSX behaves differntly for altgr, so we check for that
                 if (altg) {
                     // We don't handle any anything with altgr
@@ -311,7 +314,8 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Alt+< -> switch to previous buffer
-                if ($event.altKey && (code === 60 || code === 226)) {
+                // https://w3c.github.io/uievents-code/#code-IntlBackslash
+                if ($event.altKey && (code === 60 || code === 226 || key === "IntlBackslash")) {
                     var previousBuffer = models.getPreviousBuffer();
                     if (previousBuffer) {
                         models.setActiveBuffer(previousBuffer.id);
