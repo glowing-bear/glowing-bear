@@ -464,7 +464,7 @@ plugins.factory('userPlugins', function() {
                 element = angular.element('<iframe></iframe>')
                                  .attr('src', embedurl)
                                  .attr('width', '100%')
-                                 .attr('height', '480')
+                                 .attr('height', '480');
             return element.prop('outerHTML');
         }
     });
