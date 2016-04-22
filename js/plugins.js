@@ -455,6 +455,20 @@ plugins.factory('userPlugins', function() {
         }
     });
 
+    var pastebinPlugin = new UrlPlugin('Pastebin', function(url) {
+        var regexp = /^http:\/\/pastebin.com\/([^.?]+)/i;
+        var match = url.match(regexp);
+        if (match) {
+            var id = match[1],
+                embedurl = "http://pastebin.com/embed_iframe/" + id,
+                element = angular.element('<iframe></iframe>')
+                                 .attr('src', embedurl)
+                                 .attr('width', '100%')
+                                 .attr('height', '480');
+            return element.prop('outerHTML');
+        }
+    });
+
  /* match giphy links and display the assocaited gif images
   * sample input:  http://giphy.com/gifs/eyes-shocked-bird-feqkVgjJpYtjy
   * sample output: https://media.giphy.com/media/feqkVgjJpYtjy/giphy.gif
@@ -522,7 +536,7 @@ plugins.factory('userPlugins', function() {
     });
 
     return {
-        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, audioPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, giphyPlugin, tweetPlugin, vinePlugin]
+        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, audioPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, pastebinPlugin, giphyPlugin, tweetPlugin, vinePlugin]
     };
 
 

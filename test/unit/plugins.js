@@ -139,6 +139,14 @@ describe('filter', function() {
             plugins);
         }));
 
+        it('should recognize pastebins', inject(function(plugins) {
+            expectTheseMessagesToContain([
+                'http://pastebin.com/Wn3TetSE',
+            ],
+            'Pastebin',
+            plugins);
+        }));
+
         it('should recognize giphy gifs', inject(function(plugins) {
             expectTheseMessagesToContain([
                 'https://giphy.com/gifs/eyes-shocked-bird-feqkVgjJpYtjy/',
