@@ -6,7 +6,7 @@
 
     const ipcMain = require('electron').ipcMain;
     const nativeImage = require('electron').nativeImage;
-    const Menu = require('menu');
+    const Menu = require('electron').Menu;
 
     var template;
 
@@ -186,7 +186,7 @@
         Menu.setApplicationMenu(menu);
 
         mainWindow = new BrowserWindow({width: 1280, height: 800, 'min-width': 1024, 'min-height': 600, 'autoHideMenuBar': true, 'web-security': true, 'java': false, 'accept-first-mouse': true, defaultEncoding: 'UTF-8', 'icon':'file://'+__dirname + '/assets/img/favicon.png'});
-        mainWindow.loadUrl('file://' + __dirname + '/electron-start.html');
+        mainWindow.loadURL('file://' + __dirname + '/electron-start.html');
         mainWindow.focus();
 
         // Listen for badge changes
