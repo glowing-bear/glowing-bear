@@ -1,5 +1,5 @@
 @import "dark.css";
 
-td.message {
+tr.bufferline {
     line-height: 1.4;
 }
