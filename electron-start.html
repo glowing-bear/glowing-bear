@@ -7,6 +7,7 @@ onload = function() {
     const ipc= require('electron').ipcRenderer;
     const remote = require('electron').remote;
     const nativeImage = require('electron').nativeImage;
+    const shell = require('electron').shell;
 
     var webview = document.getElementById("glowingbear");
 
@@ -14,7 +15,7 @@ onload = function() {
         console.log("webview: " + e.message);
     }
     var handlenewwindow = function(e) {
-        require('shell').openExternal(e.url);
+        shell.openExternal(e.url);
     }
     var handletitleset = function(e) {
         document.title = e.title;
