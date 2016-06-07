@@ -289,7 +289,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
             <tr class="bufferline">
               <td class="time">
                 <span class="date" ng-class="::{'repeated-time': bufferline.shortTime==bufferlines[$index-1].shortTime}">
-                  <span class="cof-chat_time cob-chat_time coa-chat_time" ng-bind="::(bufferline.date|date:'HH')"></span><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time" ng-bind="::(bufferline.date|date:'mm')"></span><span class="seconds"><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">:</span><span class="cof-chat_time cob-chat_time coa-chat_time" ng-bind="::(bufferline.date|date:'ss')"></span></span>
+                  <span class="cof-chat_time cob-chat_time coa-chat_time timestamp-no-seconds" ng-bind-html="::bufferline.formattedTime"></span>
                 </span>
               </td>
               <td class="prefix"><a ng-click="addMention(bufferline.prefix)"><span class="hidden-bracket">&lt;</span><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text|prefixlimit:25"></span><span class="hidden-bracket">&gt;</span></a></td><!--
