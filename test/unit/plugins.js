@@ -134,6 +134,7 @@ describe('filter', function() {
             expectTheseMessagesToContain([
                 'https://gist.github.com/lorenzhs/e8c1a7d56fa170320eb8',
                 'https://gist.github.com/e8c1a7d56fa170320eb8',
+                'https://gist.github.com/bgrins/6595824/',
             ],
             'Gist',
             plugins);

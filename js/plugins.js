@@ -435,7 +435,7 @@ plugins.factory('userPlugins', function() {
 
     // Embed GitHub gists
     var gistPlugin = new UrlPlugin('Gist', function(url) {
-        var regexp = /^https:\/\/gist\.github.com\/[^.?]+/i;
+        var regexp = /^https:\/\/gist\.github.com\/[^.?]+\/?/i;
         var match = url.match(regexp);
         if (match) {
             // get the URL from the match to trim away pseudo file endings and request parameters
