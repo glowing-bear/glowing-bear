@@ -44,7 +44,7 @@ IrcUtils.service('IrcUtils', [function() {
         var foundNick = null;
 
         nickList.some(function(nick) {
-            if (nick.toLowerCase().search(candidate.toLowerCase()) === 0) {
+            if (nick.toLowerCase().indexOf(candidate.toLowerCase()) === 0) {
                 // found!
                 foundNick = nick;
                 return true;
@@ -72,7 +72,7 @@ IrcUtils.service('IrcUtils', [function() {
         // collect matching nicks
         for (var i = 0; i < nickList.length; ++i) {
             var lcNick = nickList[i].toLowerCase();
-            if (lcNick.search(escapeRegExp(lcIterCandidate)) === 0) {
+            if (lcNick.indexOf(lcIterCandidate) === 0) {
                 matchingNicks.push(nickList[i]);
                 if (lcCurrentNick === lcNick) {
                     at = matchingNicks.length - 1;
@@ -158,7 +158,7 @@ IrcUtils.service('IrcUtils', [function() {
         m = beforeCaret.match(/^([a-zA-Z0-9_\\\[\]{}^`|-]+)$/);
         if (m) {
             // try completing
-            newNick = _completeSingleNick(escapeRegExp(m[1]), searchNickList);
+            newNick = _completeSingleNick(m[1], searchNickList);
             if (newNick === null) {
                 // no match
                 return ret;
