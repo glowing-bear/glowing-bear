@@ -12,6 +12,9 @@
     "angular-touch": "1.4.x",
     "angular-loader": "1.4.x",
     "angular-mocks": "1.4.x",
-    "html5-boilerplate": "~4.3.0"
+    "html5-boilerplate": "~4.3.0",
+    "underscore": "~1.7",
+    "bootstrap": "~3.1",
+    "emojione": "~2.1"
   }
 }

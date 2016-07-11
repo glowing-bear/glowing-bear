@@ -24,7 +24,8 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
             }
         }
 
-        if ('serviceWorker' in navigator) {
+        // Check for serviceWorker support, and also disable serviceWorker if we're running in electron process, since that's just problematic and not necessary, since gb then already is in a separate process
+        if ('serviceWorker' in navigator && window.is_electron !== 1) {
             $log.info('Service Worker is supported');
             navigator.serviceWorker.register('serviceworker.js').then(function(reg) {
                 $log.info('Service Worker install:', reg);
@@ -140,17 +141,34 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
                     bgColor: '#d00',
                     textColor: '#fff'
             });
+            // Set badge to notifications count
+            updateBadge(notifications);
         } else {
             var unread = unreadCount('unread');
             if (unread === 0) {
                 $rootScope.favico.reset();
+                // Remove badge form app icon
+                updateBadge('');
             } else {
                 $rootScope.favico.badge(unread, {
                     bgColor: '#5CB85C',
                     textColor: '#ff0'
                 });
+                // Set app badge to "." when only unread and no notifications
+                updateBadge("•");
             }
         }
+    };
+
+    // Update app badge (electron only)
+    var updateBadge = function(value) {
+
+        // Send new value to preloaded global function
+        // if it exists
+        if (typeof setElectronBadge === 'function') {
+            setElectronBadge(value);
+        }
+
     };
 
     /* Function gets called from bufferLineAdded code if user should be notified */
@@ -203,6 +221,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
         requestNotificationPermission: requestNotificationPermission,
         updateTitle: updateTitle,
         updateFavico: updateFavico,
+        updateBadge: updateBadge,
         createHighlight: createHighlight,
         cancelAll: cancelAll,
         unreadCount: unreadCount

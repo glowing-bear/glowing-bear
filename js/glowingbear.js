@@ -104,6 +104,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     })();
 
+    if (window.is_electron) {
+        // Use packaged emojione sprite in the electron app
+        emojione.imageType = 'svg';
+        emojione.sprites = true;
+        emojione.imagePathSVGSprites = './3rdparty/emojione.sprites.svg';
+    }
 
     $rootScope.isWindowFocused = function() {
         if (typeof $scope.documentHidden === "undefined") {
@@ -378,6 +384,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             notifications.updateFavico();
         } else {
             $rootScope.favico.reset();
+            notifications.updateBadge('');
         }
     });
 
