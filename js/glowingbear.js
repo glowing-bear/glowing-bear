@@ -46,6 +46,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'readlineBindings': false,
         'enableJSEmoji': (utils.isMobileUi() ? false : true),
         'enableMathjax': false,
+        'enableAltSwitcher': true,
         'customCSS': '',
     });
     $scope.settings = settings;

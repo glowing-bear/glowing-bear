@@ -243,7 +243,7 @@ weechat.directive('inputBar', function() {
                 $scope.iterCandidate = null;
 
                 // Left Alt+[0-9] -> jump to buffer
-                if ($event.altKey && !$event.ctrlKey && (code > 47 && code < 58)) {
+                if ($event.altKey && !$event.ctrlKey && (code > 47 && code < 58) && settings.enableAltSwitcher) {
                     if (code === 48) {
                         code = 58;
                     }

@@ -487,6 +487,16 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                   </div>
                 </form>
               </li>
+               <li>
+                <form class="form-inline" role="form">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="settings.enableAltSwitcher">
+                      Use Alt+&lt;num&gt; to switch buffers
+                    </label>
+                  </div>
+                </form>
+              </li>
             </ul>
           </div>
           <div class="modal-footer">
