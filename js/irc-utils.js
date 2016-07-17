@@ -127,7 +127,7 @@ IrcUtils.service('IrcUtils', [function() {
             return coll;
         }, {});
         var nickStr = ('-\\[\\]\\\\' +
-            Object.keys(nickChars).join('').replace(/-\[\]\\/g, ''));
+            Object.keys(nickChars).join('').replace(/[-\[\]\\]/g, ''));
 
         // text before and after caret
         var beforeCaret = text.substring(0, caretPos);
