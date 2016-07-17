@@ -120,6 +120,17 @@ IrcUtils.service('IrcUtils', [function() {
 
         // new nick list to search in
         var searchNickList = _ciNickList(nickList);
+        var ns = searchNickList.reduce(function(coll, nick) {
+            Array.prototype.forEach.call(nick, function(char) {
+                coll[char] = true;
+            });
+            return coll;
+        }, {});
+        var ss = '-' + Object.keys(ns).join('')
+            .replace('\\', '\\\\')
+            .replace('[', '\\[')
+            .replace(']', '\\]')
+            .replace('-', '');
 
         // text before and after caret
         var beforeCaret = text.substring(0, caretPos);
@@ -134,7 +145,7 @@ IrcUtils.service('IrcUtils', [function() {
         };
 
         // iterating nicks at the beginning?
-        var m = beforeCaret.match(new RegExp('^([a-zA-Z0-9_\\\\\\[\\]{}^`|-]+)' + suf + ' $'));
+        var m = beforeCaret.match(new RegExp('^([' + ss + ']+)' + suf + ' $'));
 
         var newNick = null;
         if (m) {
@@ -155,7 +166,7 @@ IrcUtils.service('IrcUtils', [function() {
         }
 
         // nick completion in the beginning?
-        m = beforeCaret.match(/^([a-zA-Z0-9_\\\[\]{}^`|-]+)$/);
+        m = beforeCaret.match(new RegExp('^([' + ss + ']+)$'));
         if (m) {
             // try completing
             newNick = _completeSingleNick(m[1], searchNickList);
@@ -177,7 +188,7 @@ IrcUtils.service('IrcUtils', [function() {
         }
 
         // iterating nicks in the middle?
-        m = beforeCaret.match(/^(.* )([a-zA-Z0-9_\\\[\]{}^`|-]+) $/);
+        m = beforeCaret.match(new RegExp('^(.* )([' + ss + ']+) $'));
         if (m) {
             if (doIterate) {
                 // try iterating
@@ -196,7 +207,7 @@ IrcUtils.service('IrcUtils', [function() {
         }
 
         // nick completion elsewhere in the middle?
-        m = beforeCaret.match(/^(.* )([a-zA-Z0-9_\\\[\]{}^`|-]+)$/);
+        m = beforeCaret.match(new RegExp('^(.* )([' + ss + ']+)$'));
         if (m) {
             // try completing
             newNick = _completeSingleNick(m[2], searchNickList);
