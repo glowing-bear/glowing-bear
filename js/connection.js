@@ -320,7 +320,7 @@ weechat.factory('connection',
         });
     };
 
-    var fetchConfValue = function(name) {
+    var fetchConfValue = function(name, callback) {
         ngWebsockets.send(
             weeChat.Protocol.formatInfolist({
                 name: "option",
@@ -329,6 +329,9 @@ weechat.factory('connection',
             })
         ).then(function(i) {
             handlers.handleConfValue(i);
+            if (callback !== undefined) {
+                callback();
+            }
         });
     };
 
