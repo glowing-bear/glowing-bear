@@ -77,6 +77,64 @@ weechat.factory('connection',
                 );
             };
 
+            var _parseWeechatTimeFormat = function() {
+                // Fetch the buffer time format from weechat
+                var timeFormat = models.wconfig['weechat.look.buffer_time_format'];
+
+                // Weechat uses strftime, with time specifiers such as %I:%M:%S for 12h time
+                // The time formatter we use, AngularJS' date filter, uses a different format
+                // Where %I:%M:%S would be represented as hh:mm:ss
+                // Here, we detect what format the user has set in Weechat and slot it into
+                // one of four formats, (short|long) (12|24)-hour time
+                var angularFormat = "";
+
+                var timeDelimiter = "'<span class=\"cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters\">:</span>'";
+
+                var left12 = "hh" + timeDelimiter + "mm";
+                var right12 = "'&nbsp;'a";
+
+                var short12 = left12 + right12;
+                var long12 = left12 + timeDelimiter + "ss" + right12;
+
+                var short24 = "HH" + timeDelimiter + "mm";
+                var long24 = short24 + timeDelimiter + "ss";
+
+                if (timeFormat.indexOf("%H") > -1 ||
+                    timeFormat.indexOf("%k") > -1) {
+                    // 24h time detected
+                    if (timeFormat.indexOf("%S") > -1) {
+                        // show seconds
+                        angularFormat = long24;
+                    } else {
+                        // don't show seconds
+                        angularFormat = short24;
+                    }
+                } else if (timeFormat.indexOf("%I") > -1 ||
+                           timeFormat.indexOf("%l") > -1 ||
+                           timeFormat.indexOf("%p") > -1 ||
+                           timeFormat.indexOf("%P") > -1) {
+                    // 12h time detected
+                    if (timeFormat.indexOf("%S") > -1) {
+                        // show seconds
+                        angularFormat = long12;
+                    } else {
+                        // don't show seconds
+                        angularFormat = short12;
+                    }
+                } else if (timeFormat.indexOf("%r") > -1) {
+                    // strftime doesn't have an equivalent for short12???
+                    angularFormat = long12;
+                } else if (timeFormat.indexOf("%T") > -1) {
+                    angularFormat = long24;
+                } else if (timeFormat.indexOf("%R") > -1) {
+                    angularFormat = short24;
+                } else {
+                    angularFormat = short24;
+                }
+
+                $rootScope.angularTimeFormat = angularFormat;
+            };
+
 
             // First command asks for the password and issues
             // a version command. If it fails, it means the we
@@ -97,6 +155,13 @@ weechat.factory('connection',
                             successCallback();
                         }
                     });
+
+                    // Fetch weechat time format for displaying timestamps
+                    fetchConfValue('weechat.look.buffer_time_format',
+                                   function() {
+                                       _parseWeechatTimeFormat();
+                                   });
+                    // Will set models.wconfig['weechat.look.buffer_time_format']
 
                     _requestSync();
                     $log.info("Connected to relay");
