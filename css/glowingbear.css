@@ -430,14 +430,6 @@ div.colourbox {
 }
 
 
-table.notimestamp td.time {
-    display: none !important;
-}
-
-table.notimestampseconds td.time span.seconds {
-    display: none !important;
-}
-
 #sidebar .showquickkeys .buffer .buffer-quick-key {
     transition: all ease-in-out 0.5s;
     -webkit-transition: all ease-in-out 0.5s;
