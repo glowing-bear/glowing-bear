@@ -276,7 +276,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
             </li>
           </ul>
         </div>
-        <table ng-class="{'notimestamp':!settings.showtimestamp,'notimestampseconds':!settings.showtimestampSeconds}">
+        <table>
           <tbody>
             <tr class="bufferline">
               <td ng-hide="activeBuffer().allLinesFetched" colspan="3">
@@ -289,7 +289,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
             <tr class="bufferline">
               <td class="time">
                 <span class="date" ng-class="::{'repeated-time': bufferline.shortTime==bufferlines[$index-1].shortTime}">
-                  <span class="cof-chat_time cob-chat_time coa-chat_time timestamp-no-seconds" ng-bind-html="::bufferline.formattedTime"></span>
+                  <span class="cof-chat_time cob-chat_time coa-chat_time" ng-bind-html="::bufferline.formattedTime"></span>
                 </span>
               </td>
               <td class="prefix"><a ng-click="addMention(bufferline.prefix)"><span class="hidden-bracket">&lt;</span><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text|prefixlimit:25"></span><span class="hidden-bracket">&gt;</span></a></td><!--
@@ -374,28 +374,6 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
                     </label>
                   </div>
                 </form>
-              </li>
-              <li>
-                <form class="form-inline" role="form">
-                  <div class="checkbox">
-                    <label>
-                      <input type="checkbox" ng-model="settings.showtimestamp">
-                      Show timestamps
-                    </label>
-                  </div>
-                </form>
-                <ul ng-show="settings.showtimestamp">
-                  <li>
-                    <form class="form-inline" role="form">
-                      <div class="checkbox">
-                        <label>
-                          <input type="checkbox" ng-model="settings.showtimestampSeconds">
-                          Show seconds
-                        </label>
-                      </div>
-                    </form>
-                  </li>
-                </ul>
               </li>
               <li>
                 <form class="form-inline" role="form">

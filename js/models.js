@@ -347,24 +347,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var buffer = message.buffer;
         var date = message.date;
         var shortTime = $filter('date')(date, 'HH:mm');
-        var formattedTime = "";
-
-        if ($rootScope.supports_formatting_date) {
-          formattedTime = date.toLocaleTimeString([], {hour: "2-digit",
-                                                 minute: "2-digit",
-                                                 second: "2-digit"});
-        } else {
-          formattedTime = $filter('date')(date, 'HH:mm:ss');
-        }
-
-        formattedTime = formattedTime.replace(/ /g, "&nbsp;");
-        // If in 12h time the hour field has only one number, zero pad it
-        formattedTime = formattedTime.replace(/^(\d)(:|\.)/, '0$1$2');
-        // Wrap the first time separator in a span
-        formattedTime = formattedTime.replace(/(:|\.)/, '<span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">$1</span>');
-        // Wrap the second time separator and seconds field in another span
-        // so that we can easily hide seconds using a CSS selector
-        formattedTime = formattedTime.replace(/(\d\d)(:|\.)(\d\d)/, '$1<span class="seconds"><span class="cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters">$2</span>$3</span>');
+        var formattedTime = $filter('date')(date, $rootScope.angularTimeFormat);
 
         var prefix = parseRichText(message.prefix);
         var tags_array = message.tags_array;
