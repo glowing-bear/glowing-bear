@@ -400,7 +400,7 @@ plugins.factory('userPlugins', function() {
       * Asciinema plugin
      */
     var asciinemaPlugin = new UrlPlugin('ascii cast', function(url) {
-        var regexp = /^https?:\/\/(?:www\.)?asciinema.org\/a\/(\d+)/i,
+        var regexp = /^https?:\/\/(?:www\.)?asciinema.org\/a\/(.*[0-9a-z])/i,
             match = url.match(regexp);
         if (match) {
             var id = match[1];
