@@ -340,23 +340,33 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
      * Handle answers to hotlist request
      */
     var handleHotlistInfo = function(message) {
-        if (message.objects.length === 0) {
-            return;
+        // Hotlist includes only buffers with unread counts so first we
+        // iterate all our buffers and resets the counts.
+        _.each(models.getBuffers(), function(buffer) {
+            buffer.unread = 0;
+            buffer.notification = 0;
+        });
+        if (message.objects.length > 0) {
+            var hotlist = message.objects[0].content;
+            hotlist.forEach(function(l) {
+                var buffer = models.getBuffer(l.buffer);
+                // 1 is message
+                buffer.unread = l.count[1];
+                // 2 is private
+                buffer.notification = l.count[2];
+                // 3 is highlight
+                buffer.notification = l.count[3];
+                /* Since there is unread messages, we can guess
+                * what the last read line is and update it accordingly
+                */
+                var unreadSum = _.reduce(l.count, function(memo, num) { return memo + num; }, 0);
+                buffer.lastSeen = buffer.lines.length - 1 - unreadSum;
+            });
         }
-        var hotlist = message.objects[0].content;
-        hotlist.forEach(function(l) {
-            var buffer = models.getBuffer(l.buffer);
-            // 1 is message
-            buffer.unread += l.count[1];
-            // 2 is private
-            buffer.notification += l.count[2];
-            // 3 is highlight
-            buffer.notification += l.count[3];
-            /* Since there is unread messages, we can guess
-            * what the last read line is and update it accordingly
-            */
-            var unreadSum = _.reduce(l.count, function(memo, num) { return memo + num; }, 0);
-            buffer.lastSeen = buffer.lines.length - 1 - unreadSum;
+        // the unread badges in the bufferlist doesn't update if we don't do this
+        setTimeout(function() {
+            $rootScope.$apply();
+            $rootScope.$emit('notificationChanged');
         });
     };
 
