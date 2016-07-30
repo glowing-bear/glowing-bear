@@ -306,7 +306,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
     var handleBufferTypeChanged = function(message) {
         var obj = message.objects[0].content[0];
         var buffer = obj.pointers[0];
-        var old = models.getBuffer(buffer);
+        //var old = models.getBuffer(buffer);
         // 0 = formatted (normal); 1 = free
         buffer.bufferType = obj.type;
     };
@@ -350,6 +350,12 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
             var hotlist = message.objects[0].content;
             hotlist.forEach(function(l) {
                 var buffer = models.getBuffer(l.buffer);
+                // If buffer is active in gb, but not active in WeeChat the
+                // hotlist in WeeChat will increase but we should ignore that
+                // in gb.
+                if (buffer.active) {
+                    return;
+                }
                 // 1 is message
                 buffer.unread = l.count[1];
                 // 2 is private
