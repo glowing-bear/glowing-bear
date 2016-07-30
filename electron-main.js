@@ -7,6 +7,8 @@
     const ipcMain = require('electron').ipcMain;
     const nativeImage = require('electron').nativeImage;
     const Menu = require('electron').Menu;
+    // Node fs module
+    const fs = require("fs");
 
     var template;
 
@@ -184,8 +186,25 @@
 
         var menu = Menu.buildFromTemplate(template);
         Menu.setApplicationMenu(menu);
+        const initPath  = __dirname + "/init.json";
+        var data;
 
-        mainWindow = new BrowserWindow({width: 1280, height: 800, 'min-width': 1024, 'min-height': 600, 'autoHideMenuBar': true, 'web-security': true, 'java': false, 'accept-first-mouse': true, defaultEncoding: 'UTF-8', 'icon':'file://'+__dirname + '/assets/img/favicon.png'});
+        // read saved state from file (e.g. window bounds)
+        try {
+            data = JSON.parse(fs.readFileSync(initPath, 'utf8'));
+        }
+        catch(e) {
+            console.log('Unable to read init.json: ', e);
+        }
+        const bounds = (data && data.bounds) ? data.bounds : {width: 1280, height:800 };
+        var bwdata = {width: bounds.width, height: bounds.height, 'min-width': 1024, 'min-height': 600, 'autoHideMenuBar': true, 'web-security': true, 'java': false, 'accept-first-mouse': true, defaultEncoding: 'UTF-8', 'icon':'file://'+__dirname + '/assets/img/favicon.png'}
+        // Remembe window position
+        if (data && data.bounds.x && data.bounds.y) {
+            bwdata.x = data.bounds.x;
+            bwdata.y = data.bounds.y;
+        }
+
+        mainWindow = new BrowserWindow(bwdata);
         mainWindow.loadURL('file://' + __dirname + '/electron-start.html');
         mainWindow.focus();
 
@@ -210,6 +229,14 @@
 
         mainWindow.on('devtools-opened', function() {
             mainWindow.webContents.executeJavaScript("document.getElementById('glowingbear').openDevTools();");
+        });
+
+        mainWindow.on('close', function() {
+            // Save window bounds to disk
+            var data = {
+                bounds: mainWindow.getBounds()
+            };
+            fs.writeFileSync(initPath, JSON.stringify(data));
         });
 
         mainWindow.on('closed', function() {
