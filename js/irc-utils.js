@@ -8,14 +8,6 @@
 var IrcUtils = angular.module('IrcUtils', []);
 
 IrcUtils.service('IrcUtils', [function() {
-    /**
-     * Escape a string for usage in a larger regexp
-     * @param str String to escape
-     * @return Escaped string
-     */
-     var escapeRegExp = function(str) {
-         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-     };
 
     /**
      * Get a new version of a nick list, sorted by last speaker

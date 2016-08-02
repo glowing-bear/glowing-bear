@@ -52,7 +52,7 @@ weechat.factory('settings', ['$store', '$rootScope', function($store, $rootScope
 	// Add a callback to be called whenever the value is changed
 	// It's like a free $watch and used to be called the observer
 	// pattern, but I guess that's too old-school for JS kids :>
-	this.addCallback = function(key, callback, callNow) {
+	this.addCallback = function(key, callback) {
 		if (this.callbacks[key] === undefined) {
 			this.callbacks[key] = [callback];
 		} else {

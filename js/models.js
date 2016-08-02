@@ -335,7 +335,9 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             getHistoryUp: getHistoryUp,
             getHistoryDown: getHistoryDown,
             isNicklistEmpty: isNicklistEmpty,
-            nicklistRequested: nicklistRequested
+            nicklistRequested: nicklistRequested,
+            allLinesFetched: allLinesFetched,
+            active: active,
         };
 
     };
