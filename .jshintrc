@@ -1,11 +1,25 @@
 {
   "browser": true,
   "devel": true,
+  "curly": true,
+  "funcscope": true,
+  "noempty": true,
+  "indent": true,
+  "nonbsp": true,
+  "strict": true,
+  "undef": true,
+  "unused": true,
   "globals": {
     "angular": false,
     "weeChat": false,
+    "emojione": false,
+    "MathJax": false,
+    "renderMathInElement": false,
+    "Zlib": false,
     "_": false,
     "Notification": false,
-    "Favico": false
+    "Favico": false,
+    "Windows": false,
+    "setElectronBadge": false
   }
 }
