@@ -680,6 +680,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             if (buffer.fullName === "core.weechat" || (settings.orderbyserver && buffer.type === 'server')) {
                 return true;
             }
+
+            // Always show pinned buffers
+            if (buffer.pinned) {
+                return true;
+            }
             return (buffer.unread > 0 || buffer.notification > 0) && !buffer.hidden;
         }
         return !buffer.hidden;
