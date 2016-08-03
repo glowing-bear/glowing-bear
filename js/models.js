@@ -95,6 +95,9 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
 
         var plugin = message.local_variables.plugin;
         var server = message.local_variables.server;
+
+        var pinned = message.local_variables.pinned === "true";
+
         // Server buffers have this "irc.server.freenode" naming schema, which
         // messes the sorting up. We need it to be "irc.freenode" instead.
         var serverSortKey = plugin + "." + server +
@@ -335,7 +338,8 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             getHistoryUp: getHistoryUp,
             getHistoryDown: getHistoryDown,
             isNicklistEmpty: isNicklistEmpty,
-            nicklistRequested: nicklistRequested
+            nicklistRequested: nicklistRequested,
+            pinned: pinned,
         };
 
     };
