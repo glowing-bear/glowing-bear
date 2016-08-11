@@ -206,7 +206,7 @@ plugins.factory('userPlugins', function() {
      * See: https://developers.google.com/youtube/player_parameters
      */
     var youtubePlugin = new UrlPlugin('YouTube video', function(url) {
-        var regex = /(?:youtube.com|youtu.be)\/(?:v\/|embed\/|watch(?:\?v=|\/))?([a-zA-Z0-9-]+)/i,
+        var regex = /(?:youtube.com|youtu.be)\/(?:v\/|embed\/|watch(?:\?v=|\/))?([a-zA-Z0-9_-]+)/i,
             match = url.match(regex);
 
         if (match){
