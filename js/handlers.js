@@ -359,9 +359,11 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
                 // 1 is message
                 buffer.unread = l.count[1];
                 // 2 is private
-                buffer.notification = l.count[2];
+                // Use += so count[2] or count[3] doesn't overwrite each other
+                buffer.notification += l.count[2];
                 // 3 is highlight
-                buffer.notification = l.count[3];
+                // Use += so count[2] or count[3] doesn't overwrite each other
+                buffer.notification += l.count[3];
                 /* Since there is unread messages, we can guess
                 * what the last read line is and update it accordingly
                 */
