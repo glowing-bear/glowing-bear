@@ -175,7 +175,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         }
     };
 
-    var handleBufferInfo = function(message) {
+    var handleBufferInfo = function(message, bufferToStart) {
         var bufferInfos = message.objects[0].content;
         // buffers objects
         for (var i = 0; i < bufferInfos.length ; i++) {
@@ -188,7 +188,10 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
                 buffer = new models.Buffer(bufferInfos[i]);
                 models.addBuffer(buffer);
                 // Switch to first buffer on startup
-                if (i === 0) {
+                if (i === 0 && bufferToStart === undefined) {
+                    models.setActiveBuffer(buffer.id);
+                }
+                else if(buffer.id === bufferToStart){
                     models.setActiveBuffer(buffer.id);
                 }
             }
