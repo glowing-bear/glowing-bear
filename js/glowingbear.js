@@ -45,6 +45,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'enableJSEmoji': (utils.isMobileUi() ? false : true),
         'enableMathjax': false,
         'customCSS': '',
+        "resumeBuffer":false,
+        "activeBuffer":"",
     });
     $scope.settings = settings;
 
@@ -159,6 +161,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         $scope.bufferlines = ab.lines;
         $scope.nicklist = ab.nicklist;
+        $scope.settings.activeBuffer = ab.id;
 
         // Send a request for the nicklist if it hasn't been loaded yet
         if (!ab.nicklistRequested()) {
@@ -594,7 +597,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $rootScope.bufferBottom = true;
         $scope.connectbutton = 'Connecting';
         $scope.connectbuttonicon = 'glyphicon-refresh glyphicon-spin';
-        connection.connect(settings.host, settings.port, $scope.password, settings.ssl);
+        if(settings.resumeBuffer) {
+            var bufferToStart = settings.activeBuffer;
+        }
+        connection.connect(settings.host, settings.port, $scope.password, settings.ssl, null, bufferToStart);
     };
     $scope.disconnect = function() {
         $scope.connectbutton = 'Connect';
