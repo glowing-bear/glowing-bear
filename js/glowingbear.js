@@ -588,6 +588,19 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $scope.connect = function() {
         notifications.requestNotificationPermission();
+
+        // trigger input event on all inputs to allow filling with js-based password managers
+        // see #811 and angular/angular.js#3133 for an explanation
+        setTimeout(function() { // need to do this outside of angular
+            var inputs = document.querySelectorAll('input.form-control');
+            for (var i = 0; i < inputs.length; i++) {
+                // For a full list of event types: https://developer.mozilla.org/en-US/docs/Web/API/document.createEvent
+                var event = document.createEvent('HTMLEvents');
+                event.initEvent('input', true, false);
+                inputs[i].dispatchEvent(event);
+            }
+        });
+
         $rootScope.sslError = false;
         $rootScope.securityError = false;
         $rootScope.errorMessage = false;
