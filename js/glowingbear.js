@@ -594,9 +594,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         setTimeout(function() { // need to do this outside of angular
             var inputs = document.querySelectorAll('input.form-control');
             for (var i = 0; i < inputs.length; i++) {
-                // For a full list of event types: https://developer.mozilla.org/en-US/docs/Web/API/document.createEvent
-                var event = document.createEvent('HTMLEvents');
-                event.initEvent('input', true, false);
+                var event = new Event('change', {'bubbles': true, 'cancelable': true});
                 inputs[i].dispatchEvent(event);
             }
         });
