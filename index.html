@@ -183,6 +183,18 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
 /relay sslcertkey
 /relay add ssl.weechat {{ settings.port || 9001 }}
 </pre>
+              <p><strong>Alternative via Apache reverse proxy</strong>: Should you be hosting Glowing Bear and the WeeChat client on the same system, it can be very interesting to use an Apache to serve both, the static HTML content of Glowing Bear and the websocket connection for WeeChat from the same port. The advantage is that users in networks that block some ports are still able to connect as long as port 443 outgoing is permitted.</p>
+<p>First, you need to configure Apache as usual to serve static HTML content via HTTPS and deploy the Glowing Bear files somewhere such as <i>/var/www/html/</i> or a different directory. Make sure that the modules <i>proxy</i> and <i>proxy_wstunnel</i> are loaded by Apache. Then add the following lines to your Apache SSL host configuration:</p>
+<pre>
+ProxyPass "/weechat" "ws://localhost:8001/weechat"
+ProxyPassReverse "/weechat" "ws://localhost:8001/weechat"
+</pre>
+<p>Then configure a relay without encryption in WeeChat itself:</p>
+<pre>
+/set relay.network.password yourpassword
+/relay add weechat 8001
+</pre>
+<p>Do not configure any certificates in WeeChat.</p>
             </div>
           </div>
         </div>
