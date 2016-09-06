@@ -8,7 +8,7 @@
   "license": "GPLv3",
   "devDependencies": {
     "bower": "^1.3.1",
-    "electron-packager": "^6.0.0",
+    "electron-packager": "^7.0.0",
     "http-server": "^0.6.1",
     "jasmine-core": "^2.4.1",
     "jshint": "^2.5.2",
@@ -16,14 +16,14 @@
     "karma-jasmine": "^0.3.6",
     "karma-junit-reporter": "^0.2.2",
     "karma-phantomjs-launcher": "^0.2.1",
-    "phantomjs": "^1.9.19",
+    "phantomjs-prebuilt": "^2.1.1",
     "protractor": "~0.20.1",
     "shelljs": "^0.2.6",
     "uglify-js": "^2.4"
   },
   "scripts": {
     "postinstall": "bower install",
-    "minify": " uglifyjs js/localstorage.js js/weechat.js js/irc-utils.js js/glowingbear.js js/settings.js js/utils.js js/notifications.js js/filters.js js/handlers.js js/connection.js js/file-change.js js/imgur-drop-directive.js js/whenscrolled-directive.js js/inputbar.js js/plugin-directive.js js/websockets.js js/models.js js/plugins.js js/imgur.js -c -m --screw-ie8 -o min.js --source-map min.map",
+    "minify": " uglifyjs js/localstorage.js js/weechat.js js/irc-utils.js js/glowingbear.js js/settings.js js/utils.js js/notifications.js js/filters.js js/handlers.js js/connection.js js/file-change.js js/imgur-drop-directive.js js/whenscrolled-directive.js js/inputbar.js js/plugin-directive.js js/websockets.js js/models.js js/bufferResume.js js/plugins.js js/imgur.js -c -m --screw-ie8 -o min.js --source-map min.map",
     "prestart": "npm install",
     "start": "http-server -a localhost -p 8000",
     "pretest": "npm install",

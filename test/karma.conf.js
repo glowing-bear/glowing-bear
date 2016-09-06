@@ -22,6 +22,7 @@ module.exports = function(config){
       'js/plugin-directive.js',
       'js/websockets.js',
       'js/models.js',
+      'js/bufferResume.js',
       'js/plugins.js',
       'test/unit/**/*.js'
     ],
