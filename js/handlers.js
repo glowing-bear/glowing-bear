@@ -3,7 +3,7 @@
 
 var weechat = angular.module('weechat');
 
-weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notifications', function($rootScope, $log, models, plugins, notifications) {
+weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notifications', 'bufferResume', function($rootScope, $log, models, plugins, notifications, bufferResume) {
 
     var handleVersionInfo = function(message) {
         var content = message.objects[0].content;
@@ -188,10 +188,16 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
                 buffer = new models.Buffer(bufferInfos[i]);
                 models.addBuffer(buffer);
                 // Switch to first buffer on startup
-                if (i === 0) {
+                var shouldResume = bufferResume.shouldResume(buffer);
+                if(shouldResume){
                     models.setActiveBuffer(buffer.id);
                 }
             }
+        }
+        // If there was no buffer to autmatically load, go to the first one.
+        if (!bufferResume.wasAbleToResume()) {
+            var first = bufferInfos[0].pointers[0];
+            models.setActiveBuffer(first);
         }
     };
 

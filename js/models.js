@@ -7,7 +7,7 @@
 
 var models = angular.module('weechatModels', []);
 
-models.service('models', ['$rootScope', '$filter', function($rootScope, $filter) {
+models.service('models', ['$rootScope', '$filter', 'bufferResume', function($rootScope, $filter, bufferResume) {
     // WeeChat version
     this.version = null;
 
@@ -547,6 +547,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
 
         $rootScope.$emit('activeBufferChanged', unreadSum);
         $rootScope.$emit('notificationChanged');
+        bufferResume.record(activeBuffer);
         return true;
     };
 
