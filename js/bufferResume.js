@@ -47,8 +47,8 @@ bufferResume.service('bufferResume', ['settings', function(settings) {
     };
 
     // Clear out the recorded info.  Maybe we'll do this when the user chooses to disconnect?  
-    resumer.clear = function() {
-        record(undefined);
+    resumer.reset = function() {
+        hasResumed = false;
     };
 
     return resumer;
