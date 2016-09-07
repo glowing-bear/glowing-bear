@@ -260,6 +260,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $rootScope.$emit('notificationChanged');
         $scope.connectbutton = 'Connect';
         $scope.connectbuttonicon = 'glyphicon-chevron-right';
+        bufferResume.reset();
     });
     $scope.connectbutton = 'Connect';
     $scope.connectbuttonicon = 'glyphicon-chevron-right';
@@ -600,6 +601,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.disconnect = function() {
         $scope.connectbutton = 'Connect';
         $scope.connectbuttonicon = 'glyphicon-chevron-right';
+        bufferResume.reset();
         connection.disconnect();
     };
     $scope.reconnect = function() {
