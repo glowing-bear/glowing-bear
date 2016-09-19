@@ -19,7 +19,7 @@ weechat.factory('connection',
     var locked = false;
 
     // Takes care of the connection and websocket hooks
-    var connect = function (host, port, passwd, ssl, noCompression, successCallback, failCallback) {
+    var connect = function(host, port, passwd, ssl, noCompression, successCallback, failCallback) {
         $rootScope.passwordError = false;
         connectionData = [host, port, passwd, ssl, noCompression];
         var proto = ssl ? 'wss' : 'ws';
@@ -30,7 +30,7 @@ weechat.factory('connection',
         var url = proto + "://" + host + ":" + port + "/weechat";
         $log.debug('Connecting to URL: ', url);
 
-        var onopen = function () {
+        var onopen = function() {
 
 
             // Helper methods for initialization commands
@@ -234,7 +234,7 @@ weechat.factory('connection',
         };
 
 
-        var onclose = function (evt) {
+        var onclose = function(evt) {
             /*
              * Handles websocket disconnection
              */
@@ -250,7 +250,7 @@ weechat.factory('connection',
             handleWrongPassword();
         };
 
-        var handleClose = function (evt) {
+        var handleClose = function(evt) {
             if (ssl && evt && evt.code === 1006) {
                 // A password error doesn't trigger onerror, but certificate issues do. Check time of last error.
                 if (typeof $rootScope.lastError !== "undefined" && (Date.now() - $rootScope.lastError) < 1000) {
@@ -269,7 +269,7 @@ weechat.factory('connection',
             }
         };
 
-        var onerror = function (evt) {
+        var onerror = function(evt) {
             /*
              * Handles cases when connection issues come from
              * the relay.
@@ -316,7 +316,7 @@ weechat.factory('connection',
 
     };
 
-    var attemptReconnect = function (bufferId, timeout) {
+    var attemptReconnect = function(bufferId, timeout) {
         $log.info('Attempting to reconnect...');
         var d = connectionData;
         connect(d[0], d[1], d[2], d[3], d[4], function() {
@@ -329,7 +329,8 @@ weechat.factory('connection',
             if (timeout >= 600000) {
                 // If timeout is ten minutes or more, give up
                 $log.info('Failed to reconnect, giving up');
-                handleClose();
+                // This code can't run since handleClose is defined inside connect
+                // handleClose();
             } else {
                 $log.info('Failed to reconnect, scheduling next attempt in', timeout/1000, 'seconds');
                 // Clear previous timer, if exists
@@ -345,7 +346,7 @@ weechat.factory('connection',
     };
 
 
-    var reconnect = function (evt) {
+    var reconnect = function() {
         if (connectionData.length < 5) {
             // something is wrong
             $log.error('Cannot reconnect, connection information is missing');
@@ -374,7 +375,7 @@ weechat.factory('connection',
         $rootScope.userdisconnect = true;
         ngWebsockets.send(weeChat.Protocol.formatQuit());
         // In case the backend doesn't repond we will close from our end
-        var closeTimer = setTimeout(function() {
+        setTimeout(function() {
             ngWebsockets.disconnect();
             // We pretend we are not connected anymore
             // The connection can time out on its own

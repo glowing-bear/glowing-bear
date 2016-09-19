@@ -294,7 +294,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     }
 
     // Check if user decides to save password, and copy it over
-    settings.addCallback('savepassword', function(newvalue) {
+    settings.addCallback('savepassword', function() {
         if (settings.savepassword) {
             // Init value in settings module
             settings.setDefaults({'password': $scope.password});
@@ -640,8 +640,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         function closest(elem, selector) {
             var matchesSelector = elem.matches || elem.webkitMatchesSelector || elem.mozMatchesSelector || elem.msMatchesSelector;
             while (elem) {
-                if (matchesSelector.call(elem, selector)) return elem;
-                else elem = elem.parentElement;
+                if (matchesSelector.call(elem, selector)) {
+                    return elem;
+                } else {
+                    elem = elem.parentElement;
+                }
             }
         }
         closest($event.target, '.gb-modal').setAttribute('data-state', 'hidden');

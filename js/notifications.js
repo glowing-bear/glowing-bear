@@ -1,3 +1,6 @@
+(function() {
+'use strict';
+
 var weechat = angular.module('weechat');
 
 weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', function($rootScope, $log, models, settings) {
@@ -227,3 +230,5 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
         unreadCount: unreadCount
     };
 }]);
+
+})();

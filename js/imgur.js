@@ -8,7 +8,9 @@ weechat.factory('imgur', ['$rootScope', function($rootScope) {
     var process = function(image, callback) {
 
         // Is it an image?
-        if (!image || !image.type.match(/image.*/)) return;
+        if (!image || !image.type.match(/image.*/)) {
+            return;
+        }
 
         // New file reader
         var reader = new FileReader();

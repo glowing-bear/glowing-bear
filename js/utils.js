@@ -1,18 +1,21 @@
+(function() {
+'use strict';
+
 var weechat = angular.module('weechat');
 
 weechat.factory('utils', function() {
-	// Helper to change style of a class
-	var changeClassStyle = function(classSelector, attr, value) {
-	    _.each(document.getElementsByClassName(classSelector), function(e) {
-	        e.style[attr] = value;
-	    });
-	};
-	// Helper to get style from a class
-	var getClassStyle = function(classSelector, attr) {
-	    _.each(document.getElementsByClassName(classSelector), function(e) {
-	        return e.style[attr];
-	    });
-	};
+    // Helper to change style of a class
+    var changeClassStyle = function(classSelector, attr, value) {
+        _.each(document.getElementsByClassName(classSelector), function(e) {
+            e.style[attr] = value;
+        });
+    };
+    // Helper to get style from a class
+    var getClassStyle = function(classSelector, attr) {
+        _.each(document.getElementsByClassName(classSelector), function(e) {
+            return e.style[attr];
+        });
+    };
 
     var isMobileUi = function() {
         // TODO don't base detection solely on screen width
@@ -35,18 +38,22 @@ weechat.factory('utils', function() {
         var elem = document.createElement("link");
         elem.rel = "stylesheet";
         elem.href = css_url;
-        if (id)
+        if (id) {
             elem.id = id;
+        }
         var head = document.getElementsByTagName("head")[0];
         head.appendChild(elem);
     };
 
 
     return {
-    	changeClassStyle: changeClassStyle,
-    	getClassStyle: getClassStyle,
+        changeClassStyle: changeClassStyle,
+        getClassStyle: getClassStyle,
         isMobileUi: isMobileUi,
         inject_script: inject_script,
         inject_css: inject_css,
     };
 });
+
+})();
+

@@ -117,7 +117,9 @@ weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
                 }
             }
             // recurse
-            if (node === undefined || node === null) return;
+            if (node === undefined || node === null) {
+                return;
+            }
             node = node.firstChild;
             while (node) {
                 var nextNode = null;
@@ -200,8 +202,12 @@ weechat.filter('latexmath', function() {
 
 weechat.filter('prefixlimit', function() {
     return function(input, chars) {
-        if (isNaN(chars)) return input;
-        if (chars <= 0) return '';
+        if (isNaN(chars)) {
+            return input;
+        }
+        if (chars <= 0) {
+            return '';
+        }
         if (input && input.length > chars) {
             input = input.substring(0, chars);
             return input + '+';
