@@ -77,11 +77,12 @@ weechat.factory('connection',
                 );
             };
 
-            var _timeDelimiter = function(delim) {
-                return "'<span class=\"cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters\">" + delim + "</span>'";
-            };
-
             var _parseWeechatTimeFormat = function() {
+                // helper function to get a custom delimiter span
+                var _timeDelimiter = function(delim) {
+                    return "'<span class=\"cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters\">" + delim + "</span>'";
+                };
+
                 // Fetch the buffer time format from weechat
                 var timeFormat = models.wconfig['weechat.look.buffer_time_format'];
 
@@ -136,14 +137,18 @@ weechat.factory('connection',
                     angularFormat = short24;
                 }
 
-               if (timeFormat.indexOf("%d") > -1) {
+                // Check for day of month in time string
+                if (timeFormat.indexOf("%d") > -1 || timeFormat.indexOf("%e") > -1) {
                     angularFormat = "dd" + _timeDelimiter("&nbsp;") + angularFormat;
+
+                    // month, too?
                     if (timeFormat.indexOf("%m") > -1) {
                         angularFormat = "MM" + _timeDelimiter("-") + angularFormat;
+
+                        // year as well?
                         if (timeFormat.indexOf("%y") > -1) {
                             angularFormat = "yy" + _timeDelimiter("-") + angularFormat;
-                        }
-                        if (timeFormat.indexOf("%Y") > -1) {
+                        } else if (timeFormat.indexOf("%Y") > -1) {
                             angularFormat = "yyyy" + _timeDelimiter("-") + angularFormat;
                         }
                     }
