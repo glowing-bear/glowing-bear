@@ -137,21 +137,39 @@ weechat.factory('connection',
                     angularFormat = short24;
                 }
 
-                // Check for day of month in time string
-                if (timeFormat.indexOf("%d") > -1 || timeFormat.indexOf("%e") > -1) {
-                    angularFormat = "dd" + _timeDelimiter("&nbsp;") + angularFormat;
+                // Assemble day of month
+                var date_components = [];
 
-                    // month, too?
-                    if (timeFormat.indexOf("%m") > -1) {
-                        angularFormat = "MM" + _timeDelimiter("-") + angularFormat;
+                // Check for day of month in time format
+                var day_pos = Math.max(timeFormat.indexOf("%d"),
+                                       timeFormat.indexOf("%e"));
+                date_components.push([day_pos, "dd"]);
 
-                        // year as well?
-                        if (timeFormat.indexOf("%y") > -1) {
-                            angularFormat = "yy" + _timeDelimiter("-") + angularFormat;
-                        } else if (timeFormat.indexOf("%Y") > -1) {
-                            angularFormat = "yyyy" + _timeDelimiter("-") + angularFormat;
-                        }
+                // month of year?
+                var month_pos = timeFormat.indexOf("%m");
+                date_components.push([month_pos, "MM"]);
+
+                // year as well?
+                var year_pos = Math.max(timeFormat.indexOf("%y"),
+                                        timeFormat.indexOf("%Y"));
+                if (timeFormat.indexOf("%y") > -1) {
+                    date_components.push([year_pos, "yy"]);
+                } else if (timeFormat.indexOf("%Y") > -1) {
+                    date_components.push([year_pos, "yyyy"]);
+                }
+
+                // if there is a date, assemble it in the right order
+                if (date_components.length > 0) {
+                    date_components.sort();
+                    var format_array = [];
+                    for (var i = 0; i < date_components.length; i++) {
+                        if (date_components[i][0] == -1) continue;
+                        format_array.push(date_components[i][1]);
                     }
+                    // TODO: parse delimiter as well? For now, use '/' as it is
+                    // more common internationally than '-'
+                    var date_format = format_array.join(_timeDelimiter("/"));
+                    angularFormat = date_format + _timeDelimiter("&nbsp;") + angularFormat;
                 }
 
                 $rootScope.angularTimeFormat = angularFormat;
