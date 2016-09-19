@@ -137,7 +137,7 @@ weechat.factory('connection',
                     angularFormat = short24;
                 }
 
-                // Assemble day of month
+                // Assemble date format
                 var date_components = [];
 
                 // Check for day of month in time format
