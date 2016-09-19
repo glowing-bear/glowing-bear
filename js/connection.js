@@ -159,13 +159,13 @@ weechat.factory('connection',
                 }
 
                 // if there is a date, assemble it in the right order
-                if (date_components.length > 0) {
-                    date_components.sort();
-                    var format_array = [];
-                    for (var i = 0; i < date_components.length; i++) {
-                        if (date_components[i][0] == -1) continue;
-                        format_array.push(date_components[i][1]);
-                    }
+                date_components.sort();
+                var format_array = [];
+                for (var i = 0; i < date_components.length; i++) {
+                    if (date_components[i][0] == -1) continue;
+                    format_array.push(date_components[i][1]);
+                }
+                if (format_array.length > 0) {
                     // TODO: parse delimiter as well? For now, use '/' as it is
                     // more common internationally than '-'
                     var date_format = format_array.join(_timeDelimiter("/"));
