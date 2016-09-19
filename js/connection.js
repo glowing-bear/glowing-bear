@@ -78,6 +78,11 @@ weechat.factory('connection',
             };
 
             var _parseWeechatTimeFormat = function() {
+                // helper function to get a custom delimiter span
+                var _timeDelimiter = function(delim) {
+                    return "'<span class=\"cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters\">" + delim + "</span>'";
+                };
+
                 // Fetch the buffer time format from weechat
                 var timeFormat = models.wconfig['weechat.look.buffer_time_format'];
 
@@ -88,7 +93,7 @@ weechat.factory('connection',
                 // one of four formats, (short|long) (12|24)-hour time
                 var angularFormat = "";
 
-                var timeDelimiter = "'<span class=\"cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters\">:</span>'";
+                var timeDelimiter = _timeDelimiter(":");
 
                 var left12 = "hh" + timeDelimiter + "mm";
                 var right12 = "'&nbsp;'a";
@@ -130,6 +135,41 @@ weechat.factory('connection',
                     angularFormat = short24;
                 } else {
                     angularFormat = short24;
+                }
+
+                // Assemble date format
+                var date_components = [];
+
+                // Check for day of month in time format
+                var day_pos = Math.max(timeFormat.indexOf("%d"),
+                                       timeFormat.indexOf("%e"));
+                date_components.push([day_pos, "dd"]);
+
+                // month of year?
+                var month_pos = timeFormat.indexOf("%m");
+                date_components.push([month_pos, "MM"]);
+
+                // year as well?
+                var year_pos = Math.max(timeFormat.indexOf("%y"),
+                                        timeFormat.indexOf("%Y"));
+                if (timeFormat.indexOf("%y") > -1) {
+                    date_components.push([year_pos, "yy"]);
+                } else if (timeFormat.indexOf("%Y") > -1) {
+                    date_components.push([year_pos, "yyyy"]);
+                }
+
+                // if there is a date, assemble it in the right order
+                if (date_components.length > 0) {
+                    date_components.sort();
+                    var format_array = [];
+                    for (var i = 0; i < date_components.length; i++) {
+                        if (date_components[i][0] == -1) continue;
+                        format_array.push(date_components[i][1]);
+                    }
+                    // TODO: parse delimiter as well? For now, use '/' as it is
+                    // more common internationally than '-'
+                    var date_format = format_array.join(_timeDelimiter("/"));
+                    angularFormat = date_format + _timeDelimiter("&nbsp;") + angularFormat;
                 }
 
                 $rootScope.angularTimeFormat = angularFormat;
