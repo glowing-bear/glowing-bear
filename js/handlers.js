@@ -306,6 +306,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
             old.server = localvars.server;
             old.serverSortKey = old.plugin + "." + old.server +
                 (old.type === "server" ? "" :  ("." + old.shortName));
+            old.pinned = localvars.pinned === "true";
         }
     };
 
