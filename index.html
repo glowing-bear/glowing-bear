@@ -158,13 +158,13 @@
               </ul>
               <h3>Pinning buffers</h3>
               <p>
-                The option "Only show buffers with unread messages" is useful when you have a lot of buffers and cant meaningfully look at all of them at the same time. However, often you have a select few buffers that you use more frequently and would like to have displayed permanently.
+                The option "Only show buffers with unread messages" is useful when you have a lot of buffers and can't meaningfully look at all of them at the same time. However, often you have a select few buffers that you use more frequently and would like to have displayed permanently.
               </p>
               <p>
-              To pin a buffer, type <code>/buffer set localvar_set_pinned true</code>. <strong>Note</strong>: Local variables on buffers are not persisted across WeeChat restarts, so either use script <code>buffer_autoset.py</code> to automatically apply that upon buffer creation or use a trigger if you want automatic repinning when buffer gets recreated. To unpin you can use the same command and set anything other than true.
+              To pin a buffer, type <code>/buffer set localvar_set_pinned true</code>. <strong>Note</strong>: Local variables on buffers are not persisted across WeeChat restarts, so either use script <code>buffer_autoset.py</code> to automatically apply that upon buffer creation or use a trigger if you want automatic repinning when buffers get recreated. To unpin, you can use the same command and set anything other than <code>true</code>.
               </p>
               <p>
-              Helpful trigger for automatically repin buffer: <code>/trigger add autopin signal "buffer_opened" "${buffer[${tg_signal_data}].full_name} =~ irc.freenode.#weechat" "" "/command -buffer ${buffer[${tg_signal_data}].full_name} * /buffer set localvar_set_pinned true"</code>
+              Helpful trigger to automatically repin a buffer (in this instance, <var>irc.freenode.#weechat</var>): <pre><code>/trigger add autopin signal "buffer_opened" "${buffer[${tg_signal_data}].full_name} =~ <var>irc.freenode.#weechat</var>" "" "/command -buffer ${buffer[${tg_signal_data}].full_name} * /buffer set localvar_set_pinned true"</code></pre>
               </p>
 
               </div>
