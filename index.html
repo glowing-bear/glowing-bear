@@ -275,7 +275,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
             <a ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}" href="#">
               <span class="badge pull-right" ng-class="{'danger': buffer.notification}" ng-if="buffer.notification || buffer.unread" ng-bind="buffer.notification || buffer.unread"></span>
               <span class="buffer-quick-key">{{ buffer.$quickKey }}</span>
-              <span class="buffername">{{ buffer.trimmedName || buffer.fullName }}</span>
+              <span class="buffername" ng-class="{'active': buffer.notification || buffer.unread}">{{ buffer.trimmedName || buffer.fullName }}</span>
             </a>
           </li>
         </ul>

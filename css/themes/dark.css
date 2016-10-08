@@ -2138,3 +2138,11 @@ button.close:hover {
 
 
 
+.buffername {
+    color: #888;
+}
+
+.buffername.active {
+    color: white;
+    font-weight: bold;
+}
