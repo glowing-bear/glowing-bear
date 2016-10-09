@@ -636,6 +636,10 @@ img.emojione {
     width: auto;
 }
 
+.comicsans {
+   font-family: 'Comic Sans MS', 'Comic Neue', sans-serif;
+}
+
 .glyphicon-spin {
   -webkit-animation: spin 1000ms infinite linear;
   animation: spin 1000ms infinite linear;

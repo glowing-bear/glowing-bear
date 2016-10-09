@@ -210,4 +210,15 @@ weechat.filter('prefixlimit', function() {
     };
 });
 
+// Messages mentioning Comic Sans should be set in it
+weechat.filter('comicsansify', function() {
+    return function(text) {
+        if (/comic sans/gmi.test(text)) {
+            return '<span class="comicsans">' + text + '</span>';
+        } else {
+            return text;
+        }
+    };
+});
+
 })();
