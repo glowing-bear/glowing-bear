@@ -1,0 +1,20 @@
+@import "base16-default.css";
+
+:root {
+    --base00: #f5eeeb;
+    --base01: #e9e1dd;
+    --base02: #d0c8c6;
+    --base03: #b8afad;
+    --base04: #7e705a;
+    --base05: #645240;
+    --base06: #534636;
+    --base07: #3B3228;
+    --base08: #cb6077;
+    --base09: #d28b71;
+    --base0A: #f4bc87;
+    --base0B: #beb55b;
+    --base0C: #7bbda4;
+    --base0D: #8ab3b5;
+    --base0E: #a89bb9;
+    --base0F: #bb9584;
+}

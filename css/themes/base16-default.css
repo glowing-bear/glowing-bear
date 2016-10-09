@@ -1,0 +1,827 @@
+:root {
+    --base00: #181818; /* Default Background */
+    --base01: #282828; /* Lighter Background (Used for status bars) */
+    --base02: #383838; /* Selection Background */
+    --base03: #585858; /* Comments, Invisibles, Line Highlighting */
+    --base04: #B8B8B8; /* Dark Foreground (Used for status bars) */
+    --base05: #D8D8D8; /* Default Foreground, Caret, Delimiters, Operators */
+    --base06: #E8E8E8; /* Light Foreground (Not often used) */
+    --base07: #F8F8F8; /* Light Background (Not often used) */
+    --base08: #AB4642; /* "Red": Variables, XML Tags, Markup Link Text, Markup Lists, Diff Deleted */
+    --base09: #DC9656; /* "Orange": Integers, Boolean, Constants, XML Attributes, Markup Link Url */
+    --base0A: #F7CA88; /* "Yellow": Classes, Markup Bold, Search Text Background */
+    --base0B: #A1B56C; /* "Green": Strings, Inherited Class, Markup Code, Diff Inserted */
+    --base0C: #86C1B9; /* "Cyan": Support, Regular Expressions, Escape Characters, Markup Quotes */
+    --base0D: #7CAFC2; /* "Blue": Functions, Methods, Attribute IDs, Headings */
+    --base0E: #BA8BAF; /* "Magenta": Keywords, Storage, Selector, Markup Italic, Diff Changed */
+    --base0F: #A16946; /* "Brown": Deprecated, Opening/Closing Embedded Language Tags e.g. <?php ?> */
+}
+
+body {
+    background-color: var(--base00);
+    color: var(--base05);
+}
+
+a {
+    color: var(--base0D);
+}
+
+a:active, a:hover {
+    color: var(--base0D);
+    background-color: var(--base03);
+}
+
+.form-control {
+    color: var(--base05);
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.2) inset;
+    background: var(--base01);
+    border: 0px none;
+}
+
+.form-control option {
+    color: var(--base05);
+    background: var(--base01);
+}
+
+html {
+    background-color: inherit;
+}
+
+.repeated-time .cob-chat_time,
+.repeated-time .cob-chat_time_delimiters {
+    color: var(--base05);
+}
+
+/* fix for mobile firefox which ignores :hover */
+.nav-pills > li > a:active,
+.nav-pills > li > a:active span,
+.nav-pills > li > a:hover,
+.nav-pills > li > a:hover span,
+.nav-pills > li.active > a:hover,
+.nav-pills > li.active > a:hover span {
+    background-color: var(--base03);
+    color: var(--base07);
+}
+
+.nav-pills > li.buffer.channel a span:last-of-type:before {
+    color: var(--base04);
+}
+
+.nav-pills > li.buffer.channel a:hover span:last-of-type:before, .nav-pills > li.buffer.channel.active a:hover span:last-of-type:before {
+    color: var(--base06);
+}
+
+.nav-pills > li.active > a {
+    background-color: var(--base0E);
+    color: var(--base01);
+}
+
+.nav-pills > li.buffer.channel.active a span:last-of-type:before {
+    color: var(--base01);
+}
+
+.nav-pills li:nth-child(2n) {
+    background: var(--base01);
+}
+
+.nav-pills > li > a {
+    color: var(--base05);
+}
+
+tr.bufferline:hover {
+    background-color: var(--base00);
+} 
+
+.danger,
+.alert-danger,
+.badge .alert-danger,
+.badge.danger,
+.nav-pills > li > a > .badge.danger {
+    background-color: var(--base08);
+    color: var(--base00);
+}
+
+.alert-danger {
+    border-color: var(--base00);
+    color: var(--base00);
+}
+
+.btn-default {
+    background-color: var(--base00);
+    border-color: var(--base01);
+    color: var(--base04);
+}
+.btn-default:hover {
+    background-color: var(--base01);
+    border-color: var(--base02);
+    color: var(--base05);
+}
+.btn-default.active,
+.btn-default:active,
+.btn-default.focus,
+.btn-default:focus,
+.btn-default.active.focus,
+.btn-default.active:focus,
+.btn-default:active.focus,
+.btn-default:active:focus,
+.btn-default.active:hover,
+.btn-default:active:hover {
+    background-color: var(--base06);
+    border-color: var(--base05);
+    color: var(--base02);
+}
+
+.btn-primary {
+    background-color: var(--base01);
+    border-color: var(--base02);
+    color: var(--base05);
+}
+.btn-primary:hover {
+    background-color: var(--base02);
+    border-color: var(--base03);
+    color: var(--base06);
+}
+
+.btn-primary.active,
+.btn-primary:active,
+.btn-primary.focus,
+.btn-primary:focus,
+.btn-primary.active.focus,
+.btn-primary.active:focus,
+.btn-primary:active.focus,
+.btn-primary:active:focus,
+.btn-primary.active:hover,
+.btn-primary:active:hover {
+    background-color: var(--base07);
+    border-color: var(--base06);
+    color: var(--base01);
+}
+
+li.notification {
+    color: var(--base0B);
+}
+
+::-webkit-scrollbar-track-piece  {
+    background-color: var(--base00);
+}
+::-webkit-scrollbar-thumb:vertical {
+    height: 15px;
+    background: var(--base02);
+}
+
+.gb-modal .backdrop {
+    background-color:rgba(0, 0, 0, 0.2)
+}
+
+input[type=text], input[type=password], #sendMessage, .badge {
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.2) inset;
+}
+
+input[type=text], input[type=password], #sendMessage, .btn-send, .btn-send-image {
+    color: var(--base05);
+    background: var(--base01);
+}
+
+.badge,
+.nav-pills > li > a > span.badge {
+    color: var(--base06);
+    background: var(--base02);
+}
+
+.btn-send:hover, .btn-send:focus,
+.btn-send-image:hover, .btn-send-image:focus {
+    background-color: var(--base07);
+    color: var(--base01);
+}
+
+#connection-infos {
+    color: var(--base04);
+}
+
+.color-light-green {
+    color: var(--base0B);
+}
+
+.color-27 {
+    color: var(--base0D);
+}
+
+#topbar .actions {
+    background: var(--base01);
+    color: var(--base04);
+}
+
+#topbar {
+    background: var(--base01);
+    color: var(--base04);
+}
+
+#sidebar, .panel, .dropdown-menu, .modal-content {
+    background: var(--base00);
+}
+
+#nicklist a:hover {
+    background: var(--base01);
+}
+
+.horizontal-line {
+    -webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+    -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+    box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+    border-bottom: 1px solid var(--base00);
+}
+.vertical-line {
+    -webkit-box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
+    -moz-box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
+    box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
+    border-right: 1px solid var(--base00);
+}
+.vertical-line-left {
+    -webkit-box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
+    -moz-box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
+    box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
+    border-left: 1px solid var(--base00);
+}
+.panel-group .panel-heading + .panel-collapse .panel-body, .modal-body, .modal-header, .modal-footer {
+    -webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
+    -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
+    box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
+    border-top: 1px solid var(--base00);
+}
+
+#readmarker {
+    border-top-color: var(--base05);
+    border-bottom-color: var(--base00);
+}
+
+button.close {
+    color: var(--base05);
+    opacity: 1;
+}
+
+button.close:hover {
+    background-color: var(--base07);
+    color: var(--base01);
+}
+
+/****************************/
+/* Weechat colors and style */
+/****************************/
+/* style options, foreground */
+.cof-separator {
+    color: var(--base05);
+}
+.cof-chat {
+    color: var(--base05);
+}
+.cof-chat_time {
+    color: var(--base05);
+}
+.cof-chat_time_delimiters {
+    color: var(--base05);
+}
+.cof-chat_prefix_error {
+    color: var(--base0A);
+}
+.cof-chat_prefix_network {
+    color: var(--base0E);
+}
+.cof-chat_prefix_action {
+    color: var(--base06);
+}
+.cof-chat_prefix_join {
+    color: var(--base0B);
+}
+.cof-chat_prefix_quit {
+    color: var(--base08);
+}
+.cof-chat_prefix_more {
+    color: var(--base0E);
+}
+.cof-chat_prefix_suffix {
+    color: var(--base0B);
+}
+.cof-chat_buffer {
+    color: var(--base06);
+}
+.cof-chat_server {
+    color: var(--base0F);
+}
+.cof-chat_channel {
+    color: var(--base06);
+}
+.cof-chat_nick {
+    color: var(--base0C);
+}
+.cof-chat_nick_self {
+    color: var(--base07);
+    font-weight: bold;
+}
+.cof-chat_nick_other {
+    color: var(--base0C);
+}
+.cof-invalid {
+    /* should never happen */
+    color: red !important;
+    background-color: red !important;
+}
+.cof-chat_host {
+    color: var(--base0C);
+}
+.cof-chat_delimiters {
+    color: var(--base05);
+}
+.cof-chat_highlight {
+    color: var(--base07);
+}
+.cof-chat_read_marker {
+    color: var(--base05);
+}
+.cof-chat_text_found {
+    color: var(--base0A);
+}
+.cof-chat_value {
+    color: var(--base0C);
+}
+.cof-chat_prefix_buffer {
+    color: var(--base0F);
+}
+.cof-chat_tags {
+    color: var(--base08);
+}
+.cof-chat_inactive_window {
+    color: var(--base05);
+}
+.cof-chat_inactive_buffer {
+    color: var(--base05);
+}
+.cof-chat_prefix_buffer_inactive_buffer {
+    color: var(--base05);
+}
+.cof-chat_nick_offline {
+    color: var(--base05);
+}
+.cof-chat_nick_offline_highlight {
+    color: var(--base05);
+}
+.cof-chat_nick_prefix {
+    color: var(--base0B);
+}
+.cof-chat_nick_suffix {
+    color: var(--base0B);
+}
+.cof-emphasis {
+    color: var(--base07);
+}
+.cof-chat_day_change {
+    color: var(--base0C);
+}
+
+/* style options, background */
+.cob-separator {
+}
+.cob-chat {
+}
+.cob-chat_time {
+}
+.cob-chat_time_delimiters {
+}
+.cob-chat_prefix_error {
+}
+.cob-chat_prefix_network {
+}
+.cob-chat_prefix_action {
+}
+.cob-chat_prefix_join {
+}
+.cob-chat_prefix_quit {
+}
+.cob-chat_prefix_more {
+}
+.cob-chat_prefix_suffix {
+}
+.cob-chat_buffer {
+}
+.cob-chat_server {
+}
+.cob-chat_channel {
+}
+.cob-chat_nick {
+}
+.cob-chat_nick_self {
+}
+.cob-chat_nick_other {
+}
+.cob-invalid {
+}
+.cob-chat_host {
+}
+.cob-chat_delimiters {
+}
+.cob-chat_highlight {
+    background-color: var(--base03);
+}
+.cob-chat_read_marker {
+}
+.cob-chat_text_found {
+}
+.cob-chat_value {
+}
+.cob-chat_prefix_buffer {
+}
+.cob-chat_tags {
+}
+.cob-chat_inactive_window {
+}
+.cob-chat_inactive_buffer {
+}
+.cob-chat_prefix_buffer_inactive_buffer {
+}
+.cob-chat_nick_offline {
+}
+.cob-chat_nick_offline_highlight {
+    background-color: var(--base02);
+}
+.cob-chat_nick_prefix {
+}
+.cob-chat_nick_suffix {
+}
+.cob-emphasis {
+    background-color: var(--base03);
+}
+.cob-chat_day_change {
+}
+
+/* style options, attributes */
+.coa-separator {
+}
+.coa-chat {
+}
+.coa-chat_time {
+}
+.coa-chat_time_delimiters {
+}
+.coa-chat_prefix_error {
+}
+.coa-chat_prefix_network {
+}
+.coa-chat_prefix_action {
+}
+.coa-chat_prefix_join {
+}
+.coa-chat_prefix_quit {
+}
+.coa-chat_prefix_more {
+}
+.coa-chat_prefix_suffix {
+}
+.coa-chat_buffer {
+}
+.coa-chat_server {
+}
+.coa-chat_channel {
+}
+.coa-chat_nick {
+}
+.coa-chat_nick_self {
+}
+.coa-chat_nick_other {
+}
+.coa-invalid {
+}
+.coa-chat_host {
+}
+.coa-chat_delimiters {
+}
+.coa-chat_highlight {
+}
+.coa-chat_read_marker {
+}
+.coa-chat_text_found {
+}
+.coa-chat_value {
+}
+.coa-chat_prefix_buffer {
+}
+.coa-chat_tags {
+}
+.coa-chat_inactive_window {
+}
+.coa-chat_inactive_buffer {
+}
+.coa-chat_prefix_buffer_inactive_buffer {
+}
+.coa-chat_nick_offline {
+}
+.coa-chat_nick_offline_highlight {
+}
+.coa-chat_nick_prefix {
+}
+.coa-chat_nick_suffix {
+}
+.coa-emphasis {
+}
+.coa-chat_day_change {
+}
+
+/* WeeChat colors, foreground */
+.cwf-default {
+    color: var(--base05);
+}
+.cwf-black {
+    color: var(--base00);
+}
+.cwf-darkgray {
+    color: var(--base03);
+}
+.cwf-red {
+    color: var(--base08);
+}
+.cwf-lightred {
+    color: var(--base08);
+}
+.cwf-green {
+    color: var(--base0B);
+}
+.cwf-lightgreen {
+    color: var(--base0B);
+}
+.cwf-brown {
+    color: var(--base0A);
+}
+.cwf-yellow {
+    color: var(--base0A);
+}
+.cwf-blue {
+    color: var(--base0D);
+}
+.cwf-lightblue {
+    color: var(--base0D);
+}
+.cwf-magenta {
+    color: var(--base0E);
+}
+.cwf-lightmagenta {
+    color: var(--base0E);
+}
+.cwf-cyan {
+    color: var(--base0C);
+}
+.cwf-lightcyan {
+    color: var(--base0C);
+}
+.cwf-gray {
+    color: var(--base04);
+}
+.cwf-white {
+    color: var(--base06);
+}
+
+/* WeeChat colors, background */
+.cwb-default {
+    background-color: transparent;
+}
+.cwb-black {
+    background-color: var(--base00);
+}
+.cwb-darkgray {
+    background-color: var(--base03);
+}
+.cwb-red {
+    background-color: var(--base08);
+}
+.cwb-lightred {
+    background-color: var(--base08);
+}
+.cwb-green {
+    background-color: var(--base0B);
+}
+.cwb-lightgreen {
+    background-color: var(--base0B);
+}
+.cwb-brown {
+    background-color: var(--base0A);
+}
+.cwb-yellow {
+    background-color: var(--base0A);
+}
+.cwb-blue {
+    background-color: var(--base0D);
+}
+.cwb-lightblue {
+    background-color: var(--base0D);
+}
+.cwb-magenta {
+    background-color: var(--base0E);
+}
+.cwb-lightmagenta {
+    background-color: var(--base0E);
+}
+.cwb-cyan {
+    background-color: var(--base0C);
+}
+.cwb-lightcyan {
+    background-color: var(--base0C);
+}
+.cwb-gray {
+    background-color: var(--base04);
+}
+.cwb-white {
+    background-color: var(--base06);
+}
+
+/* extended colors, foreground */
+.cef-0 {
+    color: var(--base00);
+}
+.cef-1 {
+    color: var(--base08);
+}
+.cef-2 {
+    color: var(--base0B);
+}
+.cef-3 {
+    color: var(--base0A);
+}
+.cef-4 {
+    color: var(--base0D);
+}
+.cef-5 {
+    color: var(--base0E);
+}
+.cef-6 {
+    color: var(--base0C);
+}
+.cef-7 {
+    color: var(--base05);
+}
+.cef-8 {
+    color: var(--base03);
+}
+.cef-9 {
+    color: var(--base08);
+}
+.cef-10 {
+    color: var(--base0B);
+}
+.cef-11 {
+    color: var(--base0A);
+}
+.cef-12 {
+    color: var(--base0D);
+}
+.cef-13 {
+    color: var(--base0E);
+}
+.cef-14 {
+    color: var(--base0C);
+}
+.cef-15 {
+    color: var(--base07);
+}
+.cef-16 {
+    color: var(--base09);
+}
+.cef-17 {
+    color: var(--base0F);
+}
+.cef-18 {
+    color: var(--base01);
+}
+.cef-19 {
+    color: var(--base02);
+}
+.cef-20 {
+    color: var(--base04);
+}
+.cef-21 {
+    color: var(--base06);
+}
+
+/* extended colors, background */
+.ceb-0 {
+    background-color: var(--base00);
+}
+.ceb-1 {
+    background-color: var(--base08);
+}
+.ceb-2 {
+    background-color: var(--base0B);
+}
+.ceb-3 {
+    background-color: var(--base0A);
+}
+.ceb-4 {
+    background-color: var(--base0D);
+}
+.ceb-5 {
+    background-color: var(--base0E);
+}
+.ceb-6 {
+    background-color: var(--base0C);
+}
+.ceb-7 {
+    background-color: var(--base05);
+}
+.ceb-8 {
+    background-color: var(--base03);
+}
+.ceb-9 {
+    background-color: var(--base08);
+}
+.ceb-10 {
+    background-color: var(--base0B);
+}
+.ceb-11 {
+    background-color: var(--base0A);
+}
+.ceb-12 {
+    background-color: var(--base0D);
+}
+.ceb-13 {
+    background-color: var(--base0E);
+}
+.ceb-14 {
+    background-color: var(--base0C);
+}
+.ceb-15 {
+    background-color: var(--base07);
+}
+.ceb-16 {
+    background-color: var(--base09);
+}
+.ceb-17 {
+    background-color: var(--base0F);
+}
+.ceb-18 {
+    background-color: var(--base01);
+}
+.ceb-19 {
+    background-color: var(--base02);
+}
+.ceb-20 {
+    background-color: var(--base04);
+}
+.ceb-21 {
+    background-color: var(--base06);
+}
+
+/* Fallback for unsupported extended colours. If it bothers people they can try
+and define fallback colors for each extended color individually, just keep in
+mind that colors are not guaranteed to be consistent across variants. */
+.cef-22, .cef-23, .cef-24, .cef-25, .cef-26, .cef-27, .cef-28, .cef-29, .cef-30, .cef-31, .cef-32, .cef-33, .cef-34, .cef-35, .cef-36, .cef-37, .cef-38, .cef-39, .cef-40, .cef-41, .cef-42, .cef-43, .cef-44, .cef-45, .cef-46, .cef-47, .cef-48, .cef-49, .cef-50, .cef-51, .cef-52, .cef-53, .cef-54, .cef-55, .cef-56, .cef-57, .cef-58, .cef-59, .cef-60, .cef-61, .cef-62, .cef-63, .cef-64, .cef-65, .cef-66, .cef-67, .cef-68, .cef-69, .cef-70, .cef-71, .cef-72, .cef-73, .cef-74, .cef-75, .cef-76, .cef-77, .cef-78, .cef-79, .cef-80, .cef-81, .cef-82, .cef-83, .cef-84, .cef-85, .cef-86, .cef-87, .cef-88, .cef-89, .cef-90, .cef-91, .cef-92, .cef-93, .cef-94, .cef-95, .cef-96, .cef-97, .cef-98, .cef-99, .cef-100, .cef-101, .cef-102, .cef-103, .cef-104, .cef-105, .cef-106, .cef-107, .cef-108, .cef-109, .cef-110, .cef-111, .cef-112, .cef-113, .cef-114, .cef-115, .cef-116, .cef-117, .cef-118, .cef-119, .cef-120, .cef-121, .cef-122, .cef-123, .cef-124, .cef-125, .cef-126, .cef-127, .cef-128, .cef-129, .cef-130, .cef-131, .cef-132, .cef-133, .cef-134, .cef-135, .cef-136, .cef-137, .cef-138, .cef-139, .cef-140, .cef-141, .cef-142, .cef-143, .cef-144, .cef-145, .cef-146, .cef-147, .cef-148, .cef-149, .cef-150, .cef-151, .cef-152, .cef-153, .cef-154, .cef-155, .cef-156, .cef-157, .cef-158, .cef-159, .cef-160, .cef-161, .cef-162, .cef-163, .cef-164, .cef-165, .cef-166, .cef-167, .cef-168, .cef-169, .cef-170, .cef-171, .cef-172, .cef-173, .cef-174, .cef-175, .cef-176, .cef-177, .cef-178, .cef-179, .cef-180, .cef-181, .cef-182, .cef-183, .cef-184, .cef-185, .cef-186, .cef-187, .cef-188, .cef-189, .cef-190, .cef-191, .cef-192, .cef-193, .cef-194, .cef-195, .cef-196, .cef-197, .cef-198, .cef-199, .cef-200, .cef-201, .cef-202, .cef-203, .cef-204, .cef-205, .cef-206, .cef-207, .cef-208, .cef-209, .cef-210, .cef-211, .cef-212, .cef-213, .cef-214, .cef-215, .cef-216, .cef-217, .cef-218, .cef-219, .cef-220, .cef-221, .cef-222, .cef-223, .cef-224, .cef-225, .cef-226, .cef-227, .cef-228, .cef-229, .cef-230, .cef-231, .cef-232, .cef-233, .cef-234, .cef-235, .cef-236, .cef-237, .cef-238, .cef-239, .cef-240, .cef-241, .cef-242, .cef-243, .cef-244, .cef-245, .cef-246, .cef-247, .cef-248, .cef-249, .cef-250, .cef-251, .cef-252, .cef-253, .cef-254, .cef-255
+{
+    color: var(--base0F);
+}
+
+.ceb-22, .ceb-23, .ceb-24, .ceb-25, .ceb-26, .ceb-27, .ceb-28, .ceb-29, .ceb-30, .ceb-31, .ceb-32, .ceb-33, .ceb-34, .ceb-35, .ceb-36, .ceb-37, .ceb-38, .ceb-39, .ceb-40, .ceb-41, .ceb-42, .ceb-43, .ceb-44, .ceb-45, .ceb-46, .ceb-47, .ceb-48, .ceb-49, .ceb-50, .ceb-51, .ceb-52, .ceb-53, .ceb-54, .ceb-55, .ceb-56, .ceb-57, .ceb-58, .ceb-59, .ceb-60, .ceb-61, .ceb-62, .ceb-63, .ceb-64, .ceb-65, .ceb-66, .ceb-67, .ceb-68, .ceb-69, .ceb-70, .ceb-71, .ceb-72, .ceb-73, .ceb-74, .ceb-75, .ceb-76, .ceb-77, .ceb-78, .ceb-79, .ceb-80, .ceb-81, .ceb-82, .ceb-83, .ceb-84, .ceb-85, .ceb-86, .ceb-87, .ceb-88, .ceb-89, .ceb-90, .ceb-91, .ceb-92, .ceb-93, .ceb-94, .ceb-95, .ceb-96, .ceb-97, .ceb-98, .ceb-99, .ceb-100, .ceb-101, .ceb-102, .ceb-103, .ceb-104, .ceb-105, .ceb-106, .ceb-107, .ceb-108, .ceb-109, .ceb-110, .ceb-111, .ceb-112, .ceb-113, .ceb-114, .ceb-115, .ceb-116, .ceb-117, .ceb-118, .ceb-119, .ceb-120, .ceb-121, .ceb-122, .ceb-123, .ceb-124, .ceb-125, .ceb-126, .ceb-127, .ceb-128, .ceb-129, .ceb-130, .ceb-131, .ceb-132, .ceb-133, .ceb-134, .ceb-135, .ceb-136, .ceb-137, .ceb-138, .ceb-139, .ceb-140, .ceb-141, .ceb-142, .ceb-143, .ceb-144, .ceb-145, .ceb-146, .ceb-147, .ceb-148, .ceb-149, .ceb-150, .ceb-151, .ceb-152, .ceb-153, .ceb-154, .ceb-155, .ceb-156, .ceb-157, .ceb-158, .ceb-159, .ceb-160, .ceb-161, .ceb-162, .ceb-163, .ceb-164, .ceb-165, .ceb-166, .ceb-167, .ceb-168, .ceb-169, .ceb-170, .ceb-171, .ceb-172, .ceb-173, .ceb-174, .ceb-175, .ceb-176, .ceb-177, .ceb-178, .ceb-179, .ceb-180, .ceb-181, .ceb-182, .ceb-183, .ceb-184, .ceb-185, .ceb-186, .ceb-187, .ceb-188, .ceb-189, .ceb-190, .ceb-191, .ceb-192, .ceb-193, .ceb-194, .ceb-195, .ceb-196, .ceb-197, .ceb-198, .ceb-199, .ceb-200, .ceb-201, .ceb-202, .ceb-203, .ceb-204, .ceb-205, .ceb-206, .ceb-207, .ceb-208, .ceb-209, .ceb-210, .ceb-211, .ceb-212, .ceb-213, .ceb-214, .ceb-215, .ceb-216, .ceb-217, .ceb-218, .ceb-219, .ceb-220, .ceb-221, .ceb-222, .ceb-223, .ceb-224, .ceb-225, .ceb-226, .ceb-227, .ceb-228, .ceb-229, .ceb-230, .ceb-231, .ceb-232, .ceb-233, .ceb-234, .ceb-235, .ceb-236, .ceb-237, .ceb-238, .ceb-239, .ceb-240, .ceb-241, .ceb-242, .ceb-243, .ceb-244, .ceb-245, .ceb-246, .ceb-247, .ceb-248, .ceb-249, .ceb-250, .ceb-251, .ceb-252, .ceb-253, .ceb-254, .ceb-255 {
+    background-color: var(--base0F);
+}
+
+/* attributes overrides */
+.a-b {
+    font-weight: bold;
+}
+.a-no-b {
+    font-weight: normal;
+}
+.a-i {
+    font-style: italic;
+}
+.a-no-i {
+    font-style: normal;
+}
+.a-u {
+    text-decoration: underline;
+}
+.a-no-u {
+    text-decoration: none;
+}
+.a-reset {
+    font-weight: normal;
+    font-style: normal;
+    text-decoration: none;
+}
+
+/* highlight messages */
+.highlight {
+    background-color: var(--base03);
+    color: var(--base07);
+    font-weight: bold;
+}
+
+/* */
+/* Mobile layout */
+/* */
+@media (max-width: 968px) {
+    #nicklist {
+        -webkit-box-shadow: 0px 0px 120px var(--base00);
+        box-shadow: 0px 0px 120px var(--base00);
+        background: var(--base00);
+    }
+
+    .footer {
+        background: var(--base00);
+    }
+
+}
