@@ -401,13 +401,13 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
                     'coa-' + colorName
                 ];
             } else {
-                if (color.match(/^[a-zA-Z]+[:$]/)) {
+                if (color.match(/^[a-zA-Z]+(:|$)/)) {
                     // WeeChat color name (foreground)
                     var cwfcolor = color.match(/^[a-zA-Z]+/)[0];
                     colorClasses = [
                         'cwf-' + cwfcolor
                     ];
-                } else if (color.match(/^[0-9]+[:$]/)) {
+                } else if (color.match(/^[0-9]+(:|$)/)) {
                     // extended color (foreground)
                     var cefcolor = color.match(/^[0-9]+/)[0];
                     colorClasses = [
