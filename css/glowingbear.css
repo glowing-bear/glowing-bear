@@ -352,8 +352,8 @@ td.time {
 }
 
 .footer {
-    position: fixed;
-    bottom: 0;
+    position: relative;
+    bottom: 35px;
     height: 35px;
     width: 100%;
     -webkit-transition:0.2s ease-in-out all;
