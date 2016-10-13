@@ -272,7 +272,8 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
             </form>
           </li>
           <li class="buffer" ng-class="{'active': buffer.active,
-                                        'unread': (buffer.notification || buffer.unread),
+                                        'unread': buffer.unread,
+                                        'notification': buffer.notification,
                                         'highlight': search && search_highlight_key === key,
                                         'indent': buffer.indent,
                                         'channel': buffer.type === 'channel',

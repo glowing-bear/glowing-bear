@@ -221,7 +221,7 @@ input[type=text], input[type=password], #sendMessage {
    display: none;
 }
 
-#sidebar .buffer.unread .badge {
+#sidebar .buffer.unread .badge, #sidebar .buffer.notification .badge {
     display: inline-block;
     border-radius: 0;
     margin-right: -10px;
