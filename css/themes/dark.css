@@ -2142,7 +2142,7 @@ button.close:hover {
     color: #888;
 }
 
-.buffername.active {
+.buffername.unread {
     color: white;
     font-weight: bold;
 }
