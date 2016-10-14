@@ -796,6 +796,11 @@ img.emojione {
         padding-bottom: 0;
     }
 
+    #bufferlines > table,
+    #bufferlines > table > tbody {
+        display: block;
+    }
+
     #bufferlines tr.bufferline {
         display: block;
         overflow: hidden;
@@ -822,6 +827,7 @@ img.emojione {
 
     #bufferlines td.message {
         display: inline;
+        overflow-wrap: break-word;
         padding: 0px !important;
     }
 
