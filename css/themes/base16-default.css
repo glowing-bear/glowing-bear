@@ -80,15 +80,13 @@ html {
     background-color: inherit;
 }
 
-.repeated-time .cob-chat_time,
-.repeated-time .cob-chat_time_delimiters {
-    color: var(--base05);
-}
-
 /* fix for mobile firefox which ignores :hover */
 .nav-pills > li > a:hover,
 .nav-pills > li > a:active,
 .nav-pills > li > a:focus,
+.nav-pills > li.highlight > a:hover,
+.nav-pills > li.highlight > a:active,
+.nav-pills > li.highlight > a:focus,
 .nav-pills > li.active > a:hover,
 .nav-pills > li.active > a:active,
 .nav-pills > li.active > a:focus,
@@ -98,13 +96,27 @@ html {
     background-color: var(--base03);
 }
 
+.nav-pills > li > a:hover,
+.nav-pills > li > a:hover span,
+.nav-pills > li > a:active,
+.nav-pills > li > a:active span,
+.nav-pills > li > a:focus,
+.nav-pills > li > a:focus span,
+.nav-pills > li.active > a:hover,
+.nav-pills > li.active > a:hover span,
+.nav-pills > li.active > a:active,
+.nav-pills > li.active > a:active span,
+.nav-pills > li.active > a:focus,
+.nav-pills > li.active > a:focus span {
+    color: var(--base06);
+}
+
 .nav-pills > li > a:hover span,
 .nav-pills > li > a:active span,
 .nav-pills > li > a:focus span,
 .nav-pills > li.active > a:hover span,
 .nav-pills > li.active > a:active span,
 .nav-pills > li.active > a:focus span {
-    color: var(--base06);
     background-color: transparent;
 }
 
@@ -112,47 +124,93 @@ html {
     color: var(--base04);
 }
 
-.nav-pills > li.buffer.channel a:hover span:last-of-type:before,
+.nav-pills > li.buffer.channel.highlight a:hover span:last-of-type:before,
+.nav-pills > li.buffer.channel.highlight a:active span:last-of-type:before,
+.nav-pills > li.buffer.channel.highlight a:focus span:last-of-type:before,
 .nav-pills > li.buffer.channel.active a:hover span:last-of-type:before,
-.nav-pills > li.buffer.channel a:active span:last-of-type:before,
 .nav-pills > li.buffer.channel.active a:active span:last-of-type:before,
-.nav-pills > li.buffer.channel a:focus span:last-of-type:before,
-.nav-pills > li.buffer.channel.active a:focus span:last-of-type:before {
-    color: var(--base04);
+.nav-pills > li.buffer.channel.active a:focus span:last-of-type:before,
+.nav-pills > li.buffer.channel.unread a span:last-of-type:before,
+.nav-pills > li.buffer.channel.unread a:hover span:last-of-type:before,
+.nav-pills > li.buffer.channel.unread a:active span:last-of-type:before,
+.nav-pills > li.buffer.channel.unread a:focus span:last-of-type:before,
+.nav-pills > li.buffer.channel.notification a:hover span:last-of-type:before,
+.nav-pills > li.buffer.channel.notification a:active span:last-of-type:before,
+.nav-pills > li.buffer.channel.notification a:focus span:last-of-type:before {
+    color: var(--base05);
+}
+
+.nav-pills > li.buffer.channel.highlight a span:last-of-type:before,
+.nav-pills > li.buffer.channel.active a span:last-of-type:before,
+.nav-pills > li.buffer.channel.notification a span:last-of-type:before {
+    color: var(--base02);
+}
+
+.nav-pills > li.active > a,
+.nav-pills > li.highlight > a,
+.nav-pills > li.unread > a,
+.nav-pills > li.notification > a {
+    font-weight: bold;
 }
 
 .nav-pills > li.active > a {
-    font-weight: bold;
     background-color: var(--base0E);
     color: var(--base01);
 }
 
+.nav-pills > li.highlight > a {
+    background-color: var(--base0A);
+    color: var(--base01);
+}
+
+.nav-pills > li.highlight > a > span {
+    background-color: transparent;
+    color: var(--base01);
+}
+
+.nav-pills > li.unread > a {
+    color: var(--base06);
+}
+
 .nav-pills > li.notification > a {
-    font-weight: bold;
     background-color: var(--base0B);
     color: var(--base00);
 }
 
-.nav-pills > li.unread > a {
-    font-weight: bold;
-    color: var(--base06);
+.nav-pills > li.highlight > a:hover,
+.nav-pills > li.highlight > a:hover span,
+.nav-pills > li.highlight > a:active,
+.nav-pills > li.highlight > a:active span,
+.nav-pills > li.highlight > a:focus,
+.nav-pills > li.highlight > a:focus span,
+.nav-pills > li.unread > a:hover,
+.nav-pills > li.unread > a:hover span,
+.nav-pills > li.unread > a:active,
+.nav-pills > li.unread > a:active span,
+.nav-pills > li.unread > a:focus,
+.nav-pills > li.unread > a:focus span,
+.nav-pills > li.notification > a:hover,
+.nav-pills > li.notification > a:hover span,
+.nav-pills > li.notification > a:active,
+.nav-pills > li.notification > a:active span,
+.nav-pills > li.notification > a:focus,
+.nav-pills > li.notification > a:focus span {
+    color: var(--base07);
 }
 
+.nav-pills > li.highlight > a:hover span,
+.nav-pills > li.highlight > a:active span,
+.nav-pills > li.highlight > a:focus span,
 .nav-pills > li.unread > a:hover span,
 .nav-pills > li.unread > a:active span,
 .nav-pills > li.unread > a:focus span,
 .nav-pills > li.notification > a:hover span,
 .nav-pills > li.notification > a:active span,
 .nav-pills > li.notification > a:focus span {
-    color: var(--base07);
     background-color: transparent;
 }
 
-.nav-pills > li.buffer.channel.active a span:last-of-type:before {
-    color: var(--base02);
-}
-
-.nav-pills li:nth-child(2n) {
+.nav-pills li:nth-child(2n+1) {
     background: var(--base01);
 }
 
@@ -162,7 +220,7 @@ html {
 
 tr.bufferline:hover {
     background-color: transparent;
-} 
+}
 
 .danger,
 .alert-danger,
@@ -263,12 +321,16 @@ input[type=text]:-moz-placeholder, input[type=password]:-moz-placeholder { /* Fi
 }
 
 .badge,
-.nav-pills > li > a > span.badge {
+.nav-pills li span.badge {
     color: var(--base06);
     background: var(--base02);
 }
 
-.nav-pills > li > a > span.badge.danger {
+.nav-pills li:nth-child(2n+1) span.badge {
+    background: var(--base03);
+}
+
+.nav-pills li span.badge.danger {
     color: var(--base00);
     background: var(--base08);
 }
@@ -363,11 +425,14 @@ button.close:hover {
 .cof-chat {
     color: var(--base05);
 }
-.cof-chat_time {
-    color: var(--base05);
-}
+
+.cof-chat_time,
 .cof-chat_time_delimiters {
     color: var(--base05);
+}
+.repeated-time .cob-chat_time,
+.repeated-time .cob-chat_time_delimiters {
+    color: var(--base04);
 }
 .cof-chat_prefix_error {
     color: var(--base0A);
@@ -1351,11 +1416,12 @@ button.close:hover {
 }
 
 /* highlight messages */
-.highlight {
+.bufferline .prefix .highlight {
     color: var(--base03) !important;
     background-color: var(--base07) !important;
     font-weight: bold !important;
 }
+
 /* */
 /* Mobile layout */
 /* */
@@ -1364,8 +1430,14 @@ button.close:hover {
         box-shadow: 400px 0px 400px 400px var(--base00);
     }
 
+    .cof-chat_time,
+    .cof-chat_time_delimiters,
+    .repeated-time .cob-chat_time,
+    .repeated-time .cob-chat_time_delimiters {
+        color: var(--base04);
+    }
+
     .footer {
         background: var(--base00);
     }
-
 }
