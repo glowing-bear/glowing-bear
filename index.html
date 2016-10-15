@@ -332,10 +332,10 @@ npm run build-electron-{windows, darwin, linux}</pre>
               <td class="time">
                 <span class="date cof-chat_time cob-chat_time coa-chat_time" ng-bind-html="::bufferline.formattedTime"></span>
               </td>
-              <td class="prefix"><a ng-click="addMention(bufferline.prefix)"><span class="hidden-bracket">&lt;</span><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text|prefixlimit:25"></span><span class="hidden-bracket">&gt;</span></a></td><!--
-           --><td class="message"><!--
-             --><div ng-repeat="metadata in ::bufferline.metadata" plugin data="::metadata"></div><!--
-             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes.concat(['line-' + part.$$hashKey.replace(':','_')])" ng-bind-html="::part.text | linky:'_blank':{rel:'noopener noreferrer'} | DOMfilter:'irclinky' | DOMfilter:'emojify':settings.enableJSEmoji | DOMfilter:'inlinecolour' | DOMfilter:'latexmath':('.line-' + part.$$hashKey.replace(':','_')):settings.enableMathjax"></span>
+              <td class="prefix"><a ng-click="addMention(bufferline.prefix)"><span class="hidden-bracket">&lt;</span><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text|prefixlimit:25"></span><span class="hidden-bracket">&gt;</span></a></td>
+              <td class="message">
+                <div ng-repeat="metadata in ::bufferline.metadata" plugin data="::metadata"></div>
+                <span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes.concat(['line-' + part.$$hashKey.replace(':','_')])" ng-bind-html="::part.text | linky:'_blank':{rel:'noopener noreferrer'} | DOMfilter:'irclinky' | DOMfilter:'emojify':settings.enableJSEmoji | DOMfilter:'inlinecolour' | DOMfilter:'latexmath':('.line-' + part.$$hashKey.replace(':','_')):settings.enableMathjax"></span>
               </td>
             </tr>
             <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
