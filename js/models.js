@@ -365,12 +365,17 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             });
         }
 
+        var prefixtext = "";
+        for (var pti = 0; pti < prefix.length; ++pti) {
+            prefixtext += prefix[pti].text;
+        }
+
         var rtext = "";
         for (var i = 0; i < content.length; ++i) {
             rtext += content[i].text;
         }
 
-       return {
+        return {
             prefix: prefix,
             content: content,
             date: date,
@@ -380,6 +385,7 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             tags: tags_array,
             highlight: highlight,
             displayed: displayed,
+            prefixtext: prefixtext,
             text: rtext
 
         };
