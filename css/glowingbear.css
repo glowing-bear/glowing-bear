@@ -216,7 +216,13 @@ input[type=text], input[type=password], #sendMessage {
   display:block!important;
 }
 
-#sidebar .badge {
+
+#sidebar .buffer .badge {
+   display: none;
+}
+
+#sidebar .buffer.unread .badge, #sidebar .buffer.notification .badge {
+    display: inline-block;
     border-radius: 0;
     margin-right: -10px;
     padding: 4px 7px;
