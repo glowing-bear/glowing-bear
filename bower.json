@@ -6,15 +6,15 @@
   "license": "GPLv3",
   "private": true,
   "dependencies": {
-    "angular": "1.4.x",
-    "angular-route": "1.4.x",
-    "angular-sanitize": "1.4.x",
-    "angular-touch": "1.4.x",
-    "angular-loader": "1.4.x",
-    "angular-mocks": "1.4.x",
+    "angular": "1.5.x",
+    "angular-route": "1.5.x",
+    "angular-sanitize": "1.5.x",
+    "angular-touch": "1.5.x",
+    "angular-loader": "1.5.x",
+    "angular-mocks": "1.5.x",
     "html5-boilerplate": "~4.3.0",
-    "underscore": "~1.7",
+    "underscore": "~1.8",
     "bootstrap": "~3.1",
-    "emojione": "~2.1"
+    "emojione": "~2.2"
   }
 }
