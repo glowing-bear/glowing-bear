@@ -58,6 +58,7 @@
         <span>Glowing Bear</span>
         <small>WeeChat web frontend</small>
       </h2>
+      <div class="alert alert-warning" ng-if="window.location.protocol !== 'https:'"><strong>You're using Glowing Bear over an unencrypted connection (http://). This is not recommended!</strong> We recommend using our secure hosted version at <a href="https://www.glowing-bear.org/">https://www.glowing-bear.org/</a>, or <a href="https://latest.glowing-bear.org/">https://latest.glowing-bear.org</a> for the latest development version. If your relay is on your local network, that is unfortunately impossible, but be aware of the implications.</div>
       <div class="alert alert-danger" ng-show="errorMessage">
         <strong>Connection error</strong> The client was unable to connect to the WeeChat relay
       </div>
@@ -112,7 +113,7 @@
                   <div class="checkbox">
                     <label class="control-label" for="ssl">
                       <input type="checkbox" id="ssl" ng-model="settings.ssl">
-                      Encryption. Read instructions for help
+                      Encryption. <strong>Strongly recommended!</strong> Need help? Check below.
                     </label>
                   </div>
                 </div>
@@ -125,17 +126,43 @@
           <div class="panel-heading">
             <h4 class="panel-title">
               <a class="accordion-toggle" ng-click="toggleAccordion($event)">
-                Usage instructions
+                Getting Started
               </a>
             </h4>
           </div>
           <div id="collapseTwo" class="panel-collapse collapse">
             <div class="panel-body">
-              <h3 style="margin-top: 0px">Setup</h3>
               <p><span class="label label-danger">WeeChat version 0.4.2 or higher is required—we recommend at least 1.0.</p>
-              <p>To start using Glowing Bear, follow the instructions below to set up an encrypted relay.</p>
-              The communication goes directly between your browser and your WeeChat relay and is fully encrypted. We never see any of your data or your password, and you don't need to trust a "cloud". All settings, including your password, are saved locally in your own browser between sessions.</p>
-              <h3>Shortcuts</h3>
+              <p>To start using Glowing Bear, follow the instructions below to set up an encrypted relay. All communication goes directly between your browser and your WeeChat relay! This means that your server must be accessible. We never see any of your data or your password, and you don't need to trust a "cloud". All settings, including your password, are saved locally in your own browser between sessions.</p>
+              <div class="alert alert-warning" ng-if="window.location.protocol !== 'https:'"><strong>You're using Glowing Bear over an unencrypted connection (http://). This is not recommended!</strong> We recommend using our secure hosted version at <a href="https://www.glowing-bear.org/">https://www.glowing-bear.org/</a>, or <a href="https://latest.glowing-bear.org/">https://latest.glowing-bear.org</a> for the latest and greatest development version. You can still follow the instructions below to set up an encrypted relay, though.</div>
+              <p>When using encryption, all communication between your browser and WeeChat will be securely encrypted with TLS. This means that you have to set up a certificate. While it's possible to use a self-signed cert, we recommend against it, because it's handled poorly in browsers, and may not work at all on mobile devices. If you don't already have a certificate for your domain (or you don't have a domain), we strongly encourage you to get a certificate from <a href="https://letsencrypt.org/">Let's Encrypt</a>—it's free and easy. We'll walk you through it.</p>
+              <p><strong>If you don't have a domain</strong> you can get a free subdomain from providers such as <a href="https://freedns.afraid.org/">afraid</a>. You'll want to set up an 'A' record to your server's IP address, and quite possibly an AAAA record to its IPv6 address. These might take a few hours to propagate, if the steps below don't work right away, try again in a few hours.</p>
+              <p><strong>Getting a certificate</strong> is easy. You'll need certbot—just follow the encryptions at <a href="https://certbot.eff.org/">https://certbot.eff.org</a>. If you're not serving webpages on the same server or are unsure, select "none of the above" (if you are, you can probably use that webserver to proxy your relay, and skip this—check out the <a href="https://github.com/glowing-bear/glowing-bear/wiki/Proxying-WeeChat-relay-with-a-web-server">instructions in our Wiki</a>). Next, get the certificate with <code>certbot certonly --standalone -d {{ settings.host || your.domain.com }}</code> and follow the instructions.</p>
+              <p>Nearly done! Now you just need to copy the files into place. To do that, use the following commands, replacing the <strong>username</strong> placeholder with your actual username:</p>
+                <pre>mkdir -p ~<strong>username</strong>/.weechat/ssl
+cat /etc/letsencrypt/live/{{ settings.host || your.domain.com }}/{fullchain,privkey}.pem &gt; ~<strong>username</strong>/.weechat/ssl/relay.pem
+chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</strong>/.weechat/ssl/</pre>
+              <p>Once you've got the certificate and moved it in place, you can set up an encrypted relay on port {{ settings.port || 9001 }} with these WeeChat commands:</p>
+<pre>
+/set relay.network.password y0ur_StRonG-pa$sw0rd:of*choice
+/relay sslcertkey
+/relay add ssl.weechat {{ settings.port || 9001 }}
+</pre>
+              <p>Your certificate needs to be renewed every couple of months. Either follow the instructions for automatic renewal at <a href="https://certbot.eff.org/">https://certbot.eff.org</a>, or run <code>certbot renew</code> manually when renewal is due. <strong>Important:</strong> You'll need to follow the instructions for copying the certificate to the right place again, and re-run <code>/relay sslcertkey</code> in WeeChat.</p>
+            </div>
+          </div>
+        </div>
+        <div class="panel" data-state="collapsed">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a class="accordion-toggle" ng-click="toggleAccordion($event)">
+                Usage instructions
+              </a>
+            </h4>
+          </div>
+          <div id="collapseThree" class="panel-collapse collapse">
+            <div class="panel-body">
+              <h3 style="margin-top: 0px">Shortcuts</h3>
               Glowing Bear has a few shortcuts:
               <ul>
                 <li><kbd>ALT-n</kbd>: Toggle nicklist</li>
@@ -160,33 +187,6 @@
               <p>
               Helpful trigger to automatically repin a buffer (in this instance, <var>irc.freenode.#weechat</var>): <pre><code>/trigger add autopin signal "buffer_opened" "${buffer[${tg_signal_data}].full_name} =~ <var>irc.freenode.#weechat</var>" "" "/command -buffer ${buffer[${tg_signal_data}].full_name} * /buffer set localvar_set_pinned true"</code></pre>
               </p>
-            </div>
-          </div>
-        </div>
-        <div class="panel" data-state="collapsed">
-          <div class="panel-heading">
-            <h4 class="panel-title">
-              <a class="accordion-toggle" ng-click="toggleAccordion($event)">
-                Getting Started
-              </a>
-            </h4>
-          </div>
-          <div id="collapseThree" class="panel-collapse collapse">
-            <div class="panel-body">
-              <p>By default, all communication between your browser and WeeChat will be encrypted with TLS. This means that you have to set up a certificate. While it's possible to use a self-signed cert, we recommend against it, because it's handled poorly in browsers, and may not work at all on mobile devices. If you don't already have a certificate for your domain (or you don't have a domain), we strongly encourage you to get a certificate from <a href="https://letsencrypt.org/">Let's Encrypt</a>—it's free and easy. We'll walk you through it.</p>
-              <p><strong>If you don't have a domain</strong> you can get a free subdomain from providers such as <a href="https://freedns.afraid.org/">afraid</a>. You'll want to set up an 'A' record to your server's IP address, and quite possibly an AAAA record to its IPv6 address. These might take a few hours to propagate, if the steps below don't work right away, try again in a few hours.</p>
-              <p><strong>Getting a certificate</strong> is easy. You'll need certbot—just follow the encryptions at <a href="https://certbot.eff.org/">https://certbot.eff.org</a>. If you're not serving webpages on the same server or are unsure, select "none of the above" (if you are, you can probably use that webserver to proxy your relay, and skip this—check out the <a href="https://github.com/glowing-bear/glowing-bear/wiki/Proxying-WeeChat-relay-with-a-web-server">instructions in our Wiki</a>). Next, get the certificate with <code>certbot certonly --standalone -d {{ settings.host || your.domain.com }}</code> and follow the instructions.</p>
-              <p>Nearly done! Now you just need to copy the files into place. To do that, use the following commands, replacing the <strong>username</strong> placeholder with your actual username:</p>
-                <pre>mkdir -p ~<strong>username</strong>/.weechat/ssl
-cat /etc/letsencrypt/live/{{ settings.host || your.domain.com }}/{fullchain,privkey}.pem &gt; ~<strong>username</strong>/.weechat/ssl/relay.pem
-chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</strong>/.weechat/ssl/</pre>
-              <p>Once you've got the certificate and moved it in place, you can set up an encrypted relay on port {{ settings.port || 9001 }} with these WeeChat commands:</p>
-<pre>
-/set relay.network.password y0ur_StRonG-pa$sw0rd:of*choice
-/relay sslcertkey
-/relay add ssl.weechat {{ settings.port || 9001 }}
-</pre>
-              <p>Your certificate needs to be renewed every couple of months. Either follow the instructions for automatic renewal at <a href="https://certbot.eff.org/">https://certbot.eff.org</a>, or run <code>certbot renew</code> manually when renewal is due. <strong>Important:</strong> You'll need to follow the instructions for copying the certificate to the right place again, and re-run <code>/relay sslcertkey</code> in WeeChat.</p>
             </div>
           </div>
         </div>
