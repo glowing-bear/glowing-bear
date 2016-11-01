@@ -33,7 +33,7 @@ var urlRegexp = /(?:(?:https?|ftp):\/\/|www\.|ftp\.)\S*[^\s.;,(){}<>]/g;
 var UrlPlugin = function(name, urlCallback) {
     return {
         contentForMessage: function(message) {
-            var urls = message.match(urlRegexp);
+            var urls = _.uniq(message.match(urlRegexp));
             var content = [];
 
             for (var i = 0; urls && i < urls.length; i++) {
