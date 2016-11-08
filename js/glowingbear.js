@@ -145,11 +145,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $rootScope.$on('activeBufferChanged', function(event, unreadSum) {
         var ab = models.getActiveBuffer();
 
-        // Discard surplus lines. This is done *before* lines are fetched because that saves us the effort of special handling for the
-        // case where a buffer is opened for the first time ;)
-        var minRetainUnread = ab.lines.length - unreadSum + 5;  // do not discard unread lines and keep 5 additional lines for context
-        var surplusLines = ab.lines.length - (2 * $scope.lines_per_screen + 10);  // retain up to 2*(screenful + 10) + 10 lines because magic numbers
-        var linesToRemove = Math.min(minRetainUnread, surplusLines);
+        // Discard unread lines above 2 screenfuls. We can click through to get more if needs be
+        // This is to keep GB responsive when loading buffers which have seen a lot of traffic. See issue #859
+        var linesToRemove = ab.lines.length - (2 * $scope.lines_per_screen + 10);
 
         if (linesToRemove > 0) {
             ab.lines.splice(0, linesToRemove);  // remove the lines from the buffer
