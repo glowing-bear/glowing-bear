@@ -364,6 +364,7 @@ weechat.directive('inputBar', function() {
                         buffer.unread = 0;
                         buffer.notification = 0;
                     });
+                    connection.sendHotlistClearAll();
                 }
 
                 var caretPos;
