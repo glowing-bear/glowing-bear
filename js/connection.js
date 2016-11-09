@@ -420,6 +420,10 @@ weechat.factory('connection',
         }
     };
 
+    var sendHotlistClearAll = function() {
+        sendMessage("/input hotlist_clear");
+    };
+
     var requestNicklist = function(bufferId, callback) {
         // Prevent requesting nicklist for all buffers if bufferId is invalid
         if (!bufferId) {
@@ -513,6 +517,7 @@ weechat.factory('connection',
         sendMessage: sendMessage,
         sendCoreCommand: sendCoreCommand,
         sendHotlistClear: sendHotlistClear,
+        sendHotlistClearAll: sendHotlistClearAll,
         fetchMoreLines: fetchMoreLines,
         requestNicklist: requestNicklist,
         attemptReconnect: attemptReconnect
