@@ -357,6 +357,16 @@ weechat.directive('inputBar', function() {
                     return true;
                 }
 
+                // Alt-h -> Toggle all as read
+                if ($event.altKey && !$event.ctrlKey && code === 72) {
+                    var buffers = models.getBuffers();
+                    _.each(buffers, function(buffer) {
+                        buffer.unread = 0;
+                        buffer.notification = 0;
+                    });
+                    connection.sendHotlistClearAll();
+                }
+
                 var caretPos;
 
                 // Arrow up -> go up in history
