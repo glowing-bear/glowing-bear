@@ -254,23 +254,24 @@ weechat.directive('inputBar', function() {
                     if (($scope.$parent.search.length || $scope.$parent.onlyUnread) && $scope.$parent.filteredBuffers.length) {
                         var filteredBufferNum = $scope.$parent.filteredBuffers[bufferNumber];
                         if (filteredBufferNum !== undefined) {
-                            activeBufferId = [filteredBufferNum.number, filteredBufferNum.id];
+                            activeBufferId = [filteredBufferNum.number, /*dummy*/ 0, filteredBufferNum.id];
                         }
                     } else {
-                        // Map the buffers to only their numbers and IDs so we don't have to
+                        // Map the buffers to only their numbers, indices, and IDs so we don't have to
                         // copy the entire (possibly very large) buffer object, and then sort
                         // the buffers according to their WeeChat number
-                        var sortedBuffers = _.map(models.getBuffers(), function(buffer) {
-                            return [buffer.number, buffer.id];
+                        var buffers = models.getBuffers();
+                        var sortedBuffers = Object.keys(buffers).map(function(key, idx) {
+                            return [buffers[key].number, idx, buffers[key].id];
                         }).sort(function(left, right) {
                             // By default, Array.prototype.sort() sorts alphabetically.
-                            // Pass an ordering function to sort by first element.
-                            return left[0] - right[0];
+                            // Pass an ordering function to sort by key, then index (for merged buffers)
+                            return left[0] - right[0] || left[1] - right[1];
                         });
                         activeBufferId = sortedBuffers[bufferNumber];
                     }
                     if (activeBufferId) {
-                        $scope.$parent.setActiveBuffer(activeBufferId[1]);
+                        $scope.$parent.setActiveBuffer(activeBufferId[2]);
                         $event.preventDefault();
                     }
                 }
