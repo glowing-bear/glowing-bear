@@ -360,8 +360,7 @@ weechat.directive('inputBar', function() {
 
                 // Alt-h -> Toggle all as read
                 if ($event.altKey && !$event.ctrlKey && code === 72) {
-                    var buffers = models.getBuffers();
-                    _.each(buffers, function(buffer) {
+                    _.each(models.getBuffers(), function(buffer) {
                         buffer.unread = 0;
                         buffer.notification = 0;
                     });
