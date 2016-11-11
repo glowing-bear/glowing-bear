@@ -181,22 +181,25 @@ plugins.factory('userPlugins', function() {
      *
      */
 
-    var spotifyPlugin = new Plugin('Spotify track', function(message) {
+    var spotifyPlugin = new Plugin('Spotify music', function(message) {
         var content = [];
         var addMatch = function(match) {
             for (var i = 0; match && i < match.length; i++) {
-                var id = match[i].substr(match[i].length - 22, match[i].length);
                 var element = angular.element('<iframe></iframe>')
-                                     .attr('src', '//embed.spotify.com/?uri=spotify:track:' + id)
-                                     .attr('width', '300')
+                                     .attr('src', '//embed.spotify.com/?uri=' + match[i])
+                                     .attr('width', '350')
                                      .attr('height', '80')
                                      .attr('frameborder', '0')
                                      .attr('allowtransparency', 'true');
                 content.push(element.prop('outerHTML'));
             }
         };
-        addMatch(message.match(/spotify:track:([a-zA-Z-0-9]{22})/g));
-        addMatch(message.match(/open\.spotify\.com\/track\/([a-zA-Z-0-9]{22})/g));
+        addMatch(message.match(/spotify:track:[a-zA-Z-0-9]{22}/g));
+        addMatch(message.match(/spotify:artist:[a-zA-Z-0-9]{22}/g));
+        addMatch(message.match(/spotify:user:\w+:playlist:[a-zA-Z-0-9]{22}/g));
+        addMatch(message.match(/open\.spotify\.com\/track\/[a-zA-Z-0-9]{22}/g));
+        addMatch(message.match(/open\.spotify\.com\/artist\/[a-zA-Z-0-9]{22}/g));
+        addMatch(message.match(/open\.spotify\.com\/user\/\w+\/playlist\/[a-zA-Z-0-9]{22}/g));
         return content;
     });
 

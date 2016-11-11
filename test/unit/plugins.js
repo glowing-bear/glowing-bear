@@ -29,12 +29,16 @@ describe('filter', function() {
             $provide.value('version', 'TEST_VER');
         }));
 
-        it('should recognize spotify tracks', inject(function(plugins) {
+        it('should recognize spotify links', inject(function(plugins) {
             expectTheseMessagesToContain([
                 'spotify:track:6JEK0CvvjDjjMUBFoXShNZ',
-                'https://open.spotify.com/track/6JEK0CvvjDjjMUBFoXShNZ'
+                'spotify:user:lorenzhs:playlist:18aXdzQ4Ar1p019OSICtu4',
+                'spotify:artist:0L5fC7Ogm2YwgqVCRcF1bT',
+                'https://open.spotify.com/track/6JEK0CvvjDjjMUBFoXShNZ',
+                'https://open.spotify.com/user/lorenzhs/playlist/18aXdzQ4Ar1p019OSICtu4',
+                'https://open.spotify.com/artist/0L5fC7Ogm2YwgqVCRcF1bT'
             ],
-            'Spotify track',
+            'Spotify music',
             plugins);
         }));
 
