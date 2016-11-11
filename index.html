@@ -58,6 +58,7 @@
         <span>Glowing Bear</span>
         <small>WeeChat web frontend</small>
       </h2>
+      <div class="alert alert-warning" ng-show="show_tls_warning"><strong>You're using Glowing Bear over an unencrypted connection (http://). This is not recommended!</strong> We recommend using our secure hosted version at <a href="https://www.glowing-bear.org/">https://www.glowing-bear.org/</a>, or <a href="https://latest.glowing-bear.org/">https://latest.glowing-bear.org</a> for the latest development version. If your relay is on your local network, that is unfortunately impossible, but be aware of the implications.</div>
       <div class="alert alert-danger" ng-show="errorMessage">
         <strong>Connection error</strong> The client was unable to connect to the WeeChat relay
       </div>
@@ -112,7 +113,7 @@
                   <div class="checkbox">
                     <label class="control-label" for="ssl">
                       <input type="checkbox" id="ssl" ng-model="settings.ssl">
-                      Encryption. Read instructions for help
+                      Encryption. <strong>Strongly recommended!</strong> Need help? Check below.
                     </label>
                   </div>
                 </div>
@@ -125,23 +126,43 @@
           <div class="panel-heading">
             <h4 class="panel-title">
               <a class="accordion-toggle" ng-click="toggleAccordion($event)">
-                Usage instructions
+                Getting Started
               </a>
             </h4>
           </div>
           <div id="collapseTwo" class="panel-collapse collapse">
             <div class="panel-body">
-              <h3>Configuring the relay</h3>
-              <div>To start using glowing bear, please enable the relay plugin in your WeeChat client:
+              <p><span class="label label-danger">WeeChat version 0.4.2 or higher is required—we recommend at least 1.0.</p>
+              <p>To start using Glowing Bear, follow the instructions below to set up an encrypted relay. All communication goes directly between your browser and your WeeChat relay! This means that your server must be accessible. We never see any of your data or your password, and you don't need to trust a "cloud". All settings, including your password, are saved locally in your own browser between sessions.</p>
+              <div class="alert alert-warning" ng-show="show_tls_warning"><strong>You're using Glowing Bear over an unencrypted connection (http://). This is not recommended!</strong> We recommend using our secure hosted version at <a href="https://www.glowing-bear.org/">https://www.glowing-bear.org/</a>, or <a href="https://latest.glowing-bear.org/">https://latest.glowing-bear.org</a> for the latest and greatest development version. You can still follow the instructions below to set up an encrypted relay, though.</div>
+              <p>When using encryption, all communication between your browser and WeeChat will be securely encrypted with TLS. This means that you have to set up a certificate. While it's possible to use a self-signed cert, we recommend against it, because it's handled poorly in browsers, and may not work at all on mobile devices. If you don't already have a certificate for your domain (or you don't have a domain), we strongly encourage you to get a certificate from <a href="https://letsencrypt.org/">Let's Encrypt</a>—it's free and easy. We'll walk you through it.</p>
+              <p><strong>If you don't have a domain</strong> you can get a free subdomain from providers such as <a href="https://freedns.afraid.org/">afraid</a>. You'll want to set up an 'A' record to your server's IP address, and quite possibly an AAAA record to its IPv6 address. These might take a few hours to propagate, if the steps below don't work right away, try again in a few hours.</p>
+              <p><strong>Getting a certificate</strong> is easy. You'll need certbot—just follow the encryptions at <a href="https://certbot.eff.org/">https://certbot.eff.org</a>. If you're not serving webpages on the same server or are unsure, select "none of the above" (if you are, you can probably use that webserver to proxy your relay, and skip this—check out the <a href="https://github.com/glowing-bear/glowing-bear/wiki/Proxying-WeeChat-relay-with-a-web-server">instructions in our Wiki</a>). Next, get the certificate with <code>certbot certonly --standalone -d {{ settings.host || your.domain.com }}</code> and follow the instructions.</p>
+              <p>Nearly done! Now you just need to copy the files into place. To do that, use the following commands, replacing the <strong>username</strong> placeholder with your actual username:</p>
+                <pre>mkdir -p ~<strong>username</strong>/.weechat/ssl
+cat /etc/letsencrypt/live/{{ settings.host || your.domain.com }}/{fullchain,privkey}.pem &gt; ~<strong>username</strong>/.weechat/ssl/relay.pem
+chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</strong>/.weechat/ssl/</pre>
+              <p>Once you've got the certificate and moved it in place, you can set up an encrypted relay on port {{ settings.port || 9001 }} with these WeeChat commands:</p>
 <pre>
-/set relay.network.password yourpassword
-/relay add weechat {{ settings.port || 9001 }}
+/set relay.network.password y0ur_StRonG-pa$sw0rd:of*choice
+/relay sslcertkey
+/relay add ssl.weechat {{ settings.port || 9001 }}
 </pre>
-              <span class="label label-danger">WeeChat version 0.4.2 or higher is required.</span><br>
-              The communication goes directly between your browser and your WeeChat relay in plain text. Check the instructions below for help on setting up encrypted communication.
-              Connection settings, including your password, are saved locally in your own browser between sessions.
-              <br>
-              <h3>Shortcuts</h3>
+              <p>Your certificate needs to be renewed every couple of months. Either follow the instructions for automatic renewal at <a href="https://certbot.eff.org/">https://certbot.eff.org</a>, or run <code>certbot renew</code> manually when renewal is due. <strong>Important:</strong> You'll need to follow the instructions for copying the certificate to the right place again, and re-run <code>/relay sslcertkey</code> in WeeChat.</p>
+            </div>
+          </div>
+        </div>
+        <div class="panel" data-state="collapsed">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a class="accordion-toggle" ng-click="toggleAccordion($event)">
+                Usage instructions
+              </a>
+            </h4>
+          </div>
+          <div id="collapseThree" class="panel-collapse collapse">
+            <div class="panel-body">
+              <h3 style="margin-top: 0px">Shortcuts</h3>
               Glowing Bear has a few shortcuts:
               <ul>
                 <li><kbd>ALT-n</kbd>: Toggle nicklist</li>
@@ -167,35 +188,6 @@
               <p>
               Helpful trigger to automatically repin a buffer (in this instance, <var>irc.freenode.#weechat</var>): <pre><code>/trigger add autopin signal "buffer_opened" "${buffer[${tg_signal_data}].full_name} =~ <var>irc.freenode.#weechat</var>" "" "/command -buffer ${buffer[${tg_signal_data}].full_name} * /buffer set localvar_set_pinned true"</code></pre>
               </p>
-
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="panel" data-state="collapsed">
-          <div class="panel-heading">
-            <h4 class="panel-title">
-              <a class="accordion-toggle" ng-click="toggleAccordion($event)">
-                Encryption instructions
-              </a>
-            </h4>
-          </div>
-          <div id="collapseThree" class="panel-collapse collapse">
-            <div class="panel-body">
-              <p>If you check the encryption box, the communication between browser and WeeChat will be encrypted with TLS.</p>
-              <p><strong>Note</strong>: If you are using a self-signed certificate, you have to visit <a href="https://{{ settings.host }}:{{ settings.port }}/weechat">https://{{ settings.host || 'weechathost' }}:{{ settings.port || 'relayport' }}/weechat</a> in your browser first to add a security exception. You can close that tab once you confirmed the certificate, no content will appear. The necessity of this process is a bug in <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=594502">Firefox</a> and other browsers.</p>
-              <p><strong>Setup</strong>: If you want to use an encrypted session you first have to set up the relay to use TLS. You basically have two options: a self-signed certificate is easier to set up, but requires manual security exceptions. Using a certificate that is trusted by your browser requires more setup, but offers greater convenience later on and does not require security exceptions. You can find a guide to set up WeeChat with a free trusted certificate from StartSSL <a href="https://4z2.de/2014/07/06/weechat-trusted-relay">here</a>. Should you wish to use a self-signed certificate instead, execute the following commands in a shell on the same host and as the user running WeeChat:</p>
-<pre>
-$ mkdir -p ~/.weechat/ssl
-$ cd ~/.weechat/ssl
-$ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out relay.pem -sha256 -subj "/CN={{settings.host || 'your weechat host'}}/"
-</pre>
-              <p>If WeeChat is already running, you can reload the certificate and private key and set up an encrypted relay on port {{ settings.port || 9001 }} with these WeeChat commands:</p>
-<pre>
-/set relay.network.password yourpassword
-/relay sslcertkey
-/relay add ssl.weechat {{ settings.port || 9001 }}
-</pre>
             </div>
           </div>
         </div>
@@ -209,14 +201,18 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           </div>
           <div id="collapseFour" class="panel-collapse collapse">
             <div class="panel-body">
-              <p>You don't need to install anything to use this app, it should work with any modern browser. Start using it <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">right now</a>! However, there are a few ways to improve integration with your operating system.</p>
+              <p>You don't need to install anything to use Glowing Bear, it works with any modern browser. Start using it <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">right now</a> at the top of the page! However, there are a few ways to improve integration with your operating system.</p>
               <h3>Mobile Applications</h3>
-              <p>If you're running Android 4.4 or later, you can install our app from the Google Play Store! We also provide an optimized application for Firefox OS devices. If you're using the Firefox browser, keep on reading below -- the Firefox OS app won't work for you</p>
-              <p><a href="https://play.google.com/store/apps/details?id=com.glowing_bear"><img alt="Android app on Google Play" src="assets/img/badge_playstore.png" /></a> <a href="https://marketplace.firefox.com/app/glowing-bear/"><img alt="Firefox OS app in the Firefox Marketplace" src="assets/img/badge_firefoxos.png" /></a></p>
+              <p>If you're running Android 4.4 or later, you can install our app from the Google Play Store! We can't distribute on iOS unfortunately, but if you're a developer, you can <a href="https://github.com/glowing-bear/glowing-bear-cordova">follow the sideloading instructions</a>.</p>
+              <p><a href="https://play.google.com/store/apps/details?id=com.glowing_bear"><img alt="Android app on Google Play" src="assets/img/badge_playstore.png" /></a></p>
+              <h3>Electron</h3>
+              <p>Glowing Bear supports the electron shell. You'll have to build it yourself, though. Run the following commands, choosing your platform from the list in the last command: <pre>git clone https://github.com/glowing-bear/glowing-bear
+cd glowing-bear
+npm install
+npm install electron-packager
+npm run build-electron-{windows, darwin, linux}</pre>
               <h3>Firefox Browser</h3>
-              <p>If you have a recent version of Firefox you can install Glowing Bear as a Firefox app. Click the button to install.</p>
-              <p><button class="btn btn-lg btn-primary" ng-click="install()">Install Firefox app <i class="glyphicon glyphicon-chevron-right"></i></button></p>
-              <p>Note for self-signed certificates: Firefox does not share a certificate storage with Firefox apps, so accepting self-signed certificates is a bit tricky.</p>
+              <p>Firefox used to support apps, but this was removed from Firefox. There's nothing we can do about it. Sorry!</p>
               <h3>Chrome</h3>
               <p>To install Glowing Bear as an app in Chrome for Android, select <kbd>Menu - Add to home screen</kbd>. In the desktop version of Chrome, click <kbd>Menu - More tools - Create application shortcuts</kbd>.</p>
             </div>
@@ -233,7 +229,7 @@ $ openssl req -nodes -newkey rsa:4096 -keyout relay.pem -x509 -days 365 -out rel
           <div id="collapseFive" class="panel-collapse collapse">
             <div class="panel-body">
               <p>Glowing bear is built by a small group of developers in their free time. As we're always trying to improve it, we would love getting your feedback and help. If that sounds like something you might enjoy, check out our <a href="https://github.com/glowing-bear/glowing-bear">project page</a> on GitHub!</p>
-              <p>If you're interested in contributing or simply want to say hello, head over to <strong>#glowing-bear</strong> on <strong>freenode!</strong> We won't bite, promise (-ish).</p>
+              <p>If you're interested in contributing or simply want to say hello, head over to <strong>#glowing-bear</strong> on <strong>freenode!</strong> We won't bite, promise :)</p>
             </div>
           </div>
         </div>
