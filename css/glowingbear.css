@@ -8,7 +8,7 @@ body {
 }
 
 .mobile {
-  display: none;
+    display: none;
 }
 
 a {
@@ -16,13 +16,13 @@ a {
 }
 
 .version {
-   margin-right: 1em;
+    margin-right: 1em;
 }
 
 .hidden-bracket {
-  position: absolute;
-  left: -1000px;
-  overflow: hidden;
+    position: absolute;
+    left: -1000px;
+    overflow: hidden;
 }
 
 td.prefix {
@@ -32,23 +32,12 @@ td.prefix {
     white-space: pre;
     border-right: 1px solid #444;
 }
+
 td.message {
     overflow: hidden;
     vertical-align: top;
     width: 100%;
     padding: 1px 1px 1px 5px;
-
--ms-word-break: break-all;
-    word-break: break-all;
-
-    /* Non standard for webkit */
-    word-break: break-word;
-
--webkit-hyphens: auto;
-   -moz-hyphens: auto;
-    -ms-hyphens: auto;
-        hyphens: auto;
-
 }
 
 #readmarker {
@@ -60,6 +49,17 @@ td.message {
 }
 
 .text {
+-ms-word-break: break-all;
+    word-break: break-all;
+
+    /* Non standard for webkit */
+    word-break: break-word;
+
+-webkit-hyphens: auto;
+   -moz-hyphens: auto;
+    -ms-hyphens: auto;
+        hyphens: auto;
+
     white-space: pre-wrap;
 }
 
@@ -239,12 +239,12 @@ input[type=text], input[type=password], #sendMessage {
   /* this needs to be here to make it visible during the animation
      since the .ng-hide class is already on the element rendering
      it as hidden. */
-  display:block!important;
+    display:block!important;
 }
 
 
 #sidebar .buffer .badge {
-   display: none;
+     display: none;
 }
 
 #sidebar .buffer.unread .badge, #sidebar .buffer.notification .badge {
@@ -259,7 +259,7 @@ input[type=text], input[type=password], #sendMessage {
 }
 
 #sidebar.ng-hide {
-  width: 0;
+    width: 0;
 }
 
 #nicklist {
@@ -859,32 +859,63 @@ img.emojione {
     #bufferlines > table,
     #bufferlines > table > tbody {
         display: block;
+        border-spacing: initial;
     }
 
     #bufferlines tr {
-        padding: 0px 3px;
+        padding: 0 .25em;
         display: block;
+        align-items: baseline;
         overflow: hidden;
     }
 
+    #bufferlines tr.bufferline {
+        padding: .25em .25em 0;
+        direction: rtl;
+        text-align: left;
+    }
+
+    #bufferlines tr.bufferline.repeated-prefix.repeated-time {
+        padding: 0 .25em;
+    }
+
     #bufferlines tr td {
-        padding: 0px;
+        border: 0;
+        padding: 0;
         display: inline;
         vertical-align: initial;
+        direction: ltr;
+    }
+
+    #bufferlines tr.bufferline td {
+        display: inline-block;
+    }
+
+    #bufferlines tr.bufferline td.prefix span:nth-last-of-type(2) {
+        margin-right: .25em;
+    }
+
+    #bufferlines tr.bufferline td.prefix span:nth-last-of-type(2):empty {
+        margin-right: 0;
     }
 
     #bufferlines tr.bufferline td.time {
-        font-size: 0.8em;
-    }
-
-    #bufferlines tr.bufferline td.prefix {
-        border: 0;
-        font-weight: bold;
-        font-size: 1.06em;
+        font-size: .8em;
     }
 
     #bufferlines tr.bufferline td.message {
+        padding-left: 1em;
         overflow-wrap: break-word;
+    }
+
+    #bufferlines tr.bufferline.repeated-prefix.repeated-time td.prefix,
+    #bufferlines tr.bufferline.repeated-prefix.repeated-time td.time {
+        display: none;
+    }
+
+    #bufferlines tr.bufferline.repeated-prefix.repeated-time.highlight td.prefix,
+    #bufferlines tr.bufferline.repeated-prefix.repeated-time.highlight td.time {
+        display: inline;
     }
 
     .gb-modal .modal-dialog {

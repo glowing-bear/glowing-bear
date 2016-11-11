@@ -21,7 +21,8 @@ body {
     background-color: var(--base00);
     color: var(--base05);
 }
-tr.bufferline {
+
+tr.bufferline td span {
     line-height: 1.4;
 }
 
