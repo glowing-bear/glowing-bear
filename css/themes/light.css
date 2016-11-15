@@ -2079,7 +2079,7 @@ select.form-control, select option, input[type=text], input[type=password], #sen
 }
 
 /* highlight messages */
-.highlight {
+.highlight .prefix span {
     color: orange;
     font-weight: bold;
 }

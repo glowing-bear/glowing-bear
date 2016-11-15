@@ -1417,7 +1417,7 @@ button.close:hover {
 }
 
 /* highlight messages */
-.bufferline .prefix .highlight {
+.bufferline.highlight .prefix span {
     color: var(--base03) !important;
     background-color: var(--base07) !important;
     font-weight: bold !important;
