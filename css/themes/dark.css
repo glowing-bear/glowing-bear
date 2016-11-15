@@ -2108,7 +2108,7 @@ button.close:hover {
 }
 
 /* highlight messages */
-.highlight {
+.highlight .prefix span {
     color: yellow;
     font-weight: bold;
 }

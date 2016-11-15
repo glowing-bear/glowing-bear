@@ -359,12 +359,6 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
         var highlight = message.highlight;
         var content = parseRichText(message.message);
 
-        if (highlight) {
-            prefix.forEach(function(textEl) {
-                textEl.classes.push('highlight');
-            });
-        }
-
         var prefixtext = "";
         for (var pti = 0; pti < prefix.length; ++pti) {
             prefixtext += prefix[pti].text;
