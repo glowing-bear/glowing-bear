@@ -33,6 +33,7 @@
     "update-webdriver": "webdriver-manager update",
     "preprotractor": "npm run update-webdriver",
     "protractor": "protractor test/protractor-conf.js",
+    "make-local": "make -f electron.makefile uselocal",
     "build-electron-windows": "make -f electron.makefile build-electron-windows",
     "build-electron-darwin": "make -f electron.makefile build-electron-darwin",
     "build-electron-linux": "make -f electron.makefile build-electron-linux",
