@@ -445,6 +445,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     });
     // Update font size when changed
     settings.addCallback('fontsize', function(fontsize) {
+        // If no unit is specified, it should be pixels
+        if (fontsize.match(/^[0-9]+$/)) {
+            fontsize += 'px';
+        }
         utils.changeClassStyle('favorite-font', 'fontSize', fontsize);
     });
 
