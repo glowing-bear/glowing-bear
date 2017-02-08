@@ -3,7 +3,7 @@
 
 var weechat = angular.module('weechat');
 
-weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notifications', 'bufferResume', function($rootScope, $log, models, plugins, notifications, bufferResume) {
+weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notifications', 'bufferResume', 'settings', function($rootScope, $log, models, plugins, notifications, bufferResume, settings) {
 
     var handleVersionInfo = function(message) {
         var content = message.objects[0].content;
@@ -140,6 +140,17 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         var message = new models.BufferLine(line);
         var buffer = models.getBuffer(message.buffer);
         buffer.requestedLines++;
+
+        // apply filtering
+        if (settings.filterMessages) {
+            for (var i = line.tags_array.length - 1; i >= 0; i--) {
+                var t = line.tags_array[i];
+                if (t === "irc_mode" || t === "irc_join" || t === "irc_quit" || t === "irc_nick") {
+                    return; // skip this message
+                }
+            }
+        }
+
         // Only react to line if its displayed
         if (message.displayed) {
             // Check for date change

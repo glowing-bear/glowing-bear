@@ -398,6 +398,16 @@ npm run build-electron-{windows, darwin, linux}</pre>
                 <form class="form-inline" role="form">
                   <div class="checkbox">
                     <label>
+                      <input type="checkbox" ng-model="settings.filterMessages">
+                      Hide joins, parts, quits and mode changes
+                    </label>
+                  </div>
+                </form>
+              </li>
+              <li>
+                <form class="form-inline" role="form">
+                  <div class="checkbox">
+                    <label>
                       <input type="checkbox" ng-model="settings.noembed">
                        Hide embedded content by default<span class="text-muted settings-help">NSFW content will be hidden regardless of this choice</span>
                     </label>
