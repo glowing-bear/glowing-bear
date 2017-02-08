@@ -276,7 +276,7 @@ plugins.factory('userPlugins', function() {
      * Image Preview
      */
     var imagePlugin = new UrlPlugin('image', function(url) {
-        if (url.match(/\.(png|gif|jpg|jpeg)(:(small|medium|large))?\b/i)) {
+        if (url.match(/\.(bmp|gif|jpe?g|png|svg|webp)(:(small|medium|large))?\b/i)) {
             /* A fukung.net URL may end by an image extension but is not a direct link. */
             if (url.indexOf("^https?://fukung.net/v/") != -1) {
                 url = url.replace(/.*\//, "http://media.fukung.net/imgs/");
@@ -354,7 +354,7 @@ plugins.factory('userPlugins', function() {
             };
         }
     });
-    
+
 
     /*
      * Cloud Music Embedded Players
