@@ -287,7 +287,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
           </li>
         </ul>
       </div>
-      <div id="bufferlines" class="favorite-font" ng-swipe-right="showSidebar()" ng-swipe-left="hideSidebar()" ng-swipe-disable-mouse ng-class="{'withnicklist': showNicklist}" when-scrolled="infiniteScroll()" imgur-drop>
+      <div id="bufferlines" class="favorite-font" ng-swipe-right="showSidebar()" ng-swipe-left="hideSidebar()" ng-swipe-disable-mouse ng-class="{'withnicklist': showNicklist, 'showfiltered': showFiltered}" when-scrolled="infiniteScroll()" imgur-drop>
         <div id="nicklist" ng-if="showNicklist" ng-swipe-right="closeNick()" ng-swipe-disable-mouse class="vertical-line-left">
           <ul class="nicklistgroup list-unstyled" ng-repeat="group in nicklist">
             <li ng-repeat="nick in group.nicks|orderBy:'name'">
@@ -304,7 +304,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
               </td>
             </tr>
           </tbody>
-          <tbody ng-repeat="bufferline in bufferlines">
+          <tbody ng-repeat="bufferline in bufferlines" ng-class="::{'filtered': !bufferline.displayed}">
             <tr class="bufferline">
               <td class="time">
                 <span class="date" ng-class="::{'repeated-time': bufferline.shortTime==bufferlines[$index-1].shortTime}">

@@ -313,6 +313,13 @@ weechat.directive('inputBar', function() {
                     return true;
                 }
 
+                // Alt+= -> toggle showing of filtered lines
+                if ($event.altKey && $event.shiftKey && code == 187) {
+                    $rootScope.showFiltered = !$rootScope.showFiltered;
+                    console.log('sf', $event, $rootScope.showFiltered);
+                    return true;
+                }
+
                 // Alt+< -> switch to previous buffer
                 // https://w3c.github.io/uievents-code/#code-IntlBackslash
                 if ($event.altKey && (code === 60 || code === 226 || key === "IntlBackslash")) {

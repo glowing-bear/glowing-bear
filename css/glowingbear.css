@@ -325,6 +325,13 @@ input[type=text], input[type=password], #sendMessage {
     margin-top: 35px;
     width: 100%;
 }
+#bufferlines > table > tbody.filtered {
+   display: none;
+}
+#bufferlines.showfiltered > table > tbody.filtered {
+   display: table-row-group;
+}
+
 tr.bufferline {
     line-height: 100%;
 }

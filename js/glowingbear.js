@@ -709,6 +709,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     });
     $scope.showNicklist = false;
+    $rootScope.showFiltered = false;
     // Utility function that template can use to check if nicklist should
     // be displayed for current buffer or not
     // is called on buffer switch
