@@ -445,6 +445,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     });
     // Update font size when changed
     settings.addCallback('fontsize', function(fontsize) {
+        if (typeof(fontsize) === "number") {
+            // settings module recognizes a fontsize without unit it as a number
+            // and converts, we need to convert back
+            fontsize = fontsize.toString();
+        }
         // If no unit is specified, it should be pixels
         if (fontsize.match(/^[0-9]+$/)) {
             fontsize += 'px';
