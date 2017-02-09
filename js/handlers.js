@@ -150,17 +150,16 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         message = plugins.PluginManager.contentForMessage(message);
         buffer.addLine(message);
 
+        if (manually) {
+            buffer.lastSeen++;
+        }
+
+        if (buffer.active && !manually) {
+            $rootScope.scrollWithBuffer();
+        }
+
         // Only react to line if its displayed
-        // TODO think through and fix
         if (message.displayed) {
-            if (manually) {
-                buffer.lastSeen++;
-            }
-
-            if (buffer.active && !manually) {
-                $rootScope.scrollWithBuffer();
-            }
-
             if (!manually && (!buffer.active || !$rootScope.isWindowFocused())) {
                 if (buffer.notify > 1 && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
                     buffer.unread++;
