@@ -276,7 +276,7 @@ plugins.factory('userPlugins', function() {
      * Image Preview
      */
     var imagePlugin = new UrlPlugin('image', function(url) {
-        if (url.match(/\.(bmp|gif|jpe?g|png|svg|webp)(:(small|medium|large))?\b/i)) {
+        if (url.match(/\.(bmp|gif|ico|jpeg|jpg|png|svg|svgz|tif|tiff|webp)(:(small|medium|large))?\b/i)) {
             /* A fukung.net URL may end by an image extension but is not a direct link. */
             if (url.indexOf("^https?://fukung.net/v/") != -1) {
                 url = url.replace(/.*\//, "http://media.fukung.net/imgs/");
@@ -317,10 +317,10 @@ plugins.factory('userPlugins', function() {
     });
 
     /*
-     * audio Preview
+     * Audio Preview
      */
     var audioPlugin = new UrlPlugin('audio', function(url) {
-        if (url.match(/\.(mp3|ogg|wav)\b/i)) {
+        if (url.match(/\.(flac|m4a|mid|midi|mp3|oga|ogg|ogx|opus|pls|spx|wav|wave|wma)\b/i)) {
             return function() {
                 var element = this.getElement();
                 var aelement = angular.element('<audio controls></audio>')
@@ -335,10 +335,10 @@ plugins.factory('userPlugins', function() {
 
 
     /*
-     * mp4 video Preview
+     * Video Preview
      */
     var videoPlugin = new UrlPlugin('video', function(url) {
-        if (url.match(/\.(mp4|webm|ogv|gifv)\b/i)) {
+        if (url.match(/\.(3gp|avi|flv|gifv|mkv|mp4|ogv|webm|wmv)\b/i)) {
             if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
                 // remove protocol specification to load over https if used by g-b
                 url = url.replace(/\.(gifv)\b/i, ".webm");
