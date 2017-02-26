@@ -17,14 +17,12 @@ Now point your browser to the [Glowing Bear](http://www.glowing-bear.org)! If yo
 You can run Glowing Bear in many ways:
 
  * like any other webpage
- * as an app in Firefox (choose "Install app" on the landing page)
  * Chrome app ("Tools", then "Create application shortcuts")
  * Android Chrome app a full-screen experience ("Add to homescreen").
  * [Android app](https://play.google.com/store/apps/details?id=com.glowing_bear) that you can install from the Google Play Store
- * [Firefox OS app](https://marketplace.firefox.com/app/glowing-bear/) in the Firefox Marketplace.
  * Electron app, for Windows, Linux and MacOSX. ```npm install; npm install electron-packager; npm run build-electron-{windows, darwin, linux}```
 
-<a href="https://play.google.com/store/apps/details?id=com.glowing_bear"><img alt="Android app on Google Play" src="/assets/img/badge_playstore.png" /></a><a href="https://marketplace.firefox.com/app/glowing-bear/"><img alt="Firefox OS app in the Firefox Marketplace" src="/assets/img/badge_firefoxos.png" /></a>
+<a href="https://play.google.com/store/apps/details?id=com.glowing_bear"><img alt="Android app on Google Play" src="/assets/img/badge_playstore.png" /></a>
 
 ##Screenshots
 
