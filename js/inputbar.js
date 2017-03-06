@@ -480,7 +480,7 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Alt key down -> display quick key legend
-                if ($event.type === "keydown" && code === 18 && !$event.ctrlKey && !$event.shiftKey) {
+                if ($event.type === "keydown" && code === 18 && !$event.ctrlKey && !$event.shiftKey && settings.enableQuickKeys) {
                     $rootScope.showQuickKeys = true;
                 }
             };
