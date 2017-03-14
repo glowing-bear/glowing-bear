@@ -262,7 +262,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
         </div>
       </div>
       <div id="sidebar" data-state="visible" ng-swipe-left="hideSidebar()" ng-swipe-disable-mouse class="vertical-line">
-        <ul class="nav nav-pills nav-stacked" ng-class="{'indented': (predicate === 'serverSortKey'), 'showquickkeys': showQuickKeys}">
+        <ul class="nav nav-pills nav-stacked" ng-class="{'indented': (predicate === 'serverSortKey'), 'showquickkeys': showQuickKeys, 'showjumpkeys': showJumpKeys}">
           <li class="bufferfilter">
             <form role="form">
               <input class="form-control favorite-font" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="Search" autocomplete="off">
@@ -282,6 +282,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
             <a ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}" href="#">
               <span class="badge pull-right" ng-class="{'danger': buffer.notification}" ng-bind="buffer.notification || buffer.unread"></span>
               <span class="buffer-quick-key">{{ buffer.$quickKey }}</span>
+              <span class="buffer-jump-key">{{ buffer.$jumpKey }}</span>
               <span class="buffername">{{ buffer.trimmedName || buffer.fullName }}</span>
             </a>
           </li>
