@@ -282,7 +282,7 @@ plugins.factory('userPlugins', function() {
                 url = url.replace(/.*\//, "http://media.fukung.net/imgs/");
             } else if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
                 // remove protocol specification to load over https if used by g-b
-                url = url.replace(/http:/, "");
+                url = url.replace(/http:/, "https:");
             } else if (url.match(/^https:\/\/www\.dropbox\.com\/s\/[a-z0-9]+\//i)) {
                 // Dropbox requires a get parameter, dl=1
                 var dbox_url = document.createElement("a");
