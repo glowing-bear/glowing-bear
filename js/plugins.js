@@ -209,18 +209,18 @@ plugins.factory('userPlugins', function() {
      * See: https://developers.google.com/youtube/player_parameters
      */
     var youtubePlugin = new UrlPlugin('YouTube video', function(url) {
-        var regex = /(?:youtube\.com|youtu\.be)\/(?:v\/|embed\/|watch(?:\?v=|\/))?([a-zA-Z0-9_-]+)/i,
+        var regex = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/i,
             match = url.match(regex);
 
         if (match){
-            var token = match[1],
-                embedurl = "https://www.youtube.com/embed/" + token + "?html5=1&iv_load_policy=3&modestbranding=1&rel=0&showinfo=0",
+            var token = match[2],
+                embedurl = "https://www.youtube.com/embed/" + token + "?html5=1&iv_load_policy=3&modestbranding=1&rel=0",
                 element = angular.element('<iframe></iframe>')
-                                 .attr('src', embedurl)
-                                 .attr('width', '560')
-                                 .attr('height', '315')
-                                 .attr('frameborder', '0')
-                                 .attr('allowfullscreen', 'true');
+                    .attr('src', embedurl)
+                    .attr('width', '560')
+                    .attr('height', '315')
+                    .attr('frameborder', '0')
+                    .attr('allowfullscreen', 'true');
             return element.prop('outerHTML');
         }
     });
