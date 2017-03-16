@@ -464,7 +464,7 @@ plugins.factory('userPlugins', function() {
         var match = url.match(regexp);
         if (match) {
             var id = match[1],
-                embedurl = "//pastebin.com/embed_iframe/" + id,
+                embedurl = "https://pastebin.com/embed_iframe/" + id,
                 element = angular.element('<iframe></iframe>')
                                  .attr('src', embedurl)
                                  .attr('width', '100%')
@@ -514,7 +514,7 @@ plugins.factory('userPlugins', function() {
                     // The script tag needs to be generated manually or the browser won't load it
                     var scriptElem = document.createElement('script');
                     // Hardcoding the URL here, I don't suppose it's going to change anytime soon
-                    scriptElem.src = "//platform.twitter.com/widgets.js";
+                    scriptElem.src = "https://platform.twitter.com/widgets.js";
                     element.appendChild(scriptElem);
                 });
             };
@@ -535,7 +535,7 @@ plugins.factory('userPlugins', function() {
                                  .attr('width', '600')
                                  .attr('height', '600')
                                  .attr('frameborder', '0');
-            return element.prop('outerHTML') + '<script async src="//platform.vine.co/static/scripts/embed.js" charset="utf-8"></script>';
+            return element.prop('outerHTML') + '<script async src="https://platform.vine.co/static/scripts/embed.js" charset="utf-8"></script>';
         }
     });
 
