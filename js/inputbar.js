@@ -505,6 +505,11 @@ weechat.directive('inputBar', function() {
             $scope.handleCompleteNickButton = function($event) {
                 $event.preventDefault();
                 $scope.completeNick();
+
+                setTimeout(function() {
+                    $scope.getInputNode().focus();
+                }, 0);
+
                 return true;
             };
         }]
