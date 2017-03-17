@@ -302,7 +302,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
     box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.2) inset;
 }
 
-input[type=text], input[type=password], #sendMessage, .btn-send, .btn-send-image {
+input[type=text], input[type=password], #sendMessage, .btn-send, .btn-send-image, .btn-complete-nick {
     color: var(--base05);
     background: var(--base01);
 }
@@ -335,6 +335,7 @@ input[type=text]:-moz-placeholder, input[type=password]:-moz-placeholder { /* Fi
     background: var(--base08);
 }
 
+.btn-complete-nick:hover, .btn-complete-nick:focus,
 .btn-send:hover, .btn-send:focus,
 .btn-send-image:hover, .btn-send-image:focus {
     background-color: var(--base07);

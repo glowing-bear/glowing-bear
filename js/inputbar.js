@@ -497,6 +497,12 @@ weechat.directive('inputBar', function() {
                     return true;
                 }
             };
+
+            $scope.handleCompleteNickButton = function($event) {
+                $event.preventDefault();
+                $scope.completeNick();
+                return true;
+            };
         }]
     };
 });

@@ -89,6 +89,12 @@ input[type=text], input[type=password], #sendMessage {
     margin-bottom: 5px !important;
 }
 
+.btn-complete-nick {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
 .btn-send-image {
     position: relative;
     overflow: hidden;
