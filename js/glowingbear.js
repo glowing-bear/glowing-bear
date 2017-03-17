@@ -234,7 +234,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $scope.notifications = notifications.unreadCount('notification');
         $scope.unread = notifications.unreadCount('unread');
 
-        if (settings.useFavico && $rootScope.favico) {
+        if (cordova === undefined && settings.useFavico && $rootScope.favico) {
             notifications.updateFavico();
         }
     });
@@ -250,6 +250,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $scope.connectbutton = 'Connect';
         $scope.connectbuttonicon = 'glyphicon-chevron-right';
         bufferResume.reset();
+
+        if (window.plugin !== undefined && window.plugin.notification !== undefined && window.plugin.notification.local !== undefined) {
+            window.plugin.notification.local.cancelAll();
+        }
     });
     $scope.connectbutton = 'Connect';
     $scope.connectbuttonicon = 'glyphicon-chevron-right';
@@ -369,6 +373,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if (!$rootScope.connected) {
             return;
         }
+
+        if (cordova !== undefined) {
+            return;
+        }
+
         if (useFavico) {
             notifications.updateFavico();
         } else {
@@ -382,7 +391,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // This also fires when the page is loaded if enabled.
     // Note that this says MathJax but we switched to KaTeX
     settings.addCallback('enableMathjax', function(enabled) {
-        if (enabled && !$rootScope.mathjax_init) {
+        if (cordova === undefined && enabled && !$rootScope.mathjax_init) {
             // Load MathJax only once
             $rootScope.mathjax_init = true;
 
@@ -803,7 +812,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             if ($rootScope.connected) {
                 $scope.disconnect();
             }
-            $scope.favico.reset();
+
+            if (cordova !== undefined) {
+                $scope.favico.reset();
+            }
         }
     };
 
