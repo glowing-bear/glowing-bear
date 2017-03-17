@@ -25,6 +25,9 @@ weechat.directive('inputBar', function() {
                              settings,
                              utils) {
 
+            // Expose utils to be able to check if we're on a mobile UI
+            $scope.utils = utils;
+
             // E.g. Turn :smile: into the unicode equivalent
             $scope.inputChanged = function() {
                 $scope.command = emojione.shortnameToUnicode($scope.command);
@@ -503,10 +506,6 @@ weechat.directive('inputBar', function() {
                 $event.preventDefault();
                 $scope.completeNick();
                 return true;
-            };
-
-            $scope.hideCompleteNickButton = function() {
-                return !utils.isMobileUi();
             };
         }]
     };
