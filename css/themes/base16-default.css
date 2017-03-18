@@ -335,9 +335,9 @@ input[type=text]:-moz-placeholder, input[type=password]:-moz-placeholder { /* Fi
     background: var(--base08);
 }
 
-.is-desktop-ui .btn-complete-nick:hover, .btn-complete-nick:focus,
-.is-desktop-ui .btn-send:hover, .btn-send:focus,
-.is-desktop-ui .btn-send-image:hover, .btn-send-image:focus {
+.btn-complete-nick:hover, .btn-complete-nick:focus,
+.btn-send:hover, .btn-send:focus,
+.btn-send-image:hover, .btn-send-image:focus {
     background-color: var(--base07);
     color: var(--base01);
 }
@@ -345,6 +345,7 @@ input[type=text]:-moz-placeholder, input[type=password]:-moz-placeholder { /* Fi
 .is-mobile-ui .btn-complete-nick:hover,
 .is-mobile-ui .btn-send:hover,
 .is-mobile-ui .btn-send-image:hover {
+    background: var(--base01);
     color: var(--base05);
 }
 
