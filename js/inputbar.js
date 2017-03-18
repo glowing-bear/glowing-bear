@@ -261,29 +261,9 @@ weechat.directive('inputBar', function() {
                             $event.preventDefault();
                         // second digit
                         } else {
-                            bufferNumber = ($scope.jumpDecimal * 10) + (code - 48) - 1;
-                            // quick select filtered entries
-                            if (($scope.$parent.search.length || $scope.$parent.onlyUnread) && $scope.$parent.filteredBuffers.length) {
-                                filteredBufferNum = $scope.$parent.filteredBuffers[bufferNumber];
-                                if (filteredBufferNum !== undefined) {
-                                    activeBufferId = [filteredBufferNum.number, filteredBufferNum.id];
-                                }
-                            } else {
-                                // Map the buffers to only their numbers and IDs so we don't have to
-                                // copy the entire (possibly very large) buffer object, and then sort
-                                // the buffers according to their WeeChat number
-                                sortedBuffers = _.map(models.getBuffers(), function (buffer) {
-                                    return [buffer.number, buffer.id];
-                                }).sort(function (left, right) {
-                                    // By default, Array.prototype.sort() sorts alphabetically.
-                                    // Pass an ordering function to sort by first element.
-                                    return left[0] - right[0];
-                                });
-                                activeBufferId = sortedBuffers[bufferNumber];
-                            }
-                            if (activeBufferId) {
-                                $scope.$parent.setActiveBuffer(activeBufferId[1]);
-                            }
+                            bufferNumber = ($rootScope.jumpDecimal * 10) + (code - 48);
+                            $scope.$parent.setActiveBuffer(bufferNumber, '$jumpKey');
+
                             $event.preventDefault();
                             $rootScope.showJumpKeys = false;
                             $scope.jumpDecimal = undefined;
