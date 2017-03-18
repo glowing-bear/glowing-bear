@@ -335,11 +335,17 @@ input[type=text]:-moz-placeholder, input[type=password]:-moz-placeholder { /* Fi
     background: var(--base08);
 }
 
-.btn-complete-nick:hover, .btn-complete-nick:focus,
-.btn-send:hover, .btn-send:focus,
-.btn-send-image:hover, .btn-send-image:focus {
+.is-desktop-ui .btn-complete-nick:hover, .btn-complete-nick:focus,
+.is-desktop-ui .btn-send:hover, .btn-send:focus,
+.is-desktop-ui .btn-send-image:hover, .btn-send-image:focus {
     background-color: var(--base07);
     color: var(--base01);
+}
+
+.is-mobile-ui .btn-complete-nick:hover,
+.is-mobile-ui .btn-send:hover,
+.is-mobile-ui .btn-send-image:hover {
+    color: var(--base05);
 }
 
 #connection-infos {
