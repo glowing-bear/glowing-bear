@@ -281,7 +281,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
                                         'channel_plus': buffer.prefix === '+',
                                         'channel_ampersand': buffer.prefix === '&',
                                         'private': buffer.type === 'private'}"
-              ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray:'withidx' | filter:{fullName:search} | filter:hasUnread | orderBy:predicate | getBufferQuickKeys:this))">
+              ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray:'withidx' | filter:bufferlistfilter | filter:hasUnread | orderBy:predicate | getBufferQuickKeys:this))">
             <a ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}" href="#">
               <span class="badge pull-right" ng-class="{'danger': buffer.notification}" ng-bind="buffer.notification || buffer.unread"></span>
               <span class="buffer-quick-key">{{ buffer.$quickKey }}</span>

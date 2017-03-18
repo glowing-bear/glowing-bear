@@ -253,24 +253,32 @@ weechat.directive('inputBar', function() {
 
                 // if Alt+J was pressed last...
                 if ($rootScope.showJumpKeys) {
+                    var cleanup = function() { // cleanup helper
+                        $rootScope.showJumpKeys = false;
+                        $rootScope.jumpDecimal = undefined;
+                        $scope.$parent.search = '';
+                        $rootScope.refresh_filter_predicate();
+                    };
+
                     // ... we expect two digits now
                     if (!$event.altKey && (code > 47 && code < 58)) {
                         // first digit
-                        if ($scope.jumpDecimal === undefined) {
-                            $scope.jumpDecimal = code - 48;
+                        if ($rootScope.jumpDecimal === undefined) {
+                            $rootScope.jumpDecimal = code - 48;
                             $event.preventDefault();
-                        // second digit
+                            $scope.$parent.search = $rootScope.jumpDecimal;
+                            $rootScope.refresh_filter_predicate();
+                        // second digit, jump to correct buffer
                         } else {
                             bufferNumber = ($rootScope.jumpDecimal * 10) + (code - 48);
                             $scope.$parent.setActiveBuffer(bufferNumber, '$jumpKey');
 
                             $event.preventDefault();
-                            $rootScope.showJumpKeys = false;
-                            $scope.jumpDecimal = undefined;
+                            cleanup();
                         }
                     } else {
-                        $rootScope.showJumpKeys = false;
-                        $scope.jumpDecimal = undefined;
+                        // Not a decimal digit, abort
+                        cleanup();
                     }
                 }
 
