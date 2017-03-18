@@ -1,4 +1,4 @@
-<form class="form form-horizontal {{ utils.isMobileUi() ? 'is-mobile-ui' : 'is-desktop-ui' }}" id="inputform" ng-submit="sendMessage()" imgur-drop>
+<form class="form form-horizontal" ng-class="utils.isMobileUi() ? 'is-mobile-ui' : 'is-desktop-ui'" id="inputform" ng-submit="sendMessage()" imgur-drop>
   <div class="input-group">
     <textarea id="{{inputId}}" class="form-control favorite-font" ng-trim="false" rows="1" ng-change="inputChanged()" autocomplete="on" ng-model="command" ng-focus="hideSidebar()">
     </textarea>
