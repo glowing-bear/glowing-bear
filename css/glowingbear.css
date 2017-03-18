@@ -73,8 +73,22 @@ td.message {
     border-bottom: 2px solid #555;
 }
 
-.input-group-addon, .input-group-btn {
+.input-group-btn {
     vertical-align: top;
+}
+
+.input-group-addon {
+    background: none;
+    border: none;
+    color: #ccc;
+}
+
+.buffer-jump {
+   display: none;
+}
+
+.showjumpkeys .buffer-jump {
+   display: table-cell;
 }
 
 .footer button {
