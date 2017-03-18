@@ -409,6 +409,8 @@ weechat.directive('inputBar', function() {
                 // Alt+J -> Jump to buffer
                 if ($event.altKey && (code === 106 || code === 74)) {
                     $event.preventDefault();
+                    // reset search state and show jump keys
+                    $scope.$parent.search = '';
                     $rootScope.showJumpKeys = true;
                     return true;
                 }
