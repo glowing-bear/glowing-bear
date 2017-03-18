@@ -241,7 +241,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $scope.notifications = notifications.unreadCount('notification');
         $scope.unread = notifications.unreadCount('unread');
 
-        if (cordova === undefined && settings.useFavico && $rootScope.favico) {
+        if (window.cordova === undefined && settings.useFavico && $rootScope.favico) {
             notifications.updateFavico();
         }
     });
@@ -381,7 +381,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             return;
         }
 
-        if (cordova !== undefined) {
+        if (window.cordova !== undefined) {
             return;
         }
 
@@ -398,7 +398,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // This also fires when the page is loaded if enabled.
     // Note that this says MathJax but we switched to KaTeX
     settings.addCallback('enableMathjax', function(enabled) {
-        if (cordova === undefined && enabled && !$rootScope.mathjax_init) {
+        if (window.cordova === undefined && enabled && !$rootScope.mathjax_init) {
             // Load MathJax only once
             $rootScope.mathjax_init = true;
 
