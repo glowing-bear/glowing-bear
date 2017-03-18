@@ -3,7 +3,7 @@
     <textarea id="{{inputId}}" class="form-control favorite-font" ng-trim="false" rows="1" ng-change="inputChanged()" autocomplete="on" ng-model="command" ng-focus="hideSidebar()">
     </textarea>
     <span class="input-group-btn">
-      <button class="btn btn-complete-nick unselectable" title="Complete nick" ng-hide="!utils.isMobileUi()" ng-click="handleCompleteNickButton($event)"><i class="glyphicon glyphicon-chevron-right"></i></button>
+      <button class="btn btn-complete-nick unselectable" title="Complete nick" ng-hide="!utils.isMobileUi()" ng-click="handleCompleteNickButton($event)"><i class="glyphicon glyphicon-bullhorn"></i></button>
       <label class="btn btn-send-image unselectable" for="imgur-upload" title="Send image">
         <i class="glyphicon glyphicon-picture"></i>
         <input type="file" accept="image/*" multiple title="Send image" id="imgur-upload" class="imgur-upload" file-change="uploadImage($event, files)">
