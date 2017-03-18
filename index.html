@@ -102,7 +102,7 @@
                   <div class="checkbox">
                     <label class="control-label" for="savepassword">
                         <input type="checkbox" id="savepassword" ng-model="settings.savepassword">
-                        Save password in your browser
+                        Save password <span ng-hide="!utils.isMobileUi()">in your browser</span>
                     </label>
                   </div>
                   <div class="checkbox" ng-show="settings.savepassword">
@@ -163,22 +163,24 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
           </div>
           <div id="collapseThree" class="panel-collapse collapse">
             <div class="panel-body">
-              <h3 style="margin-top: 0px">Shortcuts</h3>
-              Glowing Bear has a few shortcuts:
-              <ul>
-                <li><kbd>ALT-n</kbd>: Toggle nicklist</li>
-                <li><kbd>ALT-l</kbd>: Focus on input bar</li>
-                <li><kbd>ALT-[0-9]</kbd>: Switch to buffer number N</li>
-                <li><kbd>ALT-↑/↓</kbd>: Switch to buffer above/below</li>
-                <li><kbd>ALT-a</kbd>: Focus on next buffer with activity</li>
-                <li><kbd>ALT-&lt;</kbd>: Switch to previous active buffer</li>
-                <li><kbd>ALT-g</kbd>: Focus on buffer list filter</li>
-                <li><kbd>ALT-h</kbd>: Clear unread counters in every buffer (locally)</li>
-                <li><kbd>Esc-Esc</kbd>: Disconnect (double-tap)</li>
-                <li>Arrow keys: Navigate history, or navigate quick search buffer results.</li>
-                <li><kbd>Tab</kbd>: Complete nick</li>
-                <li>The following readline/emacs style keybindings can be enabled with a setting: <span title="Move cursor to beginning of line"><kbd>Ctrl-a</kbd></span>, <span title="Move cursor to te end of the line"><kbd>Ctrl-e</kbd></span>, <span title="Delete from cursor to beginning of the line"><kbd>Ctrl-u</kbd></span>, <span title="Delete from cursor to the end of the line"><kbd>Ctrl-k</kbd></span>, <span title="Delete from cursor to previous space"><kbd>Ctrl-w</kbd></span></li>
-              </ul>
+              <div ng-hide="utils.isCordova()">
+                <h3 style="margin-top: 0px">Shortcuts</h3>
+                Glowing Bear has a few shortcuts:
+                <ul>
+                  <li><kbd>ALT-n</kbd>: Toggle nicklist</li>
+                  <li><kbd>ALT-l</kbd>: Focus on input bar</li>
+                  <li><kbd>ALT-[0-9]</kbd>: Switch to buffer number N</li>
+                  <li><kbd>ALT-↑/↓</kbd>: Switch to buffer above/below</li>
+                  <li><kbd>ALT-a</kbd>: Focus on next buffer with activity</li>
+                  <li><kbd>ALT-&lt;</kbd>: Switch to previous active buffer</li>
+                  <li><kbd>ALT-g</kbd>: Focus on buffer list filter</li>
+                  <li><kbd>ALT-h</kbd>: Clear unread counters in every buffer (locally)</li>
+                  <li><kbd>Esc-Esc</kbd>: Disconnect (double-tap)</li>
+                  <li>Arrow keys: Navigate history, or navigate quick search buffer results.</li>
+                  <li><kbd>Tab</kbd>: Complete nick</li>
+                  <li>The following readline/emacs style keybindings can be enabled with a setting: <span title="Move cursor to beginning of line"><kbd>Ctrl-a</kbd></span>, <span title="Move cursor to te end of the line"><kbd>Ctrl-e</kbd></span>, <span title="Delete from cursor to beginning of the line"><kbd>Ctrl-u</kbd></span>, <span title="Delete from cursor to the end of the line"><kbd>Ctrl-k</kbd></span>, <span title="Delete from cursor to previous space"><kbd>Ctrl-w</kbd></span></li>
+                </ul>
+              </div>
               <h3>Pinning buffers</h3>
               <p>
                 The option "Only show buffers with unread messages" is useful when you have a lot of buffers and can't meaningfully look at all of them at the same time. However, often you have a select few buffers that you use more frequently and would like to have displayed permanently.
@@ -192,7 +194,7 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
             </div>
           </div>
         </div>
-        <div class="panel" data-state="collapsed">
+        <div class="panel" data-state="collapsed" ng-hide="utils.isCordova()">
           <div class="panel-heading">
             <h4 class="panel-title">
               <a class="accordion-toggle" ng-click="toggleAccordion($event)">
@@ -229,7 +231,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
           </div>
           <div id="collapseFive" class="panel-collapse collapse">
             <div class="panel-body">
-              <p>Glowing bear is built by a small group of developers in their free time. As we're always trying to improve it, we would love getting your feedback and help. If that sounds like something you might enjoy, check out our <a href="https://github.com/glowing-bear/glowing-bear">project page</a> on GitHub!</p>
+              <p>Glowing bear is built by a small group of developers in their free time. As we're always trying to improve it, we would love getting your feedback and help. If that sounds like something you might enjoy, check out our <a href="https://github.com/glowing-bear/glowing-bear">main project page</a> <span ng-hide="!utils.isCordova()">and its <a href="https://github.com/glowing-bear/glowing-bear-cordova">mobile app spin-off</a></span> on GitHub!</p>
               <p>If you're interested in contributing or simply want to say hello, head over to <strong>#glowing-bear</strong> on <strong>freenode!</strong> We won't bite, promise :)</p>
             </div>
           </div>
@@ -249,7 +251,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
         </div>
 
         <div class="title" title="{{activeBuffer().rtitle}}">
-          <span class="desktop" ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank':{rel:'noopener noreferrer'} | DOMfilter:'irclinky')"></span>
+          <span class="desktop" ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:(utils.isCordova() ? '_system' : '_blank'):{rel:'noopener noreferrer'} | linksForCordova | DOMfilter:'irclinky')"></span>
           <span class="mobile" ng-click="showModal('topicModal')" ng-class="{'active': activeBuffer().active, 'channel': activeBuffer().type === 'channel', 'channel_hash': activeBuffer().prefix === '#', 'channel_plus': activeBuffer().prefix === '+', 'channel_ampersand': activeBuffer().prefix === '&'}">{{ activeBuffer().trimmedName || activeBuffer().fullName }}</span>
         </div>
 
@@ -315,7 +317,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
               <td class="prefix"><span ng-class="::{'repeated-prefix': bufferline.prefixtext==bufferlines[$index-1].prefixtext}"><a ng-click="addMention(bufferline.prefix)"><span class="hidden-bracket">&lt;</span><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text|prefixlimit:25"></span><span class="hidden-bracket">&gt;</span></a></span></td><!--
            --><td class="message"><!--
              --><div ng-repeat="metadata in ::bufferline.metadata" plugin data="::metadata"></div><!--
-             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes.concat(['line-' + part.$$hashKey.replace(':','_')])" ng-bind-html="::part.text | linky:'_blank':{rel:'noopener noreferrer'} | DOMfilter:'irclinky' | DOMfilter:'emojify':settings.enableJSEmoji | DOMfilter:'inlinecolour' | DOMfilter:'latexmath':('.line-' + part.$$hashKey.replace(':','_')):settings.enableMathjax"></span>
+             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes.concat(['line-' + part.$$hashKey.replace(':','_')])" ng-bind-html="::part.text | linky:(utils.isCordova() ? '_system' : '_blank'):{rel:'noopener noreferrer'} | linksForCordova | DOMfilter:'irclinky' | DOMfilter:'emojify':settings.enableJSEmoji | DOMfilter:'inlinecolour' | DOMfilter:'latexmath':('.line-' + part.$$hashKey.replace(':','_')):settings.enableMathjax"></span>
               </td>
             </tr>
             <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
@@ -344,7 +346,8 @@ npm run build-electron-{windows, darwin, linux}</pre>
             <button type="button" class="close" ng-click="closeModal($event)" aria-hidden="true">&times;</button>
             <span class="pull-right version">Glowing Bear version 0.7.0</span>
             <h4 class="modal-title">Settings</h4>
-            <p>Settings will be stored in your browser.</p>
+            <p ng-hide="!utils.isCordova()">Settings will be stored in your browser.</p>
+            <p ng-hide="utils.isCordova()">Settings will be stored on your device.</p>
           </div>
           <div class="modal-body">
             <ul class="">
@@ -445,7 +448,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
                   </div>
                 </form>
               </li>
-              <li>
+              <li ng-hide="!utils.isCordova()">
                 <form class="form-inline" role="form">
                   <div class="checkbox">
                     <label>
@@ -465,7 +468,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
                   </div>
                 </form>
               </li>
-              <li>
+              <li ng-hide="!utils.isCordova()">
                 <form class="form-inline" role="form">
                   <div class="checkbox">
                     <label>
@@ -475,7 +478,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
                   </div>
                 </form>
               </li>
-               <li>
+              <li ng-hide="!utils.isCordova()">
                 <form class="form-inline" role="form">
                   <div class="checkbox">
                     <label>
@@ -510,7 +513,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
           <div class="modal-header">
             <button type="button" class="close" ng-click="closeModal($event)" aria-hidden="true">&times;</button>
             <h4 class="modal-title">Channel topic</h4>
-            <p ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank':{rel:'noopener noreferrer'} | DOMfilter:'irclinky')"></p>
+            <p ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:(utils.isCordova() ? '_system' : '_blank'):{rel:'noopener noreferrer'} | linksForCordova | DOMfilter:'irclinky')"></p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" ng-click="closeModal($event)">Close</button>

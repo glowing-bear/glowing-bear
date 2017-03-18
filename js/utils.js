@@ -14,6 +14,10 @@ weechat.factory('utils', function() {
 	    });
 	};
 
+    var isCordova = function() {
+        return window.cordova !== undefined;
+    };
+
     var isMobileUi = function() {
         // TODO don't base detection solely on screen width
         // You are right. In the meantime I am renaming isMobileDevice to isMobileUi
@@ -46,6 +50,7 @@ weechat.factory('utils', function() {
     	changeClassStyle: changeClassStyle,
     	getClassStyle: getClassStyle,
         isMobileUi: isMobileUi,
+        isCordova: isCordova,
         inject_script: inject_script,
         inject_css: inject_css,
     };
