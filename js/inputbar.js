@@ -14,7 +14,7 @@ weechat.directive('inputBar', function() {
             command: '=command'
         },
 
-        controller: ['$rootScope', '$scope', '$element', '$log', 'connection', 'imgur', 'models', 'IrcUtils', 'settings', function($rootScope,
+        controller: ['$rootScope', '$scope', '$element', '$log', 'connection', 'imgur', 'models', 'IrcUtils', 'settings', 'utils', function($rootScope,
                              $scope,
                              $element, //XXX do we need this? don't seem to be using it
                              $log,
@@ -22,7 +22,11 @@ weechat.directive('inputBar', function() {
                              imgur,
                              models,
                              IrcUtils,
-                             settings) {
+                             settings,
+                             utils) {
+
+            // Expose utils to be able to check if we're on a mobile UI
+            $scope.utils = utils;
 
             // E.g. Turn :smile: into the unicode equivalent
             $scope.inputChanged = function() {
@@ -496,6 +500,17 @@ weechat.directive('inputBar', function() {
                     }, 1000);
                     return true;
                 }
+            };
+
+            $scope.handleCompleteNickButton = function($event) {
+                $event.preventDefault();
+                $scope.completeNick();
+
+                setTimeout(function() {
+                    $scope.getInputNode().focus();
+                }, 0);
+
+                return true;
             };
         }]
     };

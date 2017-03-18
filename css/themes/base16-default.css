@@ -302,7 +302,7 @@ input[type=text], input[type=password], #sendMessage, .badge {
     box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.2) inset;
 }
 
-input[type=text], input[type=password], #sendMessage, .btn-send, .btn-send-image {
+input[type=text], input[type=password], #sendMessage, .btn-send, .btn-send-image, .btn-complete-nick {
     color: var(--base05);
     background: var(--base01);
 }
@@ -335,10 +335,17 @@ input[type=text]:-moz-placeholder, input[type=password]:-moz-placeholder { /* Fi
     background: var(--base08);
 }
 
-.btn-send:hover, .btn-send:focus,
-.btn-send-image:hover, .btn-send-image:focus {
+.is-desktop-ui .btn-complete-nick:hover, .btn-complete-nick:focus,
+.is-desktop-ui .btn-send:hover, .btn-send:focus,
+.is-desktop-ui .btn-send-image:hover, .btn-send-image:focus {
     background-color: var(--base07);
     color: var(--base01);
+}
+
+.is-mobile-ui .btn-complete-nick:hover,
+.is-mobile-ui .btn-send:hover,
+.is-mobile-ui .btn-send-image:hover {
+    color: var(--base05);
 }
 
 #connection-infos {

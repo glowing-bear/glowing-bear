@@ -27,9 +27,16 @@ html {
     background: #428BCA;
 }
 
+.btn-complete-nick,
 .btn-send,
 .btn-send-image, {
     background: none repeat scroll 0% 0% rgba(255, 255, 255, 0.3);
+    color: #428BCA;
+}
+
+.is-mobile-ui .btn-complete-nick:hover,
+.is-mobile-ui .btn-send:hover,
+.is-mobile-ui .btn-send-image:hover {
     color: #428BCA;
 }
 
