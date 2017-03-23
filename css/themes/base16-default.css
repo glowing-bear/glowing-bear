@@ -342,13 +342,6 @@ input[type=text]:-moz-placeholder, input[type=password]:-moz-placeholder { /* Fi
     color: var(--base01);
 }
 
-.is-mobile-ui .btn-complete-nick:hover,
-.is-mobile-ui .btn-send:hover,
-.is-mobile-ui .btn-send-image:hover {
-    background: var(--base01);
-    color: var(--base05);
-}
-
 #connection-infos {
     color: var(--base04);
 }
@@ -1448,4 +1441,12 @@ button.close:hover {
     .footer {
         background: var(--base00);
     }
+
+    .btn-complete-nick:hover,
+    .btn-send:hover,
+    .btn-send-image:hover {
+        background: var(--base01);
+        color: var(--base05);
+    }
+
 }

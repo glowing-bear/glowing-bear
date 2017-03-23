@@ -34,12 +34,6 @@ html {
     color: #428BCA;
 }
 
-.is-mobile-ui .btn-complete-nick:hover,
-.is-mobile-ui .btn-send:hover,
-.is-mobile-ui .btn-send-image:hover {
-    color: #428BCA;
-}
-
 tr.bufferline:hover {
     background-color: #efefef;
 }
@@ -2109,6 +2103,12 @@ select.form-control, select option, input[type=text], input[type=password], #sen
 
     .footer {
         background: rgb(230,230,230);
+    }
+
+    .btn-complete-nick:hover,
+    .btn-send:hover,
+    .btn-send-image:hover {
+        color: #428BCA;
     }
 
 }
