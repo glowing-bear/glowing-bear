@@ -266,8 +266,8 @@ npm run build-electron-{windows, darwin, linux}</pre>
           <li class="bufferfilter">
             <form role="form">
               <div class="input-group">
-                <span class="input-group-addon buffer-jump" id="jump-addon">Jump:</span>
-                <input class="form-control favorite-font" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="Search" autocomplete="off" aria-describedby="jump-addon">
+                <span class="input-group-addon" id="jump-addon">Jump</span>
+                <input class="form-control favorite-font" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="{{ search_placeholder || 'Search' }}" autocomplete="off" aria-describedby="jump-addon">
               </div>
             </form>
           </li>

@@ -257,6 +257,7 @@ weechat.directive('inputBar', function() {
                         $rootScope.showJumpKeys = false;
                         $rootScope.jumpDecimal = undefined;
                         $scope.$parent.search = '';
+                        $scope.$parent.search_placeholder = 'Search';
                         $rootScope.refresh_filter_predicate();
                     };
 
@@ -411,6 +412,7 @@ weechat.directive('inputBar', function() {
                     $event.preventDefault();
                     // reset search state and show jump keys
                     $scope.$parent.search = '';
+                    $scope.$parent.search_placeholder = 'Number';
                     $rootScope.showJumpKeys = true;
                     return true;
                 }

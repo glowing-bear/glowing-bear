@@ -83,12 +83,17 @@ td.message {
     color: #ccc;
 }
 
-.buffer-jump {
-   display: none;
+#jump-addon {
+    width: 0px;
+    max-width: 0px;
+    padding: 0;
+    overflow: hidden;
+    transition: all ease-in-out 0.5s;
 }
-
-.showjumpkeys .buffer-jump {
-   display: table-cell;
+.showjumpkeys #jump-addon {
+    width: auto;
+    max-width: 70px;
+    padding: 6px 12px;
 }
 
 .footer button {

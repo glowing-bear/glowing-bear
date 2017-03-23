@@ -208,6 +208,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         // Clear search term on buffer change
         $scope.search = '';
+        $scope.search_placeholder = 'Search';
 
         if (!utils.isMobileUi()) {
             // This needs to happen asynchronously to prevent the enter key handler
