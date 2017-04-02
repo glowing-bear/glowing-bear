@@ -287,14 +287,14 @@ npm run build-electron-{windows, darwin, linux}</pre>
           </li>
         </ul>
       </div>
+      <div id="nicklist" class="favorite-font" ng-if="showNicklist" ng-swipe-right="closeNick()" ng-swipe-disable-mouse class="vertical-line-left">
+        <ul class="nicklistgroup list-unstyled" ng-repeat="group in nicklist">
+          <li ng-repeat="nick in group.nicks|orderBy:'name'">
+            <a ng-click="openBuffer(nick.name)"><span ng-class="::nick.prefixClasses" ng-bind="::nick.prefix"></span><span ng-class="::nick.nameClasses" ng-bind="::nick.name"></span></a>
+          </li>
+        </ul>
+      </div>
       <div id="bufferlines" class="favorite-font" ng-swipe-right="showSidebar()" ng-swipe-left="hideSidebar()" ng-swipe-disable-mouse ng-class="{'withnicklist': showNicklist}" when-scrolled="infiniteScroll()" imgur-drop>
-        <div id="nicklist" ng-if="showNicklist" ng-swipe-right="closeNick()" ng-swipe-disable-mouse class="vertical-line-left">
-          <ul class="nicklistgroup list-unstyled" ng-repeat="group in nicklist">
-            <li ng-repeat="nick in group.nicks|orderBy:'name'">
-              <a ng-click="openBuffer(nick.name)"><span ng-class="::nick.prefixClasses" ng-bind="::nick.prefix"></span><span ng-class="::nick.nameClasses" ng-bind="::nick.name"></span></a>
-            </li>
-          </ul>
-        </div>
         <table>
           <tbody>
             <tr class="bufferline">

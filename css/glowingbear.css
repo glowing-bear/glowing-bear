@@ -787,6 +787,10 @@ img.emojione {
         bottom: 0px;
     }
 
+    .content[sidebar-state=visible] #nicklist {
+        display: none;
+    }
+
     .navbar-fixed-bottom {
         margin: 0;
     }
