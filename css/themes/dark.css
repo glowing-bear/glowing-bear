@@ -94,13 +94,6 @@ input[type=text], input[type=password], #sendMessage, .badge, .btn-send, .btn-se
     color: white;
 }
 
-.is-mobile-ui .btn-complete-nick:hover,
-.is-mobile-ui .btn-send:hover,
-.is-mobile-ui .btn-send-image:hover {
-    background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.3);
-    color: #ccc;
-}
-
 #connection-infos {
     color: #aaa;
 }
@@ -2141,6 +2134,12 @@ button.close:hover {
         background: rgb(24,24,24);
     }
 
+    .btn-complete-nick:hover,
+    .btn-send:hover,
+    .btn-send-image:hover {
+        background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.3);
+        color: #ccc;
+    }
 }
 
 
