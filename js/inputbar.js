@@ -247,7 +247,7 @@ weechat.directive('inputBar', function() {
                 $scope.iterCandidate = null;
 
                 // Left Alt+[0-9] -> jump to buffer
-                if ($event.altKey && !$event.ctrlKey && (code > 47 && code < 58)) {
+                if ($event.altKey && !$event.ctrlKey && (code > 47 && code < 58) && settings.enableQuickKeys) {
                     if (code === 48) {
                         code = 58;
                     }
@@ -480,7 +480,7 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Alt key down -> display quick key legend
-                if ($event.type === "keydown" && code === 18 && !$event.ctrlKey && !$event.shiftKey) {
+                if ($event.type === "keydown" && code === 18 && !$event.ctrlKey && !$event.shiftKey && settings.enableQuickKeys) {
                     $rootScope.showQuickKeys = true;
                 }
             };
