@@ -197,9 +197,9 @@ plugins.factory('userPlugins', function() {
         addMatch(message.match(/spotify:track:[a-zA-Z-0-9]{22}/g));
         addMatch(message.match(/spotify:artist:[a-zA-Z-0-9]{22}/g));
         addMatch(message.match(/spotify:user:\w+:playlist:[a-zA-Z-0-9]{22}/g));
-        addMatch(message.match(/open\.spotify\.com\/track\/[a-zA-Z-0-9]{22}/g));
-        addMatch(message.match(/open\.spotify\.com\/artist\/[a-zA-Z-0-9]{22}/g));
-        addMatch(message.match(/open\.spotify\.com\/user\/\w+\/playlist\/[a-zA-Z-0-9]{22}/g));
+        addMatch(message.match(/(open|play)\.spotify\.com\/track\/[a-zA-Z-0-9]{22}/g));
+        addMatch(message.match(/(open|play)\.spotify\.com\/artist\/[a-zA-Z-0-9]{22}/g));
+        addMatch(message.match(/(open|play)\.spotify\.com\/user\/\w+\/playlist\/[a-zA-Z-0-9]{22}/g));
         return content;
     });
 
