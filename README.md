@@ -43,6 +43,7 @@ Glowing Bear uses WeeChat directly as its backend through the relay plugin. This
 
 - *Can I use Glowing Bear to access a machine or port not exposed to the internet by passing the connection through my server?* No, that's not what Glowing Bear does. You can use a websocket proxy module for your webserver to forward `/weechat` to your WeeChat instance though. Here are some pointers you might find helpful for setting this up with [nginx](http://nginx.com/blog/websocket-nginx/) or [apache](https://httpd.apache.org/docs/2.4/mod/mod_proxy_wstunnel.html).
 - *How does the encryption work?* TLS is used for securing the connection if you enable encryption. This is handled by your browser, and we have no influence on certificate handling, etc. You can find more detailed instructions on how to communicate securely in the "encryption instructions" tab on the [landing page](https://www.glowing-bear.org). A detailed guide on setting up a trusted secure relay is available [here](https://4z2.de/2014/07/06/weechat-trusted-relay).
+- *Can I make it so that there are no requests to third party servers at all?* Sure, you'll have to hide embeds by default (it's in the settings dialog), and download the JavaScript files for which we use a CDN by default. For the second step, you have two options: a) use the Android or Electron app, or b) run `npm run make-local` to download the files and apply a patch to use them instead of the CDN. But remember to re-run this command whenever you update Glowing Bear!
 
 ## Development
 
