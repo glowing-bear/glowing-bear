@@ -24,6 +24,17 @@ onload = function() {
     webview.addEventListener("new-window", handlenewwindow);
     webview.addEventListener("page-title-set", handletitleset);
 
+    /*
+    On linux, use a tray icon to indicate notification count. This is an
+    inferior but adequate substitute for app icon badges which are not
+    supported by electron on linux.
+    */
+    if (process.platform === 'linux') {
+        webview.addEventListener('page-favicon-updated', function(e) {
+          ipc.send('favicon', e.favicons);
+        });
+    }
+
     ipc.on('browser-window-focus', function() {
         setTimeout(function() { webview.focus(); }, 0);
         setTimeout(function() { webview.executeJavaScript("document.getElementById(\"sendMessage\").focus();") }, 0);

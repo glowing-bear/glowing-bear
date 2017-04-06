@@ -208,6 +208,22 @@
         mainWindow.loadURL('file://' + __dirname + '/electron-start.html');
         mainWindow.focus();
 
+        /*
+        On linux, update the window icon instead of using the badge feature
+        which only works on osx or the overlay icon which only works on win32.
+        */
+        if (process.platform === 'linux') {
+            var default_favicon = nativeImage.createFromPath(
+                __dirname + '/assets/img/glowing_bear_128x128.png');
+            mainWindow.setIcon(default_favicon);
+            ipcMain.on('favicon', function(event, favicons) {
+
+                var img = nativeImage.createFromDataURL(favicons[0]);
+                mainWindow.setIcon(img);
+                mainWindow.show();
+            });
+        }
+
         // Listen for badge changes
         ipcMain.on('badge', function(event, arg) {
             if (process.platform === "darwin") {

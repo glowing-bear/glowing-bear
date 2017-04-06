@@ -24,4 +24,4 @@ build-electron-darwin: uselocal
 	electron-packager ${ELECTRON_COMMON} --platform=darwin --arch=x64 --version=1.3.3 --icon=assets/img/glowing-bear.icns
 
 build-electron-linux: uselocal
-	electron-packager ${ELECTRON_COMMON} --platform=linux --arch=x64 --version=1.3.3 --icon=assets/img/favicon.ico
+	electron-packager ${ELECTRON_COMMON} --platform=linux --arch=x64 --version=1.3.3 --icon=assets/img/favicon.png
