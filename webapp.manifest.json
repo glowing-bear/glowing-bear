@@ -23,7 +23,7 @@
     "orientation": "portrait-primary",
     "theme_color": "#181818",
     "background_color": "#333",
-    "prefer_related_applications": "false",
+    "prefer_related_applications": false,
     "chrome_related_applications": [{
         "platform": "web"
     }, {
