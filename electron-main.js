@@ -9,7 +9,6 @@
     const Menu = require('electron').Menu;
     // Node fs module
     const fs = require("fs");
-
     var template;
 
     template = [
@@ -76,7 +75,20 @@
             }
         },
         {
-            label: 'Toggle Developer Tools',
+            label: 'Electron Developer Tools',
+            accelerator: (function() {
+                if (process.platform == 'darwin')
+                    return 'Alt+Command+E';
+                else
+                    return 'Ctrl+Shift+E';
+            })(),
+            click: function(item, focusedWindow) {
+                if (focusedWindow)
+                    focusedWindow.toggleDevTools();
+            }
+        },
+        {
+            label: 'Web Developer Tools',
             accelerator: (function() {
                 if (process.platform == 'darwin')
                     return 'Alt+Command+I';
@@ -84,10 +96,11 @@
                     return 'Ctrl+Shift+I';
             })(),
             click: function(item, focusedWindow) {
-                if (focusedWindow)
-                    focusedWindow.toggleDevTools();
+                if ( focusedWindow ) {
+                    focusedWindow.webContents.send( 'openDevTools' );
+                }
             }
-        },
+        }
         ]
     },
     {
@@ -183,7 +196,6 @@
     });
 
     app.on('ready', function() {
-
         var menu = Menu.buildFromTemplate(template);
         Menu.setApplicationMenu(menu);
         const initPath  = __dirname + "/init.json";
@@ -197,7 +209,7 @@
             console.log('Unable to read init.json: ', e);
         }
         const bounds = (data && data.bounds) ? data.bounds : {width: 1280, height:800 };
-        var bwdata = {width: bounds.width, height: bounds.height, 'min-width': 1024, 'min-height': 600, 'autoHideMenuBar': true, 'web-security': true, 'java': false, 'accept-first-mouse': true, defaultEncoding: 'UTF-8', 'icon':'file://'+__dirname + '/assets/img/favicon.png'}
+        var bwdata = {width: bounds.width, height: bounds.height, 'min-width': 1024, 'min-height': 600, 'autoHideMenuBar': true, 'web-security': true, 'java': false, 'accept-first-mouse': true, defaultEncoding: 'UTF-8', 'icon':'file://'+__dirname + '/assets/img/favicon.png'};
         // Remembe window position
         if (data && data.bounds.x && data.bounds.y) {
             bwdata.x = data.bounds.x;

@@ -24,6 +24,10 @@ onload = function() {
     webview.addEventListener("new-window", handlenewwindow);
     webview.addEventListener("page-title-set", handletitleset);
 
+    ipc.on('openDevTools', function() {
+        setTimeout(function() { webview.openDevTools(); }, 0 );
+    });
+
     ipc.on('browser-window-focus', function() {
         setTimeout(function() { webview.focus(); }, 0);
         setTimeout(function() { webview.executeJavaScript("document.getElementById(\"sendMessage\").focus();") }, 0);
