@@ -45,6 +45,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'enableJSEmoji': (utils.isMobileUi() ? false : true),
         'enableMathjax': false,
         'enableQuickKeys': true,
+        'enableEmojiConversion': true,
         'customCSS': '',
         "currentlyViewedBuffers":{},
     });
