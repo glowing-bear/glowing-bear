@@ -20,7 +20,8 @@ weechat.config(['$compileProvider', function ($compileProvider) {
 }]);
 
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'bufferResume', 'connection', 'notifications', 'utils', 'settings',
-    function ($rootScope, $scope, $store, $timeout, $log, models, bufferResume, connection, notifications, utils, settings) {
+    function ($rootScope, $scope, $store, $timeout, $log, models, bufferResume, connection, notifications, utils, settings)
+{
 
     window.openBuffer = function(channel) {
         $scope.openBuffer(channel);
@@ -29,6 +30,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $scope.command = '';
     $scope.themes = ['dark', 'light', 'black', 'dark-spacious', 'blue', 'base16-default', 'base16-light', 'base16-mocha', 'base16-ocean-dark', 'base16-solarized-dark', 'base16-solarized-light'];
+    $scope.swipeStatus = 1;
 
     // Initialise all our settings, this needs to include all settings
     // or else they won't be saved to the localStorage.
@@ -118,6 +120,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     };
 
+    // expose
+    $rootScope.isMobileUi = function() { return utils.isMobileUi(); };
+
     if (typeof $scope.documentVisibilityChange !== "undefined") {
         document.addEventListener($scope.documentVisibilityChange, function() {
             if (!document[$scope.documentHidden]) {
@@ -167,6 +172,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         } else {
             // Check if we should show nicklist or not
             $scope.showNicklist = $scope.updateShowNicklist();
+        }
+        if ($scope.swipeStatus <= 0) {
+            $scope.swipeStatus = $scope.showNicklist ? -1 : 0;
         }
 
         if (ab.requestedLines < $scope.lines_per_screen) {
@@ -323,6 +331,40 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         return document.getElementById('content').getAttribute('sidebar-state') === 'visible';
     };
 
+    $scope.swipeRight = function($event) {
+        var touch = $event instanceof TouchEvent;
+        // Depending on swipe state
+        if ($scope.swipeStatus === 1) {
+            /* do nothing */
+        } else if ($scope.swipeStatus === 0 && touch) {
+            $scope.showSidebar();
+        } else if ($scope.swipeStatus === -1) {
+            $scope.closeNick();
+        } else {
+            console.log("Weird swipe status:", $scope.swipeStatus);
+            $scope.swipeStatus = 0; // restore sanity
+            $scope.closeNick();
+            $scope.hideSidebar();
+        }
+    };
+
+    $rootScope.swipeLeft = function($event) {
+        var touch = $event instanceof TouchEvent;
+        // Depending on swipe state, ...
+        if ($scope.swipeStatus === 1 && touch) {
+            $scope.hideSidebar();
+        } else if ($scope.swipeStatus === 0) {
+            $scope.openNick();
+        } else if ($scope.swipeStatus === -1) {
+            /* do nothing */
+        } else {
+            console.log("Weird swipe status:", $scope.swipeStatus);
+            $scope.swipeStatus = 0; // restore sanity
+            $scope.closeNick();
+            $scope.hideSidebar();
+        }
+    };
+
     $scope.showSidebar = function() {
         document.getElementById('sidebar').setAttribute('data-state', 'visible');
         document.getElementById('content').setAttribute('sidebar-state', 'visible');
@@ -331,15 +373,24 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             _.each(document.getElementsByTagName('textarea'), function(elem) {
                 $timeout(function(){elem.blur();});
             });
+            // hide nicklist
+            settings.nonicklist = true;
         }
+        $scope.swipeStatus = 1;
     };
 
     $rootScope.hideSidebar = function() {
         if (utils.isMobileUi()) {
+            // make sure nicklist is hidden
+            settings.nonicklist = true;
             document.getElementById('sidebar').setAttribute('data-state', 'hidden');
             document.getElementById('content').setAttribute('sidebar-state', 'hidden');
         }
+        $scope.swipeStatus = 0;
     };
+    // fugly hack
+    $scope.hideSidebar = function() { $rootScope.hideSidebar(); };
+
     settings.addCallback('autoconnect', function(autoconnect) {
         if (autoconnect && !$rootScope.connected && !$rootScope.sslError && !$rootScope.securityError && !$rootScope.errorMessage) {
             $scope.connect();
@@ -718,6 +769,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Watch model and update show setting when it changes
     settings.addCallback('nonicklist', function() {
         $scope.showNicklist = $scope.updateShowNicklist();
+        if ($scope.swipeStatus <= 0) {
+            $scope.swipeStatus = $scope.showNicklist ? -1 : 0;
+        }
         // restore bottom view
         if ($rootScope.connected && $rootScope.bufferBottom) {
             $timeout(function(){

@@ -280,7 +280,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
           </a>
         </div>
       </div>
-      <div id="sidebar" data-state="visible" ng-swipe-left="hideSidebar()" ng-swipe-disable-mouse class="vertical-line">
+      <div id="sidebar" data-state="visible" ng-swipe-left="swipeLeft($event)" class="vertical-line">
         <ul class="nav nav-pills nav-stacked" ng-class="{'indented': (predicate === 'serverSortKey'), 'showquickkeys': showQuickKeys, 'showjumpkeys': showJumpKeys}">
           <li class="bufferfilter">
             <form role="form">
@@ -310,8 +310,8 @@ npm run build-electron-{windows, darwin, linux}</pre>
           </li>
         </ul>
       </div>
-      <div id="bufferlines" class="favorite-font" ng-swipe-right="showSidebar()" ng-swipe-left="hideSidebar()" ng-swipe-disable-mouse ng-class="{'withnicklist': showNicklist}" when-scrolled="infiniteScroll()" imgur-drop>
-        <div id="nicklist" ng-if="showNicklist" ng-swipe-right="closeNick()" ng-swipe-disable-mouse class="vertical-line-left">
+      <div id="bufferlines" class="favorite-font" ng-swipe-right="swipeRight($event)" ng-swipe-left="swipeLeft($event)" ng-class="{'withnicklist': showNicklist}" when-scrolled="infiniteScroll()" imgur-drop>
+        <div id="nicklist" ng-if="showNicklist" ng-swipe-right="closeNick()" class="vertical-line-left">
           <ul class="nicklistgroup list-unstyled" ng-repeat="group in nicklist">
             <li ng-repeat="nick in group.nicks|orderBy:'name'">
               <a ng-click="openBuffer(nick.name)"><span ng-class="::nick.prefixClasses" ng-bind="::nick.prefix"></span><span ng-class="::nick.nameClasses" ng-bind="::nick.name"></span></a>
@@ -437,7 +437,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
                   </div>
                 </form>
               </li>
-              <li>
+              <li ng-if="!isMobileUi()">
                 <form class="form-inline" role="form">
                   <div class="checkbox">
                     <label>
