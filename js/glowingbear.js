@@ -334,13 +334,14 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if ($scope.swipeStatus === 1) {
             /* do nothing */
         } else if ($scope.swipeStatus === 0) {
-            $scope.showSidebar();
+            $scope.showSidebar(); // updates swipe status to 1
         } else if ($scope.swipeStatus === -1) {
-            if (!settings.alwaysnicklist) $scope.closeNick();
+            $scope.swipeStatus = 0;
+            $scope.showNicklist = $scope.updateShowNicklist();
         } else {
             console.log("Weird swipe status:", $scope.swipeStatus);
             $scope.swipeStatus = 0; // restore sanity
-            $scope.closeNick();
+            $scope.showNicklist = $scope.updateShowNicklist();
             $scope.hideSidebar();
         }
     };
@@ -348,15 +349,16 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $rootScope.swipeLeft = function() {
         // Depending on swipe state, ...
         if ($scope.swipeStatus === 1) {
-            $scope.hideSidebar();
+            $scope.hideSidebar(); // updates swipe status to 0
         } else if ($scope.swipeStatus === 0) {
-            $scope.openNick();
+            $scope.swipeStatus = -1;
+            $scope.showNicklist = $scope.updateShowNicklist();
         } else if ($scope.swipeStatus === -1) {
             /* do nothing */
         } else {
             console.log("Weird swipe status:", $scope.swipeStatus);
             $scope.swipeStatus = 0; // restore sanity
-            $scope.closeNick();
+            $scope.showNicklist = $scope.updateShowNicklist();
             $scope.hideSidebar();
         }
     };
@@ -369,8 +371,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             _.each(document.getElementsByTagName('textarea'), function(elem) {
                 $timeout(function(){elem.blur();});
             });
-            // hide nicklist
-            settings.nonicklist = true;
         }
         $scope.swipeStatus = 1;
     };
@@ -378,14 +378,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $rootScope.hideSidebar = function() {
         if (utils.isMobileUi()) {
             // make sure nicklist is hidden
-            settings.nonicklist = true;
             document.getElementById('sidebar').setAttribute('data-state', 'hidden');
             document.getElementById('content').setAttribute('sidebar-state', 'hidden');
         }
         $scope.swipeStatus = 0;
     };
-    // fugly hack
-    $scope.hideSidebar = function() { $rootScope.hideSidebar(); };
 
     settings.addCallback('autoconnect', function(autoconnect) {
         if (autoconnect && !$rootScope.connected && !$rootScope.sslError && !$rootScope.securityError && !$rootScope.errorMessage) {
@@ -400,23 +397,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 $scope.hideSidebar();
             } else {
                 $scope.showSidebar();
-            }
-        }
-    };
-
-    // Open and close panels while on mobile devices through swiping
-    $scope.openNick = function() {
-        if (utils.isMobileUi()) {
-            if (settings.nonicklist) {
-                settings.nonicklist = false;
-            }
-        }
-    };
-
-    $scope.closeNick = function() {
-        if (utils.isMobileUi()) {
-            if (!settings.nonicklist) {
-                settings.nonicklist = true;
             }
         }
     };
@@ -588,6 +568,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             // Wrap in a condition so we save ourselves the $apply if nothing changes (50ms or more)
             if ($scope.wasMobileUi && !utils.isMobileUi()) {
                 $scope.showSidebar();
+                $scope.showNicklist = $scope.updateShowNicklist();
             }
             $scope.wasMobileUi = utils.isMobileUi();
             $scope.calculateNumLines();
@@ -784,12 +765,16 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if (!ab) {
             return false;
         }
-        // Check if option no nicklist is set
-        if (settings.nonicklist && !settings.alwaysnicklist) {
+        // Check if option no nicklist is set (ignored on mobile)
+        if (!utils.isMobileUi() && settings.nonicklist && !settings.alwaysnicklist) {
             return false;
         }
         // Check if nicklist is empty
         if (ab.isNicklistEmpty()) {
+            return false;
+        }
+        // Check whether to show nicklist on mobile
+        if (utils.isMobileUi() && !settings.alwaysnicklist && $scope.swipeStatus !== -1) {
             return false;
         }
         return true;
