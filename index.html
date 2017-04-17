@@ -437,6 +437,16 @@ npm run build-electron-{windows, darwin, linux}</pre>
                   </div>
                 </form>
               </li>
+              <li ng-if="isMobileUi()">
+                <form class="form-inline" role="form">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="settings.alwaysnicklist">
+                      Always show nicklist
+                    </label>
+                  </div>
+                </form>
+              </li>
               <li ng-if="!isMobileUi()">
                 <form class="form-inline" role="form">
                   <div class="checkbox">
