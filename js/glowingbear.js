@@ -332,13 +332,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         return document.getElementById('content').getAttribute('sidebar-state') === 'visible';
     };
 
-    $scope.swipeRight = function($event) {
-        var touch = $event instanceof TouchEvent;
+    $scope.swipeRight = function() {
         // Depending on swipe state
         if ($scope.swipeStatus === 1) {
             /* do nothing */
         } else if ($scope.swipeStatus === 0) {
-            if (touch) $scope.showSidebar();
+            $scope.showSidebar();
         } else if ($scope.swipeStatus === -1) {
             if (!settings.alwaysnicklist) $scope.closeNick();
         } else {
@@ -349,11 +348,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     };
 
-    $rootScope.swipeLeft = function($event) {
-        var touch = $event instanceof TouchEvent;
+    $rootScope.swipeLeft = function() {
         // Depending on swipe state, ...
         if ($scope.swipeStatus === 1) {
-            if (touch) $scope.hideSidebar();
+            $scope.hideSidebar();
         } else if ($scope.swipeStatus === 0) {
             $scope.openNick();
         } else if ($scope.swipeStatus === -1) {
