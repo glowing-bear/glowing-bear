@@ -121,9 +121,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     };
 
-    // expose
-    $rootScope.isMobileUi = function() { return utils.isMobileUi(); };
-
     if (typeof $scope.documentVisibilityChange !== "undefined") {
         document.addEventListener($scope.documentVisibilityChange, function() {
             if (!document[$scope.documentHidden]) {
