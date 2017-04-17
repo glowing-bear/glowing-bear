@@ -10,8 +10,46 @@ ls.factory("$store", ["$parse", function($parse){
     var storage = (typeof window.localStorage === 'undefined') ? undefined : window.localStorage,
         supported = !(typeof storage == 'undefined' || typeof window.JSON == 'undefined');
 
+    // Safari reports a localStorage object in incognito mode, but trying
+    // to use it raises an exception. Catch that case.
+    try {
+        storage.setItem('dummy', 'dummy');
+        storage.removeItem('dummy');
+    } catch (error) {
+        supported = false;
+    }
+
     if (!supported) {
         console.log('Warning: localStorage is not supported');
+
+        // Set localstorage to a temporary dummy
+        storage = (function() {
+            var data = {};
+
+            this.setItem = function (key, value) {
+                data[key] = value;
+            };
+
+            this.getItem = function (key) {
+                if (typeof data[key] !== "undefined" ) {
+                    return data[key];
+                } else {
+                    return null;
+                }
+            };
+
+            this.removeItem = function (key) {
+                data[key] = undefined;
+            };
+
+            this.length = function() {
+                return Object.keys(data).length;
+            };
+
+            this.key = function(index) {
+                return Object.keys(data)[index];
+            };
+        })();
     }
 
     var privateMethods = {
