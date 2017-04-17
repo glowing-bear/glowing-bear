@@ -539,8 +539,25 @@ plugins.factory('userPlugins', function() {
         }
     });
 
+    /*
+     * Streamable Embedded Player
+     */
+    var streamablePlugin = new UrlPlugin('Streamable video', function(url) {
+        var regexp = /^https?:\/\/streamable\.com\/s?\/?(.+)/,
+            match = url.match(regexp);
+        if (match) {
+            var id = match[1], embedurl = 'https://streamable.com/s/' + id;
+            var element = angular.element('<iframe></iframe>')
+                                 .attr('src', embedurl)
+                                 .attr('width', '480')
+                                 .attr('height', '270')
+                                 .attr('frameborder', '0');
+            return element.prop('outerHTML');
+        }
+    });
+
     return {
-        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, audioPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, pastebinPlugin, giphyPlugin, tweetPlugin, vinePlugin]
+        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, audioPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, pastebinPlugin, giphyPlugin, tweetPlugin, vinePlugin, streamablePlugin]
     };
 
 
