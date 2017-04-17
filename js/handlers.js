@@ -48,6 +48,14 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         }
         old_date.setHours(0, 0, 0, 0);
         new_date.setHours(0, 0, 0, 0);
+        var day_after_epoch = new Date(0);
+        day_after_epoch.setDate(day_after_epoch.getDate() + 1);
+        if (old_date.getTime() <= day_after_epoch.getTime() ||
+            new_date.getTime() <= day_after_epoch.getTime()) {
+            // epoch fail, checks if one of the dates is time 0
+            return;
+        }
+
         // Check if the date changed
         if (old_date.valueOf() !== new_date.valueOf()) {
             if (manually) {
