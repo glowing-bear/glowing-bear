@@ -339,17 +339,27 @@ plugins.factory('userPlugins', function() {
      */
     var videoPlugin = new UrlPlugin('video', function(url) {
         if (url.match(/\.(3gp|avi|flv|gifv|mkv|mp4|ogv|webm|wmv)\b/i)) {
-            if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
-                // remove protocol specification to load over https if used by g-b
-                url = url.replace(/\.(gifv)\b/i, ".webm");
-            }
             return function() {
-                var element = this.getElement();
+                var element = this.getElement(), src;
                 var velement = angular.element('<video autoplay loop muted></video>')
                                      .addClass('embed')
-                                     .attr('width', '560')
-                                     .append(angular.element('<source></source>')
-                                                    .attr('src', url));
+                                     .attr('width', '560');
+                // imgur doesn't always have webm for gifv so add sources for webm and mp4
+                if (url.match(/^http:\/\/(i\.)?imgur\.com\//i) &&
+                    url.indexOf('.gifv') > -1) {
+                    src = angular.element('<source></source>')
+                                 .attr('src', url.replace(/\.gifv\b/i, ".webm"))
+                                 .attr('type', 'video/webm');
+                    velement.append(src);
+                    src = angular.element('<source></source>')
+                                 .attr('src', url.replace(/\.gifv\b/i, ".mp4"))
+                                 .attr('type', 'video/mp4');
+                    velement.append(src);
+                } else {
+                    src = angular.element('<source></source>')
+                                 .attr('src', url);
+                    velement.append(src);
+                }
                 element.innerHTML = velement.prop('outerHTML');
             };
         }
