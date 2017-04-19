@@ -281,8 +281,8 @@ plugins.factory('userPlugins', function() {
             if (url.indexOf("^https?://fukung.net/v/") != -1) {
                 url = url.replace(/.*\//, "http://media.fukung.net/imgs/");
             } else if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
-                // remove protocol specification to load over https if used by g-b
-                url = url.replace(/http:/, "https:");
+                // imgur: always use https. avoids mixed content warnings
+                url = url.replace(/^http:/, "https:");
             } else if (url.match(/^https:\/\/www\.dropbox\.com\/s\/[a-z0-9]+\//i)) {
                 // Dropbox requires a get parameter, dl=1
                 var dbox_url = document.createElement("a");
@@ -340,16 +340,29 @@ plugins.factory('userPlugins', function() {
     var videoPlugin = new UrlPlugin('video', function(url) {
         if (url.match(/\.(3gp|avi|flv|gifv|mkv|mp4|ogv|webm|wmv)\b/i)) {
             if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
-                // remove protocol specification to load over https if used by g-b
-                url = url.replace(/\.(gifv)\b/i, ".webm");
+                // imgur: always use https. avoids mixed content warnings
+                url = url.replace(/^http:/, "https:");
             }
             return function() {
-                var element = this.getElement();
+                var element = this.getElement(), src;
                 var velement = angular.element('<video autoplay loop muted></video>')
                                      .addClass('embed')
-                                     .attr('width', '560')
-                                     .append(angular.element('<source></source>')
-                                                    .attr('src', url));
+                                     .attr('width', '560');
+                // imgur doesn't always have webm for gifv so add sources for webm and mp4
+                if (url.match(/^https:\/\/(i\.)?imgur\.com\/.*\.gifv/i)) {
+                    src = angular.element('<source></source>')
+                                 .attr('src', url.replace(/\.gifv\b/i, ".webm"))
+                                 .attr('type', 'video/webm');
+                    velement.append(src);
+                    src = angular.element('<source></source>')
+                                 .attr('src', url.replace(/\.gifv\b/i, ".mp4"))
+                                 .attr('type', 'video/mp4');
+                    velement.append(src);
+                } else {
+                    src = angular.element('<source></source>')
+                                 .attr('src', url);
+                    velement.append(src);
+                }
                 element.innerHTML = velement.prop('outerHTML');
             };
         }
