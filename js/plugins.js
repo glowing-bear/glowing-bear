@@ -339,14 +339,17 @@ plugins.factory('userPlugins', function() {
      */
     var videoPlugin = new UrlPlugin('video', function(url) {
         if (url.match(/\.(3gp|avi|flv|gifv|mkv|mp4|ogv|webm|wmv)\b/i)) {
+            if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
+                // imgur: force https
+                url = url.replace(/^http:/, "https:");
+            }
             return function() {
                 var element = this.getElement(), src;
                 var velement = angular.element('<video autoplay loop muted></video>')
                                      .addClass('embed')
                                      .attr('width', '560');
                 // imgur doesn't always have webm for gifv so add sources for webm and mp4
-                if (url.match(/^http:\/\/(i\.)?imgur\.com\//i) &&
-                    url.indexOf('.gifv') > -1) {
+                if (url.match(/^https:\/\/(i\.)?imgur\.com\/.*\.gifv/i)) {
                     src = angular.element('<source></source>')
                                  .attr('src', url.replace(/\.gifv\b/i, ".webm"))
                                  .attr('type', 'video/webm');
