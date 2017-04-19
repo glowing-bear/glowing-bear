@@ -1,6 +1,7 @@
 (function() {
 'use strict';
 
+// cordova splash screen
 document.addEventListener("deviceready", function () {
     if (navigator.splashscreen !== undefined) {
         navigator.splashscreen.hide();
