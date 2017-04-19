@@ -281,8 +281,8 @@ plugins.factory('userPlugins', function() {
             if (url.indexOf("^https?://fukung.net/v/") != -1) {
                 url = url.replace(/.*\//, "http://media.fukung.net/imgs/");
             } else if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
-                // remove protocol specification to load over https if used by g-b
-                url = url.replace(/http:/, "https:");
+                // imgur: always use https. avoids mixed content warnings
+                url = url.replace(/^http:/, "https:");
             } else if (url.match(/^https:\/\/www\.dropbox\.com\/s\/[a-z0-9]+\//i)) {
                 // Dropbox requires a get parameter, dl=1
                 var dbox_url = document.createElement("a");
@@ -340,7 +340,7 @@ plugins.factory('userPlugins', function() {
     var videoPlugin = new UrlPlugin('video', function(url) {
         if (url.match(/\.(3gp|avi|flv|gifv|mkv|mp4|ogv|webm|wmv)\b/i)) {
             if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
-                // imgur: force https
+                // imgur: always use https. avoids mixed content warnings
                 url = url.replace(/^http:/, "https:");
             }
             return function() {
