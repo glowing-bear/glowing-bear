@@ -282,7 +282,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
             <a ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}" href="#">
               <span class="badge pull-right" ng-class="{'danger': buffer.notification}" ng-bind="buffer.notification || buffer.unread"></span>
               <span class="buffer-quick-key">{{ buffer.$quickKey }}</span>
-              <span class="buffername">{{ buffer.trimmedName || buffer.fullName }}</span>
+              <span class="buffername" ng-class="{'unread': buffer.notification || buffer.unread}">{{ buffer.trimmedName || buffer.fullName }}</span>
             </a>
           </li>
         </ul>
