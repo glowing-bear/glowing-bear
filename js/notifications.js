@@ -1,6 +1,6 @@
 var weechat = angular.module('weechat');
 
-weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', function($rootScope, $log, models, settings) {
+weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', 'utils', function($rootScope, $log, models, settings, utils) {
     var serviceworker = false;
     var notifications = [];
     // Ask for permission to display desktop notifications
@@ -37,7 +37,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
 
         document.addEventListener('deviceready', function() {
             // Add cordova local notification click handler
-            if (window.cordova !== null && window.cordova.plugins !== undefined && window.cordova.plugins.notification !== undefined &&
+            if (utils.isCordova() && window.cordova.plugins !== undefined && window.cordova.plugins.notification !== undefined &&
                 window.cordova.plugins.notification.local !== undefined) {
                 window.cordova.plugins.notification.local.on("click", function (notification) {
                     // go to buffer
@@ -112,7 +112,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
                 delete notifications[this.id];
             };
 
-        } else if (window.cordova !== undefined && window.cordova.plugins !== undefined && window.cordova.plugins.notification !== undefined && window.cordova.plugins.notification.local !== undefined) {
+        } else if (utils.isCordova() && window.cordova.plugins !== undefined && window.cordova.plugins.notification !== undefined && window.cordova.plugins.notification.local !== undefined) {
             // Cordova local notification
             // Calculate notification id from buffer ID
             // Needs to be unique number, but we'll only ever have one per buffer
@@ -166,8 +166,8 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
     };
 
     var updateFavico = function() {
-        if (window.cordova !== undefined) {
-            return;
+        if (utils.isCordova()) {
+            return; // cordova doesn't have a favicon
         }
 
         var notifications = unreadCount('notification');
@@ -235,8 +235,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
 
         showNotification(buffer, title, body);
 
-        if (window.cordova === undefined && settings.soundnotification) {
-            // TODO fill in a sound file
+        if (!utils.isCordova() && settings.soundnotification) {
             var audioFile = "assets/audio/sonar";
             var soundHTML = '<audio autoplay="autoplay"><source src="' + audioFile + '.ogg" type="audio/ogg" /><source src="' + audioFile + '.mp3" type="audio/mpeg" /></audio>';
             document.getElementById("soundNotification").innerHTML = soundHTML;

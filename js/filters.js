@@ -135,11 +135,13 @@ weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
     };
 }]);
 
+// This is used by the cordova app to change link targets to "window.open(<url>, '_system')"
+// so that they're opened in a browser window and don't navigate away from Glowing Bear
 weechat.filter('linksForCordova', ['$sce', function($sce) {
     return function(text) {
-        // Cordova: need to use window.open instead of href
         // XXX TODO this needs to be improved
-        text = text.replace(/<a (rel="[a-z ]+"\s)?(?:target="_[a-z]+"\s)?href="([^"]+)"/gi, "<a $1 onClick=\"window.open('$2', '_system')\"");
+        text = text.replace(/<a (rel="[a-z ]+"\s+)?(?:target="_[a-z]+"\s+)?href="([^"]+)"/gi,
+                            "<a $1 onClick=\"window.open('$2', '_system')\"");
         return $sce.trustAsHtml(text);
     };
 }]);

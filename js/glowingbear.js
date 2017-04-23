@@ -44,12 +44,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'onlyUnread': false,
         'hotlistsync': true,
         'orderbyserver': true,
-        'useFavico': true,
+        'useFavico': !utils.isCordova(),
         'soundnotification': true,
         'fontsize': '14px',
         'fontfamily': (utils.isMobileUi() ? 'sans-serif' : 'Inconsolata, Consolas, Monaco, Ubuntu Mono, monospace'),
         'readlineBindings': false,
-        'enableJSEmoji': (utils.isMobileUi() ? false : true),
+        'enableJSEmoji': !utils.isMobileUi(),
         'enableMathjax': false,
         'enableQuickKeys': true,
         'customCSS': '',
@@ -96,10 +96,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     })();
 
     // Show a TLS warning if GB was loaded over an unencrypted connection,
-    // except for local instances (testing or electron)
+    // except for local instances (testing, cordova, or electron)
     $scope.show_tls_warning = (window.location.protocol !== "https:") &&
         (["localhost", "127.0.0.1", "::1"].indexOf(window.location.hostname) === -1) &&
-        !window.is_electron && !window.cordova;
+        !window.is_electron && !utils.isCordova();
 
     if (window.is_electron) {
         // Use packaged emojione sprite in the electron app
@@ -232,7 +232,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     });
 
-    $rootScope.favico = new Favico({animation: 'none'});
+    if (!utils.isCordova()) {
+        $rootScope.favico = new Favico({animation: 'none'});
+    }
     $scope.notifications = notifications.unreadCount('notification');
     $scope.unread = notifications.unreadCount('unread');
 
@@ -241,7 +243,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $scope.notifications = notifications.unreadCount('notification');
         $scope.unread = notifications.unreadCount('unread');
 
-        if (window.cordova === undefined && settings.useFavico && $rootScope.favico) {
+        if (!utils.isCordova() && settings.useFavico && $rootScope.favico) {
             notifications.updateFavico();
         }
     });
@@ -250,17 +252,18 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Reset title
         $rootScope.pageTitle = '';
         $rootScope.notificationStatus = '';
+
+        // cancel outstanding notifications (incl cordova)
         notifications.cancelAll();
+        if (window.plugin !== undefined && window.plugin.notification !== undefined && window.plugin.notification.local !== undefined) {
+            window.plugin.notification.local.cancelAll();
+        }
 
         models.reinitialize();
         $rootScope.$emit('notificationChanged');
         $scope.connectbutton = 'Connect';
         $scope.connectbuttonicon = 'glyphicon-chevron-right';
         bufferResume.reset();
-
-        if (window.plugin !== undefined && window.plugin.notification !== undefined && window.plugin.notification.local !== undefined) {
-            window.plugin.notification.local.cancelAll();
-        }
     });
     $scope.connectbutton = 'Connect';
     $scope.connectbuttonicon = 'glyphicon-chevron-right';
@@ -381,8 +384,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             return;
         }
 
-        if (window.cordova !== undefined) {
-            return;
+        if (utils.isCordova()) {
+            return; // cordova doesn't have a favicon
         }
 
         if (useFavico) {
@@ -398,7 +401,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // This also fires when the page is loaded if enabled.
     // Note that this says MathJax but we switched to KaTeX
     settings.addCallback('enableMathjax', function(enabled) {
-        if (window.cordova === undefined && enabled && !$rootScope.mathjax_init) {
+        // no latex math support for cordova right now
+        if (!utils.isCordova() && enabled && !$rootScope.mathjax_init) {
             // Load MathJax only once
             $rootScope.mathjax_init = true;
 
@@ -820,7 +824,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 $scope.disconnect();
             }
 
-            if (window.cordova !== undefined) {
+            if (!utils.isCordova()) {
                 $scope.favico.reset();
             }
         }

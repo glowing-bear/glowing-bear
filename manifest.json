@@ -9,11 +9,11 @@
   },
   "app": {
     "urls": [
-      "http://www.glowing-bear.org/"
+      "https://www.glowing-bear.org/"
     ],
     "launch": {
       "container": "panel",
-      "web_url": "http://www.glowing-bear.org/"
+      "web_url": "https://www.glowing-bear.org/"
     }
   },
   "permissions": [
