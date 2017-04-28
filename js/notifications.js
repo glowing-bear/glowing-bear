@@ -1,6 +1,6 @@
 var weechat = angular.module('weechat');
 
-weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', function($rootScope, $log, models, settings) {
+weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', 'utils', function($rootScope, $log, models, settings, utils) {
     var serviceworker = false;
     var notifications = [];
     // Ask for permission to display desktop notifications
@@ -34,6 +34,21 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
                 $log.info('Service Worker err:', err);
             });
         }
+
+        document.addEventListener('deviceready', function() {
+            // Add cordova local notification click handler
+            if (utils.isCordova() && window.cordova.plugins !== undefined && window.cordova.plugins.notification !== undefined &&
+                window.cordova.plugins.notification.local !== undefined) {
+                window.cordova.plugins.notification.local.on("click", function (notification) {
+                    // go to buffer
+                    var data = JSON.parse(notification.data);
+                    models.setActiveBuffer(data.buffer);
+                    window.focus();
+                    // clear this notification
+                    window.cordova.plugins.notification.local.clear(notification.id);
+                });
+            }
+        });
     };
 
     var showNotification = function(buffer, title, body) {
@@ -66,7 +81,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
 
             toastNotifier.show(toast);
 
-        } else {
+        } else if (typeof Notification !== 'undefined') {
 
             var notification = new Notification(title, {
                 body: body,
@@ -97,6 +112,22 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
                 delete notifications[this.id];
             };
 
+        } else if (utils.isCordova() && window.cordova.plugins !== undefined && window.cordova.plugins.notification !== undefined && window.cordova.plugins.notification.local !== undefined) {
+            // Cordova local notification
+            // Calculate notification id from buffer ID
+            // Needs to be unique number, but we'll only ever have one per buffer
+            var id = parseInt(buffer.id, 16);
+
+            // Cancel previous notification for buffer (if there was one)
+            window.cordova.plugins.notification.local.clear(id);
+
+            // Send new notification
+            window.cordova.plugins.notification.local.schedule({
+                id: id,
+                text: body,
+                title: title,
+                data: { buffer: buffer.id }  // remember buffer id for when the notification is clicked
+            });
         }
 
     };
@@ -135,6 +166,10 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
     };
 
     var updateFavico = function() {
+        if (utils.isCordova()) {
+            return; // cordova doesn't have a favicon
+        }
+
         var notifications = unreadCount('notification');
         if (notifications > 0) {
             $rootScope.favico.badge(notifications, {
@@ -200,8 +235,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
 
         showNotification(buffer, title, body);
 
-        if (settings.soundnotification) {
-            // TODO fill in a sound file
+        if (!utils.isCordova() && settings.soundnotification) {
             var audioFile = "assets/audio/sonar";
             var soundHTML = '<audio autoplay="autoplay"><source src="' + audioFile + '.ogg" type="audio/ogg" /><source src="' + audioFile + '.mp3" type="audio/mpeg" /></audio>';
             document.getElementById("soundNotification").innerHTML = soundHTML;

@@ -14,7 +14,16 @@
     "angular-mocks": "1.5.x",
     "html5-boilerplate": "~4.3.0",
     "underscore": "~1.8",
-    "bootstrap": "~3.1",
+    "bootstrap": "~3.3",
     "emojione": "~2.2"
-  }
+  },
+  "keywords": [
+    "weechat",
+    "irc"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ]
 }
