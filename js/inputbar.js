@@ -246,17 +246,64 @@ weechat.directive('inputBar', function() {
                 var tmpIterCandidate = $scope.iterCandidate;
                 $scope.iterCandidate = null;
 
+                var bufferNumber;
+                var sortedBuffers;
+                var filteredBufferNum;
+                var activeBufferId;
+
+                // if Alt+J was pressed last...
+                if ($rootScope.showJumpKeys) {
+                    // ... we expect two digits now
+                    if (!$event.altKey && (code > 47 && code < 58)) {
+                        // first digit
+                        if ($scope.jumpDecimal === undefined) {
+                            $scope.jumpDecimal = code - 48;
+                            $event.preventDefault();
+                        // second digit
+                        } else {
+                            bufferNumber = ($scope.jumpDecimal * 10) + (code - 48) - 1;
+                            // quick select filtered entries
+                            if (($scope.$parent.search.length || $scope.$parent.onlyUnread) && $scope.$parent.filteredBuffers.length) {
+                                filteredBufferNum = $scope.$parent.filteredBuffers[bufferNumber];
+                                if (filteredBufferNum !== undefined) {
+                                    activeBufferId = [filteredBufferNum.number, filteredBufferNum.id];
+                                }
+                            } else {
+                                // Map the buffers to only their numbers and IDs so we don't have to
+                                // copy the entire (possibly very large) buffer object, and then sort
+                                // the buffers according to their WeeChat number
+                                sortedBuffers = _.map(models.getBuffers(), function (buffer) {
+                                    return [buffer.number, buffer.id];
+                                }).sort(function (left, right) {
+                                    // By default, Array.prototype.sort() sorts alphabetically.
+                                    // Pass an ordering function to sort by first element.
+                                    return left[0] - right[0];
+                                });
+                                activeBufferId = sortedBuffers[bufferNumber];
+                            }
+                            if (activeBufferId) {
+                                $scope.$parent.setActiveBuffer(activeBufferId[1]);
+                            }
+                            $event.preventDefault();
+                            $rootScope.showJumpKeys = false;
+                            $scope.jumpDecimal = undefined;
+                        }
+                    } else {
+                        $rootScope.showJumpKeys = false;
+                        $scope.jumpDecimal = undefined;
+                    }
+                }
+
                 // Left Alt+[0-9] -> jump to buffer
                 if ($event.altKey && !$event.ctrlKey && (code > 47 && code < 58) && settings.enableQuickKeys) {
                     if (code === 48) {
                         code = 58;
                     }
-                    var bufferNumber = code - 48 - 1 ;
+                    bufferNumber = code - 48 - 1 ;
 
-                    var activeBufferId;
                     // quick select filtered entries
                     if (($scope.$parent.search.length || $scope.$parent.onlyUnread) && $scope.$parent.filteredBuffers.length) {
-                        var filteredBufferNum = $scope.$parent.filteredBuffers[bufferNumber];
+                        filteredBufferNum = $scope.$parent.filteredBuffers[bufferNumber];
                         if (filteredBufferNum !== undefined) {
                             activeBufferId = [filteredBufferNum.number, filteredBufferNum.id];
                         }
@@ -264,7 +311,7 @@ weechat.directive('inputBar', function() {
                         // Map the buffers to only their numbers and IDs so we don't have to
                         // copy the entire (possibly very large) buffer object, and then sort
                         // the buffers according to their WeeChat number
-                        var sortedBuffers = _.map(models.getBuffers(), function(buffer) {
+                        sortedBuffers = _.map(models.getBuffers(), function(buffer) {
                             return [buffer.number, buffer.id];
                         }).sort(function(left, right) {
                             // By default, Array.prototype.sort() sorts alphabetically.
@@ -369,6 +416,13 @@ weechat.directive('inputBar', function() {
                         buffer.notification = 0;
                     });
                     connection.sendHotlistClearAll();
+                }
+
+                // Alt+J -> Jump to buffer
+                if ($event.altKey && (code === 106 || code === 74)) {
+                    $event.preventDefault();
+                    $rootScope.showJumpKeys = true;
+                    return true;
                 }
 
                 var caretPos;
