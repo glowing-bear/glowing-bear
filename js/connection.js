@@ -35,6 +35,8 @@ weechat.factory('connection',
 
             // Helper methods for initialization commands
             var _initializeConnection = function(passwd) {
+                // Escape comma in password (#937)
+                passwd = passwd.replace(',', '\\,');
                 // This is not the proper way to do this.
                 // WeeChat does not send a confirmation for the init.
                 // Until it does, We need to "assume" that formatInit
