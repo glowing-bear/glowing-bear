@@ -467,7 +467,7 @@ weechat.directive('inputBar', function() {
                     // Ctrl-w
                     } else if (code == 87) {
                         var trimmedValue = $scope.command.slice(0, caretPos);
-                        var lastSpace = trimmedValue.replace(/ +$/, '').lastIndexOf(' ') + 1;
+                        var lastSpace = trimmedValue.replace(/\s+$/, '').lastIndexOf(' ') + 1;
                         $scope.command = $scope.command.slice(0, lastSpace) + $scope.command.slice(caretPos, $scope.command.length);
                         setTimeout(function() {
                             inputNode.setSelectionRange(lastSpace, lastSpace);
