@@ -28,9 +28,40 @@ weechat.directive('inputBar', function() {
             // Expose utils to be able to check if we're on a mobile UI
             $scope.utils = utils;
 
-            // E.g. Turn :smile: into the unicode equivalent
+            // Emojify input. E.g. Turn :smile: into the unicode equivalent, but
+            // don't do replacements in the middle of a word (e.g. std::io::foo)
             $scope.inputChanged = function() {
-                $scope.command = emojione.shortnameToUnicode($scope.command);
+                var emojiRegex = /^(?:[\uD800-\uDBFF][\uDC00-\uDFFF])+$/, // *only* emoji
+                    changed = false,  // whether a segment was modified
+                    inputNode = $scope.getInputNode(),
+                    caretPos = inputNode.selectionStart,
+                    position = 0;  // current position in text
+
+                // use capturing group in regex to include whitespace in output array
+                var segments = $scope.command.split(/(\s+)/);
+                for (var i = 0; i < segments.length; i ++) {
+                    if (/\s+/.test(segments[i]) || emojiRegex.test(segments[i])) {
+                        // ignore whitespace and emoji-only segments
+                        position += segments[i].length;
+                        continue;
+                    }
+                    // emojify segment
+                    var emojified = emojione.shortnameToUnicode(segments[i]);
+                    if (emojiRegex.test(emojified)) {
+                        // If result consists *only* of emoji, adjust caret
+                        // position and replace segment with emojified version
+                        caretPos = caretPos - segments[i].length + emojified.length;
+                        segments[i] = emojified;
+                        changed = true;
+                    }
+                    position += segments[i].length;
+                }
+                if (changed) {  // Only re-assemble if something changed
+                    $scope.command = segments.join('');
+                    setTimeout(function() {
+                        inputNode.setSelectionRange(caretPos, caretPos);
+                    });
+                }
             };
 
             /*
