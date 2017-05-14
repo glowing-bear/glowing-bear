@@ -162,6 +162,11 @@ weechat.filter('getBufferQuickKeys', function () {
                 return left[0] - right[0] || left[1] - right[1];
             }).forEach(function(info, keyIdx) {
                 obj[ info[2] ].$quickKey = keyIdx < 10 ? (keyIdx + 1) % 10 : '';
+                // Don't update jump key upon filtering
+                if (obj[ info[2] ].$jumpKey === undefined) {
+                    // Only assign jump keys up to 99
+                    obj[ info[2] ].$jumpKey = (keyIdx < 99) ? keyIdx + 1 : '';
+                }
             });
         }
         return obj;

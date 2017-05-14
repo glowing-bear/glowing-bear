@@ -216,6 +216,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         // Clear search term on buffer change
         $scope.search = '';
+        $scope.search_placeholder = 'Search';
 
         if (!utils.isMobileUi()) {
             // This needs to happen asynchronously to prevent the enter key handler
@@ -374,9 +375,20 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     // Watch model and update channel sorting when it changes
-    settings.addCallback('orderbyserver', function(orderbyserver) {
-        $rootScope.predicate = orderbyserver ? 'serverSortKey' : 'number';
-    });
+    var set_filter_predicate = function(orderbyserver) {
+        if ($rootScope.showJumpKeys) {
+            $rootScope.predicate = '$jumpKey';
+        } else if (orderbyserver) {
+            $rootScope.predicate = 'serverSortKey';
+        } else {
+            $rootScope.predicate = 'number';
+        }
+    };
+    settings.addCallback('orderbyserver', set_filter_predicate);
+    // convenience wrapper for jump keys
+    $rootScope.refresh_filter_predicate = function() {
+        set_filter_predicate(settings.orderbyserver);
+    };
 
     settings.addCallback('useFavico', function(useFavico) {
         // this check is necessary as this is called on page load, too
@@ -682,6 +694,25 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             return (buffer.unread > 0 || buffer.notification > 0) && !buffer.hidden;
         }
         return !buffer.hidden;
+    };
+
+    // filter bufferlist for search or jump key
+    $rootScope.bufferlistfilter = function(buffer) {
+        if ($rootScope.showJumpKeys) {
+            // filter by jump key
+            if ($rootScope.jumpDecimal === undefined) {
+                // no digit input yet, show all buffers
+                return true;
+            } else {
+                var min_jumpKey = 10 * $rootScope.jumpDecimal,
+                    max_jumpKey = 10 * ($rootScope.jumpDecimal + 1);
+                return (min_jumpKey <= buffer.$jumpKey) &&
+                    (buffer.$jumpKey < max_jumpKey);
+            }
+        } else {
+            // filter by buffer name
+            return buffer.fullName.indexOf($scope.search) !== -1;
+        }
     };
 
     // Watch model and update show setting when it changes

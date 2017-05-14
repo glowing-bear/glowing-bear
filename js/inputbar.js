@@ -277,17 +277,53 @@ weechat.directive('inputBar', function() {
                 var tmpIterCandidate = $scope.iterCandidate;
                 $scope.iterCandidate = null;
 
+                var bufferNumber;
+                var sortedBuffers;
+                var filteredBufferNum;
+                var activeBufferId;
+
+                // if Alt+J was pressed last...
+                if ($rootScope.showJumpKeys) {
+                    var cleanup = function() { // cleanup helper
+                        $rootScope.showJumpKeys = false;
+                        $rootScope.jumpDecimal = undefined;
+                        $scope.$parent.search = '';
+                        $scope.$parent.search_placeholder = 'Search';
+                        $rootScope.refresh_filter_predicate();
+                    };
+
+                    // ... we expect two digits now
+                    if (!$event.altKey && (code > 47 && code < 58)) {
+                        // first digit
+                        if ($rootScope.jumpDecimal === undefined) {
+                            $rootScope.jumpDecimal = code - 48;
+                            $event.preventDefault();
+                            $scope.$parent.search = $rootScope.jumpDecimal;
+                            $rootScope.refresh_filter_predicate();
+                        // second digit, jump to correct buffer
+                        } else {
+                            bufferNumber = ($rootScope.jumpDecimal * 10) + (code - 48);
+                            $scope.$parent.setActiveBuffer(bufferNumber, '$jumpKey');
+
+                            $event.preventDefault();
+                            cleanup();
+                        }
+                    } else {
+                        // Not a decimal digit, abort
+                        cleanup();
+                    }
+                }
+
                 // Left Alt+[0-9] -> jump to buffer
                 if ($event.altKey && !$event.ctrlKey && (code > 47 && code < 58) && settings.enableQuickKeys) {
                     if (code === 48) {
                         code = 58;
                     }
-                    var bufferNumber = code - 48 - 1 ;
+                    bufferNumber = code - 48 - 1 ;
 
-                    var activeBufferId;
                     // quick select filtered entries
                     if (($scope.$parent.search.length || $scope.$parent.onlyUnread) && $scope.$parent.filteredBuffers.length) {
-                        var filteredBufferNum = $scope.$parent.filteredBuffers[bufferNumber];
+                        filteredBufferNum = $scope.$parent.filteredBuffers[bufferNumber];
                         if (filteredBufferNum !== undefined) {
                             activeBufferId = [filteredBufferNum.number, filteredBufferNum.id];
                         }
@@ -295,7 +331,7 @@ weechat.directive('inputBar', function() {
                         // Map the buffers to only their numbers and IDs so we don't have to
                         // copy the entire (possibly very large) buffer object, and then sort
                         // the buffers according to their WeeChat number
-                        var sortedBuffers = _.map(models.getBuffers(), function(buffer) {
+                        sortedBuffers = _.map(models.getBuffers(), function(buffer) {
                             return [buffer.number, buffer.id];
                         }).sort(function(left, right) {
                             // By default, Array.prototype.sort() sorts alphabetically.
@@ -400,6 +436,16 @@ weechat.directive('inputBar', function() {
                         buffer.notification = 0;
                     });
                     connection.sendHotlistClearAll();
+                }
+
+                // Alt+J -> Jump to buffer
+                if ($event.altKey && (code === 106 || code === 74)) {
+                    $event.preventDefault();
+                    // reset search state and show jump keys
+                    $scope.$parent.search = '';
+                    $scope.$parent.search_placeholder = 'Number';
+                    $rootScope.showJumpKeys = true;
+                    return true;
                 }
 
                 var caretPos;
