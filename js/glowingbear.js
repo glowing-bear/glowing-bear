@@ -711,7 +711,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             }
         } else {
             // filter by buffer name
-            return buffer.fullName.indexOf($scope.search) !== -1;
+            return buffer.fullName.toLowerCase().indexOf($scope.search.toLowerCase()) !== -1;
         }
     };
 
