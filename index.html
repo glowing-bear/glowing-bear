@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="weechat" ng-cloak>
+<html ng-app="weechat">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
@@ -49,7 +49,7 @@
     <script type="text/javascript" src="3rdparty/favico-0.3.10.min.js"></script>
   </head>
   <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keyup="handleKeyRelease($event)"  ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" ng-init="init()" lang="en-US">
-    <div class="alert alert-danger upload-error" ng-show="uploadError">
+    <div class="alert alert-danger upload-error" ng-show="uploadError" ng-cloak>
       <p><strong>Upload error:</strong> Image upload failed.</p>
     </div>
     <div ng-hide="connected" class="container">
@@ -58,17 +58,36 @@
         <span>Glowing Bear</span>
         <small>WeeChat web frontend</small>
       </h2>
-      <div class="alert alert-warning" ng-show="show_tls_warning"><strong>You're using Glowing Bear over an unencrypted connection (http://). This is not recommended!</strong> We recommend using our secure hosted version at <a href="https://www.glowing-bear.org/">https://www.glowing-bear.org/</a>, or <a href="https://latest.glowing-bear.org/">https://latest.glowing-bear.org</a> for the latest development version. If your relay is on your local network, that is unfortunately impossible, but be aware of the implications.</div>
-      <div class="alert alert-danger" ng-show="errorMessage">
+      <div class="alert alert-warning" ng-show="show_tls_warning" ng-cloak><strong>You're using Glowing Bear over an unencrypted connection (http://). This is not recommended!</strong> We recommend using our secure hosted version at <a href="https://www.glowing-bear.org/">https://www.glowing-bear.org/</a>, or <a href="https://latest.glowing-bear.org/">https://latest.glowing-bear.org</a> for the latest development version. If your relay is on your local network, that is unfortunately impossible, but be aware of the implications.</div>
+      <div class="alert alert-danger" ng-show="errorMessage" ng-cloak>
         <strong>Connection error</strong> The client was unable to connect to the WeeChat relay
       </div>
-      <div class="alert alert-danger" ng-show="sslError">
+      <div class="alert alert-danger" ng-show="sslError" ng-cloak>
         <strong>Secure connection error</strong> A secure connection with the WeeChat relay could not be initiated. This is most likely because your browser does not trust your relay's certificate. Please read the encryption instructions below!
       </div>
-      <div class="alert alert-danger" ng-show="securityError">
+      <div class="alert alert-danger" ng-show="securityError" ng-cloak>
         <strong>Secure connection error</strong> Unable to connect to unencrypted relay when you are connecting to Glowing Bear over HTTPS. Please use an encrypted relay or load the page without using HTTPS.
       </div>
       <div class="panel-group accordion">
+        <div class="panel" data-state="active" ng-show=false>
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a class="accordion-toggle">
+                Important Note!
+              </a>
+            </h4>
+          </div>
+          <div class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="form-group">
+                  <div class="alert alert-danger">
+                    GlowingBear requires JavaScript support to function. Additionally, you must allow JS from <code>cdnjs.cloudflare.com</code>. Please check your script blocker or browser settings.
+                  </div>
+                  Glowing Bear is a web frontend for the WeeChat IRC client and strives to be a modern interface. It relies on WeeChat to do all the heavy lifting and then provides some nice features on top of that, like embedding images, videos, and other content. The best part, however, is that you can use it from any modern internet device -- whether it's a computer, tablet, or smart phone -- and all your stuff is there, wherever you are. You don't have to deal with the messy technical details, and all you need to have installed is a browser or our app.
+                </div>
+            </div>
+          </div>
+        </div>
         <div class="panel" data-state="active">
           <div class="panel-heading">
             <h4 class="panel-title">
@@ -94,7 +113,7 @@
                   </div>
                   <label class="control-label" for="password">WeeChat relay password</label>
                   <input type="password" class="form-control favorite-font" id="password" ng-model="password" placeholder="Password">
-                  <div class="alert alert-danger" ng-show="passwordError">
+                  <div class="alert alert-danger" ng-show="passwordError" ng-cloak>
                     Error: wrong password
                   </div>
 
@@ -117,7 +136,7 @@
                     </label>
                   </div>
                 </div>
-                <button class="btn btn-lg btn-primary" ng-click="connect()">{{ connectbutton }}  <i ng-class="connectbuttonicon" class="glyphicon"></i></button>
+                <button class="btn btn-lg btn-primary" ng-click="connect()" ng-cloak>{{ connectbutton }}  <i ng-class="connectbuttonicon" class="glyphicon"></i></button>
               </form>
             </div>
           </div>
@@ -235,7 +254,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
         </div>
       </div>
     </div>
-    <div class="content" id="content" sidebar-state="visible" ng-show="connected">
+    <div class="content" id="content" sidebar-state="visible" ng-show="connected" ng-cloak>
       <div id="topbar">
         <div class="brand">
           <a href="#" ng-click="toggleSidebar()">
@@ -334,7 +353,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
       </div>
     </div>
     <div id="soundNotification"></div>
-    <div id="reconnect" class="alert alert-danger" ng-click="reconnect()" ng-show="reconnecting">
+    <div id="reconnect" class="alert alert-danger" ng-click="reconnect()" ng-show="reconnecting" ng-cloak>
         <p><strong>Connection to WeeChat lost</strong></p>
         <i class="glyphicon glyphicon-refresh"></i>
         Reconnecting... <i class="glyphicon glyphicon-spin glyphicon-refresh"></i> <a class="btn btn-xs" ng-click="reconnect()" href="#">Click to try to reconnect now</a>

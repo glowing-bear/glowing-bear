@@ -906,3 +906,8 @@ img.emojione {
         padding-right: 0px !important;
     }
 }
+
+/* ng-cloak hides elements until Angular loads, preventing flickering */
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
