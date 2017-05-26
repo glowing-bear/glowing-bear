@@ -28,7 +28,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.command = '';
-    $scope.themes = ['dark', 'light', 'black', 'dark-spacious', 'blue', 'base16-default', 'base16-light', 'base16-mocha', 'base16-solarized-dark', 'base16-solarized-light'];
+    $scope.themes = ['dark', 'light', 'black', 'dark-spacious', 'blue', 'base16-default', 'base16-light', 'base16-mocha', 'base16-lunarized-dark', 'base16-lunarized-light', 'base16-solarized-dark', 'base16-solarized-light', 'base16-terranized-east-dark', 'base16-terranized-east-light', 'base16-terranized-north-dark', 'base16-terranized-north-light', 'base16-terranized-south-dark', 'base16-terranized-south-light', 'base16-terranized-west-dark', 'base16-terranized-west-light'];
 
     // Initialise all our settings, this needs to include all settings
     // or else they won't be saved to the localStorage.

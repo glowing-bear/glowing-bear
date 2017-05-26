@@ -1,0 +1,20 @@
+@import "base16-lunarized-dark.css";
+
+:root {
+--base00: #2b1d17;
+--base01: #2b1d17;
+--base02: #3d2e27;
+--base03: #3d2e27;
+--base04: #7f7672;
+--base05: #afb5b8;
+--base06: #bac0c3;
+--base07: #bac0c3;
+--base08: #cc6e90;
+--base09: #cb764e;
+--base0A: #a78d30;
+--base0B: #65a256;
+--base0C: #0da891;
+--base0D: #3f9fc1;
+--base0E: #818dd6;
+--base0F: #b179c6;
+}
