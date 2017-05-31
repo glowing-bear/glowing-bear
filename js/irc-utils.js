@@ -120,6 +120,14 @@ IrcUtils.service('IrcUtils', [function() {
 
         // new nick list to search in
         var searchNickList = _ciNickList(nickList);
+        var nickChars = searchNickList.reduce(function(coll, nick) {
+            Array.prototype.forEach.call(nick, function(char) {
+                coll[char] = true;
+            });
+            return coll;
+        }, {});
+        var nickStr = ('-^\\[\\]\\\\' +
+            Object.keys(nickChars).join('').replace(/[-^\[\]\\]/g, ''));
 
         // text before and after caret
         var beforeCaret = text.substring(0, caretPos);
@@ -134,7 +142,7 @@ IrcUtils.service('IrcUtils', [function() {
         };
 
         // iterating nicks at the beginning?
-        var m = beforeCaret.match(new RegExp('^([a-zA-Z0-9_\\\\\\[\\]{}^`|-]+)' + suf + ' $'));
+        var m = beforeCaret.match(new RegExp('^([' + nickStr + ']+)' + suf + ' $'));
 
         var newNick = null;
         if (m) {
@@ -155,7 +163,7 @@ IrcUtils.service('IrcUtils', [function() {
         }
 
         // nick completion in the beginning?
-        m = beforeCaret.match(/^([a-zA-Z0-9_\\\[\]{}^`|-]+)$/);
+        m = beforeCaret.match(new RegExp('^([' + nickStr + ']+)$'));
         if (m) {
             // try completing
             newNick = _completeSingleNick(m[1], searchNickList);
@@ -177,7 +185,7 @@ IrcUtils.service('IrcUtils', [function() {
         }
 
         // iterating nicks in the middle?
-        m = beforeCaret.match(/^(.* )([a-zA-Z0-9_\\\[\]{}^`|-]+) $/);
+        m = beforeCaret.match(new RegExp('^(.* )([' + nickStr + ']+) $'));
         if (m) {
             if (doIterate) {
                 // try iterating
@@ -196,7 +204,7 @@ IrcUtils.service('IrcUtils', [function() {
         }
 
         // nick completion elsewhere in the middle?
-        m = beforeCaret.match(/^(.* )([a-zA-Z0-9_\\\[\]{}^`|-]+)$/);
+        m = beforeCaret.match(new RegExp('^(.* )([' + nickStr + ']+)$'));
         if (m) {
             // try completing
             newNick = _completeSingleNick(m[2], searchNickList);
