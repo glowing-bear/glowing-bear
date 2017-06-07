@@ -180,6 +180,7 @@ input[type=text], input[type=password], #sendMessage {
     position: fixed;
     left: 145px; /* sidebar */
     overflow: hidden;
+    width: 100%; /* for title modal click area */
 }
 
 #topbar .actions {
