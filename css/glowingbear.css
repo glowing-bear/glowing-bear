@@ -806,6 +806,7 @@ img.emojione {
         right: 60px;
         text-align: center;
         font-size: 18px;
+        width: initial;
     }
 
     #topbar .brand img {
