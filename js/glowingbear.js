@@ -197,7 +197,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                         $rootScope.updateBufferBottom(true);
                         $rootScope.scrollWithBuffer();
                         bl.onscroll = _.debounce(function() {
-                            $rootScope.updateBufferBottom();
+                            $rootScope.updateBufferBottom($rootScope.bufferBottom);
                         }, 80);
                         setTimeout(scrollHeightObserver, 500);
                     });
@@ -210,7 +210,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             $scope.unread = notifications.unreadCount('unread');
         });
 
-        $timeout(function() {
+        window.requestAnimationFrame(function() {
             $rootScope.updateBufferBottom(true);
         });
 
