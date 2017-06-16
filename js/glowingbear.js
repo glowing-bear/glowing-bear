@@ -211,7 +211,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         });
 
         $timeout(function() {
-            $rootScope.scrollWithBuffer();
+            $rootScope.updateBufferBottom(true);
         });
 
         // Clear search term on buffer change
@@ -582,7 +582,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             if (bottom) {
                 eob.scrollIntoView();
             }
-            $rootScope.bufferBottom = eob.offsetTop <= bl.scrollTop + bl.clientHeight;
+            $rootScope.bufferBottom = eob.offsetTop <= (bl.scrollTop + bl.clientHeight);
     };
     $rootScope.scrollWithBuffer = function(moreLines) {
         // First, get scrolling status *before* modification
@@ -599,12 +599,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 if (moreLines) {
                     // We fetched more lines, keep the scroll position constant
                     bl.scrollTop = bl.scrollHeight - bl.clientHeight - sVal;
-                } else {
-                    // New message, scroll with buffer (i.e. to bottom)
-                    var eob = document.getElementById("end-of-buffer");
-                    eob.scrollIntoView();
                 }
-                $rootScope.updateBufferBottom();
+                $rootScope.updateBufferBottom(!moreLines);
             }
         };
         // Here be scrolling dragons
