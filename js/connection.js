@@ -505,8 +505,10 @@ weechat.factory('connection',
             }
             $rootScope.loadingLines = false;
 
-            // "Scroll" to maintain position
-            $rootScope.scrollWithBuffer(/* moreLines */ true);
+            // Only scroll to read marker if we didn't have all unread lines previously, but have them now
+            var scrollToReadmarker = !hadAllUnreadLines && buffer.lastSeen >= 0;
+            // Scroll to correct position
+            $rootScope.scrollWithBuffer(scrollToReadmarker, true);
         });
     };
 
