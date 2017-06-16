@@ -142,6 +142,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $rootScope.$on('activeBufferChanged', function(event, unreadSum) {
         var ab = models.getActiveBuffer();
+        console.log('');
+        console.log('======= activeBufferChanged to', ab.shortName);
 
         // Discard unread lines above 2 screenfuls. We can click through to get more if needs be
         // This is to keep GB responsive when loading buffers which have seen a lot of traffic. See issue #859
@@ -162,6 +164,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             connection.requestNicklist(ab.id, function() {
                 $scope.showNicklist = $scope.updateShowNicklist();
                 // Scroll after nicklist has been loaded, as it may break long lines
+                console.log('activeBufferChanged nicklist handler call sWB');
                 $rootScope.scrollWithBuffer();
             });
         } else {
@@ -188,16 +191,20 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                             if (bl) {
                                 var newScrollHeight = bl.scrollHeight;
                                 if (newScrollHeight !== lastScrollHeight) {
+                                    console.log('scrollHeightObserver calling uBB(', $rootScope.bufferBottom, ')');
                                     $rootScope.updateBufferBottom($rootScope.bufferBottom);
                                     lastScrollHeight = newScrollHeight;
                                 }
                                 setTimeout(scrollHeightObserver, 500);
                             }
                         };
+                        console.log('activeBufferChanged fetchMoreLines callback calling uBB(true)');
                         $rootScope.updateBufferBottom(true);
+                        console.log('activeBufferChanged fetchMoreLines callback calling sWB()');
                         $rootScope.scrollWithBuffer();
                         bl.onscroll = _.debounce(function() {
-                            $rootScope.updateBufferBottom();
+                            console.log('onscroll handler calling uBB(',$rootScope.bufferBottom,')');
+                            $rootScope.updateBufferBottom($rootScope.bufferBottom);
                         }, 80);
                         setTimeout(scrollHeightObserver, 500);
                     });
@@ -210,8 +217,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             $scope.unread = notifications.unreadCount('unread');
         });
 
-        $timeout(function() {
-            $rootScope.scrollWithBuffer();
+        window.requestAnimationFrame(function() {
+            console.log('activeBufferChanged rAF calling uBB(true)');
+            $rootScope.updateBufferBottom(true);
         });
 
         // Clear search term on buffer change
@@ -582,13 +590,16 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             if (bottom) {
                 eob.scrollIntoView();
             }
-            $rootScope.bufferBottom = eob.offsetTop <= bl.scrollTop + bl.clientHeight;
+            $rootScope.bufferBottom = eob.offsetTop <= (bl.scrollTop + bl.clientHeight);
+            console.log("updateBufferBottom(", bottom, ") ->", $rootScope.bufferBottom);
     };
     $rootScope.scrollWithBuffer = function(moreLines) {
         // First, get scrolling status *before* modification
         // This is required to determine where we were in the buffer pre-change
         var bl = document.getElementById('bufferlines');
         var sVal = bl.scrollHeight - bl.clientHeight;
+
+        console.log("scrollWithBuffer(", moreLines, ")");
 
         var scroll = function() {
             var sTop = bl.scrollTop;
@@ -599,12 +610,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 if (moreLines) {
                     // We fetched more lines, keep the scroll position constant
                     bl.scrollTop = bl.scrollHeight - bl.clientHeight - sVal;
-                } else {
-                    // New message, scroll with buffer (i.e. to bottom)
-                    var eob = document.getElementById("end-of-buffer");
-                    eob.scrollIntoView();
                 }
-                $rootScope.updateBufferBottom();
+                console.log("scroll() with moreLines =", moreLines, "calling uBB(", !moreLines, ")");
+                $rootScope.updateBufferBottom(!moreLines);
             }
         };
         // Here be scrolling dragons
