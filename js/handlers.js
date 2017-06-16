@@ -140,26 +140,26 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         var message = new models.BufferLine(line);
         var buffer = models.getBuffer(message.buffer);
         buffer.requestedLines++;
+        // Check for date change
+        if (buffer.lines.length > 0) {
+            var old_date = new Date(buffer.lines[buffer.lines.length - 1].date),
+                new_date = new Date(message.date);
+            injectDateChangeMessageIfNeeded(buffer, manually, old_date, new_date);
+        }
+
+        message = plugins.PluginManager.contentForMessage(message);
+        buffer.addLine(message);
+
+        if (manually) {
+            buffer.lastSeen++;
+        }
+
+        if (buffer.active && !manually) {
+            $rootScope.scrollWithBuffer();
+        }
+
         // Only react to line if its displayed
         if (message.displayed) {
-            // Check for date change
-            if (buffer.lines.length > 0) {
-                var old_date = new Date(buffer.lines[buffer.lines.length - 1].date),
-                    new_date = new Date(message.date);
-                injectDateChangeMessageIfNeeded(buffer, manually, old_date, new_date);
-            }
-
-            message = plugins.PluginManager.contentForMessage(message);
-            buffer.addLine(message);
-
-            if (manually) {
-                buffer.lastSeen++;
-            }
-
-            if (buffer.active && !manually) {
-                $rootScope.scrollWithBuffer();
-            }
-
             if (!manually && (!buffer.active || !$rootScope.isWindowFocused())) {
                 if (buffer.notify > 1 && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
                     buffer.unread++;
