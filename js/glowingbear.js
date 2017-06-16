@@ -162,7 +162,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             connection.requestNicklist(ab.id, function() {
                 $scope.showNicklist = $scope.updateShowNicklist();
                 // Scroll after nicklist has been loaded, as it may break long lines
-                $rootScope.scrollWithBuffer();
+                $rootScope.scrollWithBuffer(true);
             });
         } else {
             // Check if we should show nicklist or not
@@ -195,7 +195,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                             }
                         };
                         $rootScope.updateBufferBottom(true);
-                        $rootScope.scrollWithBuffer();
+                        $rootScope.scrollWithBuffer(true);
                         bl.onscroll = _.debounce(function() {
                             $rootScope.updateBufferBottom();
                         }, 80);
@@ -211,7 +211,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         });
 
         $timeout(function() {
-            $rootScope.scrollWithBuffer();
+            $rootScope.scrollWithBuffer(true);
         });
 
         // Clear search term on buffer change
@@ -584,7 +584,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             }
             $rootScope.bufferBottom = eob.offsetTop <= bl.scrollTop + bl.clientHeight;
     };
-    $rootScope.scrollWithBuffer = function(moreLines) {
+    $rootScope.scrollWithBuffer = function(scrollToReadmarker, moreLines) {
         // First, get scrolling status *before* modification
         // This is required to determine where we were in the buffer pre-change
         var bl = document.getElementById('bufferlines');
@@ -595,9 +595,14 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             // Determine if we want to scroll at all
             // Give the check 3 pixels of slack so you don't have to hit
             // the exact spot. This fixes a bug in some browsers
-            if ((moreLines && sTop < sVal) || (Math.abs(sTop - sVal) < 3)) {
-                if (moreLines) {
-                    // We fetched more lines, keep the scroll position constant
+            if (((scrollToReadmarker || moreLines) && sTop < sVal) || (Math.abs(sTop - sVal) < 3)) {
+                var readmarker = document.querySelector(".readmarker");
+                if (scrollToReadmarker && readmarker) {
+                    // Switching channels, scroll to read marker
+                    bl.scrollTop = readmarker.offsetTop - readmarker.parentElement.scrollHeight + readmarker.scrollHeight;
+                } else if (moreLines) {
+                    // We fetched more lines but the read marker is still out of view
+                    // Keep the scroll position constant
                     bl.scrollTop = bl.scrollHeight - bl.clientHeight - sVal;
                 } else {
                     // New message, scroll with buffer (i.e. to bottom)
