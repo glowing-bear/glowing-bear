@@ -20,7 +20,8 @@ weechat.config(['$compileProvider', function ($compileProvider) {
 }]);
 
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'bufferResume', 'connection', 'notifications', 'utils', 'settings',
-    function ($rootScope, $scope, $store, $timeout, $log, models, bufferResume, connection, notifications, utils, settings) {
+    function ($rootScope, $scope, $store, $timeout, $log, models, bufferResume, connection, notifications, utils, settings)
+{
 
     window.openBuffer = function(channel) {
         $scope.openBuffer(channel);
@@ -29,6 +30,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $scope.command = '';
     $scope.themes = ['dark', 'light', 'black', 'dark-spacious', 'blue', 'base16-default', 'base16-light', 'base16-mocha', 'base16-ocean-dark', 'base16-solarized-dark', 'base16-solarized-light'];
+
+    // Current swipe status. Values:
+    // +1: bufferlist open, nicklist closed
+    //  0: bufferlist closed, nicklist closed
+    // -1: bufferlist closed, nicklist open
+    $scope.swipeStatus = 1;
 
     // Initialise all our settings, this needs to include all settings
     // or else they won't be saved to the localStorage.
@@ -40,6 +47,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'savepassword': false,
         'autoconnect': false,
         'nonicklist': utils.isMobileUi(),
+        'alwaysnicklist': false, // only significant on mobile
         'noembed': true,
         'onlyUnread': false,
         'hotlistsync': true,
@@ -160,13 +168,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Send a request for the nicklist if it hasn't been loaded yet
         if (!ab.nicklistRequested()) {
             connection.requestNicklist(ab.id, function() {
-                $scope.showNicklist = $scope.updateShowNicklist();
+                $scope.updateShowNicklist();
                 // Scroll after nicklist has been loaded, as it may break long lines
                 $rootScope.scrollWithBuffer(true);
             });
         } else {
             // Check if we should show nicklist or not
-            $scope.showNicklist = $scope.updateShowNicklist();
+            $scope.updateShowNicklist();
         }
 
         if (ab.requestedLines < $scope.lines_per_screen) {
@@ -323,6 +331,42 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         return document.getElementById('content').getAttribute('sidebar-state') === 'visible';
     };
 
+    $scope.swipeRight = function() {
+        // Depending on swipe state
+        if ($scope.swipeStatus === 1) {
+            /* do nothing */
+        } else if ($scope.swipeStatus === 0) {
+            $scope.showSidebar(); // updates swipe status to 1
+        } else if ($scope.swipeStatus === -1) {
+            // hide nicklist
+            $scope.swipeStatus = 0;
+            $scope.updateShowNicklist();
+        } else {
+            console.log("Weird swipe status:", $scope.swipeStatus);
+            $scope.swipeStatus = 0; // restore sanity
+            $scope.updateShowNicklist();
+            $scope.hideSidebar();
+        }
+    };
+
+    $rootScope.swipeLeft = function() {
+        // Depending on swipe state, ...
+        if ($scope.swipeStatus === 1) {
+            $scope.hideSidebar(); // updates swipe status to 0
+        } else if ($scope.swipeStatus === 0) {
+            // show nicklist
+            $scope.swipeStatus = -1;
+            $scope.updateShowNicklist();
+        } else if ($scope.swipeStatus === -1) {
+            /* do nothing */
+        } else {
+            console.log("Weird swipe status:", $scope.swipeStatus);
+            $scope.swipeStatus = 0; // restore sanity
+            $scope.updateShowNicklist();
+            $scope.hideSidebar();
+        }
+    };
+
     $scope.showSidebar = function() {
         document.getElementById('sidebar').setAttribute('data-state', 'visible');
         document.getElementById('content').setAttribute('sidebar-state', 'visible');
@@ -332,14 +376,18 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 $timeout(function(){elem.blur();});
             });
         }
+        $scope.swipeStatus = 1;
     };
 
     $rootScope.hideSidebar = function() {
         if (utils.isMobileUi()) {
+            // make sure nicklist is hidden
             document.getElementById('sidebar').setAttribute('data-state', 'hidden');
             document.getElementById('content').setAttribute('sidebar-state', 'hidden');
         }
+        $scope.swipeStatus = 0;
     };
+
     settings.addCallback('autoconnect', function(autoconnect) {
         if (autoconnect && !$rootScope.connected && !$rootScope.sslError && !$rootScope.securityError && !$rootScope.errorMessage) {
             $scope.connect();
@@ -353,23 +401,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 $scope.hideSidebar();
             } else {
                 $scope.showSidebar();
-            }
-        }
-    };
-
-    // Open and close panels while on mobile devices through swiping
-    $scope.openNick = function() {
-        if (utils.isMobileUi()) {
-            if (settings.nonicklist) {
-                settings.nonicklist = false;
-            }
-        }
-    };
-
-    $scope.closeNick = function() {
-        if (utils.isMobileUi()) {
-            if (!settings.nonicklist) {
-                settings.nonicklist = true;
             }
         }
     };
@@ -541,6 +572,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             // Wrap in a condition so we save ourselves the $apply if nothing changes (50ms or more)
             if ($scope.wasMobileUi && !utils.isMobileUi()) {
                 $scope.showSidebar();
+                $scope.updateShowNicklist();
             }
             $scope.wasMobileUi = utils.isMobileUi();
             $scope.calculateNumLines();
@@ -717,7 +749,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     // Watch model and update show setting when it changes
     settings.addCallback('nonicklist', function() {
-        $scope.showNicklist = $scope.updateShowNicklist();
+        $scope.updateShowNicklist();
         // restore bottom view
         if ($rootScope.connected && $rootScope.bufferBottom) {
             $timeout(function(){
@@ -725,24 +757,30 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             }, 500);
         }
     });
+    settings.addCallback('alwaysnicklist', function() {
+        $scope.updateShowNicklist();
+    });
     $scope.showNicklist = false;
     // Utility function that template can use to check if nicklist should
     // be displayed for current buffer or not
-    // is called on buffer switch
+    // is called on buffer switch and certain swipe actions
     $scope.updateShowNicklist = function() {
-        var ab = models.getActiveBuffer();
-        if (!ab) {
-            return false;
-        }
-        // Check if option no nicklist is set
-        if (settings.nonicklist) {
-            return false;
-        }
-        // Check if nicklist is empty
-        if (ab.isNicklistEmpty()) {
-            return false;
-        }
-        return true;
+        $scope.showNicklist = (function() {
+            var ab = models.getActiveBuffer();
+            // Check whether buffer exists and nicklist is non-empty
+            if (!ab || ab.isNicklistEmpty()) {
+                return false;
+            }
+            // Check if nicklist is disabled in settings (ignored on mobile)
+            if (!utils.isMobileUi() && settings.nonicklist) {
+                return false;
+            }
+            // mobile: hide nicklist unless overriden by setting or swipe action
+            if (utils.isMobileUi() && !settings.alwaysnicklist && $scope.swipeStatus !== -1) {
+                return false;
+            }
+            return true;
+        })();
     };
 
 //XXX not sure whether this belongs here
