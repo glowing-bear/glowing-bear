@@ -84,8 +84,8 @@ td.message {
 }
 
 #jump-addon {
-    width: 0px;
-    max-width: 0px;
+    width: 0;
+    max-width: 0;
     padding: 0;
     overflow: hidden;
     transition: all ease-in-out 0.5s;
@@ -137,11 +137,11 @@ input[type=text], input[type=password], #sendMessage {
     width: 100%;
 }
 .row {
-    margin: 0px;
+    margin: 0;
     max-width: 300px;
 }
 .no-gutter [class*="col"] {
-    padding: 0px
+    padding: 0;
 }
 .col-sm-9 {
     padding-right: 5px !important;
@@ -832,7 +832,7 @@ img.emojione {
         text-align: center;
         position: fixed;
         margin-top: 10px;
-        bottom: 0px;
+        bottom: 0;
     }
 
     .navbar-fixed-bottom {
@@ -840,7 +840,7 @@ img.emojione {
     }
 
     .navbar {
-        min-height: 0%;
+        min-height: 0;
     }
 
     .nav-pills {
@@ -882,7 +882,7 @@ img.emojione {
 
     #bufferlines td.message {
         display: inline;
-        padding: 0px !important;
+        padding: 0 !important;
     }
 
     .gb-modal .modal-dialog {
@@ -891,8 +891,8 @@ img.emojione {
     }
 
     .footer {
-        padding-left: 0px !important;
-        padding-right: 0px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
         width: 100% !important;
     }
 
@@ -905,7 +905,7 @@ img.emojione {
         height: 5px;
     }
     .col-sm-9 {
-        padding-right: 0px !important;
+        padding-right: 0 !important;
     }
 }
 
