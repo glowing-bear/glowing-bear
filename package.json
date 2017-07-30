@@ -15,7 +15,7 @@
     "karma": "~0.13",
     "karma-jasmine": "^0.3.6",
     "karma-junit-reporter": "^0.2.2",
-    "karma-phantomjs-launcher": "^0.2.1",
+    "karma-phantomjs-launcher": "^1.0.0",
     "phantomjs-prebuilt": "^2.1.1",
     "protractor": "~0.20.1",
     "shelljs": "^0.2.6",
