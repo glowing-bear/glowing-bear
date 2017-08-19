@@ -55,10 +55,10 @@
     <div ng-hide="connected" class="container">
       <h2>
         <img alt="logo" src="assets/img/glowing-bear.svg">
-        <span>Glowing Bear</span>
+        <span>Glowing Bear<span style="display:inline" ng-show="show_tls_warning"> for local networks</span></span>
         <small>WeeChat web frontend</small>
       </h2>
-      <div class="alert alert-warning" ng-show="show_tls_warning" ng-cloak><strong>You're using Glowing Bear over an unencrypted connection (http://). This is not recommended!</strong> We recommend using our secure hosted version at <a href="https://www.glowing-bear.org/">https://www.glowing-bear.org/</a>, or <a href="https://latest.glowing-bear.org/">https://latest.glowing-bear.org</a> for the latest development version. If your relay is on your local network, that is unfortunately impossible, but be aware of the implications.</div>
+      <div class="alert alert-warning" ng-show="show_tls_warning" ng-cloak><strong>You're using Glowing Bear over an unencrypted connection (http://). This is dangerous for relays outside your local network!</strong> You can only connect to localhost and IP addresses on this instance. We recommend using our secure hosted version at <a href="https://www.glowing-bear.org/">https://www.glowing-bear.org/</a> to connect to a remote WeeChat instance.</div>
       <div class="alert alert-danger" ng-show="errorMessage" ng-cloak>
         <strong>Connection error</strong> The client was unable to connect to the WeeChat relay
       </div>
@@ -66,7 +66,7 @@
         <strong>Secure connection error</strong> A secure connection with the WeeChat relay could not be initiated. This is most likely because your browser does not trust your relay's certificate. Please read the encryption instructions below!
       </div>
       <div class="alert alert-danger" ng-show="securityError" ng-cloak>
-        <strong>Secure connection error</strong> Unable to connect to unencrypted relay when you are connecting to Glowing Bear over HTTPS. Please use an encrypted relay or load the page without using HTTPS.
+        <strong>Secure connection error</strong> Cannot connect to unencrypted relay over the internet. Please use an encrypted relay. Only local IP addresses are permitted on insecure connections.
       </div>
       <div class="panel-group accordion">
         <div class="panel" data-state="active" ng-show=false>
@@ -131,8 +131,13 @@
                   </div>
                   <div class="checkbox">
                     <label class="control-label" for="ssl">
-                      <input type="checkbox" id="ssl" ng-model="settings.ssl">
-                      Encryption. <strong>Strongly recommended!</strong> Need help? Check below.
+                      <input type="checkbox" id="ssl" ng-model="settings.ssl" disabled>
+                      <span ng-show="settings.ssl">
+                        Encryption. <strong>Required!</strong> Need help? Check below.
+                      </span>
+                      <span ng-show="!settings.ssl">
+                        <strong>Encryption disabled.</strong> Only limited hosts accessible.
+                      </span>
                     </label>
                   </div>
                 </div>
