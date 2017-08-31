@@ -146,6 +146,7 @@ describe('filter', function() {
         it('should recognize pastebins', inject(function(plugins) {
             expectTheseMessagesToContain([
                 'http://pastebin.com/Wn3TetSE',
+                'http://pastebin.com/raw/Wn3TetSE',
             ],
             'Pastebin',
             plugins);

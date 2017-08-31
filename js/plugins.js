@@ -473,10 +473,10 @@ plugins.factory('userPlugins', function() {
     });
 
     var pastebinPlugin = new UrlPlugin('Pastebin', function(url) {
-        var regexp = /^https?:\/\/pastebin\.com\/([^.?]+)/i;
+        var regexp = /^https?:\/\/pastebin\.com\/(raw\/)?([^.?]+)/i;
         var match = url.match(regexp);
         if (match) {
-            var id = match[1],
+            var id = match[2],
                 embedurl = "https://pastebin.com/embed_iframe/" + id,
                 element = angular.element('<iframe></iframe>')
                                  .attr('src', embedurl)
