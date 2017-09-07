@@ -20,7 +20,7 @@ You can run Glowing Bear in many ways:
  * Chrome app ("Tools", then "Create application shortcuts")
  * Android Chrome app, a full-screen experience ("Add to homescreen").
  * [Android app](https://play.google.com/store/apps/details?id=com.glowing_bear) that you can install from the Google Play Store
- * Electron app, for Windows, Linux and MacOSX. ```npm install; npm install electron-packager; npm run build-electron-{windows, darwin, linux}```
+ * Electron app for Windows, Linux and macOS. ```npm install; npm install electron-packager; npm run build-electron-{windows, darwin, linux}``` (choose your platform from the list, e.g. `build-electron-darwin` for macOS)
 
 <a href="https://play.google.com/store/apps/details?id=com.glowing_bear"><img alt="Android app on Google Play" src="/assets/img/badge_playstore.png" /></a>
 
