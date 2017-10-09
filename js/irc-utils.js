@@ -106,17 +106,20 @@ IrcUtils.service('IrcUtils', [function() {
      * @param iterCandidate Current iteration candidate (null if not iterating)
      * @param nickList Array of current nicks
      * @param suf Custom suffix (at least one character, escaped for regex)
+     * @param addSpace Whether to add a space after nick completion in the middle
      * @return Object with following properties:
      *      text: new complete replacement text
      *      caretPos: new caret position within new text
      *      foundNick: completed nick (or null if not possible)
      *      iterCandidate: current iterating candidate
      */
-    var completeNick = function(text, caretPos, iterCandidate, nickList, suf) {
+    var completeNick = function(text, caretPos, iterCandidate, nickList, suf, addSpace) {
         var doIterate = (iterCandidate !== null);
-        if (suf === null) {
+        if (suf === undefined) {
             suf = ':';
         }
+        // addSpace defaults to true
+        var addSpaceChar = (addSpace === undefined || addSpace === true) ? ' ' : '';
 
         // new nick list to search in
         var searchNickList = _ciNickList(nickList);
@@ -182,7 +185,7 @@ IrcUtils.service('IrcUtils', [function() {
             if (doIterate) {
                 // try iterating
                 newNick = _nextNick(iterCandidate, m[2], searchNickList);
-                beforeCaret = m[1] + newNick + ' ';
+                beforeCaret = m[1] + newNick + addSpaceChar;
                 return {
                     text: beforeCaret + afterCaret,
                     caretPos: beforeCaret.length,
@@ -204,7 +207,7 @@ IrcUtils.service('IrcUtils', [function() {
                 // no match
                 return ret;
             }
-            beforeCaret = m[1] + newNick + ' ';
+            beforeCaret = m[1] + newNick + addSpaceChar;
             if (afterCaret[0] === ' ') {
                 // swallow first space after caret if any
                 afterCaret = afterCaret.substring(1);

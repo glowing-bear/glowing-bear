@@ -212,7 +212,11 @@ weechat.factory('connection',
                                    function() {
                                        // Will set models.wconfig['weechat.look.buffer_time_format']
                                        _parseWeechatTimeFormat();
-                   });
+                    });
+
+                    // Fetch nick completion config
+                    fetchConfValue('weechat.completion.nick_completer');
+                    fetchConfValue('weechat.completion.nick_add_space');
 
                     _requestSync();
                     $log.info("Connected to relay");
