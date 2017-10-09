@@ -271,9 +271,9 @@ input[type=text], input[type=password], #sendMessage {
     overflow-x: hidden;
     right: 0;
     top: 0;
-    padding-top: 39px;
+    margin-top: 39px;
     padding-left: 5px;
-    padding-bottom: 35px;
+    padding-bottom: 44px;
     z-index: 2;
 }
 #nicklist ul {
