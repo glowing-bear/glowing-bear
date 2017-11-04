@@ -3,12 +3,57 @@
 
 var ls = angular.module('localStorage',[]);
 
+function StoragePolyfil() {
+    this.storage = Object.create(null);
+    this.keyIndex = [];
+    Object.defineProperty(this, "length", {
+        enumerable: true,
+        get: function() {
+            return this.keyIndex.length;
+        }
+    });
+};
+StoragePolyfil.prototype.key = function(idx) {
+    return this.keyIndex[idx];
+};
+StoragePolyfil.prototype.getItem = function(key) {
+    return (key in this.storage) ? this.storage[key] : null;
+};
+StoragePolyfil.prototype.setItem = function(key, value) {
+    if (!(key in this.storage)) {
+        this.keyIndex.push(key);
+    }
+    this.storage[key] = value;
+};
+StoragePolyfil.prototype.clear = function() {
+    this.storage = Object.create(null);
+    this.keyIndex = [];
+};
+StoragePolyfil.prototype.removeItem = function(key) {
+    if (!(key in storage)) {
+        return;
+    }
+    var at = this.keyIndex.indexOf(key);
+    this.keyIndex.splice(at, 1);
+    delete this.storage[key];
+};
+
+
 ls.factory("$store", ["$parse", function($parse){
     /**
      * Global Vars
      */
     var storage = (typeof window.localStorage === 'undefined') ? undefined : window.localStorage,
         supported = !(typeof storage == 'undefined' || typeof window.JSON == 'undefined');
+
+    try {
+        var storageTestKey = "eaf23ffe-6a8f-40a7-892b-4baf22d3ec75";
+        storage.setItem(storageTestKey, 1);
+        storage.removeItem(storageTestKey);
+    } catch (e) {
+        console.log('Warning: MobileSafari private mode detected. Switching to in-memory storage.');
+        storage = new StoragePolyfil();
+    }
 
     if (!supported) {
         console.log('Warning: localStorage is not supported');
