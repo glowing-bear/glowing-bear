@@ -180,8 +180,10 @@ weechat.filter('emojify', function() {
             // Emoji live in the D800-DFFF surrogate plane; only bother passing
             // this range to CPU-expensive unicodeToImage();
             var emojiRegex = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
-            if (emojiRegex.test(text)) {
-                return emojione.unicodeToImage(text);
+            // regex to look for typical shortname syntax in tools like Slack
+            var shortnameRegex = /\:[\+-_a-zA-Z0-9]+\:/g;
+            if (emojiRegex.test(text) || shortnameRegex.test(text)) {
+                return emojione.toImage(text);
             } else {
                 return(text);
             }
