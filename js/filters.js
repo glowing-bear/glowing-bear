@@ -181,7 +181,7 @@ weechat.filter('emojify', function() {
             // this range to CPU-expensive unicodeToImage();
             var emojiRegex = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
             // regex to look for typical shortname syntax in tools like Slack
-            var shortnameRegex = /\:[\+-_a-zA-Z0-9]+\:/g;
+            var shortnameRegex = /\:[\+\-_a-zA-Z0-9]+\:/g;
             if (emojiRegex.test(text) || shortnameRegex.test(text)) {
                 return emojione.toImage(text);
             } else {
