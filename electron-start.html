@@ -2,15 +2,34 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <style type="text/css">
+        .electron-in-page-search-window {
+            position: fixed;
+            top: 0;
+            right: 0;
+            border: solid grey 1px;
+            background-color: white;
+            width: 300px;
+            height: 36px;
+        }
+        .search-inactive { visibility: hidden; }
+        .search-active { visibility: visible; }
+    </style>
     <script>
 onload = function() {
     const ipc= require('electron').ipcRenderer;
     const remote = require('electron').remote;
     const nativeImage = require('electron').nativeImage;
     const shell = require('electron').shell;
-
+    const searchInPage = require('electron-in-page-search').default;
+    
     var webview = document.getElementById("glowingbear");
 
+    let search;
+    
+    var handledomready = function(e) {
+        search = searchInPage(webview);
+    }
     var handleconsole = function(e) {
         console.log("webview: " + e.message);
     }
@@ -23,6 +42,11 @@ onload = function() {
     webview.addEventListener("console-message", handleconsole);
     webview.addEventListener("new-window", handlenewwindow);
     webview.addEventListener("page-title-set", handletitleset);
+    webview.addEventListener('dom-ready', handledomready);
+
+    ipc.on('openSearchInPage', function() {
+        setTimeout(function() { search.openSearchWindow(); }, 0 );
+    });
 
     ipc.on('openDevTools', function() {
         setTimeout(function() { webview.openDevTools(); }, 0 );
