@@ -66,6 +66,29 @@ Remember that **you don't need to host Glowing Bear yourself to use it**, you ca
 
 You can also use the latest and greatest development version of Glowing Bear at [https://latest.glowing-bear.org/](https://latest.glowing-bear.org/).  Branches of this repository are available as [https://latest.glowing-bear.org/**branchname**/](https://latest.glowing-bear.org/branchname/), and pull requests as [https://latest.glowing-bear.org/pull/**123**/](https://latest.glowing-bear.org/pull/123/)—note the trailing slashes.
 
+Note: You can also serve glowing-bear from your favorite web server without the need to proxy
+
+### Nginx Example
+```nginx
+server {
+	listen 80;
+	listen [::]:80;
+
+	server_name <glowing-bear domain>;
+	server_tokens off;
+
+	access_log off;
+	error_log /var/log/nginx/error.log;
+
+	root <glowing-bear location>;
+	index index.html;
+
+	location / {
+		try_files $uri $uri/ /index.html;
+	}
+}
+```
+
 ### Running the tests
 Glowing Bear uses Karma and Jasmine to run its unit tests. To run the tests locally, you will first need to install `npm` on your machine. Check out the wonderful [nvm](https://github.com/creationix/nvm) if you don't know it already, it's highly recommended.
 
