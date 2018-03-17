@@ -384,7 +384,7 @@ td.time {
 }
 
 .footer {
-    position: fixed;
+    position: sticky;
     bottom: 0;
     height: 35px;
     width: 100%;
