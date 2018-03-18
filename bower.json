@@ -12,9 +12,11 @@
     "angular-touch": "1.6.x",
     "angular-loader": "1.6.x",
     "angular-mocks": "1.6.x",
-    "html5-boilerplate": "~4.3.0",
-    "underscore": "~1.8",
+    "underscore": "~1.8"
+  },
+  "devDependencies": {
     "bootstrap": "~3.3",
+    "html5-boilerplate": "~4.3.0",
     "emojione": "~2.2"
   },
   "keywords": [

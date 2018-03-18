@@ -12,7 +12,7 @@ function StoragePolyfil() {
             return this.keyIndex.length;
         }
     });
-};
+}
 StoragePolyfil.prototype.key = function(idx) {
     return this.keyIndex[idx];
 };
