@@ -359,6 +359,11 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
         var highlight = message.highlight;
         var content = parseRichText(message.message);
 
+        // only put invisible angle brackets around nicks in normal messages
+        // (for copying/pasting)
+        var showHiddenBrackets = (tags_array.indexOf('irc_privmsg') >= 0 &&
+                                  tags_array.indexOf('irc_action') === -1);
+
         if (highlight) {
             prefix.forEach(function(textEl) {
                 textEl.classes.push('highlight');
@@ -386,8 +391,8 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             highlight: highlight,
             displayed: displayed,
             prefixtext: prefixtext,
-            text: rtext
-
+            text: rtext,
+            showHiddenBrackets: showHiddenBrackets
         };
 
     };
