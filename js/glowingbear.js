@@ -356,7 +356,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         } else if ($scope.swipeStatus === 0) {
             // show nicklist
             $scope.swipeStatus = -1;
-            $scope.updateShowNicklist();
+            if (!$scope.updateShowNicklist()) {
+                $scope.swipeStatus = 0;
+            }
         } else if ($scope.swipeStatus === -1) {
             /* do nothing */
         } else {
@@ -761,26 +763,30 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $scope.updateShowNicklist();
     });
     $scope.showNicklist = false;
-    // Utility function that template can use to check if nicklist should
-    // be displayed for current buffer or not
-    // is called on buffer switch and certain swipe actions
+    // Utility function that template can use to check if nicklist should be
+    // displayed for current buffer or not is called on buffer switch and
+    // certain swipe actions.  Sets $scope.showNicklist accordingly and returns
+    // whether the buffer even has a nicklist to show.
     $scope.updateShowNicklist = function() {
-        $scope.showNicklist = (function() {
+        // returns array of booleans: [show nicklist, buffer has nicklist]
+        var result = (function() {
             var ab = models.getActiveBuffer();
             // Check whether buffer exists and nicklist is non-empty
             if (!ab || ab.isNicklistEmpty()) {
-                return false;
+                return [false, false];
             }
             // Check if nicklist is disabled in settings (ignored on mobile)
             if (!utils.isMobileUi() && settings.nonicklist) {
-                return false;
+                return [false, true];
             }
             // mobile: hide nicklist unless overriden by setting or swipe action
             if (utils.isMobileUi() && !settings.alwaysnicklist && $scope.swipeStatus !== -1) {
-                return false;
+                return [false, true];
             }
-            return true;
+            return [true, true];
         })();
+        $scope.showNicklist = result[0];
+        return result[1];
     };
 
 //XXX not sure whether this belongs here
