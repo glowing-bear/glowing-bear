@@ -1,6 +1,7 @@
 language: node_js
 node_js:
-  - "0.10"
+  - "8"
+dist: trusty
 install: "npm install"
 script: "sh -e run_tests.sh"
 notifications:
