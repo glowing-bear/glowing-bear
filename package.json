@@ -21,7 +21,7 @@
     "uglify-js": "^3"
   },
   "scripts": {
-    "postinstall": "bower install",
+    "postinstall": "bower install -p",
     "minify": " uglifyjs js/localstorage.js js/weechat.js js/irc-utils.js js/glowingbear.js js/settings.js js/utils.js js/notifications.js js/filters.js js/handlers.js js/connection.js js/file-change.js js/imgur-drop-directive.js js/whenscrolled-directive.js js/inputbar.js js/plugin-directive.js js/websockets.js js/models.js js/bufferResume.js js/plugins.js js/imgur.js -c -m --screw-ie8 -o min.js --source-map min.map",
     "prestart": "npm install",
     "start": "http-server -a localhost -p 8000",
@@ -32,6 +32,7 @@
     "update-webdriver": "webdriver-manager update",
     "preprotractor": "npm run update-webdriver",
     "protractor": "protractor test/protractor-conf.js",
+    "premake-local": "bower install --dev",
     "make-local": "make -f electron.makefile uselocal",
     "build-electron-windows": "make -f electron.makefile build-electron-windows",
     "build-electron-darwin": "make -f electron.makefile build-electron-darwin",
