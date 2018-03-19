@@ -768,25 +768,24 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // certain swipe actions.  Sets $scope.showNicklist accordingly and returns
     // whether the buffer even has a nicklist to show.
     $scope.updateShowNicklist = function() {
-        // returns array of booleans: [show nicklist, buffer has nicklist]
-        var result = (function() {
-            var ab = models.getActiveBuffer();
-            // Check whether buffer exists and nicklist is non-empty
-            if (!ab || ab.isNicklistEmpty()) {
-                return [false, false];
-            }
-            // Check if nicklist is disabled in settings (ignored on mobile)
-            if (!utils.isMobileUi() && settings.nonicklist) {
-                return [false, true];
-            }
-            // mobile: hide nicklist unless overriden by setting or swipe action
-            if (utils.isMobileUi() && !settings.alwaysnicklist && $scope.swipeStatus !== -1) {
-                return [false, true];
-            }
-            return [true, true];
-        })();
-        $scope.showNicklist = result[0];
-        return result[1];
+        var ab = models.getActiveBuffer();
+        // Check whether buffer exists and nicklist is non-empty
+        if (!ab || ab.isNicklistEmpty()) {
+            $scope.showNicklist = false;
+            return false;
+        }
+        // Check if nicklist is disabled in settings (ignored on mobile)
+        if (!utils.isMobileUi() && settings.nonicklist) {
+            $scope.showNicklist = false;
+            return true;
+        }
+        // mobile: hide nicklist unless overriden by setting or swipe action
+        if (utils.isMobileUi() && !settings.alwaysnicklist && $scope.swipeStatus !== -1) {
+            $scope.showNicklist = false;
+            return true;
+        }
+        $scope.showNicklist = true;
+        return true;
     };
 
 //XXX not sure whether this belongs here
