@@ -293,7 +293,7 @@
                 label: "Quit", click: mainWindow.quit
             }
         ]);
-        trayIcon.setToolTip("Electron.js App");
+        trayIcon.setToolTip("Glowing Bear");
         trayIcon.setContextMenu(contextMenu);
 
 
