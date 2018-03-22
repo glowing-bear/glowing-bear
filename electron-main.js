@@ -1,215 +1,232 @@
-(function() {
-    'use strict';
-    const electron = require('electron');
+(function () {
+    "use strict";
+    const electron = require("electron");
     const app = electron.app;  // Module to control application life.
+    const Tray = electron.Tray;
     const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
 
-    const ipcMain = require('electron').ipcMain;
-    const nativeImage = require('electron').nativeImage;
-    const Menu = require('electron').Menu;
+    const ipcMain = require("electron").ipcMain;
+    const nativeImage = require("electron").nativeImage;
+    const Menu = require("electron").Menu;
     // Node fs module
     const fs = require("fs");
     var template;
 
     template = [
-    {
-        label: 'Edit',
-        submenu: [
         {
-            label: 'Undo',
-            accelerator: 'CmdOrCtrl+Z',
-            role: 'undo'
-        },
-        {
-            label: 'Redo',
-            accelerator: 'Shift+CmdOrCtrl+Z',
-            role: 'redo'
-        },
-        {
-            type: 'separator'
-        },
-        {
-            label: 'Cut',
-            accelerator: 'CmdOrCtrl+X',
-            role: 'cut'
-        },
-        {
-            label: 'Copy',
-            accelerator: 'CmdOrCtrl+C',
-            role: 'copy'
-        },
-        {
-            label: 'Paste',
-            accelerator: 'CmdOrCtrl+V',
-            role: 'paste'
-        },
-        {
-            label: 'Select All',
-            accelerator: 'CmdOrCtrl+A',
-            role: 'selectall'
-        },
-        ]
-    },
-    {
-        label: 'View',
-        submenu: [
-        {
-            label: 'Reload',
-            accelerator: 'CmdOrCtrl+R',
-            click: function(item, focusedWindow) {
-                if (focusedWindow)
-                    focusedWindow.reload();
-            }
-        },
-        {
-            label: 'Toggle Full Screen',
-            accelerator: (function() {
-                if (process.platform == 'darwin')
-                    return 'Ctrl+Command+F';
-                else
-                    return 'F11';
-            })(),
-            click: function(item, focusedWindow) {
-                if (focusedWindow)
-                    focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
-            }
-        },
-        {
-            label: 'Electron Developer Tools',
-            accelerator: (function() {
-                if (process.platform == 'darwin')
-                    return 'Alt+Command+E';
-                else
-                    return 'Ctrl+Shift+E';
-            })(),
-            click: function(item, focusedWindow) {
-                if (focusedWindow)
-                    focusedWindow.toggleDevTools();
-            }
-        },
-        {
-            label: 'Web Developer Tools',
-            accelerator: (function() {
-                if (process.platform == 'darwin')
-                    return 'Alt+Command+I';
-                else
-                    return 'Ctrl+Shift+I';
-            })(),
-            click: function(item, focusedWindow) {
-                if ( focusedWindow ) {
-                    focusedWindow.webContents.send( 'openDevTools' );
+            label: "Edit",
+            submenu: [
+                {
+                    label: "Undo",
+                    accelerator: "CmdOrCtrl+Z",
+                    role: "undo"
+                },
+                {
+                    label: "Redo",
+                    accelerator: "Shift+CmdOrCtrl+Z",
+                    role: "redo"
+                },
+                {
+                    type: "separator"
+                },
+                {
+                    label: "Cut",
+                    accelerator: "CmdOrCtrl+X",
+                    role: "cut"
+                },
+                {
+                    label: "Copy",
+                    accelerator: "CmdOrCtrl+C",
+                    role: "copy"
+                },
+                {
+                    label: "Paste",
+                    accelerator: "CmdOrCtrl+V",
+                    role: "paste"
+                },
+                {
+                    label: "Select All",
+                    accelerator: "CmdOrCtrl+A",
+                    role: "selectall"
                 }
-            }
+            ]
+        },
+        {
+            label: "View",
+            submenu: [
+                {
+                    label: "Reload",
+                    accelerator: "CmdOrCtrl+R",
+                    click: function (item, focusedWindow) {
+                        if (focusedWindow)
+                            focusedWindow.reload();
+                    }
+                },
+                {
+                    label: "Toggle Full Screen",
+                    accelerator: (function () {
+                        if (process.platform == "darwin")
+                            return "Ctrl+Command+F";
+                        else
+                            return "F11";
+                    })(),
+                    click: function (item, focusedWindow) {
+                        if (focusedWindow)
+                            focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
+                    }
+                },
+                {
+                    label: "Electron Developer Tools",
+                    accelerator: (function () {
+                        if (process.platform == "darwin")
+                            return "Alt+Command+E";
+                        else
+                            return "Ctrl+Shift+E";
+                    })(),
+                    click: function (item, focusedWindow) {
+                        if (focusedWindow)
+                            focusedWindow.toggleDevTools();
+                    }
+                },
+                {
+                    label: "Web Developer Tools",
+                    accelerator: (function () {
+                        if (process.platform == "darwin")
+                            return "Alt+Command+I";
+                        else
+                            return "Ctrl+Shift+I";
+                    })(),
+                    click: function (item, focusedWindow) {
+                        if (focusedWindow) {
+                            focusedWindow.webContents.send("openDevTools");
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            label: "Window",
+            role: "window",
+            submenu: [
+                {
+                    label: "Minimize",
+                    accelerator: "CmdOrCtrl+M",
+                    role: "minimize"
+                },
+                {
+                    label: "Close",
+                    accelerator: "CmdOrCtrl+Q",
+                    role: "close"
+                }
+            ]
+        },
+        {
+            label: "Help",
+            role: "help",
+            submenu: [
+                {
+                    label: "Learn More",
+                    click: function () {
+                        require("electron").shell.openExternal("https://github.com/glowing-bear/glowing-bear");
+                    }
+                }
+            ]
         }
-        ]
-    },
-    {
-        label: 'Window',
-        role: 'window',
-        submenu: [
-        {
-            label: 'Minimize',
-            accelerator: 'CmdOrCtrl+M',
-            role: 'minimize'
-        },
-        {
-            label: 'Close',
-            accelerator: 'CmdOrCtrl+Q',
-            role: 'close'
-        },
-        ]
-    },
-    {
-        label: 'Help',
-        role: 'help',
-        submenu: [
-        {
-            label: 'Learn More',
-            click: function() { require('electron').shell.openExternal('https://github.com/glowing-bear/glowing-bear'); }
-        },
-        ]
-    },
     ];
 
-    if (process.platform == 'darwin') {
+    if (process.platform == "darwin") {
         var name = app.getName();
         template.unshift({
             label: name,
             submenu: [
-            {
-                label: 'About ' + name,
-                role: 'about'
-            },
-            {
-                type: 'separator'
-            },
-            {
-                label: 'Services',
-                role: 'services',
-                submenu: []
-            },
-            {
-                type: 'separator'
-            },
-            {
-                label: 'Hide ' + name,
-                accelerator: 'Command+H',
-                role: 'hide'
-            },
-            {
-                label: 'Hide Others',
-                accelerator: 'Command+Alt+H',
-                role: 'hideothers'
-            },
-            {
-                label: 'Show All',
-                role: 'unhide'
-            },
-            {
-                type: 'separator'
-            },
-            {
-                label: 'Quit',
-                accelerator: 'Command+Q',
-                click: function() { app.quit(); }
-            },
+                {
+                    label: "About " + name,
+                    role: "about"
+                },
+                {
+                    type: "separator"
+                },
+                {
+                    label: "Services",
+                    role: "services",
+                    submenu: []
+                },
+                {
+                    type: "separator"
+                },
+                {
+                    label: "Hide " + name,
+                    accelerator: "Command+H",
+                    role: "hide"
+                },
+                {
+                    label: "Hide Others",
+                    accelerator: "Command+Alt+H",
+                    role: "hideothers"
+                },
+                {
+                    label: "Show All",
+                    role: "unhide"
+                },
+                {
+                    type: "separator"
+                },
+                {
+                    label: "Quit",
+                    accelerator: "Command+Q",
+                    click: function () {
+                        app.quit();
+                    }
+                }
             ]
         });
         // Window menu.
         template[3].submenu.push(
-                {
-                    type: 'separator'
-                },
-                {
-                    label: 'Bring All to Front',
-                    role: 'front'
-                }
-                );
+            {
+                type: "separator"
+            },
+            {
+                label: "Bring All to Front",
+                role: "front"
+            }
+        );
     }
 
     // Keep a global reference of the window object, if you don't, the window will
     // be closed automatically when the JavaScript object is garbage collected.
     var mainWindow = null;
 
-    app.on('browser-window-focus', function(e, w) {
-        w.webContents.send('browser-window-focus');
+    app.on("browser-window-focus", function (e, w) {
+        w.webContents.send("browser-window-focus");
     });
 
-    app.on('ready', function() {
+    app.on("ready", function () {
         var menu = Menu.buildFromTemplate(template);
         Menu.setApplicationMenu(menu);
-        const initPath  = __dirname + "/init.json";
+        const initPath = __dirname + "/init.json";
         var data;
+
 
         // read saved state from file (e.g. window bounds)
         try {
-            data = JSON.parse(fs.readFileSync(initPath, 'utf8'));
+            data = JSON.parse(fs.readFileSync(initPath, "utf8"));
         }
-        catch(e) {
-            console.log('Unable to read init.json: ', e);
+        catch (e) {
+            console.log("Unable to read init.json: ", e);
         }
-        const bounds = (data && data.bounds) ? data.bounds : {width: 1280, height:800 };
-        var bwdata = {width: bounds.width, height: bounds.height, 'min-width': 1024, 'min-height': 600, 'autoHideMenuBar': true, 'web-security': true, 'java': false, 'accept-first-mouse': true, defaultEncoding: 'UTF-8', 'icon':'file://'+__dirname + '/assets/img/favicon.png'};
+        const bounds = (data && data.bounds) ? data.bounds : {width: 1280, height: 800};
+        var bwdata = {
+            width: bounds.width,
+            height: bounds.height,
+            "min-width": 1024,
+            "min-height": 600,
+            "autoHideMenuBar": true,
+            "web-security": true,
+            "java": false,
+            "accept-first-mouse": true,
+            defaultEncoding: "UTF-8",
+            "icon": "file://" + __dirname + "/assets/img/favicon.png"
+        };
         // Remembe window position
         if (data && data.bounds.x && data.bounds.y) {
             bwdata.x = data.bounds.x;
@@ -217,11 +234,32 @@
         }
 
         mainWindow = new BrowserWindow(bwdata);
-        mainWindow.loadURL('file://' + __dirname + '/electron-start.html');
+        mainWindow.loadURL("file://" + __dirname + "/electron-start.html");
         mainWindow.focus();
 
+        mainWindow.shown = true;
+
+        mainWindow.toggle = function () {
+            if (mainWindow.shown) {
+                mainWindow.hide();
+            }
+            else {
+                mainWindow.show();
+            }
+            mainWindow.shown = !mainWindow.shown;
+        };
+
+        mainWindow.quit = function(){
+            app.isQuiting = true;
+            let data = {
+                bounds: mainWindow.getBounds()
+            };
+            fs.writeFileSync(initPath, JSON.stringify(data));
+            app.quit();
+        };
+
         // Listen for badge changes
-        ipcMain.on('badge', function(event, arg) {
+        ipcMain.on("badge", function (event, arg) {
             if (process.platform === "darwin") {
                 app.dock.setBadge(String(arg));
             }
@@ -232,27 +270,48 @@
                     return;
                 }
                 if (n > 0) {
-                    mainWindow.setOverlayIcon(__dirname + '/assets/img/favicon.ico', String(arg));
+                    mainWindow.setOverlayIcon(__dirname + "/assets/img/favicon.ico", String(arg));
                 } else {
-                    mainWindow.setOverlayIcon(null, '');
+                    mainWindow.setOverlayIcon(null, "");
                 }
             }
         });
 
-        mainWindow.on('devtools-opened', function() {
+        mainWindow.on("devtools-opened", function () {
             mainWindow.webContents.executeJavaScript("document.getElementById('glowingbear').openDevTools();");
         });
 
-        mainWindow.on('close', function() {
-            // Save window bounds to disk
-            let data = {
-                bounds: mainWindow.getBounds()
-            };
-            fs.writeFileSync(initPath, JSON.stringify(data));
+
+        let trayIcon = new Tray(`${__dirname}/assets/img/favicon.png`);
+        let contextMenu = Menu.buildFromTemplate([
+            {
+                label: "Show App", click: function () {
+                    mainWindow.toggle();
+                }
+            },
+            {
+                label: "Quit", click: mainWindow.quit
+            }
+        ]);
+        trayIcon.setToolTip("Electron.js App");
+        trayIcon.setContextMenu(contextMenu);
+
+
+        mainWindow.on("minimize", function (event) {
+            event.preventDefault();
+            mainWindow.toggle();
         });
 
-        mainWindow.on('closed', function() {
-            app.quit();
+        mainWindow.on("close", function (event) {
+            if (!app.isQuiting) {
+                event.preventDefault();
+                mainWindow.toggle();
+            }
+
+            return false;
+        });
+        trayIcon.on("double-click", function (event) {
+            mainWindow.toggle();
         });
     });
 })();
