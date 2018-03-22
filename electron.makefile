@@ -18,7 +18,7 @@ uselocal: copylocal
 
 # build the electron app for various platforms
 build-electron-windows: uselocal
-	electron-packager ${ELECTRON_COMMON} --platform=win32 --arch=ia32 --electron-version=1.8.4 --asar=true
+	electron-packager ${ELECTRON_COMMON} --platform=win32 --arch=ia32 --electron-version=1.8.4
 
 build-electron-darwin: uselocal
 	electron-packager ${ELECTRON_COMMON} --platform=darwin --arch=x64 --electron-version=1.8.4 --icon=assets/img/glowing-bear.icns
