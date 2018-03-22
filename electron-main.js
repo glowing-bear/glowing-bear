@@ -245,7 +245,7 @@
 
         mainWindow.on('close', function() {
             // Save window bounds to disk
-            var data = {
+            let data = {
                 bounds: mainWindow.getBounds()
             };
             fs.writeFileSync(initPath, JSON.stringify(data));
