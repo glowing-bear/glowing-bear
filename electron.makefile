@@ -13,7 +13,7 @@ copylocal:
 
 # modify index.html to use local files
 uselocal: copylocal
-	sed -i.bak 's,https://cdnjs.cloudflare.com/ajax/libs/[^\"]*/,3rdparty/,g' index.html
+	sed -i.bak 's, https://cdnjs.cloudflare.com/ajax/libs/[^\"]*/,3rdparty/,g' index.html
 	sed -i.bak 's, integrity=\".*\" crossorigin=\"anonymous\",,' index.html
 
 # build the electron app for various platforms
