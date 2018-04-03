@@ -796,7 +796,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Try to find buffer with notification
         for (i in sortedBuffers) {
             buffer = sortedBuffers[i];
-            if (buffer.notification > 0) {
+            if (buffer.notification > 0 && !buffer.hidden) {
                 $scope.setActiveBuffer(buffer.id);
                 return;  // return instead of break so that the second for loop isn't executed
             }
@@ -804,7 +804,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // No notifications, find first buffer with unread lines instead
         for (i in sortedBuffers) {
             buffer = sortedBuffers[i];
-            if (buffer.unread > 0) {
+            if (buffer.unread > 0 && !buffer.hidden) {
                 $scope.setActiveBuffer(buffer.id);
                 return;
             }
