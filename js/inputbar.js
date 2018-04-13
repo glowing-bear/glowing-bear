@@ -592,6 +592,24 @@ weechat.directive('inputBar', function() {
 
                 return true;
             };
+            $scope.inputPasted = function(e) {
+                if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length) {
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    var sendImageUrl = function(imageUrl) {
+                        if(imageUrl !== undefined && imageUrl !== '') {
+                            $rootScope.insertAtCaret(String(imageUrl));
+                        }
+                    };
+
+                    for (var i = 0; i < e.clipboardData.files.length; i++) {
+                        imgur.process(e.clipboardData.files[i], sendImageUrl);
+                    }
+                    return false;
+                }
+                return true;
+            };
         }]
     };
 });
