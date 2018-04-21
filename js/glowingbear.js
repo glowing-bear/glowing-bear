@@ -725,7 +725,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             if (buffer.pinned) {
                 return true;
             }
-            return (buffer.unread > 0 || buffer.notification > 0) && !buffer.hidden;
+            return (buffer.unread > 0 && !buffer.hidden) || buffer.notification > 0;
         }
         return !buffer.hidden;
     };
@@ -796,7 +796,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Try to find buffer with notification
         for (i in sortedBuffers) {
             buffer = sortedBuffers[i];
-            if (buffer.notification > 0 && !buffer.hidden) {
+            if (buffer.notification > 0) {
                 $scope.setActiveBuffer(buffer.id);
                 return;  // return instead of break so that the second for loop isn't executed
             }
