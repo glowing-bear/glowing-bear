@@ -912,7 +912,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $scope.init = function() {
         if (window.location.hash) {
-            var rawStr = atob(window.location.hash.substring(1));
+            var rawStr = atob(window.location.hash.substring(3));
             window.location.hash = "";
             var spl = rawStr.split(":");
             var host = spl[0];
