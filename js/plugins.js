@@ -345,7 +345,7 @@ plugins.factory('userPlugins', function() {
             }
             return function() {
                 var element = this.getElement(), src;
-                var velement = angular.element('<video autoplay loop muted></video>')
+                var velement = angular.element('<video autoplay controls loop muted></video>')
                                      .addClass('embed')
                                      .attr('width', '560');
                 // imgur doesn't always have webm for gifv so add sources for webm and mp4
