@@ -851,6 +851,11 @@ img.emojione {
         font-size: 14px;
     }
 
+    .nav-pills li.buffer {
+        min-height: 30px;
+        max-height: 30px;
+    }
+
     .nav-pills li a {
         padding: 10px 15px;
     }
