@@ -134,6 +134,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 var buffer = models.getActiveBuffer();
                 // This can also be triggered before connecting to the relay, check for null (not undefined!)
                 if (buffer !== null) {
+                    var server = models.getServerForBuffer(buffer);
+                    server.unread -= (buffer.unread + buffer.notification);
                     buffer.unread = 0;
                     buffer.notification = 0;
 
@@ -716,9 +718,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 return true;
             }
             // Always show core buffer in the list (issue #438)
-            // Also show server buffers in hierarchical view
-            if (buffer.fullName === "core.weechat" || (settings.orderbyserver && buffer.type === 'server')) {
+            if (buffer.fullName === "core.weechat") {
                 return true;
+            }
+
+            // In hierarchical view, show server iff it has a buffer with unread messages
+            if (settings.orderbyserver && buffer.type === 'server') {
+                return models.getServerForBuffer(buffer).unread > 0;
             }
 
             // Always show pinned buffers
