@@ -19,15 +19,15 @@ weechat.factory('connection',
     var locked = false;
 
     // Takes care of the connection and websocket hooks
-    var connect = function (host, port, passwd, ssl, noCompression, successCallback, failCallback) {
+    var connect = function (host, port, path, passwd, ssl, noCompression, successCallback, failCallback) {
         $rootScope.passwordError = false;
-        connectionData = [host, port, passwd, ssl, noCompression];
+        connectionData = [host, port, path, passwd, ssl, noCompression];
         var proto = ssl ? 'wss' : 'ws';
         // If host is an IPv6 literal wrap it in brackets
         if (host.indexOf(":") !== -1 && host[0] !== "[" && host[host.length-1] !== "]") {
             host = "[" + host + "]";
         }
-        var url = proto + "://" + host + ":" + port + "/weechat";
+        var url = proto + "://" + host + ":" + port + "/" + path;
         $log.debug('Connecting to URL: ', url);
 
         var onopen = function () {

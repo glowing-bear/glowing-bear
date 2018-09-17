@@ -43,6 +43,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'theme': 'dark',
         'host': 'localhost',
         'port': 9001,
+        'path': 'weechat',
         'ssl': (window.location.protocol === "https:"),
         'savepassword': false,
         'autoconnect': false,
@@ -660,7 +661,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $rootScope.bufferBottom = true;
         $scope.connectbutton = 'Connecting';
         $scope.connectbuttonicon = 'glyphicon-refresh glyphicon-spin';
-        connection.connect(settings.host, settings.port, $scope.password, settings.ssl);
+        connection.connect(settings.host, settings.port, settings.path, $scope.password, settings.ssl);
     };
     $scope.disconnect = function() {
         $scope.connectbutton = 'Connect';
@@ -917,6 +918,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             var spl = rawStr.split(":");
             var host = spl[0];
             var port = parseInt(spl[1]);
+            var path = 'weechat';
             var password = spl[2];
             var ssl = spl.length > 3;
             notifications.requestNotificationPermission();
@@ -926,7 +928,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             $rootScope.bufferBottom = true;
             $scope.connectbutton = 'Connecting';
             $scope.connectbuttonicon = 'glyphicon-chevron-right';
-            connection.connect(host, port, password, ssl);
+            connection.connect(host, port, path, password, ssl);
         }
     };
 
