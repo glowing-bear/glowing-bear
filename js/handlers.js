@@ -296,7 +296,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         });
 
         old.number = new_number;
-    }
+    };
 
     var handleBufferHidden = function(message) {
         var obj = message.objects[0].content[0];
