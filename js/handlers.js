@@ -277,6 +277,27 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         }
     };
 
+    var handleBufferMoved = function(message) {
+        var obj = message.objects[0].content[0];
+        var buffer = obj.pointers[0];
+        var old = models.getBuffer(buffer);
+
+        var old_number = old.number;
+        var new_number = obj.number;
+
+        _.each(models.getBuffers(), function(buffer) {
+            if (buffer.number > old_number && buffer.number <= new_number) {
+                buffer.number -= 1;
+            }
+
+            if (buffer.number < old_number && buffer.number >= new_number) {
+                buffer.number += 1;
+            }
+        });
+
+        old.number = new_number;
+    }
+
     var handleBufferHidden = function(message) {
         var obj = message.objects[0].content[0];
         var buffer = obj.pointers[0];
@@ -438,6 +459,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         _buffer_localvar_added: handleBufferLocalvarChanged,
         _buffer_localvar_removed: handleBufferLocalvarChanged,
         _buffer_localvar_changed: handleBufferLocalvarChanged,
+        _buffer_moved: handleBufferMoved,
         _buffer_opened: handleBufferOpened,
         _buffer_title_changed: handleBufferTitleChanged,
         _buffer_type_changed: handleBufferTypeChanged,
