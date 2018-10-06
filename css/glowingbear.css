@@ -223,7 +223,9 @@ input[type=text], input[type=password], #sendMessage {
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 35px; /* topbar */
+    padding-right: env(safe-area-inset-right);
     padding-bottom: 1px; /* need to force a padding here */
+    padding-left: env(safe-area-inset-left);
     font-size: smaller;
     transition:0.2s ease-in-out;
     z-index: 2;
@@ -333,6 +335,7 @@ input[type=text], input[type=password], #sendMessage {
 .content {
     height: 100%;
     min-height: 100%;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 #bufferlines {
@@ -388,6 +391,7 @@ td.time {
     bottom: 0;
     height: 35px;
     width: 100%;
+    margin-bottom: env(safe-area-inset-bottom); /* margin for home-indicator on iPhone X */
     -webkit-transition:0.2s ease-in-out all;
     transition:0.2s ease-in-out all;
     z-index: 1;
