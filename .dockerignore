@@ -1,0 +1,7 @@
+.*
+*.sh
+*.md
+test
+electron-*
+COPYING
+package.json
