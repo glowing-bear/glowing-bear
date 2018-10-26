@@ -8,17 +8,17 @@
   "license": "GPLv3",
   "devDependencies": {
     "bower": "^1.8",
-    "electron-packager": "^11",
+    "electron-packager": "^12.2.0",
     "http-server": "^0.11",
     "jasmine-core": "^3.1",
-    "jshint": "^2.9",
-    "karma": "~1.7",
+    "jshint": "^2.9.6",
+    "karma": "^3.1.1",
     "karma-jasmine": "~1.1",
     "karma-junit-reporter": "^1.2",
     "karma-phantomjs-launcher": "^1.0.0",
-    "protractor": "^5.0.0",
+    "protractor": "^5.4.1",
     "shelljs": "^0.8.0",
-    "uglify-js": "^3"
+    "uglify-js": "^3.4.9"
   },
   "scripts": {
     "postinstall": "bower install -p",
