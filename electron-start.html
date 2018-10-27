@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script>
+onload = function() {
+    const ipc= require('electron').ipcRenderer;
+    const remote = require('electron').remote;
+    const nativeImage = require('electron').nativeImage;
+    const shell = require('electron').shell;
+
+    var webview = document.getElementById("glowingbear");
+
+    var handleconsole = function(e) {
+        console.log("webview: " + e.message);
+    }
+    var handlenewwindow = function(e) {
+        shell.openExternal(e.url);
+    }
+    var handletitleset = function(e) {
+        document.title = e.title;
+    }
+    webview.addEventListener("console-message", handleconsole);
+    webview.addEventListener("new-window", handlenewwindow);
+    webview.addEventListener("page-title-set", handletitleset);
+
+    ipc.on('openDevTools', function() {
+        setTimeout(function() { webview.openDevTools(); }, 0 );
+    });
+
+    ipc.on('browser-window-focus', function() {
+        setTimeout(function() { webview.focus(); }, 0);
+        setTimeout(function() { webview.executeJavaScript("document.getElementById(\"sendMessage\").focus();") }, 0);
+    });
+}
+    </script>
+  </head>
+  <body>
+    <webview preload="electron-globals.js" id="glowingbear" src="index.html" style="position:fixed; top:0; left:0; bottom:0; right:0;"></webview>
+  </body>
+</html>

@@ -2,3 +2,7 @@ bower_components/
 node_modules/
 min.js
 min.map
+
+# Electron stuff
+fonts/
+Glowing\ Bear-*/

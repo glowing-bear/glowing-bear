@@ -9,6 +9,7 @@ module.exports = function(config){
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/angular-sanitize/angular-sanitize.js',
       'bower_components/angular-touch/angular-touch.js',
+      'bower_components/underscore/underscore.js',
       'js/localstorage.js',
       'js/weechat.js',
       'js/irc-utils.js',
@@ -22,6 +23,7 @@ module.exports = function(config){
       'js/plugin-directive.js',
       'js/websockets.js',
       'js/models.js',
+      'js/bufferResume.js',
       'js/plugins.js',
       'test/unit/**/*.js'
     ],

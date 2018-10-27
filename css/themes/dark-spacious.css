@@ -1,0 +1,5 @@
+@import "dark.css";
+
+tr.bufferline {
+    line-height: 1.4;
+}

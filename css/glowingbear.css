@@ -73,8 +73,27 @@ td.message {
     border-bottom: 2px solid #555;
 }
 
-.input-group-addon, .input-group-btn {
+.input-group-btn {
     vertical-align: top;
+}
+
+.input-group-addon {
+    background: none;
+    border: none;
+    color: #ccc;
+}
+
+#jump-addon {
+    width: 0px;
+    max-width: 0px;
+    padding: 0;
+    overflow: hidden;
+    transition: all ease-in-out 0.5s;
+}
+.showjumpkeys #jump-addon {
+    width: auto;
+    max-width: 70px;
+    padding: 6px 12px;
 }
 
 .footer button {
@@ -87,6 +106,12 @@ input[type=text], input[type=password], #sendMessage {
     border: 0;
     border-radius: 0;
     margin-bottom: 5px !important;
+}
+
+.btn-complete-nick {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
 }
 
 .btn-send-image {
@@ -155,6 +180,7 @@ input[type=text], input[type=password], #sendMessage {
     position: fixed;
     left: 145px; /* sidebar */
     overflow: hidden;
+    width: 100%; /* for title modal click area */
 }
 
 #topbar .actions {
@@ -197,7 +223,9 @@ input[type=text], input[type=password], #sendMessage {
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 35px; /* topbar */
+    padding-right: env(safe-area-inset-right);
     padding-bottom: 1px; /* need to force a padding here */
+    padding-left: env(safe-area-inset-left);
     font-size: smaller;
     transition:0.2s ease-in-out;
     z-index: 2;
@@ -216,7 +244,13 @@ input[type=text], input[type=password], #sendMessage {
   display:block!important;
 }
 
-#sidebar .badge {
+
+#sidebar .buffer .badge {
+   display: none;
+}
+
+#sidebar .buffer.unread .badge, #sidebar .buffer.notification .badge {
+    display: inline-block;
     border-radius: 0;
     margin-right: -10px;
     padding: 4px 7px;
@@ -239,9 +273,9 @@ input[type=text], input[type=password], #sendMessage {
     overflow-x: hidden;
     right: 0;
     top: 0;
-    padding-top: 39px;
+    margin-top: 39px;
     padding-left: 5px;
-    padding-bottom: 35px;
+    padding-bottom: 44px;
     z-index: 2;
 }
 #nicklist ul {
@@ -285,6 +319,12 @@ input[type=text], input[type=password], #sendMessage {
     color: #222;
 }
 
+.nav-pills > li.highlight > a, .nav-pills > li.highlight > a span {
+    text-decoration: none;
+    color: #fff;
+    background: #428BCA;
+}
+
 .nav-pills > li > a {
     display: block;
     overflow: hidden;
@@ -295,6 +335,7 @@ input[type=text], input[type=password], #sendMessage {
 .content {
     height: 100%;
     min-height: 100%;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 #bufferlines {
@@ -350,6 +391,7 @@ td.time {
     bottom: 0;
     height: 35px;
     width: 100%;
+    margin-bottom: env(safe-area-inset-bottom); /* margin for home-indicator on iPhone X */
     -webkit-transition:0.2s ease-in-out all;
     transition:0.2s ease-in-out all;
     z-index: 1;
@@ -424,14 +466,6 @@ div.colourbox {
 }
 
 
-table.notimestamp td.time {
-    display: none !important;
-}
-
-table.notimestampseconds td.time span.seconds {
-    display: none !important;
-}
-
 #sidebar .showquickkeys .buffer .buffer-quick-key {
     transition: all ease-in-out 0.5s;
     -webkit-transition: all ease-in-out 0.5s;
@@ -455,6 +489,33 @@ table.notimestampseconds td.time span.seconds {
     width: 1em;
     align: right;
 }
+
+#sidebar .showjumpkeys .buffer .buffer-jump-key {
+    transition: all ease-in-out 0.2s;
+    -webkit-transition: all ease-in-out 0.2s;
+    transition-delay: 0s;
+    -webkit-transition-delay: 0s;
+    opacity: 0.7;
+    margin-left: -1.2em;
+    margin-right: 0.1em;
+}
+#sidebar .buffer .buffer-jump-key {
+    margin-left: -1.2em;
+    margin-right: -0.2em;
+    font-size: smaller;
+    transition: all ease-in-out 0.2s;
+    -webkit-transition: all ease-in-out 0.2s;
+    opacity: 0;
+    text-shadow: -1px 0px 4px rgba(255, 255, 255, 0.4),
+    0px -1px 4px rgba(255, 255, 255, 0.4),
+    1px 0px 4px rgba(255, 255, 255, 0.4),
+    0px 1px 4px rgba(255, 255, 255, 0.4);
+    vertical-align: baseline;
+    display: inline-block;
+    width: 1em;
+    align: right;
+}
+
 
 .gb-modal {
     z-index: 1000;
@@ -749,6 +810,7 @@ img.emojione {
         right: 60px;
         text-align: center;
         font-size: 18px;
+        width: initial;
     }
 
     #topbar .brand img {
@@ -777,6 +839,10 @@ img.emojione {
         bottom: 0px;
     }
 
+    .content[sidebar-state=visible] #nicklist {
+        display: none;
+    }
+
     .navbar-fixed-bottom {
         margin: 0;
     }
@@ -787,6 +853,11 @@ img.emojione {
 
     .nav-pills {
         font-size: 14px;
+    }
+
+    .nav-pills li.buffer {
+        min-height: 30px;
+        max-height: 30px;
     }
 
     .nav-pills li a {
@@ -849,4 +920,9 @@ img.emojione {
     .col-sm-9 {
         padding-right: 0px !important;
     }
+}
+
+/* ng-cloak hides elements until Angular loads, preventing flickering */
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
 }

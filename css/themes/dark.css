@@ -35,6 +35,11 @@ html {
     color: #222;
 }
 
+.nav-pills > li.highlight > a, .nav-pills > li.highlight > a span {
+    color: #fff;
+    background: #428BCA;
+}
+
 tr.bufferline:hover {
     background-color: #222222;
 }
@@ -77,11 +82,12 @@ input[type=text], input[type=password], #sendMessage, .badge {
     box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.8) inset;
 }
 
-input[type=text], input[type=password], #sendMessage, .badge, .btn-send, .btn-send-image {
+input[type=text], input[type=password], #sendMessage, .badge, .btn-send, .btn-send-image, .btn-complete-nick {
     color: #ccc;
     background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.3);
 }
 
+.btn-complete-nick:hover, .btn-complete-nick:focus,
 .btn-send:hover, .btn-send:focus,
 .btn-send-image:hover, .btn-send-image:focus {
     background-color: #555;
@@ -153,6 +159,15 @@ input[type=text], input[type=password], #sendMessage, .badge, .btn-send, .btn-se
 #readmarker {
     border-top-color: rgba(255, 255, 255, 0.3);
     border-bottom-color: #121212;
+}
+
+button.close {
+    color: #ddd;
+    opacity: 1;
+}
+
+button.close:hover {
+    color: #ddd;
 }
 
 /****************************/
@@ -2119,6 +2134,12 @@ input[type=text], input[type=password], #sendMessage, .badge, .btn-send, .btn-se
         background: rgb(24,24,24);
     }
 
+    .btn-complete-nick:hover,
+    .btn-send:hover,
+    .btn-send-image:hover {
+        background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.3);
+        color: #ccc;
+    }
 }
 
 

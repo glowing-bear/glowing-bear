@@ -22,6 +22,12 @@ html {
     background-color: #222;
 }
 
+.nav-pills > li.highlight > a, .nav-pills > li.highlight > a span {
+    color: #fff;
+    background: #428BCA;
+}
+
+.btn-complete-nick,
 .btn-send,
 .btn-send-image, {
     background: none repeat scroll 0% 0% rgba(255, 255, 255, 0.3);
@@ -2097,6 +2103,12 @@ select.form-control, select option, input[type=text], input[type=password], #sen
 
     .footer {
         background: rgb(230,230,230);
+    }
+
+    .btn-complete-nick:hover,
+    .btn-send:hover,
+    .btn-send-image:hover {
+        color: #428BCA;
     }
 
 }

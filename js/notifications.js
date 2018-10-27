@@ -1,6 +1,6 @@
 var weechat = angular.module('weechat');
 
-weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', function($rootScope, $log, models, settings) {
+weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', 'utils', function($rootScope, $log, models, settings, utils) {
     var serviceworker = false;
     var notifications = [];
     // Ask for permission to display desktop notifications
@@ -24,7 +24,8 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
             }
         }
 
-        if ('serviceWorker' in navigator) {
+        // Check for serviceWorker support, and also disable serviceWorker if we're running in electron process, since that's just problematic and not necessary, since gb then already is in a separate process
+        if ('serviceWorker' in navigator && window.is_electron !== 1) {
             $log.info('Service Worker is supported');
             navigator.serviceWorker.register('serviceworker.js').then(function(reg) {
                 $log.info('Service Worker install:', reg);
@@ -33,6 +34,21 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
                 $log.info('Service Worker err:', err);
             });
         }
+
+        document.addEventListener('deviceready', function() {
+            // Add cordova local notification click handler
+            if (utils.isCordova() && window.cordova.plugins !== undefined && window.cordova.plugins.notification !== undefined &&
+                window.cordova.plugins.notification.local !== undefined) {
+                window.cordova.plugins.notification.local.on("click", function (notification) {
+                    // go to buffer
+                    var data = JSON.parse(notification.data);
+                    models.setActiveBuffer(data.buffer);
+                    window.focus();
+                    // clear this notification
+                    window.cordova.plugins.notification.local.clear(notification.id);
+                });
+            }
+        });
     };
 
     var showNotification = function(buffer, title, body) {
@@ -65,7 +81,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
 
             toastNotifier.show(toast);
 
-        } else {
+        } else if (typeof Notification !== 'undefined') {
 
             var notification = new Notification(title, {
                 body: body,
@@ -96,6 +112,22 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
                 delete notifications[this.id];
             };
 
+        } else if (utils.isCordova() && window.cordova.plugins !== undefined && window.cordova.plugins.notification !== undefined && window.cordova.plugins.notification.local !== undefined) {
+            // Cordova local notification
+            // Calculate notification id from buffer ID
+            // Needs to be unique number, but we'll only ever have one per buffer
+            var id = parseInt(buffer.id, 16);
+
+            // Cancel previous notification for buffer (if there was one)
+            window.cordova.plugins.notification.local.clear(id);
+
+            // Send new notification
+            window.cordova.plugins.notification.local.schedule({
+                id: id,
+                text: body,
+                title: title,
+                data: { buffer: buffer.id }  // remember buffer id for when the notification is clicked
+            });
         }
 
     };
@@ -134,23 +166,44 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
     };
 
     var updateFavico = function() {
+        if (utils.isCordova()) {
+            return; // cordova doesn't have a favicon
+        }
+
         var notifications = unreadCount('notification');
         if (notifications > 0) {
             $rootScope.favico.badge(notifications, {
                     bgColor: '#d00',
                     textColor: '#fff'
             });
+            // Set badge to notifications count
+            updateBadge(notifications);
         } else {
             var unread = unreadCount('unread');
             if (unread === 0) {
                 $rootScope.favico.reset();
+                // Remove badge form app icon
+                updateBadge('');
             } else {
                 $rootScope.favico.badge(unread, {
                     bgColor: '#5CB85C',
                     textColor: '#ff0'
                 });
+                // Set app badge to "." when only unread and no notifications
+                updateBadge("•");
             }
         }
+    };
+
+    // Update app badge (electron only)
+    var updateBadge = function(value) {
+
+        // Send new value to preloaded global function
+        // if it exists
+        if (typeof setElectronBadge === 'function') {
+            setElectronBadge(value);
+        }
+
     };
 
     /* Function gets called from bufferLineAdded code if user should be notified */
@@ -182,8 +235,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
 
         showNotification(buffer, title, body);
 
-        if (settings.soundnotification) {
-            // TODO fill in a sound file
+        if (!utils.isCordova() && settings.soundnotification) {
             var audioFile = "assets/audio/sonar";
             var soundHTML = '<audio autoplay="autoplay"><source src="' + audioFile + '.ogg" type="audio/ogg" /><source src="' + audioFile + '.mp3" type="audio/mpeg" /></audio>';
             document.getElementById("soundNotification").innerHTML = soundHTML;
@@ -203,6 +255,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
         requestNotificationPermission: requestNotificationPermission,
         updateTitle: updateTitle,
         updateFavico: updateFavico,
+        updateBadge: updateBadge,
         createHighlight: createHighlight,
         cancelAll: cancelAll,
         unreadCount: unreadCount

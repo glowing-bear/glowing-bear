@@ -7,7 +7,7 @@
 
 var models = angular.module('weechatModels', []);
 
-models.service('models', ['$rootScope', '$filter', function($rootScope, $filter) {
+models.service('models', ['$rootScope', '$filter', 'bufferResume', function($rootScope, $filter, bufferResume) {
     // WeeChat version
     this.version = null;
 
@@ -95,6 +95,9 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
 
         var plugin = message.local_variables.plugin;
         var server = message.local_variables.server;
+
+        var pinned = message.local_variables.pinned === "true";
+
         // Server buffers have this "irc.server.freenode" naming schema, which
         // messes the sorting up. We need it to be "irc.freenode" instead.
         var serverSortKey = plugin + "." + server +
@@ -335,7 +338,8 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             getHistoryUp: getHistoryUp,
             getHistoryDown: getHistoryDown,
             isNicklistEmpty: isNicklistEmpty,
-            nicklistRequested: nicklistRequested
+            nicklistRequested: nicklistRequested,
+            pinned: pinned,
         };
 
     };
@@ -347,6 +351,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var buffer = message.buffer;
         var date = message.date;
         var shortTime = $filter('date')(date, 'HH:mm');
+        var formattedTime = $filter('date')(date, $rootScope.angularTimeFormat);
 
         var prefix = parseRichText(message.prefix);
         var tags_array = message.tags_array;
@@ -354,10 +359,20 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         var highlight = message.highlight;
         var content = parseRichText(message.message);
 
+        // only put invisible angle brackets around nicks in normal messages
+        // (for copying/pasting)
+        var showHiddenBrackets = (tags_array.indexOf('irc_privmsg') >= 0 &&
+                                  tags_array.indexOf('irc_action') === -1);
+
         if (highlight) {
             prefix.forEach(function(textEl) {
                 textEl.classes.push('highlight');
             });
+        }
+
+        var prefixtext = "";
+        for (var pti = 0; pti < prefix.length; ++pti) {
+            prefixtext += prefix[pti].text;
         }
 
         var rtext = "";
@@ -365,49 +380,63 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
             rtext += content[i].text;
         }
 
-       return {
+        return {
             prefix: prefix,
             content: content,
             date: date,
             shortTime: shortTime,
+            formattedTime: formattedTime,
             buffer: buffer,
             tags: tags_array,
             highlight: highlight,
             displayed: displayed,
-            text: rtext
-
+            prefixtext: prefixtext,
+            text: rtext,
+            showHiddenBrackets: showHiddenBrackets
         };
 
     };
 
     function nickGetColorClasses(nickMsg, propName) {
+        var colorClasses = [
+            'cwf-default'
+        ];
         if (propName in nickMsg && nickMsg[propName] && nickMsg[propName].length > 0) {
             var color = nickMsg[propName];
             if (color.match(/^weechat/)) {
                 // color option
                 var colorName = color.match(/[a-zA-Z0-9_]+$/)[0];
-                return [
+                colorClasses = [
                     'cof-' + colorName,
                     'cob-' + colorName,
                     'coa-' + colorName
                 ];
-            } else if (color.match(/^[a-zA-Z]+$/)) {
-                // WeeChat color name
-                return [
-                    'cwf-' + color
-                ];
-            } else if (color.match(/^[0-9]+$/)) {
-                // extended color
-                return [
-                    'cef-' + color
-                ];
+            } else {
+                if (color.match(/^[a-zA-Z]+(:|$)/)) {
+                    // WeeChat color name (foreground)
+                    var cwfcolor = color.match(/^[a-zA-Z]+/)[0];
+                    colorClasses = [
+                        'cwf-' + cwfcolor
+                    ];
+                } else if (color.match(/^[0-9]+(:|$)/)) {
+                    // extended color (foreground)
+                    var cefcolor = color.match(/^[0-9]+/)[0];
+                    colorClasses = [
+                        'cef-' + cefcolor
+                    ];
+                }
+                if (color.match(/:[a-zA-Z]+$/)) {
+                    // WeeChat color name (background)
+                    var cwbcolor = color.match(/:[a-zA-Z]+$/)[0].substring(1);
+                    colorClasses.push('cwb-' + cwbcolor);
+                } else if (color.match(/:[0-9]+$/)) {
+                    // extended color (background)
+                    var cebcolor = color.match(/:[0-9]+$/)[0].substring(1);
+                    colorClasses.push('ceb-' + cebcolor);
+                }
             }
-
         }
-
-        return [
-            'cwf-default'
-        ];
+        return colorClasses;
     }
 
     function nickGetClasses(nickMsg) {
@@ -449,11 +478,26 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
         };
     };
 
+    this.Server = function() {
+        var id = 0; // will be set later on
+        var unread = 0;
+
+        return {
+            id: id,
+            unread: unread
+        };
+    };
+
 
     var activeBuffer = null;
     var previousBuffer = null;
 
-    this.model = { 'buffers': {} };
+    this.model = { 'buffers': {}, 'servers': {} };
+
+    this.registerServer = function(buffer) {
+        var key = buffer.plugin + '.' + buffer.server;
+        this.getServer(key).id = buffer.id;
+    };
 
     /*
      * Adds a buffer to the list
@@ -539,12 +583,15 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
 
         var unreadSum = activeBuffer.unread + activeBuffer.notification;
 
+        this.getServerForBuffer(activeBuffer).unread -= unreadSum;
+
         activeBuffer.active = true;
         activeBuffer.unread = 0;
         activeBuffer.notification = 0;
 
         $rootScope.$emit('activeBufferChanged', unreadSum);
         $rootScope.$emit('notificationChanged');
+        bufferResume.record(activeBuffer);
         return true;
     };
 
@@ -560,6 +607,7 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
      */
     this.reinitialize = function() {
         this.model.buffers = {};
+        this.model.servers = {};
     };
 
     /*
@@ -570,6 +618,35 @@ models.service('models', ['$rootScope', '$filter', function($rootScope, $filter)
      */
     this.getBuffer = function(bufferId) {
         return this.model.buffers[bufferId];
+    };
+
+    /*
+     * Returns the server list
+     */
+    this.getServers = function() {
+        return this.model.servers;
+    };
+
+    /*
+     * Returns the server object for a specific key, creating it if it does not exist
+     * @param key the server key
+     * @return the server object
+     */
+    this.getServer = function(key) {
+        if (this.model.servers[key] === undefined) {
+            this.model.servers[key] = this.Server();
+        }
+        return this.model.servers[key];
+    };
+
+    /*
+     * Returns info on the server buffer for a specific buffer
+     * @param buffer the buffer
+     * @return the server object
+     */
+    this.getServerForBuffer = function(buffer) {
+        var key = buffer.plugin + '.' + buffer.server;
+        return this.getServer(key);
     };
 
     /*

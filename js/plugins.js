@@ -33,7 +33,7 @@ var urlRegexp = /(?:(?:https?|ftp):\/\/|www\.|ftp\.)\S*[^\s.;,(){}<>]/g;
 var UrlPlugin = function(name, urlCallback) {
     return {
         contentForMessage: function(message) {
-            var urls = message.match(urlRegexp);
+            var urls = _.uniq(message.match(urlRegexp));
             var content = [];
 
             for (var i = 0; urls && i < urls.length; i++) {
@@ -181,22 +181,25 @@ plugins.factory('userPlugins', function() {
      *
      */
 
-    var spotifyPlugin = new Plugin('Spotify track', function(message) {
+    var spotifyPlugin = new Plugin('Spotify music', function(message) {
         var content = [];
         var addMatch = function(match) {
             for (var i = 0; match && i < match.length; i++) {
-                var id = match[i].substr(match[i].length - 22, match[i].length);
                 var element = angular.element('<iframe></iframe>')
-                                     .attr('src', '//embed.spotify.com/?uri=spotify:track:' + id)
-                                     .attr('width', '300')
+                                     .attr('src', '//embed.spotify.com/?uri=' + match[i])
+                                     .attr('width', '350')
                                      .attr('height', '80')
                                      .attr('frameborder', '0')
                                      .attr('allowtransparency', 'true');
                 content.push(element.prop('outerHTML'));
             }
         };
-        addMatch(message.match(/spotify:track:([a-zA-Z-0-9]{22})/g));
-        addMatch(message.match(/open.spotify.com\/track\/([a-zA-Z-0-9]{22})/g));
+        addMatch(message.match(/spotify:track:[a-zA-Z-0-9]{22}/g));
+        addMatch(message.match(/spotify:artist:[a-zA-Z-0-9]{22}/g));
+        addMatch(message.match(/spotify:user:\w+:playlist:[a-zA-Z-0-9]{22}/g));
+        addMatch(message.match(/(open|play)\.spotify\.com\/track\/[a-zA-Z-0-9]{22}/g));
+        addMatch(message.match(/(open|play)\.spotify\.com\/artist\/[a-zA-Z-0-9]{22}/g));
+        addMatch(message.match(/(open|play)\.spotify\.com\/user\/\w+\/playlist\/[a-zA-Z-0-9]{22}/g));
         return content;
     });
 
@@ -206,18 +209,18 @@ plugins.factory('userPlugins', function() {
      * See: https://developers.google.com/youtube/player_parameters
      */
     var youtubePlugin = new UrlPlugin('YouTube video', function(url) {
-        var regex = /(?:youtube.com|youtu.be)\/(?:v\/|embed\/|watch(?:\?v=|\/))?([a-zA-Z0-9-]+)/i,
+        var regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/i,
             match = url.match(regex);
 
         if (match){
             var token = match[1],
-                embedurl = "https://www.youtube.com/embed/" + token + "?html5=1&iv_load_policy=3&modestbranding=1&rel=0&showinfo=0",
+                embedurl = "https://www.youtube.com/embed/" + token + "?html5=1&iv_load_policy=3&modestbranding=1&rel=0",
                 element = angular.element('<iframe></iframe>')
-                                 .attr('src', embedurl)
-                                 .attr('width', '560')
-                                 .attr('height', '315')
-                                 .attr('frameborder', '0')
-                                 .attr('allowfullscreen', 'true');
+                    .attr('src', embedurl)
+                    .attr('width', '560')
+                    .attr('height', '315')
+                    .attr('frameborder', '0')
+                    .attr('allowfullscreen', 'true');
             return element.prop('outerHTML');
         }
     });
@@ -228,9 +231,9 @@ plugins.factory('userPlugins', function() {
      * See: http://www.dailymotion.com/doc/api/player.html
      */
     var dailymotionPlugin = new Plugin('Dailymotion video', function(message) {
-        var rPath = /dailymotion.com\/.*video\/([^_?# ]+)/;
-        var rAnchor = /dailymotion.com\/.*#video=([^_& ]+)/;
-        var rShorten = /dai.ly\/([^_?# ]+)/;
+        var rPath = /dailymotion\.com\/.*video\/([^_?# ]+)/;
+        var rAnchor = /dailymotion\.com\/.*#video=([^_& ]+)/;
+        var rShorten = /dai\.ly\/([^_?# ]+)/;
 
         var match = message.match(rPath) || message.match(rAnchor) || message.match(rShorten);
         if (match) {
@@ -251,8 +254,8 @@ plugins.factory('userPlugins', function() {
      * AlloCine Embedded Player
      */
     var allocinePlugin = new Plugin('AlloCine video', function(message) {
-        var rVideokast = /allocine.fr\/videokast\/video-(\d+)/;
-        var rCmedia = /allocine.fr\/.*cmedia=(\d+)/;
+        var rVideokast = /allocine\.fr\/videokast\/video-(\d+)/;
+        var rCmedia = /allocine\.fr\/.*cmedia=(\d+)/;
 
         var match = message.match(rVideokast) || message.match(rCmedia);
         if (match) {
@@ -273,13 +276,13 @@ plugins.factory('userPlugins', function() {
      * Image Preview
      */
     var imagePlugin = new UrlPlugin('image', function(url) {
-        if (url.match(/\.(png|gif|jpg|jpeg)(:(small|medium|large))?\b/i)) {
+        if (url.match(/\.(bmp|gif|ico|jpeg|jpg|png|svg|svgz|tif|tiff|webp)(:(small|medium|large))?\b/i)) {
             /* A fukung.net URL may end by an image extension but is not a direct link. */
             if (url.indexOf("^https?://fukung.net/v/") != -1) {
                 url = url.replace(/.*\//, "http://media.fukung.net/imgs/");
             } else if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
-                // remove protocol specification to load over https if used by g-b
-                url = url.replace(/http:/, "");
+                // imgur: always use https. avoids mixed content warnings
+                url = url.replace(/^http:/, "https:");
             } else if (url.match(/^https:\/\/www\.dropbox\.com\/s\/[a-z0-9]+\//i)) {
                 // Dropbox requires a get parameter, dl=1
                 var dbox_url = document.createElement("a");
@@ -314,10 +317,10 @@ plugins.factory('userPlugins', function() {
     });
 
     /*
-     * audio Preview
+     * Audio Preview
      */
     var audioPlugin = new UrlPlugin('audio', function(url) {
-        if (url.match(/\.(mp3|ogg|wav)\b/i)) {
+        if (url.match(/\.(flac|m4a|mid|midi|mp3|oga|ogg|ogx|opus|pls|spx|wav|wave|wma)\b/i)) {
             return function() {
                 var element = this.getElement();
                 var aelement = angular.element('<audio controls></audio>')
@@ -332,26 +335,39 @@ plugins.factory('userPlugins', function() {
 
 
     /*
-     * mp4 video Preview
+     * Video Preview
      */
     var videoPlugin = new UrlPlugin('video', function(url) {
-        if (url.match(/\.(mp4|webm|ogv|gifv)\b/i)) {
+        if (url.match(/\.(3gp|avi|flv|gifv|mkv|mp4|ogv|webm|wmv)\b/i)) {
             if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
-                // remove protocol specification to load over https if used by g-b
-                url = url.replace(/\.(gifv)\b/i, ".webm");
+                // imgur: always use https. avoids mixed content warnings
+                url = url.replace(/^http:/, "https:");
             }
             return function() {
-                var element = this.getElement();
-                var velement = angular.element('<video autoplay loop muted></video>')
+                var element = this.getElement(), src;
+                var velement = angular.element('<video autoplay controls loop muted></video>')
                                      .addClass('embed')
-                                     .attr('width', '560')
-                                     .append(angular.element('<source></source>')
-                                                    .attr('src', url));
+                                     .attr('width', '560');
+                // imgur doesn't always have webm for gifv so add sources for webm and mp4
+                if (url.match(/^https:\/\/(i\.)?imgur\.com\/.*\.gifv/i)) {
+                    src = angular.element('<source></source>')
+                                 .attr('src', url.replace(/\.gifv\b/i, ".webm"))
+                                 .attr('type', 'video/webm');
+                    velement.append(src);
+                    src = angular.element('<source></source>')
+                                 .attr('src', url.replace(/\.gifv\b/i, ".mp4"))
+                                 .attr('type', 'video/mp4');
+                    velement.append(src);
+                } else {
+                    src = angular.element('<source></source>')
+                                 .attr('src', url);
+                    velement.append(src);
+                }
                 element.innerHTML = velement.prop('outerHTML');
             };
         }
     });
-    
+
 
     /*
      * Cloud Music Embedded Players
@@ -359,7 +375,7 @@ plugins.factory('userPlugins', function() {
     var cloudmusicPlugin = new UrlPlugin('cloud music', function(url) {
         /* SoundCloud http://help.soundcloud.com/customer/portal/articles/247785-what-widgets-can-i-use-from-soundcloud- */
         var element;
-        if (url.match(/^https?:\/\/soundcloud.com\//)) {
+        if (url.match(/^https?:\/\/soundcloud\.com\//)) {
             element = angular.element('<iframe></iframe>')
                              .attr('width', '100%')
                              .attr('height', '120')
@@ -370,7 +386,7 @@ plugins.factory('userPlugins', function() {
         }
 
         /* MixCloud */
-        if (url.match(/^https?:\/\/([a-z]+\.)?mixcloud.com\//)) {
+        if (url.match(/^https?:\/\/([a-z]+\.)?mixcloud\.com\//)) {
             element = angular.element('<iframe></iframe>')
                              .attr('width', '480')
                              .attr('height', '60')
@@ -400,7 +416,7 @@ plugins.factory('userPlugins', function() {
       * Asciinema plugin
      */
     var asciinemaPlugin = new UrlPlugin('ascii cast', function(url) {
-        var regexp = /^https?:\/\/(?:www\.)?asciinema.org\/a\/(\d+)/i,
+        var regexp = /^https?:\/\/(?:www\.)?asciinema\.org\/a\/([0-9a-z]+)/i,
             match = url.match(regexp);
         if (match) {
             var id = match[1];
@@ -435,11 +451,12 @@ plugins.factory('userPlugins', function() {
 
     // Embed GitHub gists
     var gistPlugin = new UrlPlugin('Gist', function(url) {
-        var regexp = /^https:\/\/gist\.github.com\/[^.?]+/i;
+        // ignore trailing slashes and anchors
+        var regexp = /^(https:\/\/gist\.github\.com\/(?:.*?))[\/]?(?:\#.*)?$/i;
         var match = url.match(regexp);
         if (match) {
             // get the URL from the match to trim away pseudo file endings and request parameters
-            url = match[0] + '.json';
+            url = match[1] + '.json';
             // load gist asynchronously -- return a function here
             return function() {
                 var element = this.getElement();
@@ -455,12 +472,26 @@ plugins.factory('userPlugins', function() {
         }
     });
 
+    var pastebinPlugin = new UrlPlugin('Pastebin', function(url) {
+        var regexp = /^https?:\/\/pastebin\.com\/(raw\/)?([^.?]+)/i;
+        var match = url.match(regexp);
+        if (match) {
+            var id = match[2],
+                embedurl = "https://pastebin.com/embed_iframe/" + id,
+                element = angular.element('<iframe></iframe>')
+                                 .attr('src', embedurl)
+                                 .attr('width', '100%')
+                                 .attr('height', '480');
+            return element.prop('outerHTML');
+        }
+    });
+
  /* match giphy links and display the assocaited gif images
   * sample input:  http://giphy.com/gifs/eyes-shocked-bird-feqkVgjJpYtjy
   * sample output: https://media.giphy.com/media/feqkVgjJpYtjy/giphy.gif
   */
     var giphyPlugin = new UrlPlugin('Giphy', function(url) {
-        var regex = /^https?:\/\/giphy.com\/gifs\/.*-(.*)\/?/i;
+        var regex = /^https?:\/\/giphy\.com\/gifs\/.*-(.*)\/?/i;
         // on match, id will contain the entire url in [0] and the giphy id in [1]
         var id = url.match(regex);
         if (id) {
@@ -496,7 +527,7 @@ plugins.factory('userPlugins', function() {
                     // The script tag needs to be generated manually or the browser won't load it
                     var scriptElem = document.createElement('script');
                     // Hardcoding the URL here, I don't suppose it's going to change anytime soon
-                    scriptElem.src = "//platform.twitter.com/widgets.js";
+                    scriptElem.src = "https://platform.twitter.com/widgets.js";
                     element.appendChild(scriptElem);
                 });
             };
@@ -507,7 +538,7 @@ plugins.factory('userPlugins', function() {
      * Vine plugin
      */
     var vinePlugin = new UrlPlugin('Vine', function (url) {
-        var regexp = /^https?:\/\/(www\.)?vine.co\/v\/([a-zA-Z0-9]+)(\/.*)?/i,
+        var regexp = /^https?:\/\/(www\.)?vine\.co\/v\/([a-zA-Z0-9]+)(\/.*)?/i,
             match = url.match(regexp);
         if (match) {
             var id = match[2], embedurl = "https://vine.co/v/" + id + "/embed/simple?audio=1";
@@ -517,12 +548,29 @@ plugins.factory('userPlugins', function() {
                                  .attr('width', '600')
                                  .attr('height', '600')
                                  .attr('frameborder', '0');
-            return element.prop('outerHTML') + '<script async src="//platform.vine.co/static/scripts/embed.js" charset="utf-8"></script>';
+            return element.prop('outerHTML') + '<script async src="https://platform.vine.co/static/scripts/embed.js" charset="utf-8"></script>';
+        }
+    });
+
+    /*
+     * Streamable Embedded Player
+     */
+    var streamablePlugin = new UrlPlugin('Streamable video', function(url) {
+        var regexp = /^https?:\/\/streamable\.com\/s?\/?(.+)/,
+            match = url.match(regexp);
+        if (match) {
+            var id = match[1], embedurl = 'https://streamable.com/s/' + id;
+            var element = angular.element('<iframe></iframe>')
+                                 .attr('src', embedurl)
+                                 .attr('width', '480')
+                                 .attr('height', '270')
+                                 .attr('frameborder', '0');
+            return element.prop('outerHTML');
         }
     });
 
     return {
-        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, audioPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, giphyPlugin, tweetPlugin, vinePlugin]
+        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, audioPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, pastebinPlugin, giphyPlugin, tweetPlugin, vinePlugin, streamablePlugin]
     };
 
 

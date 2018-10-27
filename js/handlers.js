@@ -3,7 +3,7 @@
 
 var weechat = angular.module('weechat');
 
-weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notifications', function($rootScope, $log, models, plugins, notifications) {
+weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notifications', 'bufferResume', function($rootScope, $log, models, plugins, notifications, bufferResume) {
 
     var handleVersionInfo = function(message) {
         var content = message.objects[0].content;
@@ -161,13 +161,16 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
             }
 
             if (!manually && (!buffer.active || !$rootScope.isWindowFocused())) {
+                var server = models.getServerForBuffer(buffer);
                 if (buffer.notify > 1 && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
                     buffer.unread++;
+                    server.unread++;
                     $rootScope.$emit('notificationChanged');
                 }
 
                 if ((buffer.notify !== 0 && message.highlight) || _.contains(message.tags, 'notify_private')) {
                     buffer.notification++;
+                    server.unread++;
                     notifications.createHighlight(buffer, message);
                     $rootScope.$emit('notificationChanged');
                 }
@@ -186,12 +189,24 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
                 handleBufferUpdate(buffer, bufferInfos[i]);
             } else {
                 buffer = new models.Buffer(bufferInfos[i]);
+                if (buffer.type === 'server') {
+                    models.registerServer(buffer);
+                } else {
+                    var server = models.getServerForBuffer(buffer);
+                    server.unread += buffer.unread + buffer.notification;
+                }
                 models.addBuffer(buffer);
                 // Switch to first buffer on startup
-                if (i === 0) {
+                var shouldResume = bufferResume.shouldResume(buffer);
+                if(shouldResume){
                     models.setActiveBuffer(buffer.id);
                 }
             }
+        }
+        // If there was no buffer to autmatically load, go to the first one.
+        if (!bufferResume.wasAbleToResume()) {
+            var first = bufferInfos[0].pointers[0];
+            models.setActiveBuffer(first);
         }
     };
 
@@ -208,7 +223,9 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         buffer.number = message.number;
         buffer.hidden = message.hidden;
 
-        // reset these, hotlist info will arrive shortly
+        // reset unread counts, hotlist info will arrive shortly
+        var server = models.getServerForBuffer(buffer);
+        server.unread -= (buffer.unread + buffer.notification);
         buffer.notification = 0;
         buffer.unread = 0;
         buffer.lastSeen = -1;
@@ -232,6 +249,12 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
     var handleBufferOpened = function(message) {
         var bufferMessage = message.objects[0].content[0];
         var buffer = new models.Buffer(bufferMessage);
+        if (buffer.type === 'server') {
+            models.registerServer(buffer);
+        } else {
+            var server = models.getServerForBuffer(buffer);
+            server.unread += buffer.unread + buffer.notification;
+        }
         models.addBuffer(buffer);
     };
 
@@ -271,6 +294,27 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         }
     };
 
+    var handleBufferMoved = function(message) {
+        var obj = message.objects[0].content[0];
+        var buffer = obj.pointers[0];
+        var old = models.getBuffer(buffer);
+
+        var old_number = old.number;
+        var new_number = obj.number;
+
+        _.each(models.getBuffers(), function(buffer) {
+            if (buffer.number > old_number && buffer.number <= new_number) {
+                buffer.number -= 1;
+            }
+
+            if (buffer.number < old_number && buffer.number >= new_number) {
+                buffer.number += 1;
+            }
+        });
+
+        old.number = new_number;
+    };
+
     var handleBufferHidden = function(message) {
         var obj = message.objects[0].content[0];
         var buffer = obj.pointers[0];
@@ -300,13 +344,14 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
             old.server = localvars.server;
             old.serverSortKey = old.plugin + "." + old.server +
                 (old.type === "server" ? "" :  ("." + old.shortName));
+            old.pinned = localvars.pinned === "true";
         }
     };
 
     var handleBufferTypeChanged = function(message) {
         var obj = message.objects[0].content[0];
         var buffer = obj.pointers[0];
-        var old = models.getBuffer(buffer);
+        //var old = models.getBuffer(buffer);
         // 0 = formatted (normal); 1 = free
         buffer.bufferType = obj.type;
     };
@@ -340,23 +385,47 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
      * Handle answers to hotlist request
      */
     var handleHotlistInfo = function(message) {
-        if (message.objects.length === 0) {
-            return;
+        // Hotlist includes only buffers with unread counts so first we
+        // iterate all our buffers and resets the counts.
+        _.each(models.getBuffers(), function(buffer) {
+            buffer.unread = 0;
+            buffer.notification = 0;
+        });
+        _.each(models.getServers(), function(server) {
+            server.unread = 0;
+        });
+        if (message.objects.length > 0) {
+            var hotlist = message.objects[0].content;
+            hotlist.forEach(function(l) {
+                var buffer = models.getBuffer(l.buffer);
+                // If buffer is active in gb, but not active in WeeChat the
+                // hotlist in WeeChat will increase but we should ignore that
+                // in gb.
+                if (buffer.active) {
+                    return;
+                }
+                // 1 is message
+                buffer.unread = l.count[1];
+                // 2 is private
+                // Use += so count[2] or count[3] doesn't overwrite each other
+                buffer.notification += l.count[2];
+                // 3 is highlight
+                // Use += so count[2] or count[3] doesn't overwrite each other
+                buffer.notification += l.count[3];
+                /* Since there is unread messages, we can guess
+                * what the last read line is and update it accordingly
+                */
+                var unreadSum = _.reduce(l.count, function(memo, num) { return memo + num; }, 0);
+                buffer.lastSeen = buffer.lines.length - 1 - unreadSum;
+
+                // update server buffer. Don't incude index 0 -> not unreadSum
+                models.getServerForBuffer(buffer).unread += l.count[1] + l.count[2] + l.count[3];
+            });
         }
-        var hotlist = message.objects[0].content;
-        hotlist.forEach(function(l) {
-            var buffer = models.getBuffer(l.buffer);
-            // 1 is message
-            buffer.unread += l.count[1];
-            // 2 is private
-            buffer.notification += l.count[2];
-            // 3 is highlight
-            buffer.notification += l.count[3];
-            /* Since there is unread messages, we can guess
-            * what the last read line is and update it accordingly
-            */
-            var unreadSum = _.reduce(l.count, function(memo, num) { return memo + num; }, 0);
-            buffer.lastSeen = buffer.lines.length - 1 - unreadSum;
+        // the unread badges in the bufferlist doesn't update if we don't do this
+        setTimeout(function() {
+            $rootScope.$apply();
+            $rootScope.$emit('notificationChanged');
         });
     };
 
@@ -413,6 +482,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         _buffer_localvar_added: handleBufferLocalvarChanged,
         _buffer_localvar_removed: handleBufferLocalvarChanged,
         _buffer_localvar_changed: handleBufferLocalvarChanged,
+        _buffer_moved: handleBufferMoved,
         _buffer_opened: handleBufferOpened,
         _buffer_title_changed: handleBufferTitleChanged,
         _buffer_type_changed: handleBufferTypeChanged,

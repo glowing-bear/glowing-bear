@@ -15,6 +15,9 @@ weechat.factory('connection',
     var connectionData = [];
     var reconnectTimer;
 
+    // Global connection lock to prevent multiple connections from being opened
+    var locked = false;
+
     // Takes care of the connection and websocket hooks
     var connect = function (host, port, passwd, ssl, noCompression, successCallback, failCallback) {
         $rootScope.passwordError = false;
@@ -32,6 +35,8 @@ weechat.factory('connection',
 
             // Helper methods for initialization commands
             var _initializeConnection = function(passwd) {
+                // Escape comma in password (#937)
+                passwd = passwd.replace(',', '\\,');
                 // This is not the proper way to do this.
                 // WeeChat does not send a confirmation for the init.
                 // Until it does, We need to "assume" that formatInit
@@ -74,6 +79,104 @@ weechat.factory('connection',
                 );
             };
 
+            var _parseWeechatTimeFormat = function() {
+                // helper function to get a custom delimiter span
+                var _timeDelimiter = function(delim) {
+                    return "'<span class=\"cof-chat_time_delimiters cob-chat_time_delimiters coa-chat_time_delimiters\">" + delim + "</span>'";
+                };
+
+                // Fetch the buffer time format from weechat
+                var timeFormat = models.wconfig['weechat.look.buffer_time_format'];
+
+                // Weechat uses strftime, with time specifiers such as %I:%M:%S for 12h time
+                // The time formatter we use, AngularJS' date filter, uses a different format
+                // Where %I:%M:%S would be represented as hh:mm:ss
+                // Here, we detect what format the user has set in Weechat and slot it into
+                // one of four formats, (short|long) (12|24)-hour time
+                var angularFormat = "";
+
+                var timeDelimiter = _timeDelimiter(":");
+
+                var left12 = "hh" + timeDelimiter + "mm";
+                var right12 = "'&nbsp;'a";
+
+                var short12 = left12 + right12;
+                var long12 = left12 + timeDelimiter + "ss" + right12;
+
+                var short24 = "HH" + timeDelimiter + "mm";
+                var long24 = short24 + timeDelimiter + "ss";
+
+                if (timeFormat.indexOf("%H") > -1 ||
+                    timeFormat.indexOf("%k") > -1) {
+                    // 24h time detected
+                    if (timeFormat.indexOf("%S") > -1) {
+                        // show seconds
+                        angularFormat = long24;
+                    } else {
+                        // don't show seconds
+                        angularFormat = short24;
+                    }
+                } else if (timeFormat.indexOf("%I") > -1 ||
+                           timeFormat.indexOf("%l") > -1 ||
+                           timeFormat.indexOf("%p") > -1 ||
+                           timeFormat.indexOf("%P") > -1) {
+                    // 12h time detected
+                    if (timeFormat.indexOf("%S") > -1) {
+                        // show seconds
+                        angularFormat = long12;
+                    } else {
+                        // don't show seconds
+                        angularFormat = short12;
+                    }
+                } else if (timeFormat.indexOf("%r") > -1) {
+                    // strftime doesn't have an equivalent for short12???
+                    angularFormat = long12;
+                } else if (timeFormat.indexOf("%T") > -1) {
+                    angularFormat = long24;
+                } else if (timeFormat.indexOf("%R") > -1) {
+                    angularFormat = short24;
+                } else {
+                    angularFormat = short24;
+                }
+
+                // Assemble date format
+                var date_components = [];
+
+                // Check for day of month in time format
+                var day_pos = Math.max(timeFormat.indexOf("%d"),
+                                       timeFormat.indexOf("%e"));
+                date_components.push([day_pos, "dd"]);
+
+                // month of year?
+                var month_pos = timeFormat.indexOf("%m");
+                date_components.push([month_pos, "MM"]);
+
+                // year as well?
+                var year_pos = Math.max(timeFormat.indexOf("%y"),
+                                        timeFormat.indexOf("%Y"));
+                if (timeFormat.indexOf("%y") > -1) {
+                    date_components.push([year_pos, "yy"]);
+                } else if (timeFormat.indexOf("%Y") > -1) {
+                    date_components.push([year_pos, "yyyy"]);
+                }
+
+                // if there is a date, assemble it in the right order
+                date_components.sort();
+                var format_array = [];
+                for (var i = 0; i < date_components.length; i++) {
+                    if (date_components[i][0] == -1) continue;
+                    format_array.push(date_components[i][1]);
+                }
+                if (format_array.length > 0) {
+                    // TODO: parse delimiter as well? For now, use '/' as it is
+                    // more common internationally than '-'
+                    var date_format = format_array.join(_timeDelimiter("/"));
+                    angularFormat = date_format + _timeDelimiter("&nbsp;") + angularFormat;
+                }
+
+                $rootScope.angularTimeFormat = angularFormat;
+            };
+
 
             // First command asks for the password and issues
             // a version command. If it fails, it means the we
@@ -90,14 +193,37 @@ weechat.factory('connection',
                     _requestHotlist().then(function(hotlist) {
                         handlers.handleHotlistInfo(hotlist);
 
-                        if (successCallback) {
-                            successCallback();
-                        }
                     });
+                    // Schedule hotlist syncing every so often so that this
+                    // client will have unread counts (mostly) in sync with
+                    // other clients or terminal usage directly.
+                    setInterval(function() {
+                        if ($rootScope.connected) {
+                            _requestHotlist().then(function(hotlist) {
+                                handlers.handleHotlistInfo(hotlist);
+
+                            });
+                        }
+                    }, 60000); // Sync hotlist every 60 second
+
+
+                    // Fetch weechat time format for displaying timestamps
+                    fetchConfValue('weechat.look.buffer_time_format',
+                                   function() {
+                                       // Will set models.wconfig['weechat.look.buffer_time_format']
+                                       _parseWeechatTimeFormat();
+                    });
+
+                    // Fetch nick completion config
+                    fetchConfValue('weechat.completion.nick_completer');
+                    fetchConfValue('weechat.completion.nick_add_space');
 
                     _requestSync();
                     $log.info("Connected to relay");
                     $rootScope.connected = true;
+                    if (successCallback) {
+                        successCallback();
+                    }
                 },
                 function() {
                     handleWrongPassword();
@@ -120,6 +246,7 @@ weechat.factory('connection',
              */
             $log.info("Disconnected from relay");
             $rootScope.$emit('relayDisconnect');
+            locked = false;
             if ($rootScope.userdisconnect || !$rootScope.waseverconnected) {
                 handleClose(evt);
                 $rootScope.userdisconnect = false;
@@ -154,6 +281,7 @@ weechat.factory('connection',
              * the relay.
              */
             $log.error("Relay error", evt);
+            locked = false;  // release connection lock
             $rootScope.lastError = Date.now();
 
             if (evt.type === "error" && this.readyState !== 1) {
@@ -161,6 +289,13 @@ weechat.factory('connection',
                 $rootScope.errorMessage = true;
             }
         };
+
+        if (locked) {
+            // We already have an open connection
+            $log.debug("Aborting connection (lock in use)");
+        }
+        // Kinda need a compare-and-swap here...
+        locked = true;
 
         try {
             ngWebsockets.connect(url,
@@ -173,6 +308,7 @@ weechat.factory('connection',
                          'onerror': onerror
                      });
         } catch(e) {
+            locked = false;
             $log.debug("Websocket caught DOMException:", e);
             $rootScope.lastError = Date.now();
             $rootScope.errorMessage = true;
@@ -250,6 +386,7 @@ weechat.factory('connection',
             // The connection can time out on its own
             ngWebsockets.failCallbacks('disconnection');
             $rootScope.connected = false;
+            locked = false;  // release the connection lock
             $rootScope.$emit('relayDisconnect');
             $rootScope.$apply();
         });
@@ -289,6 +426,10 @@ weechat.factory('connection',
         }
     };
 
+    var sendHotlistClearAll = function() {
+        sendMessage("/input hotlist_clear");
+    };
+
     var requestNicklist = function(bufferId, callback) {
         // Prevent requesting nicklist for all buffers if bufferId is invalid
         if (!bufferId) {
@@ -306,7 +447,7 @@ weechat.factory('connection',
         });
     };
 
-    var fetchConfValue = function(name) {
+    var fetchConfValue = function(name, callback) {
         ngWebsockets.send(
             weeChat.Protocol.formatInfolist({
                 name: "option",
@@ -315,6 +456,9 @@ weechat.factory('connection',
             })
         ).then(function(i) {
             handlers.handleConfValue(i);
+            if (callback !== undefined) {
+                callback();
+            }
         });
     };
 
@@ -379,6 +523,7 @@ weechat.factory('connection',
         sendMessage: sendMessage,
         sendCoreCommand: sendCoreCommand,
         sendHotlistClear: sendHotlistClear,
+        sendHotlistClearAll: sendHotlistClearAll,
         fetchMoreLines: fetchMoreLines,
         requestNicklist: requestNicklist,
         attemptReconnect: attemptReconnect

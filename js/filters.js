@@ -135,6 +135,17 @@ weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
     };
 }]);
 
+// This is used by the cordova app to change link targets to "window.open(<url>, '_system')"
+// so that they're opened in a browser window and don't navigate away from Glowing Bear
+weechat.filter('linksForCordova', ['$sce', function($sce) {
+    return function(text) {
+        // XXX TODO this needs to be improved
+        text = text.replace(/<a (rel="[a-z ]+"\s+)?(?:target="_[a-z]+"\s+)?href="([^"]+)"/gi,
+                            "<a $1 onClick=\"window.open('$2', '_system')\"");
+        return $sce.trustAsHtml(text);
+    };
+}]);
+
 weechat.filter('getBufferQuickKeys', function () {
     return function (obj, $scope) {
         if (!$scope) { return obj; }
@@ -151,6 +162,11 @@ weechat.filter('getBufferQuickKeys', function () {
                 return left[0] - right[0] || left[1] - right[1];
             }).forEach(function(info, keyIdx) {
                 obj[ info[2] ].$quickKey = keyIdx < 10 ? (keyIdx + 1) % 10 : '';
+                // Don't update jump key upon filtering
+                if (obj[ info[2] ].$jumpKey === undefined) {
+                    // Only assign jump keys up to 99
+                    obj[ info[2] ].$jumpKey = (keyIdx < 99) ? keyIdx + 1 : '';
+                }
             });
         }
         return obj;
@@ -175,15 +191,23 @@ weechat.filter('emojify', function() {
     };
 });
 
-weechat.filter('mathjax', function() {
+weechat.filter('latexmath', function() {
     return function(text, selector, enabled) {
-        if (!enabled || typeof(MathJax) === "undefined") {
+        if (!enabled || typeof(katex) === "undefined") {
             return text;
         }
         if (text.indexOf("$$") != -1 || text.indexOf("\\[") != -1 || text.indexOf("\\(") != -1) {
-            // contains math
-            var math = document.querySelector(selector);
-            MathJax.Hub.Queue(["Typeset",MathJax.Hub,math]);
+            // contains math -> delayed rendering
+            setTimeout(function() {
+                var math = document.querySelector(selector);
+                renderMathInElement(math, {
+                    delimiters: [
+                        {left: "$$", right: "$$", display: false},
+                        {left: "\\[", right: "\\]", display: true},
+                        {left: "\\(", right: "\\)", display: false}
+                    ]
+                });
+            });
         }
 
         return text;

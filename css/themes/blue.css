@@ -1,0 +1,188 @@
+@import "dark.css";
+
+body {
+    background-color: #1d222c;
+    color: #dfdfcf;
+}
+
+a {
+   color: #0787c1;
+}
+.btn-primary {
+   background: linear-gradient(#0f99d9,#0177af);
+   border-color: #0d7eb2;
+}
+
+
+.badge {
+   border-radius: 0;
+}
+
+.footer {
+   bottom: 5px;
+}
+#bufferlines {
+   bottom: 45px;
+}
+
+.form-control {
+    color: #ccc;
+    background: #141922;
+    border: 2px solid #4a5b6c;
+}
+
+.form-control option {
+   color: #eee;
+   background: #282828;
+}
+
+.nav-pills > li > a {
+   /* To prevent resize when they get border on active or hover */
+   border: 1px solid transparent;
+   margin-left: 5px;
+   margin-right: 5px;
+}
+
+.nav-pills > li.active > a {
+    background-color: rgba(27, 97, 161, 0.4);
+    border: 1px solid #1b61a1;
+}
+
+/* fix for mobile firefox which ignores :hover */
+.nav-pills > li > a:active, .nav-pills > li > a:active span, .nav-pills > li.active > a:hover {
+    background-color: #031633;
+    color: #fff;
+
+}
+.nav-pills > li > a:hover, .nav-pills > li > a:hover span {
+    color: #fff;
+}
+
+.nav-pills > li > a:hover, .nav-pills > li > a:focus {
+   background-color: #282828;
+   color: white;
+   border: 1px solid #363943;
+}
+
+.nav-pills > li.highlight > a, .nav-pills > li.highlight > a span {
+    color: #fff;
+    background: #283244;
+}
+
+.bufferfilter {
+   margin-left: 5px;
+   margin-right: 5px;
+}
+
+tr.bufferline:hover {
+    background-color: #1b2737;
+}
+td.prefix {
+    border-right: 1px solid #464f5e;
+}
+td.message {
+   border-left: 1px solid #1b2737;
+}
+input[type=text], input[type=password], #sendMessage, .badge {
+    /*box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.8) inset; */
+   border: 1px solid #4a5b6c;
+}
+
+input[type=text], input[type=password], #sendMessage, .badge, .btn-send, .btn-send-image, .btn-complete-nick {
+    color: #ccc;
+    background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.3);
+}
+
+.btn-complete-nick:hover, .btn-complete-nick:focus,
+.btn-send:hover, .btn-send:focus,
+.btn-send-image:hover, .btn-send-image:focus {
+    background-color: #555;
+    color: white;
+}
+
+.nav-pills li:nth-child(2n) {
+    background: #283244;
+}
+
+.nav-pills > li > a {
+    color: #ddd;
+}
+
+#topbar .actions {
+    background: #283244;
+    color: #666;
+}
+
+#topbar, #sidebar, .panel, .dropdown-menu, .modal-content {
+    background: #283244;
+}
+#topbar, #topbar .actions, #sidebar, .panel, .dropdown-menu, .modal-content {
+   box-shadow: 0 1px  #1d222c;
+   border-bottom: 1px solid #3a4657;
+}
+#sidebar {
+   padding-top: 40px;
+   border-right: 1px solid #1d1f29;
+   border-bottom: 0;
+   box-shadow: none;
+}
+#nicklist a {
+   border: 1px solid transparent;
+}
+#nicklist a:hover {
+   background: #282828;
+   border: 1px solid #363943;
+}
+
+.horizontal-line {
+    -webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+    -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+    box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
+    border-bottom: 1px solid #1b2737;
+}
+.vertical-line {
+    -webkit-box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
+    -moz-box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
+    box-shadow: rgba(255, 255, 255, 0.07) 1px 0 0;
+    border-right: 1px solid #1b2737;
+}
+.vertical-line-left {
+    -webkit-box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
+    -moz-box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
+    box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
+    border-left: 1px solid #1b2737;
+}
+.panel-group .panel-heading + .panel-collapse .panel-body, .modal-body, .modal-header, .modal-footer {
+    -webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
+    -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
+    box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
+    border-top: 1px solid #1b2737;
+}
+
+#readmarker {
+   border-color: rgba(29, 94, 152, 0.5);
+   height: 0;
+}
+#sendMessage:focus, #sendMessage:active {
+   border: 1px solid;
+   border-color: #0d7eb2;
+}
+
+@media (min-width: 1400px) {
+   .content[sidebar-state="visible"] .footer {
+         padding-left: 205px;
+   }
+}
+@media (max-width: 968px) {
+   .footer {
+         padding-left: 5px !important;
+   }
+
+   .btn-complete-nick:hover,
+   .btn-send:hover,
+   .btn-send-image:hover {
+       background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.3);
+       color: #ccc;
+   }
+
+}
