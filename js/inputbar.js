@@ -208,7 +208,12 @@ weechat.directive('inputBar', function() {
             };
 
             //XXX THIS DOES NOT BELONG HERE!
-            $rootScope.addMention = function(prefix) {
+            $rootScope.addMention = function(bufferline) {
+                if (!bufferline.showHiddenBrackets) {
+                    // the line is a notice or action or something else that doesn't belong
+                    return;
+                }
+                var prefix = bufferline.prefix;
                 // Extract nick from bufferline prefix
                 var nick = prefix[prefix.length - 1].text;
 
