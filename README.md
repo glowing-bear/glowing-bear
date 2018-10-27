@@ -17,16 +17,13 @@ Now point your browser to the [Glowing Bear](http://www.glowing-bear.org)! If yo
 You can run Glowing Bear in many ways:
 
  * like any other webpage
+ * Electron app for Windows, Linux and macOS. ```npm install; npm install electron-packager; npm run build-electron-{windows, darwin, linux}``` (choose your platform from the list, e.g. `build-electron-darwin` for macOS)
  * Chrome app ("Tools", then "Create application shortcuts")
  * Android Chrome app, a full-screen experience ("Add to homescreen").
- * [Android app](https://play.google.com/store/apps/details?id=com.glowing_bear) that you can install from the Google Play Store
- * Electron app for Windows, Linux and macOS. ```npm install; npm install electron-packager; npm run build-electron-{windows, darwin, linux}``` (choose your platform from the list, e.g. `build-electron-darwin` for macOS)
-
-<a href="https://play.google.com/store/apps/details?id=com.glowing_bear"><img alt="Android app on Google Play" src="/assets/img/badge_playstore.png" /></a>
 
 ## Screenshots
 
-Running as Chrome application in a separate window on Windows and as Android app:
+Running as Chrome application in a separate window on Windows and on Android:
 
 ![Glowing bear screenshot](https://4z2.de/glowingbear.png)
 
@@ -43,7 +40,7 @@ Glowing Bear uses WeeChat directly as its backend through the relay plugin. This
 
 - *Can I use Glowing Bear to access a machine or port not exposed to the internet by passing the connection through my server?* No, that's not what Glowing Bear does. You can use a websocket proxy module for your webserver to forward `/weechat` to your WeeChat instance though. We've got instructions for setting this up [on our wiki](https://github.com/glowing-bear/glowing-bear/wiki/Proxying-WeeChat-relay-with-a-web-server).
 - *How does the encryption work?* TLS is used for securing the connection if you enable encryption. This is handled by your browser, and we have no influence on certificate handling, etc. You can find more detailed instructions on how to communicate securely in the "Getting Started" tab on the [landing page of our development version](https://latest.glowing-bear.org).
-- *Can I make it so that there are no requests to third party servers at all?* Sure, you'll have to hide embeds by default (it's in the settings dialog), and download the JavaScript files for which we use a CDN by default. For the second step, you have two options: a) use the Android or Electron app, or b) run `npm run make-local` to download the files and apply a patch to use them instead of the CDN. But remember to re-run this command whenever you update Glowing Bear!
+- *Can I make it so that there are no requests to third party servers at all?* Sure, you'll have to hide embeds by default (it's in the settings dialog), and download the JavaScript files for which we use a CDN by default. For the second step, you have two options: a) use the Electron app, or b) run `npm run make-local` to download the files and apply a patch to use them instead of the CDN. But remember to re-run this command whenever you update Glowing Bear!
 
 ## Development
 
@@ -94,4 +91,4 @@ If you wish to submit code, we try to make the contribution process as simple as
 
  We'd also like to ask you to join our IRC channel, #glowing-bear on freenode, so we can discuss your ideas and changes.
 
-If you're curious about the projects we're using, here's a list: [AngularJS](https://angularjs.org/), [Bootstrap](http://getbootstrap.com/), [Underscore](http://underscorejs.org/), [favico.js](http://lab.ejci.net/favico.js/), Emoji provided free by [Emoji One](http://emojione.com/), and [zlib.js](https://github.com/imaya/zlib.js). Technology-wise, [WebSockets](https://en.wikipedia.org/wiki/WebSocket) are the most important part, but we also use [local storage](https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Storage#localStorage), the [Notification Web API](https://developer.mozilla.org/en/docs/Web/API/notification), and last (but not least) [Apache Cordova](https://cordova.apache.org/) for our mobile app.
+If you're curious about the projects we're using, here's a list: [AngularJS](https://angularjs.org/), [Bootstrap](http://getbootstrap.com/), [Underscore](http://underscorejs.org/), [favico.js](http://lab.ejci.net/favico.js/), Emoji provided free by [Emoji One](http://emojione.com/), and [zlib.js](https://github.com/imaya/zlib.js). Technology-wise, [WebSockets](https://en.wikipedia.org/wiki/WebSocket) are the most important part, but we also use [local storage](https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Storage#localStorage), the [Notification Web API](https://developer.mozilla.org/en/docs/Web/API/notification), and last (but not least) [Apache Cordova](https://cordova.apache.org/) for our mobile app (currently unmaintained and unavailable).
