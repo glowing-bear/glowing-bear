@@ -438,6 +438,10 @@ weechat.directive('inputBar', function() {
                         buffer.unread = 0;
                         buffer.notification = 0;
                     });
+                    var servers = models.getServers();
+                    _.each(servers, function(server) {
+                        server.unread = 0;
+                    });
                     connection.sendHotlistClearAll();
                 }
 

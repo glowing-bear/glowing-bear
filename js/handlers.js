@@ -161,13 +161,16 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
             }
 
             if (!manually && (!buffer.active || !$rootScope.isWindowFocused())) {
+                var server = models.getServerForBuffer(buffer);
                 if (buffer.notify > 1 && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
                     buffer.unread++;
+                    server.unread++;
                     $rootScope.$emit('notificationChanged');
                 }
 
                 if ((buffer.notify !== 0 && message.highlight) || _.contains(message.tags, 'notify_private')) {
                     buffer.notification++;
+                    server.unread++;
                     notifications.createHighlight(buffer, message);
                     $rootScope.$emit('notificationChanged');
                 }
@@ -186,6 +189,12 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
                 handleBufferUpdate(buffer, bufferInfos[i]);
             } else {
                 buffer = new models.Buffer(bufferInfos[i]);
+                if (buffer.type === 'server') {
+                    models.registerServer(buffer);
+                } else {
+                    var server = models.getServerForBuffer(buffer);
+                    server.unread += buffer.unread + buffer.notification;
+                }
                 models.addBuffer(buffer);
                 // Switch to first buffer on startup
                 var shouldResume = bufferResume.shouldResume(buffer);
@@ -214,7 +223,9 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         buffer.number = message.number;
         buffer.hidden = message.hidden;
 
-        // reset these, hotlist info will arrive shortly
+        // reset unread counts, hotlist info will arrive shortly
+        var server = models.getServerForBuffer(buffer);
+        server.unread -= (buffer.unread + buffer.notification);
         buffer.notification = 0;
         buffer.unread = 0;
         buffer.lastSeen = -1;
@@ -238,6 +249,12 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
     var handleBufferOpened = function(message) {
         var bufferMessage = message.objects[0].content[0];
         var buffer = new models.Buffer(bufferMessage);
+        if (buffer.type === 'server') {
+            models.registerServer(buffer);
+        } else {
+            var server = models.getServerForBuffer(buffer);
+            server.unread += buffer.unread + buffer.notification;
+        }
         models.addBuffer(buffer);
     };
 
@@ -374,6 +391,9 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
             buffer.unread = 0;
             buffer.notification = 0;
         });
+        _.each(models.getServers(), function(server) {
+            server.unread = 0;
+        });
         if (message.objects.length > 0) {
             var hotlist = message.objects[0].content;
             hotlist.forEach(function(l) {
@@ -397,6 +417,9 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
                 */
                 var unreadSum = _.reduce(l.count, function(memo, num) { return memo + num; }, 0);
                 buffer.lastSeen = buffer.lines.length - 1 - unreadSum;
+
+                // update server buffer. Don't incude index 0 -> not unreadSum
+                models.getServerForBuffer(buffer).unread += l.count[1] + l.count[2] + l.count[3];
             });
         }
         // the unread badges in the bufferlist doesn't update if we don't do this
