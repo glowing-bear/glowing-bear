@@ -520,7 +520,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // the messages in this buffer before you switched to the new one
         // this is only needed with new type of clearing since in the old
         // way WeeChat itself takes care of that part
-        if (models.version[0] >= 1) {
+        if (settings.hotlistsync && models.version[0] >= 1) {
             connection.sendHotlistClear();
         }
 
