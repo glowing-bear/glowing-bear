@@ -791,6 +791,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             return true;
         }
         $scope.showNicklist = true;
+        // hack: retrigger the favorite-font update mechanism when showing the
+        // nicklist because the div is ng-if=showNicklist instead of ng-show for
+        // performance reasons (especially on mobile)
+        $timeout(function() {
+            utils.changeClassStyle('favorite-font', 'fontFamily', settings.fontfamily);
+            utils.changeClassStyle('favorite-font', 'fontSize', settings.fontsize);
+        }, 0);
         return true;
     };
 
