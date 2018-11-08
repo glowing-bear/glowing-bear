@@ -290,7 +290,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
           </li>
         </ul>
       </div>
-      <div id="nicklist" ng-if="showNicklist" ng-swipe-right="swipeRight()" ng-swipe-disable-mouse class="vertical-line-left">
+      <div id="nicklist" ng-if="showNicklist" ng-swipe-right="swipeRight()" ng-swipe-disable-mouse class="favorite-font vertical-line-left">
         <ul class="nicklistgroup list-unstyled" ng-repeat="group in nicklist">
           <li ng-repeat="nick in group.nicks|orderBy:'name'">
             <a ng-click="openBuffer(nick.name)"><span ng-class="::nick.prefixClasses" ng-bind="::nick.prefix"></span><span ng-class="::nick.nameClasses" ng-bind="::nick.name"></span></a>
@@ -344,7 +344,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" ng-click="closeModal($event)" aria-hidden="true">&times;</button>
-            <span class="pull-right version">Glowing Bear version 0.7.0</span>
+            <span class="pull-right version">Glowing Bear version 0.8.0</span>
             <h4 class="modal-title">Settings</h4>
             <p>Settings will be stored in your browser.</p>
           </div>
@@ -522,7 +522,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
           <div class="modal-header">
             <button type="button" class="close" ng-click="closeModal($event)" aria-hidden="true">&times;</button>
             <h4 class="modal-title">Channel topic {{ activeBuffer().shortName || activeBuffer().fullName }}</h4>
-            <p ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank':{rel:'noopener noreferrer'} | DOMfilter:'irclinky')"></p>
+            <span ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank':{rel:'noopener noreferrer'} | DOMfilter:'irclinky')"></span>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" ng-click="closeModal($event)">Close</button>

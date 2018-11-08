@@ -200,7 +200,7 @@ weechat.directive('inputBar', function() {
                 }
 
                 // New style clearing requires this, old does not
-                if (models.version[0] >= 1) {
+                if (settings.hotlistsync && models.version[0] >= 1) {
                     connection.sendHotlistClear();
                 }
 
