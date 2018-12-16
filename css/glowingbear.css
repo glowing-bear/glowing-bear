@@ -108,6 +108,11 @@ input[type=text], input[type=password], #sendMessage {
     margin-bottom: 5px !important;
 }
 
+input.totp {
+    /* prevent totp token from being cut off */
+    padding-right: 6px;
+}
+
 .btn-complete-nick {
     position: relative;
     overflow: hidden;
