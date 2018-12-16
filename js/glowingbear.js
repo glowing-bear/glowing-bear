@@ -662,7 +662,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $rootScope.bufferBottom = true;
         $scope.connectbutton = 'Connecting';
         $scope.connectbuttonicon = 'glyphicon-refresh glyphicon-spin';
-        connection.connect(settings.host, settings.port, $scope.password, settings.ssl);
+        connection.connect(settings.host, settings.port, $scope.password, $scope.totp_token, settings.ssl);
     };
     $scope.disconnect = function() {
         $scope.connectbutton = 'Connect';
@@ -939,7 +939,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             $rootScope.bufferBottom = true;
             $scope.connectbutton = 'Connecting';
             $scope.connectbuttonicon = 'glyphicon-chevron-right';
-            connection.connect(host, port, password, ssl);
+            connection.connect(host, port, password, "", ssl);
         }
     };
 

@@ -100,9 +100,9 @@
             <div class="panel-body">
                <form class="form-signin" role="form">
                 <div class="form-group">
-                  <label class="control-label" for="host">WeeChat relay hostname and port number</label>
                   <div class="input-group">
                     <div class="row no-gutter">
+                      <label class="control-label" for="host">WeeChat relay hostname and port number</label>
                       <div class="col-sm-9">
                         <input type="text" class="form-control favorite-font" id="host" ng-model="settings.host" placeholder="Address" autocapitalize="off">
                       </div>
@@ -110,11 +110,18 @@
                         <input type="text" class="form-control favorite-font" id="port" ng-model="settings.port" placeholder="Port">
                       </div>
                     </div>
+                    <div class="row no-gutter">
+                      <label class="control-label" for="password">WeeChat relay password and TOTP token</label>
+                      <div class="col-sm-9">
+                        <input type="password" class="form-control favorite-font" id="password" ng-model="password" placeholder="Password">
+                      </div>
+                      <div class="col-sm-3">
+                        <input type="text" class="form-control favorite-font" id="port" ng-model="totp_token" placeholder="Token">
+                      </div>
+                    </div>
                   </div>
-                  <label class="control-label" for="password">WeeChat relay password</label>
-                  <input type="password" class="form-control favorite-font" id="password" ng-model="password" placeholder="Password">
                   <div class="alert alert-danger" ng-show="passwordError" ng-cloak>
-                    Error: wrong password
+                    Authentication failed (wrong password or TOTP token)
                   </div>
 
                   <div class="checkbox">

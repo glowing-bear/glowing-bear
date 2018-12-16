@@ -637,6 +637,7 @@
     WeeChatProtocol.formatInit = function(params) {
         var defaultParams = {
             password: null,
+            totp: null,
             compression: 'zlib'
         };
         var keys = [];
@@ -647,6 +648,10 @@
         if (params.password !== null) {
             keys.push('password=' + params.password);
         }
+        if (!!params.totp) {
+            keys.push('totp=' + params.totp);
+        }
+        console.log(keys);
         parts.push(keys.join(','));
 
         return WeeChatProtocol._formatCmd(null, 'init', parts);

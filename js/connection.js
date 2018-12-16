@@ -20,7 +20,9 @@ weechat.factory('connection',
     var locked = false;
 
     // Takes care of the connection and websocket hooks
-    var connect = function (host, port, passwd, ssl, noCompression, successCallback, failCallback) {
+    var connect = function (host, port, passwd, totp_token, ssl, noCompression,
+                            successCallback, failCallback)
+    {
         $rootScope.passwordError = false;
         connectionData = [host, port, passwd, ssl, noCompression];
         var proto = ssl ? 'wss' : 'ws';
@@ -45,6 +47,7 @@ weechat.factory('connection',
                 ngWebsockets.send(
                     weeChat.Protocol.formatInit({
                         password: passwd,
+                        totp: totp_token,
                         compression: noCompression ? 'off' : 'zlib'
                     })
                 );
