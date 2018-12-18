@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -19,11 +19,11 @@
     <link rel="shortcut icon" type="image/png" href="assets/img/favicon.png" >
     <link href="css/glowingbear.css" rel="stylesheet" media="screen">
     <link href="css/themes/dark.css" rel="stylesheet" media="screen" id="themeCSS" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.8/angular.min.js" integrity="sha256-drxfSiYW94qA5Cyx5wrs8T8qV5GB45vES84r+X4zNS0=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.8/angular-route.min.js" integrity="sha256-+rsaX/rEnnh0OQrK9qi+p7qsM8nylkcEfOOhgC3ver0=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.8/angular-sanitize.min.js" integrity="sha256-A5XIWW1Wvws/VV2ZVAhfMVtQKwILF+o/z3zYZ8fhiec=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.8/angular-touch.min.js" integrity="sha256-pe9bCE2Py8HOdaP2c5lLwLDIsWrpn9L9QpSzuMawOM8=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js" integrity="sha256-obZACiHd7gkOk9iIL/pimWMTJ4W/pBsKu+oZnSeBIek=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular.min.js" integrity="sha256-QRJz3b0/ZZC4ilKmBRRjY0MgnVhQ+RR1tpWLYaRRjSo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-route.min.js" integrity="sha256-PQfkC+TI/HZv0O9JbmrLmPyhgOT2hry24vA5yAV59zY=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-sanitize.min.js" integrity="sha256-LLlLr1XzKUXSFI9SiuEJOAn88Dwge+/zld523N2c8+8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-touch.min.js" integrity="sha256-4IS2pHNTST2Jl6dSzNsERpYleiQi1r4L2MLPElG8LZ4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js" integrity="sha256-G7A4JrJjJlFqP0yamznwPjAApIKPkadeHfyIwiaa9e0=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/lib/js/emojione.min.js" integrity="sha256-9cBkVeU53NiJ9/BdcJta3HbERAmf5X9DE2WvL8V+gDs=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="3rdparty/inflate.min.js"></script>
     <script type="text/javascript" src="js/localstorage.js"></script>
@@ -222,20 +222,19 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
           </div>
           <div id="collapseFour" class="panel-collapse collapse">
             <div class="panel-body">
-              <p>You don't need to install anything to use Glowing Bear, it works with any modern browser. Start using it <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">right now</a> at the top of the page! However, there are a few ways to improve integration with your operating system.</p>
-              <h3>Mobile Applications</h3>
-              <p>If you're running Android 4.4 or later, you can install our app from the Google Play Store! We can't distribute on iOS unfortunately, but if you're a developer, you can <a href="https://github.com/glowing-bear/glowing-bear-cordova">follow the sideloading instructions</a>.</p>
-              <p><a href="https://play.google.com/store/apps/details?id=com.glowing_bear"><img alt="Android app on Google Play" src="assets/img/badge_playstore.png" /></a></p>
+              <p>You don't need to install anything to use Glowing Bear, it works with any modern browser. Start using it right now at the top of the page! However, there are a few ways to improve integration with your operating system.</p>
               <h3>Electron</h3>
               <p>Glowing Bear supports the electron shell. You'll have to build it yourself, though. Run the following commands, choosing your platform from the list in the last command: <pre>git clone https://github.com/glowing-bear/glowing-bear
 cd glowing-bear
 npm install
 npm install electron-packager
 npm run build-electron-{windows, darwin, linux}</pre>
-              <h3>Firefox Browser</h3>
-              <p>Firefox used to support apps, but this was removed from Firefox. There's nothing we can do about it. Sorry!</p>
               <h3>Chrome</h3>
               <p>To install Glowing Bear as an app in Chrome for Android, select <kbd>Menu - Add to home screen</kbd>. In the desktop version of Chrome, click <kbd>Menu - More tools - Create application shortcuts</kbd>.</p>
+              <h3>Android App</h3>
+              <p>We used to have an Android app, but discontinued it for lack of maintainers. You can still build it for yourself, see <a href="https://github.com/glowing-bear/glowing-bear-cordova">the app repository</a> for instructions. Sorry!</p>
+              <h3>Firefox Browser</h3>
+              <p>Firefox used to support apps, but this was removed from Firefox. There's nothing we can do about it. Sorry!</p>
             </div>
           </div>
         </div>
@@ -312,7 +311,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
           </li>
         </ul>
       </div>
-      <div id="nicklist" ng-if="showNicklist" ng-swipe-right="swipeRight()" ng-swipe-disable-mouse class="vertical-line-left">
+      <div id="nicklist" ng-if="showNicklist" ng-swipe-right="swipeRight()" ng-swipe-disable-mouse class="favorite-font vertical-line-left">
         <ul class="nicklistgroup list-unstyled" ng-repeat="group in nicklist">
           <li ng-repeat="nick in group.nicks|orderBy:'name'">
             <a ng-click="openBuffer(nick.name)"><span ng-class="::nick.prefixClasses" ng-bind="::nick.prefix"></span><span ng-class="::nick.nameClasses" ng-bind="::nick.name"></span></a>
@@ -336,7 +335,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
                   <span class="cof-chat_time cob-chat_time coa-chat_time" ng-bind-html="::bufferline.formattedTime"></span>
                 </span>
               </td>
-              <td class="prefix"><span ng-class="::{'repeated-prefix': bufferline.prefixtext==bufferlines[$index-1].prefixtext}"><a ng-click="addMention(bufferline.prefix)"><span class="hidden-bracket">&lt;</span><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text|prefixlimit:25"></span><span class="hidden-bracket">&gt;</span></a></span></td><!--
+              <td class="prefix"><span ng-class="::{'repeated-prefix': bufferline.prefixtext==bufferlines[$index-1].prefixtext}"><a ng-click="addMention(bufferline)"><span class="hidden-bracket" ng-if="::(bufferline.showHiddenBrackets)">&lt;</span><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text|prefixlimit:25"></span><span class="hidden-bracket" ng-if="::(bufferline.showHiddenBrackets)">&gt;</span></a></span></td><!--
            --><td class="message"><!--
              --><div ng-repeat="metadata in ::bufferline.metadata" plugin data="::metadata"></div><!--
              --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes.concat(['line-' + part.$$hashKey.replace(':','_')])" ng-bind-html="::part.text | linky:'_blank':{rel:'noopener noreferrer'} | DOMfilter:'irclinky' | DOMfilter:'emojify':settings.enableJSEmoji | DOMfilter:'inlinecolour' | DOMfilter:'latexmath':('.line-' + part.$$hashKey.replace(':','_')):settings.enableMathjax"></span>
@@ -366,7 +365,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" ng-click="closeModal($event)" aria-hidden="true">&times;</button>
-            <span class="pull-right version">Glowing Bear version 0.7.0</span>
+            <span class="pull-right version">Glowing Bear version 0.8.0</span>
             <h4 class="modal-title">Settings</h4>
             <p>Settings will be stored in your browser.</p>
           </div>
@@ -544,7 +543,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
           <div class="modal-header">
             <button type="button" class="close" ng-click="closeModal($event)" aria-hidden="true">&times;</button>
             <h4 class="modal-title">Channel topic {{ activeBuffer().shortName || activeBuffer().fullName }}</h4>
-            <p ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank':{rel:'noopener noreferrer'} | DOMfilter:'irclinky')"></p>
+            <span ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank':{rel:'noopener noreferrer'} | DOMfilter:'irclinky')"></span>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" ng-click="closeModal($event)">Close</button>

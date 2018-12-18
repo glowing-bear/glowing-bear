@@ -359,6 +359,11 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
         var highlight = message.highlight;
         var content = parseRichText(message.message);
 
+        // only put invisible angle brackets around nicks in normal messages
+        // (for copying/pasting)
+        var showHiddenBrackets = (tags_array.indexOf('irc_privmsg') >= 0 &&
+                                  tags_array.indexOf('irc_action') === -1);
+
         if (highlight) {
             prefix.forEach(function(textEl) {
                 textEl.classes.push('highlight');
@@ -386,8 +391,8 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             highlight: highlight,
             displayed: displayed,
             prefixtext: prefixtext,
-            text: rtext
-
+            text: rtext,
+            showHiddenBrackets: showHiddenBrackets
         };
 
     };
@@ -473,11 +478,26 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
         };
     };
 
+    this.Server = function() {
+        var id = 0; // will be set later on
+        var unread = 0;
+
+        return {
+            id: id,
+            unread: unread
+        };
+    };
+
 
     var activeBuffer = null;
     var previousBuffer = null;
 
-    this.model = { 'buffers': {} };
+    this.model = { 'buffers': {}, 'servers': {} };
+
+    this.registerServer = function(buffer) {
+        var key = buffer.plugin + '.' + buffer.server;
+        this.getServer(key).id = buffer.id;
+    };
 
     /*
      * Adds a buffer to the list
@@ -563,6 +583,8 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
 
         var unreadSum = activeBuffer.unread + activeBuffer.notification;
 
+        this.getServerForBuffer(activeBuffer).unread -= unreadSum;
+
         activeBuffer.active = true;
         activeBuffer.unread = 0;
         activeBuffer.notification = 0;
@@ -585,6 +607,7 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
      */
     this.reinitialize = function() {
         this.model.buffers = {};
+        this.model.servers = {};
     };
 
     /*
@@ -595,6 +618,35 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
      */
     this.getBuffer = function(bufferId) {
         return this.model.buffers[bufferId];
+    };
+
+    /*
+     * Returns the server list
+     */
+    this.getServers = function() {
+        return this.model.servers;
+    };
+
+    /*
+     * Returns the server object for a specific key, creating it if it does not exist
+     * @param key the server key
+     * @return the server object
+     */
+    this.getServer = function(key) {
+        if (this.model.servers[key] === undefined) {
+            this.model.servers[key] = this.Server();
+        }
+        return this.model.servers[key];
+    };
+
+    /*
+     * Returns info on the server buffer for a specific buffer
+     * @param buffer the buffer
+     * @return the server object
+     */
+    this.getServerForBuffer = function(buffer) {
+        var key = buffer.plugin + '.' + buffer.server;
+        return this.getServer(key);
     };
 
     /*

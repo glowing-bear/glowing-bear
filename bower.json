@@ -1,18 +1,18 @@
 {
   "name": "glowing-bear",
   "description": "A webclient for WeeChat",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "homepage": "https://github.com/glowing-bear/glowing-bear",
   "license": "GPLv3",
   "private": true,
   "dependencies": {
-    "angular": "1.6.x",
-    "angular-route": "1.6.x",
-    "angular-sanitize": "1.6.x",
-    "angular-touch": "1.6.x",
-    "angular-loader": "1.6.x",
-    "angular-mocks": "1.6.x",
-    "underscore": "~1.8"
+    "angular": "1.7.x",
+    "angular-route": "1.7.x",
+    "angular-sanitize": "1.7.x",
+    "angular-touch": "1.7.x",
+    "angular-loader": "1.7.x",
+    "angular-mocks": "1.7.x",
+    "underscore": "~1.9"
   },
   "devDependencies": {
     "bootstrap": "~3.3",

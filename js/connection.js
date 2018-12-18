@@ -4,10 +4,11 @@
 var weechat = angular.module('weechat');
 
 weechat.factory('connection',
-                ['$rootScope', '$log', 'handlers', 'models', 'ngWebsockets', function($rootScope,
+                ['$rootScope', '$log', 'handlers', 'models', 'settings', 'ngWebsockets', function($rootScope,
          $log,
          handlers,
          models,
+         settings,
          ngWebsockets) {
 
     var protocol = new weeChat.Protocol();
@@ -194,17 +195,19 @@ weechat.factory('connection',
                         handlers.handleHotlistInfo(hotlist);
 
                     });
-                    // Schedule hotlist syncing every so often so that this
-                    // client will have unread counts (mostly) in sync with
-                    // other clients or terminal usage directly.
-                    setInterval(function() {
-                        if ($rootScope.connected) {
-                            _requestHotlist().then(function(hotlist) {
-                                handlers.handleHotlistInfo(hotlist);
+                    if (settings.hotlistsync) {
+                        // Schedule hotlist syncing every so often so that this
+                        // client will have unread counts (mostly) in sync with
+                        // other clients or terminal usage directly.
+                        setInterval(function() {
+                            if ($rootScope.connected) {
+                                _requestHotlist().then(function(hotlist) {
+                                    handlers.handleHotlistInfo(hotlist);
 
-                            });
-                        }
-                    }, 60000); // Sync hotlist every 60 second
+                                });
+                            }
+                        }, 60000); // Sync hotlist every 60 second
+                    }
 
 
                     // Fetch weechat time format for displaying timestamps

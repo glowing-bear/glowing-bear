@@ -200,7 +200,7 @@ weechat.directive('inputBar', function() {
                 }
 
                 // New style clearing requires this, old does not
-                if (models.version[0] >= 1) {
+                if (settings.hotlistsync && models.version[0] >= 1) {
                     connection.sendHotlistClear();
                 }
 
@@ -208,7 +208,12 @@ weechat.directive('inputBar', function() {
             };
 
             //XXX THIS DOES NOT BELONG HERE!
-            $rootScope.addMention = function(prefix) {
+            $rootScope.addMention = function(bufferline) {
+                if (!bufferline.showHiddenBrackets) {
+                    // the line is a notice or action or something else that doesn't belong
+                    return;
+                }
+                var prefix = bufferline.prefix;
                 // Extract nick from bufferline prefix
                 var nick = prefix[prefix.length - 1].text;
 
@@ -437,6 +442,10 @@ weechat.directive('inputBar', function() {
                     _.each(buffers, function(buffer) {
                         buffer.unread = 0;
                         buffer.notification = 0;
+                    });
+                    var servers = models.getServers();
+                    _.each(servers, function(server) {
+                        server.unread = 0;
                     });
                     connection.sendHotlistClearAll();
                 }

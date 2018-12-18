@@ -135,6 +135,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 var buffer = models.getActiveBuffer();
                 // This can also be triggered before connecting to the relay, check for null (not undefined!)
                 if (buffer !== null) {
+                    var server = models.getServerForBuffer(buffer);
+                    server.unread -= (buffer.unread + buffer.notification);
                     buffer.unread = 0;
                     buffer.notification = 0;
 
@@ -519,7 +521,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // the messages in this buffer before you switched to the new one
         // this is only needed with new type of clearing since in the old
         // way WeeChat itself takes care of that part
-        if (models.version[0] >= 1) {
+        if (settings.hotlistsync && models.version[0] >= 1) {
             connection.sendHotlistClear();
         }
 
@@ -717,9 +719,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
                 return true;
             }
             // Always show core buffer in the list (issue #438)
-            // Also show server buffers in hierarchical view
-            if (buffer.fullName === "core.weechat" || (settings.orderbyserver && buffer.type === 'server')) {
+            if (buffer.fullName === "core.weechat") {
                 return true;
+            }
+
+            // In hierarchical view, show server iff it has a buffer with unread messages
+            if (settings.orderbyserver && buffer.type === 'server') {
+                return models.getServerForBuffer(buffer).unread > 0;
             }
 
             // Always show pinned buffers
@@ -786,6 +792,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             return true;
         }
         $scope.showNicklist = true;
+        // hack: retrigger the favorite-font update mechanism when showing the
+        // nicklist because the div is ng-if=showNicklist instead of ng-show for
+        // performance reasons (especially on mobile)
+        $timeout(function() {
+            utils.changeClassStyle('favorite-font', 'fontFamily', settings.fontfamily);
+            utils.changeClassStyle('favorite-font', 'fontSize', settings.fontsize);
+        }, 0);
         return true;
     };
 
