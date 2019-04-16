@@ -59,6 +59,17 @@ weechat.filter('inlinecolour', function() {
     };
 });
 
+// Calls the 'linky' filter unless the disable flag is set. Useful for things like join/quit messages,
+// so you don't accidentally click a mailto: on someone's hostmask.
+weechat.filter('conditionalLinkify', ['$filter', function($filter) {
+    return function(text, disable) {
+        if (!text || disable) {
+            return text;
+        }
+        return $filter('linky')(text, '_blank', {rel:'noopener noreferrer'});
+    };
+}]);
+
 // apply a filter to an HTML string's text nodes, and do so with not exceedingly terrible performance
 weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
     // To prevent nested anchors, we need to know if a filter is going to create them.
