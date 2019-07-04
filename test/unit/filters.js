@@ -99,11 +99,11 @@ describe('Filters', function() {
         }));
 
         it('should codify single snippets', inject(function(codifyFilter) {
-            expect(codifyFilter('z `foo` z')).toEqual('z <code>foo</code> z');
+            expect(codifyFilter('z `foo` z')).toEqual('z <span class="hidden-bracket">`</span><code>foo</code><span class="hidden-bracket">`</span> z');
         }));
 
         it('should codify multiple snippets', inject(function(codifyFilter) {
-            expect(codifyFilter('z `foo` z `bar` `baz`')).toEqual('z <code>foo</code> z <code>bar</code> <code>baz</code>');
+            expect(codifyFilter('z `foo` z `bar` `baz`')).toEqual('z <span class="hidden-bracket">`</span><code>foo</code><span class="hidden-bracket">`</span> z <span class="hidden-bracket">`</span><code>bar</code><span class="hidden-bracket">`</span> <span class="hidden-bracket">`</span><code>baz</code><span class="hidden-bracket">`</span>');
         }));
 
         it('should not codify empty snippets', inject(function(codifyFilter) {
