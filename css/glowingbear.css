@@ -929,4 +929,6 @@ img.emojione {
 
 code {
     padding: 0px 2px;
+    color: #444;
+    border: 1pt solid #444;
 }
