@@ -237,4 +237,14 @@ weechat.filter('prefixlimit', function() {
     };
 });
 
+weechat.filter('codify', function() {
+    return function(text) {
+        var re = /(`.+?`)/g;
+        return text.replace(re, function(z) {
+            var rr = '<code>' + z.slice(1, z.length-1) + '</code>';
+            return rr;
+        });
+    };
+});
+
 })();

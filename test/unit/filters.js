@@ -92,4 +92,28 @@ describe('Filters', function() {
             // I.e. if we ever got this far, the bug is fixed.
         }));
     });
+
+    describe('codify', function() {
+        it('should not mess up text', inject(function(codifyFilter) {
+            expect(codifyFilter('foo')).toEqual('foo');
+        }));
+
+        it('should codify single snippets', inject(function(codifyFilter) {
+            expect(codifyFilter('z `foo` z')).toEqual('z <code>foo</code> z');
+        }));
+
+        it('should codify multiple snippets', inject(function(codifyFilter) {
+            expect(codifyFilter('z `foo` z `bar` `baz`')).toEqual('z <code>foo</code> z <code>bar</code> <code>baz</code>');
+        }));
+
+        it('should not codify empty snippets', inject(function(codifyFilter) {
+            expect(codifyFilter('``')).toEqual('``');
+        }));
+
+        it('should not codify single backticks', inject(function(codifyFilter) {
+            expect(codifyFilter('foo`bar')).toEqual('foo`bar');
+        }));
+
+        
+    });
 });
