@@ -241,7 +241,7 @@ weechat.filter('codify', function() {
     return function(text) {
         var re = /(`.+?`)/g;
         return text.replace(re, function(z) {
-            var rr = '<code>' + z.slice(1, z.length-1) + '</code>';
+            var rr = '<span class="hidden-bracket">`</span><code>' + z.slice(1, z.length-1) + '</code><span class="hidden-bracket">`</span>';
             return rr;
         });
     };
