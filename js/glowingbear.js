@@ -60,6 +60,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'enableJSEmoji': !utils.isMobileUi(),
         'enableMathjax': false,
         'enableQuickKeys': true,
+        'enableCodify': true,
         'customCSS': '',
         "currentlyViewedBuffers":{},
     });

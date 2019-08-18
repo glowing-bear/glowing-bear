@@ -239,6 +239,11 @@ weechat.filter('prefixlimit', function() {
 
 weechat.filter('codify', function() {
     return function(text) {
+        // hacky way of making codify callable with one argument or two -
+        // the second being "enabled"
+        if (arguments.length >= 2 && !arguments[1]) {
+            return text;
+        }
         var re = /`(.+?)`/g;
         return text.replace(re, function(match, code) {
             var rr = '<span class="hidden-bracket">`</span><code>' + code + '</code><span class="hidden-bracket">`</span>';

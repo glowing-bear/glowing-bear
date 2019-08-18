@@ -114,6 +114,12 @@ describe('Filters', function() {
             expect(codifyFilter('foo`bar')).toEqual('foo`bar');
         }));
 
-        
+        it('should not codify when disabled', inject(function(codifyFilter) {
+            expect(codifyFilter('z `foo` z', false)).toEqual('z `foo` z');
+        }));
+
+        it('should codify when enabled', inject(function(codifyFilter) {
+            expect(codifyFilter('z `foo` z', true)).toEqual('z <span class="hidden-bracket">`</span><code>foo</code><span class="hidden-bracket">`</span> z');
+        }));
     });
 });
