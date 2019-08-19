@@ -239,9 +239,9 @@ weechat.filter('prefixlimit', function() {
 
 weechat.filter('codify', function() {
     return function(text) {
-        var re = /`(.+?)`/g;
-        return text.replace(re, function(match, code) {
-            var rr = '<span class="hidden-bracket">`</span><code>' + code + '</code><span class="hidden-bracket">`</span>';
+        var re = /(^|\s)`(.+?)`/g;
+        return text.replace(re, function(match, ws, code) {
+            var rr = ws + '<span class="hidden-bracket">`</span><code>' + code + '</code><span class="hidden-bracket">`</span>';
             return rr;
         });
     };
