@@ -239,9 +239,14 @@ weechat.filter('prefixlimit', function() {
 
 weechat.filter('codify', function() {
     return function(text) {
-        var re = /(^|\s)`(.+?)`/g;
-        return text.replace(re, function(match, ws, code) {
-            var rr = ws + '<span class="hidden-bracket">`</span><code>' + code + '</code><span class="hidden-bracket">`</span>';
+        // The groups of this regex are:
+        // 1. Start of line or space, to prevent codifying weird`stuff` like this
+        // 2. Opening single or triple backticks (not 2, not more than 3)
+        // 3. The code block, does not start with another backtick, non-greedy expansion
+        // 4. The closing backticks, identical to group 2
+        var re = /(^|\s)(```|`)([^`].*?)\2/g;
+        return text.replace(re, function(match, ws, open, code) {
+            var rr = ws + '<span class="hidden-bracket">' + open + '</span><code>' + code + '</code><span class="hidden-bracket">' + open + '</span>';
             return rr;
         });
     };
