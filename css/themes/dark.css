@@ -2114,6 +2114,11 @@ button.close:hover {
     font-weight: bold;
 }
 
+code {
+  background-color: #444;
+  color: #fff;
+}
+
 /* */
 /* Mobile layout */
 /* */

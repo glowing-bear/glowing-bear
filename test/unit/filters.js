@@ -92,4 +92,45 @@ describe('Filters', function() {
             // I.e. if we ever got this far, the bug is fixed.
         }));
     });
+
+    describe('codify', function() {
+        it('should not mess up text', inject(function(codifyFilter) {
+            expect(codifyFilter('foo')).toEqual('foo');
+        }));
+
+        it('should codify single snippets', inject(function(codifyFilter) {
+            expect(codifyFilter('z `foo` z')).toEqual('z <span class="hidden-bracket">`</span><code>foo</code><span class="hidden-bracket">`</span> z');
+            expect(codifyFilter('z `a` z')).toEqual('z <span class="hidden-bracket">`</span><code>a</code><span class="hidden-bracket">`</span> z');
+            expect(codifyFilter('z ```foo``` z')).toEqual('z <span class="hidden-bracket">```</span><code>foo</code><span class="hidden-bracket">```</span> z');
+        }));
+
+        it('should codify multiple snippets', inject(function(codifyFilter) {
+            expect(codifyFilter('z `foo` z `bar` `baz`')).toEqual('z <span class="hidden-bracket">`</span><code>foo</code><span class="hidden-bracket">`</span> z <span class="hidden-bracket">`</span><code>bar</code><span class="hidden-bracket">`</span> <span class="hidden-bracket">`</span><code>baz</code><span class="hidden-bracket">`</span>');
+        }));
+
+        it('should not codify empty snippets', inject(function(codifyFilter) {
+            expect(codifyFilter('``')).toEqual('``');
+        }));
+
+        it('should not codify single backticks', inject(function(codifyFilter) {
+            expect(codifyFilter('foo`bar')).toEqual('foo`bar');
+        }));
+
+
+        it('should not codify double backticks', inject(function(codifyFilter) {
+            expect(codifyFilter('some ``non-code``')).toEqual('some ``non-code``');
+        }));
+
+
+        it('should not codify pseudo-fancy quotes', inject(function(codifyFilter) {
+            expect(codifyFilter('some ``fancy qoutes\'\'')).toEqual('some ``fancy qoutes\'\'');
+        }));
+
+        it('should not codify stuff in the middle of a word or URL', inject(function(codifyFilter) {
+            expect(codifyFilter('https://foo.bar/`wat`')).toEqual('https://foo.bar/`wat`');
+            expect(codifyFilter('Weird`ness`')).toEqual('Weird`ness`');
+        }));
+
+        
+    });
 });

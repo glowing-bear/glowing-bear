@@ -926,3 +926,9 @@ img.emojione {
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
 }
+
+code {
+    padding: 0px 2px;
+    color: #444;
+    border: 1pt solid #444;
+}
