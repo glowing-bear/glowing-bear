@@ -1,7 +1,7 @@
 {
   "name": "Glowing Bear",
   "description": "WeeChat Web frontend",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "manifest_version": 2,
   "icons": {
     "32": "assets/img/favicon.png",
