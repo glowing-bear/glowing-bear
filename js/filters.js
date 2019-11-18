@@ -59,6 +59,17 @@ weechat.filter('inlinecolour', function() {
     };
 });
 
+// Calls the 'linky' filter unless the disable flag is set. Useful for things like join/quit messages,
+// so you don't accidentally click a mailto: on someone's hostmask.
+weechat.filter('conditionalLinkify', ['$filter', function($filter) {
+    return function(text, disable) {
+        if (!text || disable) {
+            return text;
+        }
+        return $filter('linky')(text, '_blank', {rel:'noopener noreferrer'});
+    };
+}]);
+
 // apply a filter to an HTML string's text nodes, and do so with not exceedingly terrible performance
 weechat.filter('DOMfilter', ['$filter', '$sce', function($filter, $sce) {
     // To prevent nested anchors, we need to know if a filter is going to create them.
@@ -223,6 +234,21 @@ weechat.filter('prefixlimit', function() {
             return input + '+';
         }
         return input;
+    };
+});
+
+weechat.filter('codify', function() {
+    return function(text) {
+        // The groups of this regex are:
+        // 1. Start of line or space, to prevent codifying weird`stuff` like this
+        // 2. Opening single or triple backticks (not 2, not more than 3)
+        // 3. The code block, does not start with another backtick, non-greedy expansion
+        // 4. The closing backticks, identical to group 2
+        var re = /(^|\s)(```|`)([^`].*?)\2/g;
+        return text.replace(re, function(match, ws, open, code) {
+            var rr = ws + '<span class="hidden-bracket">' + open + '</span><code>' + code + '</code><span class="hidden-bracket">' + open + '</span>';
+            return rr;
+        });
     };
 });
 
