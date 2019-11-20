@@ -259,8 +259,8 @@ npm run build-electron-{windows, darwin, linux}</pre>
           <a href="#" ng-click="toggleSidebar()">
             <img alt="brand" src="assets/img/favicon.png" title="Connected to {{ settings.host }}:{{ settings.port}}">
           </a>
-          <span class="badge" ng-show="unread > 0">{{unread}}</span>
-          <span class="badge danger" ng-show="notifications > 0">{{notifications}}</span>
+          <span class="badge" ng-class="{'badge-show': showUnreadBadge}" ng-show="unread > 0">{{unread}}</span>
+          <span class="badge danger" ng-class="{'badge-show': showUnreadBadge}" ng-show="notifications > 0">{{notifications}}</span>
 
           <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
         </div>

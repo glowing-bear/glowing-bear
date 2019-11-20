@@ -821,6 +821,9 @@ img.emojione {
         display: none;
     }
 
+    #topbar .badge-show {
+        display: inline-block;
+    }
 
     #bufferlines, #nicklist {
         position: relative;

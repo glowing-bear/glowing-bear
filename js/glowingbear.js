@@ -48,6 +48,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'autoconnect': false,
         'nonicklist': utils.isMobileUi(),
         'alwaysnicklist': false, // only significant on mobile
+        'alwaysunreadbadge': false, // only significant on mobile
         'noembed': true,
         'onlyUnread': false,
         'hotlistsync': true,
@@ -798,6 +799,18 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             utils.changeClassStyle('favorite-font', 'fontFamily', settings.fontfamily);
             utils.changeClassStyle('favorite-font', 'fontSize', settings.fontsize);
         }, 0);
+        return true;
+    };
+
+    // Callback for when always show unread badge change occurs
+    settings.addCallback('alwaysunreadbadge', function() {
+        $scope.updateShowUnreadBadge();
+    });
+    $scope.showUnreadBadge = false;
+    // Utility function that template can use to check if unread abdge should be
+    // displayed in the title bar
+    $scope.updateShowUnreadBadge = function() {
+        $scope.showUnreadBadge = $scope.settings.alwaysunreadbadge;
         return true;
     };
 
