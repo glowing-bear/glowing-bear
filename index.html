@@ -486,7 +486,16 @@ npm run build-electron-{windows, darwin, linux}</pre>
                   </div>
                 </form>
               </li>
-              <li>
+              <li class="mobile">
+                <form class="form-inline" role="form">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="settings.alwaysunreadbadge">
+                      Always show unread count in favicon
+                    </label>
+                  </div>
+                </form>
+              </li>              <li>
                 <form class="form-inline" role="form">
                   <div class="checkbox">
                     <label>
