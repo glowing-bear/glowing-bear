@@ -817,11 +817,6 @@ img.emojione {
         height: 28px;
     }
 
-    #topbar .badge {
-        display: none;
-    }
-
-
     #bufferlines, #nicklist {
         position: relative;
         min-height: 0;
