@@ -811,16 +811,16 @@ img.emojione {
         text-align: center;
         font-size: 18px;
         width: initial;
+        z-index: -1;
+    }
+
+    #topbar .brand a {
+        padding: 0 2px 0 10px;
     }
 
     #topbar .brand img {
         height: 28px;
     }
-
-    #topbar .badge {
-        display: none;
-    }
-
 
     #bufferlines, #nicklist {
         position: relative;
