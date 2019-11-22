@@ -1,7 +1,7 @@
 language: node_js
 node_js:
-  - "8"
-dist: trusty
+  - "11"
+dist: bionic
 install: "npm install"
 script: "sh -e run_tests.sh"
 notifications:
