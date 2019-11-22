@@ -1,258 +1,122 @@
-(function() {
-    'use strict';
-    const electron = require('electron');
-    const app = electron.app;  // Module to control application life.
-    const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
+// Modules to control application life and create native browser window
+const {app, BrowserWindow, shell, ipcMain} = require('electron')
+const path = require('path')
+const fs = require('fs')
 
-    const ipcMain = require('electron').ipcMain;
-    const nativeImage = require('electron').nativeImage;
-    const Menu = require('electron').Menu;
-    // Node fs module
-    const fs = require("fs");
-    var template;
+// Keep a global reference of the window object, if you don't, the window will
+// be closed automatically when the JavaScript object is garbage collected.
+let mainWindow
 
-    template = [
-    {
-        label: 'Edit',
-        submenu: [
-        {
-            label: 'Undo',
-            accelerator: 'CmdOrCtrl+Z',
-            role: 'undo'
-        },
-        {
-            label: 'Redo',
-            accelerator: 'Shift+CmdOrCtrl+Z',
-            role: 'redo'
-        },
-        {
-            type: 'separator'
-        },
-        {
-            label: 'Cut',
-            accelerator: 'CmdOrCtrl+X',
-            role: 'cut'
-        },
-        {
-            label: 'Copy',
-            accelerator: 'CmdOrCtrl+C',
-            role: 'copy'
-        },
-        {
-            label: 'Paste',
-            accelerator: 'CmdOrCtrl+V',
-            role: 'paste'
-        },
-        {
-            label: 'Select All',
-            accelerator: 'CmdOrCtrl+A',
-            role: 'selectall'
-        },
-        ]
-    },
-    {
-        label: 'View',
-        submenu: [
-        {
-            label: 'Reload',
-            accelerator: 'CmdOrCtrl+R',
-            click: function(item, focusedWindow) {
-                if (focusedWindow)
-                    focusedWindow.reload();
-            }
-        },
-        {
-            label: 'Toggle Full Screen',
-            accelerator: (function() {
-                if (process.platform == 'darwin')
-                    return 'Ctrl+Command+F';
-                else
-                    return 'F11';
-            })(),
-            click: function(item, focusedWindow) {
-                if (focusedWindow)
-                    focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
-            }
-        },
-        {
-            label: 'Electron Developer Tools',
-            accelerator: (function() {
-                if (process.platform == 'darwin')
-                    return 'Alt+Command+E';
-                else
-                    return 'Ctrl+Shift+E';
-            })(),
-            click: function(item, focusedWindow) {
-                if (focusedWindow)
-                    focusedWindow.toggleDevTools();
-            }
-        },
-        {
-            label: 'Web Developer Tools',
-            accelerator: (function() {
-                if (process.platform == 'darwin')
-                    return 'Alt+Command+I';
-                else
-                    return 'Ctrl+Shift+I';
-            })(),
-            click: function(item, focusedWindow) {
-                if ( focusedWindow ) {
-                    focusedWindow.webContents.send( 'openDevTools' );
-                }
-            }
-        }
-        ]
-    },
-    {
-        label: 'Window',
-        role: 'window',
-        submenu: [
-        {
-            label: 'Minimize',
-            accelerator: 'CmdOrCtrl+M',
-            role: 'minimize'
-        },
-        {
-            label: 'Close',
-            accelerator: 'CmdOrCtrl+Q',
-            role: 'close'
-        },
-        ]
-    },
-    {
-        label: 'Help',
-        role: 'help',
-        submenu: [
-        {
-            label: 'Learn More',
-            click: function() { require('electron').shell.openExternal('https://github.com/glowing-bear/glowing-bear'); }
-        },
-        ]
-    },
-    ];
+// We use this to store some tiny amount of preferences specific to electron
+// things like window bounds and location
+const initPath  = "init.json"
 
-    if (process.platform == 'darwin') {
-        var name = app.getName();
-        template.unshift({
-            label: name,
-            submenu: [
-            {
-                label: 'About ' + name,
-                role: 'about'
-            },
-            {
-                type: 'separator'
-            },
-            {
-                label: 'Services',
-                role: 'services',
-                submenu: []
-            },
-            {
-                type: 'separator'
-            },
-            {
-                label: 'Hide ' + name,
-                accelerator: 'Command+H',
-                role: 'hide'
-            },
-            {
-                label: 'Hide Others',
-                accelerator: 'Command+Alt+H',
-                role: 'hideothers'
-            },
-            {
-                label: 'Show All',
-                role: 'unhide'
-            },
-            {
-                type: 'separator'
-            },
-            {
-                label: 'Quit',
-                accelerator: 'Command+Q',
-                click: function() { app.quit(); }
-            },
-            ]
-        });
-        // Window menu.
-        template[3].submenu.push(
-                {
-                    type: 'separator'
-                },
-                {
-                    label: 'Bring All to Front',
-                    role: 'front'
-                }
-                );
+function createWindow () {
+    let data
+    // read saved state from file (e.g. window bounds)
+    try {
+        data = JSON.parse(fs.readFileSync(initPath, 'utf8'))
     }
+    catch(e) {
+        console.log('Unable to read init.json: ', e)
+    }
+  // Create the browser window.
+  const bounds = (data && data.bounds) ? data.bounds : {width: 1280, height:800 }
+  mainWindow = new BrowserWindow({
+    width: bounds.width,
+    height: bounds.height,
+    webPreferences: {
+      preload: path.join(__dirname, 'electron-globals.js')
+    }
+  })
 
-    // Keep a global reference of the window object, if you don't, the window will
-    // be closed automatically when the JavaScript object is garbage collected.
-    var mainWindow = null;
+  // Remember window position
+  if (data && data.bounds.x && data.bounds.y) {
+      mainWindow.x = data.bounds.x;
+      mainWindow.y = data.bounds.y;
+  }
 
-    app.on('browser-window-focus', function(e, w) {
-        w.webContents.send('browser-window-focus');
-    });
+  mainWindow.setMenu(null)
+  mainWindow.setMenuBarVisibility(false)
+  mainWindow.setAutoHideMenuBar(true)
 
-    app.on('ready', function() {
-        var menu = Menu.buildFromTemplate(template);
-        Menu.setApplicationMenu(menu);
-        const initPath  = __dirname + "/init.json";
-        var data;
+  // and load the index.html of the app.
+  mainWindow.loadFile('index.html')
 
-        // read saved state from file (e.g. window bounds)
-        try {
-            data = JSON.parse(fs.readFileSync(initPath, 'utf8'));
+  // Open the DevTools.
+  // mainWindow.webContents.openDevTools()
+
+  var handleLink = (e, url) => {
+    if(url != mainWindow.webContents.getURL()) {
+        e.preventDefault()
+        shell.openExternal(url)
+    }
+  }
+
+  mainWindow.webContents.on('will-navigate', handleLink)
+  mainWindow.webContents.on('new-window', handleLink)
+
+  // Emitted when the window is closing.
+  mainWindow.on('close', function () {
+    let data = {
+        bounds: mainWindow.getBounds()
+    }
+    fs.writeFileSync(initPath, JSON.stringify(data))
+  })
+
+  // Emitted when the window is closed.
+  mainWindow.on('closed', function () {
+    // Dereference the window object, usually you would store windows
+    // in an array if your app supports multi windows, this is the time
+    // when you should delete the corresponding element.
+    mainWindow = null
+  })
+
+  app.on('browser-window-focus', function() {
+      setTimeout(function() { mainWindow.webContents.focus() }, 0)
+      setTimeout(function() { mainWindow.webContents.executeJavaScript("document.getElementById(\"sendMessage\").focus()") }, 0)
+  })
+}
+
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+app.on('ready', function() {
+    createWindow()
+})
+
+
+// Listen for badge changes
+ipcMain.on('badge', function(event, arg) {
+    if (process.platform === "darwin") {
+        app.dock.setBadge(String(arg))
+    }
+    else if (process.platform === "win32") {
+        let n = parseInt(arg, 10)
+        // Only show notifications with number
+        if (isNaN(n)) {
+            return
         }
-        catch(e) {
-            console.log('Unable to read init.json: ', e);
+        if (n > 0) {
+            mainWindow.setOverlayIcon(__dirname + '/assets/img/favicon.ico', String(arg))
+        } else {
+            mainWindow.setOverlayIcon(null, '')
         }
-        const bounds = (data && data.bounds) ? data.bounds : {width: 1280, height:800 };
-        var bwdata = {width: bounds.width, height: bounds.height, 'min-width': 1024, 'min-height': 600, 'autoHideMenuBar': true, 'web-security': true, 'java': false, 'accept-first-mouse': true, defaultEncoding: 'UTF-8', 'icon':'file://'+__dirname + '/assets/img/favicon.png'};
-        // Remembe window position
-        if (data && data.bounds.x && data.bounds.y) {
-            bwdata.x = data.bounds.x;
-            bwdata.y = data.bounds.y;
-        }
+    }
+})
 
-        mainWindow = new BrowserWindow(bwdata);
-        mainWindow.loadURL('file://' + __dirname + '/electron-start.html');
-        mainWindow.focus();
+// Quit when all windows are closed.
+app.on('window-all-closed', function () {
+  // On macOS it is common for applications and their menu bar
+  // to stay active until the user quits explicitly with Cmd + Q
+  if (process.platform !== 'darwin') app.quit()
+})
 
-        // Listen for badge changes
-        ipcMain.on('badge', function(event, arg) {
-            if (process.platform === "darwin") {
-                app.dock.setBadge(String(arg));
-            }
-            else if (process.platform === "win32") {
-                let n = parseInt(arg, 10);
-                // Only show notifications with number
-                if (isNaN(n)) {
-                    return;
-                }
-                if (n > 0) {
-                    mainWindow.setOverlayIcon(__dirname + '/assets/img/favicon.ico', String(arg));
-                } else {
-                    mainWindow.setOverlayIcon(null, '');
-                }
-            }
-        });
+app.on('activate', function () {
+  // On macOS it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
+  if (mainWindow === null) createWindow()
+})
 
-        mainWindow.on('devtools-opened', function() {
-            mainWindow.webContents.executeJavaScript("document.getElementById('glowingbear').openDevTools();");
-        });
-
-        mainWindow.on('close', function() {
-            // Save window bounds to disk
-            var data = {
-                bounds: mainWindow.getBounds()
-            };
-            fs.writeFileSync(initPath, JSON.stringify(data));
-        });
-
-        mainWindow.on('closed', function() {
-            app.quit();
-        });
-    });
-})();
+// In this file you can include the rest of your app's specific main process
+// code. You can also put them in separate files and require them here.
