@@ -3,4 +3,6 @@ node_modules/
 
 # Electron stuff
 fonts/
-Glowing\ Bear-*/
+build/
+dist/
+
