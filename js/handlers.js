@@ -168,7 +168,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
                     $rootScope.$emit('notificationChanged');
                 }
 
-                if ((buffer.notify !== 0 && message.highlight) || _.contains(message.tags, 'notify_private')) {
+                if ((buffer.notify !== 0) && (message.highlight || _.contains(message.tags, 'notify_private'))) {
                     buffer.notification++;
                     server.unread++;
                     notifications.createHighlight(buffer, message);
