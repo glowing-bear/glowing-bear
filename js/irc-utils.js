@@ -119,7 +119,7 @@ IrcUtils.service('IrcUtils', [function() {
             suf = ':';
         }
         // addSpace defaults to true
-        var addSpaceChar = (addSpace === undefined || addSpace === true) ? ' ' : '';
+        var addSpaceChar = (addSpace === undefined || addSpace === 'on') ? ' ' : '';
 
         // new nick list to search in
         var searchNickList = _ciNickList(nickList);
