@@ -169,14 +169,5 @@ describe('filter', function() {
             plugins);
         }));
 
-        it('should recognize vines', inject(function(plugins) {
-            expectTheseMessagesToContain([
-                'https://vine.co/v/hWh262H9HM5',
-                'https://vine.co/v/hWh262H9HM5/embed',
-            ],
-            'Vine',
-            plugins);
-        }));
-
     });
 });

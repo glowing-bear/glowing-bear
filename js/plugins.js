@@ -535,24 +535,6 @@ plugins.factory('userPlugins', function() {
     });
 
     /*
-     * Vine plugin
-     */
-    var vinePlugin = new UrlPlugin('Vine', function (url) {
-        var regexp = /^https?:\/\/(www\.)?vine\.co\/v\/([a-zA-Z0-9]+)(\/.*)?/i,
-            match = url.match(regexp);
-        if (match) {
-            var id = match[2], embedurl = "https://vine.co/v/" + id + "/embed/simple?audio=1";
-            var element = angular.element('<iframe></iframe>')
-                                 .addClass('vine-embed')
-                                 .attr('src', embedurl)
-                                 .attr('width', '600')
-                                 .attr('height', '600')
-                                 .attr('frameborder', '0');
-            return element.prop('outerHTML') + '<script async src="https://platform.vine.co/static/scripts/embed.js" charset="utf-8"></script>';
-        }
-    });
-
-    /*
      * Streamable Embedded Player
      */
     var streamablePlugin = new UrlPlugin('Streamable video', function(url) {
@@ -570,7 +552,7 @@ plugins.factory('userPlugins', function() {
     });
 
     return {
-        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, audioPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, pastebinPlugin, giphyPlugin, tweetPlugin, vinePlugin, streamablePlugin]
+        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, audioPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, pastebinPlugin, giphyPlugin, tweetPlugin, streamablePlugin]
     };
 
 
