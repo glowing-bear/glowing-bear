@@ -149,6 +149,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }, false);
     }
 
+    $rootScope.$on('nickListChanged', function() {
+            $scope.updateShowNicklist();
+    });
 
     $rootScope.$on('activeBufferChanged', function(event, unreadSum) {
         var ab = models.getActiveBuffer();
@@ -776,7 +779,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.updateShowNicklist = function() {
         var ab = models.getActiveBuffer();
         // Check whether buffer exists and nicklist is non-empty
-        if (!ab || ab.isNicklistEmpty()) {
+        if (!ab || !ab.nicklistRequested() || ab.isNicklistEmpty()) {
             $scope.showNicklist = false;
             return false;
         }

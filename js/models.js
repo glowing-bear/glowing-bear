@@ -155,6 +155,18 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             */
         };
         /*
+         * Clear the nicklist
+         */
+        var clearNicklist = function() {
+            //only keep the root node
+            for (var obj in nicklist) {
+                if (obj !== 'root') {
+                    delete nicklist[obj]
+                }
+            }
+        };
+
+        /*
          * Updates a nick in nicklist
          */
         var updateNick = function(group, nick) {
@@ -325,6 +337,7 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             nicklist: nicklist,
             addNick: addNick,
             delNick: delNick,
+            clearNicklist: clearNicklist,
             updateNick: updateNick,
             getNicklistByTime: getNicklistByTime,
             serverSortKey: serverSortKey,
