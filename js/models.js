@@ -161,7 +161,7 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             //only keep the root node
             for (var obj in nicklist) {
                 if (obj !== 'root') {
-                    delete nicklist[obj]
+                    delete nicklist[obj];
                 }
             }
         };
