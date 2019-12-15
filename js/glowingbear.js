@@ -662,26 +662,26 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         //There can be a combination of host, port and path
         //If host is specified here the dedicated port field is disabled
 
-        let parts;
+        var parts;
 
         //host
-        const regexHost = /^([^:\/]*|\[.*\])$/;
-        const regexHostPort = /^([^:]*|\[.*\]):(\d+)$/;
-        const regexHostPortPath = /^([^:]*|\[.*\]):(\d*)\/(.+)$/;
-        if(parts = regexHost.exec(settings.host))
+        var regexHost = /^([^:\/]*|\[.*\])$/;
+        var regexHostPort = /^([^:]*|\[.*\]):(\d+)$/;
+        var regexHostPortPath = /^([^:]*|\[.*\]):(\d*)\/(.+)$/;
+        if((parts = regexHost.exec(settings.host)) !== null)
         {
             settings.hostOnly = parts[1];
             $rootScope.portDisabled = false;
         }
         //host:port
-        else if(parts = regexHostPort.exec(settings.host))
+        else if((parts = regexHostPort.exec(settings.host)) !== null)
         {
             settings.hostOnly = parts[1];
             settings.port = parts[2];
             $rootScope.portDisabled = true;
         }
         //host:port/path
-        else if(parts = regexHostPortPath.exec(settings.host))
+        else if((parts = regexHostPortPath.exec(settings.host)) !== null)
         {
             settings.hostOnly = parts[1];
             settings.port = parts[2];
