@@ -932,3 +932,7 @@ code {
     color: #444;
     border: 1pt solid #444;
 }
+
+.form-control[disabled] {
+    background-color: #555;
+}

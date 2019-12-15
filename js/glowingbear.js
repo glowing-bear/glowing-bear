@@ -657,6 +657,39 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         window.requestAnimationFrame(scroll);
     };
 
+    $scope.parseHost = function() {
+        //The host field is multi purpose for advanced users
+        //There can be a combination of host, port and path
+        //If host is specified here the dedicated port field is disabled
+
+        let parts;
+
+        //host
+        const regexHost = /^([^:\/]*|\[.*\])$/;
+        const regexHostPort = /^([^:]*|\[.*\]):(\d+)$/;
+        const regexHostPortPath = /^([^:]*|\[.*\]):(\d*)\/(.+)$/;
+        if(parts = regexHost.exec(settings.host))
+        {
+            settings.hostOnly = parts[1];
+            $rootScope.portDisabled = false;
+        }
+        //host:port
+        else if(parts = regexHostPort.exec(settings.host))
+        {
+            settings.hostOnly = parts[1];
+            settings.port = parts[2];
+            $rootScope.portDisabled = true;
+        }
+        //host:port/path
+        else if(parts = regexHostPortPath.exec(settings.host))
+        {
+            settings.hostOnly = parts[1];
+            settings.port = parts[2];
+            settings.path = parts[3];
+            $rootScope.portDisabled = true;
+        }
+
+    };
 
     $scope.connect = function() {
         notifications.requestNotificationPermission();
@@ -666,7 +699,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $rootScope.bufferBottom = true;
         $scope.connectbutton = 'Connecting';
         $scope.connectbuttonicon = 'glyphicon-refresh glyphicon-spin';
-        connection.connect(settings.host, settings.port, settings.path, $scope.password, settings.ssl);
+        connection.connect(settings.hostOnly, settings.port, settings.path, $scope.password, settings.ssl);
     };
     $scope.disconnect = function() {
         $scope.connectbutton = 'Connect';
@@ -928,13 +961,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.init = function() {
+        $scope.parseHost();
         if (window.location.hash) {
             var rawStr = atob(window.location.hash.substring(1));
             window.location.hash = "";
             var spl = rawStr.split(":");
-            var host = spl[0];
-            var port = parseInt(spl[1]);
-            var path = 'weechat';
+            settings.host = spl[0];
+            settings.port = parseInt(spl[1]);
             var password = spl[2];
             var ssl = spl.length > 3;
             notifications.requestNotificationPermission();
@@ -944,7 +977,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             $rootScope.bufferBottom = true;
             $scope.connectbutton = 'Connecting';
             $scope.connectbuttonicon = 'glyphicon-chevron-right';
-            connection.connect(host, port, path, password, ssl);
+            $scope.parseHost();
+            connection.connect(settings.host, settings.port, settings.path, password, ssl);
         }
     };
 

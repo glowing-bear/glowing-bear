@@ -104,15 +104,13 @@
                   <div class="input-group">
                     <div class="row no-gutter">
                       <div class="col-sm-9">
-                        <input type="text" class="form-control favorite-font" id="host" ng-model="settings.host" placeholder="Address" autocapitalize="off">
+                        <input type="text" class="form-control favorite-font" id="host" ng-model="settings.host" ng-change="parseHost()" placeholder="Address" autocapitalize="off">
                       </div>
                       <div class="col-sm-3">
-                        <input type="text" class="form-control favorite-font" id="port" ng-model="settings.port" placeholder="Port">
+                        <input type="text" class="form-control favorite-font" id="port" ng-model="settings.port" ng-disabled="portDisabled" placeholder="Port">
                       </div>
                     </div>
                   </div>
-                  <label class="control-label" for="path">WebSocket path</label>
-                  <input type="text" class="form-control favorite-font" id="path" ng-model="settings.path" placeholder="WebSocket path">
                   <label class="control-label" for="password">WeeChat relay password</label>
                   <input type="password" class="form-control favorite-font" id="password" ng-model="password" placeholder="Password">
                   <div class="alert alert-danger" ng-show="passwordError" ng-cloak>
@@ -208,6 +206,10 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
               </p>
               <p>
               Helpful trigger to automatically repin a buffer (in this instance, <var>irc.freenode.#weechat</var>): <pre><code>/trigger add autopin signal "buffer_opened" "${buffer[${tg_signal_data}].full_name} =~ <var>irc.freenode.#weechat</var>" "" "/command -buffer ${buffer[${tg_signal_data}].full_name} * /buffer set localvar_set_pinned true"</code></pre>
+              </p>
+              <h3>Setting path</h3>
+              <p>
+                The path is by default 'weechat'. In case a proxy is used the path can be changed by entering it in the host field. For example <code>your.domain.com:8000/otherpath</code>.
               </p>
             </div>
           </div>
