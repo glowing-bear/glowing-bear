@@ -207,10 +207,41 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
               <p>
               Helpful trigger to automatically repin a buffer (in this instance, <var>irc.freenode.#weechat</var>): <pre><code>/trigger add autopin signal "buffer_opened" "${buffer[${tg_signal_data}].full_name} =~ <var>irc.freenode.#weechat</var>" "" "/command -buffer ${buffer[${tg_signal_data}].full_name} * /buffer set localvar_set_pinned true"</code></pre>
               </p>
-              <h3>Setting path</h3>
-              <p>
-                The path is by default 'weechat'. In case a proxy is used the path can be changed by entering it in the host field. For example <code>your.domain.com:8000/otherpath</code>.
+              <h3>Setting a custom path</h3>
+              <p> 
+                To connect to the weechat relay service we connect using a URL. A typical URL consists of 4 parts. <code>{scheme}://{host}:{port}/{path}</code>. The path can be changed by enterying the relay's full URL (except the scheme).
+              </p> 
+                <ul>
+                  <li><b>scheme</b>: The scheme must never be input. The scheme is "ws" if TLS isn't used and it is "wss" if TLS is used.</li>
+                  <li><b>host</b>: Can be an IPv4, IPv6 or a FQDN. IPv6 addresses must be wrapped in square brackets.</li>
+                  <li><b>port</b>: can be specified in the host field or the seperate port field. However if the path is specified in the host field the port must also be specified.</li>
+                  <li><b>path</b>: by defautl this is "weechat". In case <a href="https://github.com/glowing-bear/glowing-bear/wiki/Proxying-WeeChat-relay-with-a-web-server">a proxy</a> is used the path can be changed by entering it in the host field.</li>
+                </ul>
+              <p> 
+                Examples of correct input for the host field are:
               </p>
+                <ul>
+                  <li>192.168.0.1</li>
+                  <li>192.168.0.1:8000</li>
+                  <li>192.168.0.1:8000/weechat2</li>
+                  <li>[2001:db8:85a3::8a2e:370:7334]</li>
+                  <li>[2001:db8:85a3::8a2e:370:7334]:8000</li>
+                  <li>[2001:db8:85a3::8a2e:370:7334]:8000/weechat2</li>
+                  <li>yourhost.yourdomain.com</li>
+                  <li>yourhost.yourdomain.com:8000</li>
+                  <li>yourhost.yourdomain.com:8000/weechat2</li>
+                </ul>
+                <p>
+                  Incorrect input for the host field:
+                </p>
+                <ul>
+                  <li><span class="text-danger">ws://192.168.0.1</span> (do not specify the scheme)</li>
+                  <li><span class="text-danger">192.168.0.1/weechat2</span> (must specify port when specifying path)</li>
+                  <li><span class="text-danger">[2001:db8:85a3::8a2e:370:7334]/weechat2</span> (must specify port when specifying path)</li>
+                  <li><span class="text-danger">yourhost.yourdomain.com/weechat2</span> (must specify port when specifying path)</li>
+                  <li><span class="text-danger">2001:db8:85a3::8a2e:370:7334</span> (must wrap IPv6 address in square brackets)</li>
+                  <li><span class="text-danger">2001:db8:85a3::8a2e:370:7334:8000</span> (must wrap IPv6 address in square brackets)</li>
+                </ul>
             </div>
           </div>
         </div>
