@@ -263,6 +263,11 @@ input[type=text], input[type=password], #sendMessage {
 #sidebar.ng-hide {
   width: 0;
 }
+    
+#sidebar[data-state=hidden] {
+    transform: translate(-200px,0);
+    -webkit-transform: translate(-200px,0);
+}
 
 #nicklist {
     position: fixed;
@@ -400,6 +405,7 @@ td.time {
     margin-left: 0;
     padding-left: 145px;
 }
+
 .footer.withnicklist {
     padding-right: 100px;
 }
@@ -792,11 +798,6 @@ img.emojione {
     #sidebar[data-state=visible] {
         transform: translate(0,0);
         -webkit-transform: translate(0,0); /* Safari */
-    }
-
-    #sidebar[data-state=hidden] {
-        transform: translate(-200px,0);
-        -webkit-transform: translate(-200px,0);
     }
 
     .content[sidebar-state=visible] #bufferlines, .content[sidebar-state=visible] .footer {
