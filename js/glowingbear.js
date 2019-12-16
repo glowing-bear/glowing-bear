@@ -610,7 +610,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
         return connection.fetchMoreLines(numLines);
     };
-
+    
     $scope.infiniteScroll = function() {
         // Check if we are already fetching
         if ($rootScope.loadingLines) {
@@ -630,6 +630,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             }
             $rootScope.bufferBottom = eob.offsetTop <= bl.scrollTop + bl.clientHeight;
     };
+
     $rootScope.scrollWithBuffer = function(scrollToReadmarker, moreLines) {
         // First, get scrolling status *before* modification
         // This is required to determine where we were in the buffer pre-change
@@ -664,39 +665,31 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.parseHost = function() {
-
         //The host field is multi purpose for advanced users
         //There can be a combination of host, port and path
         //If host is specified here the dedicated port field is disabled
-        var parts;
-
         $rootScope.hostInvalid = false;
 
-        //host
+        var parts;
         var regexHost = /^([^:\/]*|\[.*\])$/;
         var regexHostPort = /^([^:]*|\[.*\]):(\d+)$/;
         var regexHostPortPath = /^([^:]*|\[.*\]):(\d*)\/(.+)$/;
-        if((parts = regexHost.exec(settings.hostField)) !== null) {
+
+        if ((parts = regexHost.exec(settings.hostField)) !== null) { //host only
             settings.host = parts[1];
             $rootScope.portDisabled = false;
-        }
-        //host:port
-        else if((parts = regexHostPort.exec(settings.hostField)) !== null) {
+        } else if ((parts = regexHostPort.exec(settings.hostField)) !== null) { //host:port
             settings.host = parts[1];
             settings.port = parts[2];
             $rootScope.portDisabled = true;
-        }
-        //host:port/path
-        else if((parts = regexHostPortPath.exec(settings.hostField)) !== null) {
+        } else if ((parts = regexHostPortPath.exec(settings.hostField)) !== null) { //host:port/path
             settings.host = parts[1];
             settings.port = parts[2];
             settings.path = parts[3];
             $rootScope.portDisabled = true;
-        }
-        else {
+        } else {
             $rootScope.hostInvalid = true;
         }
-
     };
 
     $scope.connect = function() {
@@ -709,12 +702,14 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $scope.connectbuttonicon = 'glyphicon-refresh glyphicon-spin';
         connection.connect(settings.host, settings.port, settings.path, $scope.password, settings.ssl);
     };
+
     $scope.disconnect = function() {
         $scope.connectbutton = 'Connect';
         $scope.connectbuttonicon = 'glyphicon-chevron-right';
         bufferResume.reset();
         connection.disconnect();
     };
+    
     $scope.reconnect = function() {
         var bufferId = models.getActiveBuffer().id;
         connection.attemptReconnect(bufferId, 3000);
@@ -723,6 +718,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.showModal = function(elementId) {
         document.getElementById(elementId).setAttribute('data-state', 'visible');
     };
+
     $scope.closeModal = function($event) {
         function closest(elem, selector) {
             var matchesSelector = elem.matches || elem.webkitMatchesSelector || elem.mozMatchesSelector || elem.msMatchesSelector;
