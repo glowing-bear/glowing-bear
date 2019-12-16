@@ -463,8 +463,10 @@ plugins.factory('userPlugins', function() {
                 jsonp(url, function(data) {
                     // Add the gist stylesheet only once
                     if (document.querySelectorAll('link[rel=stylesheet][href="' + data.stylesheet + '"]').length < 1) {
-                        var stylesheet = '<link rel="stylesheet" href="' + data.stylesheet + '"></link>';
-                        document.getElementsByTagName('head')[0].innerHTML += stylesheet;
+                        var stylesheet = document.createElement("link");
+                        stylesheet.href = data.stylesheet;
+                        stylesheet.setAttribute('rel', 'stylesheet');
+                        document.head.appendChild(stylesheet);
                     }
                     element.innerHTML = '<div style="clear:both">' + data.div + '</div>';
                 });
