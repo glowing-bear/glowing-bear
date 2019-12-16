@@ -10,6 +10,10 @@ body {
     border: 0px none;
 }
 
+.form-control[disabled] {
+    background: none repeat scroll 0% 0% rgba(63, 63, 63, 0.3);
+}
+
 .form-control option {
    color: #eee;
    background: #282828;
