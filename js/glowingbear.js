@@ -610,7 +610,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
         return connection.fetchMoreLines(numLines);
     };
-    
+
     $scope.infiniteScroll = function() {
         // Check if we are already fetching
         if ($rootScope.loadingLines) {
@@ -677,10 +677,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         if ((parts = regexHost.exec(settings.hostField)) !== null) { //host only
             settings.host = parts[1];
+            settings.path = "weechat";
             $rootScope.portDisabled = false;
         } else if ((parts = regexHostPort.exec(settings.hostField)) !== null) { //host:port
             settings.host = parts[1];
             settings.port = parts[2];
+            settings.path = "weechat";
             $rootScope.portDisabled = true;
         } else if ((parts = regexHostPortPath.exec(settings.hostField)) !== null) { //host:port/path
             settings.host = parts[1];
