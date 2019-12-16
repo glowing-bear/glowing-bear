@@ -41,7 +41,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // or else they won't be saved to the localStorage.
     settings.setDefaults({
         'theme': 'dark',
-        'host': 'localhost',
+        'hostField': 'localhost',
         'port': 9001,
         'path': 'weechat',
         'ssl': (window.location.protocol === "https:"),
@@ -65,6 +65,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         "currentlyViewedBuffers":{},
     });
     $scope.settings = settings;
+
+    //For upgrade reasons because we changed the name of host to hostField
+    //check if the value might still be in the host key instead of the hostField key
+    if (!settings.hostFieldv && settings.host) {
+        settings.hostField = settings.host; 
+    }
 
     $rootScope.countWatchers = function () {
         $log.debug($rootScope.$$watchersCount);
@@ -658,30 +664,31 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.parseHost = function() {
+
         //The host field is multi purpose for advanced users
         //There can be a combination of host, port and path
         //If host is specified here the dedicated port field is disabled
-
         var parts;
+
         $rootScope.hostInvalid = false;
 
         //host
         var regexHost = /^([^:\/]*|\[.*\])$/;
         var regexHostPort = /^([^:]*|\[.*\]):(\d+)$/;
         var regexHostPortPath = /^([^:]*|\[.*\]):(\d*)\/(.+)$/;
-        if((parts = regexHost.exec(settings.host)) !== null) {
-            settings.hostOnly = parts[1];
+        if((parts = regexHost.exec(settings.hostField)) !== null) {
+            settings.host = parts[1];
             $rootScope.portDisabled = false;
         }
         //host:port
-        else if((parts = regexHostPort.exec(settings.host)) !== null) {
-            settings.hostOnly = parts[1];
+        else if((parts = regexHostPort.exec(settings.hostField)) !== null) {
+            settings.host = parts[1];
             settings.port = parts[2];
             $rootScope.portDisabled = true;
         }
         //host:port/path
-        else if((parts = regexHostPortPath.exec(settings.host)) !== null) {
-            settings.hostOnly = parts[1];
+        else if((parts = regexHostPortPath.exec(settings.hostField)) !== null) {
+            settings.host = parts[1];
             settings.port = parts[2];
             settings.path = parts[3];
             $rootScope.portDisabled = true;
@@ -700,7 +707,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $rootScope.bufferBottom = true;
         $scope.connectbutton = 'Connecting';
         $scope.connectbuttonicon = 'glyphicon-refresh glyphicon-spin';
-        connection.connect(settings.hostOnly, settings.port, settings.path, $scope.password, settings.ssl);
+        connection.connect(settings.host, settings.port, settings.path, $scope.password, settings.ssl);
     };
     $scope.disconnect = function() {
         $scope.connectbutton = 'Connect';
