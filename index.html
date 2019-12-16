@@ -104,7 +104,7 @@
                   <div class="input-group">
                     <div class="row no-gutter">
                       <div class="col-sm-9">
-                        <input type="text" class="form-control favorite-font" id="host" ng-model="settings.host" ng-change="parseHost()" placeholder="Address" autocapitalize="off">
+                        <input type="text" class="form-control favorite-font" id="host" ng-model="settings.host" ng-change="parseHost()" ng-class="{'is-invalid': hostInvalid}" placeholder="Address" autocapitalize="off">
                       </div>
                       <div class="col-sm-3">
                         <input type="text" class="form-control favorite-font" id="port" ng-model="settings.port" ng-disabled="portDisabled" placeholder="Port">
@@ -136,7 +136,7 @@
                     </label>
                   </div>
                 </div>
-                <button class="btn btn-lg btn-primary" ng-click="connect()" ng-cloak>{{ connectbutton }}  <i ng-class="connectbuttonicon" class="glyphicon"></i></button>
+                <button class="btn btn-lg btn-primary" ng-disabled="hostInvalid" ng-click="connect()" ng-cloak>{{ connectbutton }}  <i ng-class="connectbuttonicon" class="glyphicon"></i></button>
               </form>
             </div>
           </div>
