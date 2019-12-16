@@ -319,11 +319,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     });
 
-    $rootScope.wasMobileUi = false;
-    if (utils.isMobileUi()) {
-        $rootScope.wasMobileUi = true;
-    }
-
     if (!settings.fontfamily) {
         if (utils.isMobileUi()) {
             settings.fontfamily = 'sans-serif';
