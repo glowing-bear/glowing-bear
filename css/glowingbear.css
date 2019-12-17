@@ -610,7 +610,6 @@ h2 span, h2 small {
 
 .panel[data-state=active] .panel-collapse {
     transition: max-height 0.5s;
-    max-height: 60em;
     height: auto;
     display: block;
 }

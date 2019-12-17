@@ -69,6 +69,14 @@ select.form-control, select option, input[type=text], input[type=password], #sen
     background: none repeat scroll 0% 0% rgba(255, 255, 255, 0.3);
 }
 
+.form-control[disabled] {
+    background: none repeat scroll 0% 0% rgba(134, 134, 134, 0.3);
+}
+
+input[type=text].is-invalid{
+    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.1), 0px 1px 7px 0px rgba(255, 0, 0, 0.8) inset;
+}
+
 #connection-infos {
     color: #aaa;
 }

@@ -11,7 +11,7 @@ var bufferResume = angular.module('bufferResume', []);
 
 bufferResume.service('bufferResume', ['settings', function(settings) {
     var resumer = {};
-    var key = settings.host + ":" + settings.port;
+    var key = settings.host + ":" + settings.port + "/" + settings.path;
 
     // Hold the status that we were able to find the previously accessed buffer
     //   and reload it.  If we cannot, we'll need to know so we can load the default
