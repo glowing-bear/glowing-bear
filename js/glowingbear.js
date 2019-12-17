@@ -326,11 +326,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     });
 
-    $rootScope.wasMobileUi = false;
-    if (utils.isMobileUi()) {
-        $rootScope.wasMobileUi = true;
-    }
-
     if (!settings.fontfamily) {
         if (utils.isMobileUi()) {
             settings.fontfamily = 'sans-serif';
@@ -583,12 +578,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Recalculation fails when not connected
         if ($rootScope.connected) {
             // Show the sidebar if switching away from mobile view, hide it when switching to mobile
-            // Wrap in a condition so we save ourselves the $apply if nothing changes (50ms or more)
-            if ($scope.wasMobileUi && !utils.isMobileUi()) {
+            if (!utils.isMobileUi()) {
                 $scope.showSidebar();
                 $scope.updateShowNicklist();
             }
-            $scope.wasMobileUi = utils.isMobileUi();
             $scope.calculateNumLines();
 
             // if we're scrolled to the bottom, scroll down to the same position after the resize
