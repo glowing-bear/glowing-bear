@@ -68,7 +68,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     //For upgrade reasons because we changed the name of host to hostField
     //check if the value might still be in the host key instead of the hostField key
-    if (!settings.hostFieldv && settings.host) {
+    if (!settings.hostField && settings.host) {
         settings.hostField = settings.host; 
     }
 
