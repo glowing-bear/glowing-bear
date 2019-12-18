@@ -8,7 +8,7 @@ document.addEventListener("deviceready", function () {
     }
 }, false);
 
-var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'bufferResume', 'plugins', 'IrcUtils', 'ngSanitize', 'ngWebsockets', 'ngTouch'], ['$compileProvider', '$locationProvider', function($compileProvider, $locationProvider) {
+var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'bufferResume', 'plugins', 'IrcUtils', 'ngSanitize', 'ngWebsockets', 'ngTouch'], ['$compileProvider', function($compileProvider) {
     // hacky way to be able to find out if we're in debug mode
     weechat.compileProvider = $compileProvider;
 }]);
@@ -22,6 +22,8 @@ weechat.config(['$compileProvider', function ($compileProvider) {
 weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout','$location', '$log', 'models', 'bufferResume', 'connection', 'notifications', 'utils', 'settings',
     function ($rootScope, $scope, $store, $timeout, $location, $log, models, bufferResume, connection, notifications, utils, settings)
 {
+
+    $location.path(window.location.pathname);
 
     window.openBuffer = function(channel) {
         $scope.openBuffer(channel);
