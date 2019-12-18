@@ -11,12 +11,6 @@ document.addEventListener("deviceready", function () {
 var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'bufferResume', 'plugins', 'IrcUtils', 'ngSanitize', 'ngWebsockets', 'ngTouch'], ['$compileProvider', '$locationProvider', function($compileProvider, $locationProvider) {
     // hacky way to be able to find out if we're in debug mode
     weechat.compileProvider = $compileProvider;
-
-    //remove hashbang from url
-    $locationProvider.html5Mode({
-        enabled: true,
-        requireBase: false
-    }).hashPrefix('');
 }]);
 weechat.config(['$compileProvider', function ($compileProvider) {
     // hack to determine whether we're executing the tests
@@ -988,30 +982,22 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if($location.search().password) { $scope.settings.password = $location.search().password;}
         if($location.search().autoconnect) { $scope.settings.autoconnect = $location.search().autoconnect === 'true';}
 
-        if (window.location.hash) {
-            notifications.requestNotificationPermission();
-            $rootScope.sslError = false;
-            $rootScope.securityError = false;
-            $rootScope.errorMessage = false;
-            $rootScope.bufferBottom = true;
-            $scope.connectbutton = 'Connecting';
-            $scope.connectbuttonicon = 'glyphicon-chevron-right';
-            connection.connect(settings.host, settings.port, settings.path, password, ssl);
-        }
     };
 
 }]);
 
-weechat.config(['$routeProvider',
-    function($routeProvider) {
+weechat.config(['$routeProvider', '$locationProvider',
+    function($routeProvider, $locationProvider) {
         $routeProvider.when('/', {
             templateUrl: 'index.html',
             controller: 'WeechatCtrl'
-        })
-        //for legacy reasons redirect the /#! to /
-        .otherwise({
-          redirectTo: '/'
         });
+
+        //remove hashbang from url
+        $locationProvider.html5Mode({
+            enabled: true,
+            requireBase: false
+        }).hashPrefix('');
     }
 ]);
 
