@@ -692,7 +692,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if (settings.useTotp) {
             settings.autoconnect = false;
         }
-    }
+    };
 
 
     $scope.connect = function() {
