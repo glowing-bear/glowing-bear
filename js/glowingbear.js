@@ -13,7 +13,10 @@ var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatMode
     weechat.compileProvider = $compileProvider;
 
     //remove hashbang from url
-    $locationProvider.html5Mode(true).hashPrefix('');
+    $locationProvider.html5Mode({
+        enabled: true,
+        requireBase: false
+    }).hashPrefix('');
 }]);
 weechat.config(['$compileProvider', function ($compileProvider) {
     // hack to determine whether we're executing the tests
