@@ -45,6 +45,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'port': 9001,
         'path': 'weechat',
         'ssl': (window.location.protocol === "https:"),
+        'useTotp': false,
         'savepassword': false,
         'autoconnect': false,
         'nonicklist': utils.isMobileUi(),
@@ -687,6 +688,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     };
 
+    $scope.changeUseTOTP = function() {
+        if (settings.useTotp) {
+            settings.autoconnect = false;
+        }
+    }
+
+
     $scope.connect = function() {
         notifications.requestNotificationPermission();
         $rootScope.sslError = false;
@@ -695,7 +703,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $rootScope.bufferBottom = true;
         $scope.connectbutton = 'Connecting';
         $scope.connectbuttonicon = 'glyphicon-refresh glyphicon-spin';
-        connection.connect(settings.host, settings.port, settings.path, $scope.password, settings.ssl);
+        connection.connect(settings.host, settings.port, settings.path, $scope.password, settings.ssl, settings.useTotp, $scope.totp);
+        $scope.totp = "";//clear for next time
     };
 
     $scope.disconnect = function() {

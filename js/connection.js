@@ -20,7 +20,7 @@ weechat.factory('connection',
     var locked = false;
 
     // Takes care of the connection and websocket hooks
-    var connect = function (host, port, path, passwd, ssl, noCompression, successCallback, failCallback) {
+    var connect = function (host, port, path, passwd, ssl, useTotp, totp, noCompression, successCallback, failCallback) {
         $rootScope.passwordError = false;
         connectionData = [host, port, path, passwd, ssl, noCompression];
         var proto = ssl ? 'wss' : 'ws';
@@ -45,7 +45,9 @@ weechat.factory('connection',
                 ngWebsockets.send(
                     weeChat.Protocol.formatInit({
                         password: passwd,
-                        compression: noCompression ? 'off' : 'zlib'
+                        compression: noCompression ? 'off' : 'zlib',
+                        useTotp: useTotp,
+                        totp: totp
                     })
                 );
 
@@ -328,7 +330,8 @@ weechat.factory('connection',
     var attemptReconnect = function (bufferId, timeout) {
         $log.info('Attempting to reconnect...');
         var d = connectionData;
-        connect(d[0], d[1], d[2], d[3], d[4], function() {
+        // won't work if totp is mandetory
+        connect(d[0], d[1], d[2], d[3], d[4], false, "", function() {
             $rootScope.reconnecting = false;
             // on success, update active buffer
             models.setActiveBuffer(bufferId);
