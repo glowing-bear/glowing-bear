@@ -23,8 +23,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     function ($rootScope, $scope, $store, $timeout, $location, $log, models, bufferResume, connection, notifications, utils, settings)
 {
 
-    $location.path(window.location.pathname);
-
     window.openBuffer = function(channel) {
         $scope.openBuffer(channel);
         $scope.$apply();
