@@ -8,9 +8,12 @@ document.addEventListener("deviceready", function () {
     }
 }, false);
 
-var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'bufferResume', 'plugins', 'IrcUtils', 'ngSanitize', 'ngWebsockets', 'ngTouch'], ['$compileProvider', function($compileProvider) {
+var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'bufferResume', 'plugins', 'IrcUtils', 'ngSanitize', 'ngWebsockets', 'ngTouch'], ['$compileProvider', '$locationProvider', function($compileProvider, $locationProvider) {
     // hacky way to be able to find out if we're in debug mode
     weechat.compileProvider = $compileProvider;
+
+    //remove hashbang from url
+    $locationProvider.html5Mode(true).hashPrefix('');
 }]);
 weechat.config(['$compileProvider', function ($compileProvider) {
     // hack to determine whether we're executing the tests
@@ -19,8 +22,8 @@ weechat.config(['$compileProvider', function ($compileProvider) {
     }
 }]);
 
-weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'bufferResume', 'connection', 'notifications', 'utils', 'settings',
-    function ($rootScope, $scope, $store, $timeout, $log, models, bufferResume, connection, notifications, utils, settings)
+weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout','$location', '$log', 'models', 'bufferResume', 'connection', 'notifications', 'utils', 'settings',
+    function ($rootScope, $scope, $store, $timeout, $location, $log, models, bufferResume, connection, notifications, utils, settings)
 {
 
     window.openBuffer = function(channel) {
@@ -699,6 +702,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.connect = function() {
+
         notifications.requestNotificationPermission();
         $rootScope.sslError = false;
         $rootScope.securityError = false;
@@ -973,14 +977,15 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $scope.init = function() {
         $scope.parseHost();
+
+        //Fill in url parameters, they take precedence over the stored settings, but store them
+        if($location.search().host) { $scope.settings.host = $location.search().host; $scope.settings.hostField = $location.search().host;}
+        if($location.search().port) { $scope.settings.port =  parseInt($location.search().port);}
+        if($location.search().path) { $scope.settings.path = $location.search().path;}
+        if($location.search().password) { $scope.settings.password = $location.search().password;}
+        if($location.search().autoconnect) { $scope.settings.autoconnect = $location.search().autoconnect === 'true';}
+
         if (window.location.hash) {
-            var rawStr = atob(window.location.hash.substring(1));
-            window.location.hash = "";
-            var spl = rawStr.split(":");
-            settings.host = spl[0];
-            settings.port = parseInt(spl[1]);
-            var password = spl[2];
-            var ssl = spl.length > 3;
             notifications.requestNotificationPermission();
             $rootScope.sslError = false;
             $rootScope.securityError = false;
@@ -988,7 +993,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             $rootScope.bufferBottom = true;
             $scope.connectbutton = 'Connecting';
             $scope.connectbuttonicon = 'glyphicon-chevron-right';
-            $scope.parseHost();
             connection.connect(settings.host, settings.port, settings.path, password, ssl);
         }
     };
@@ -1000,6 +1004,10 @@ weechat.config(['$routeProvider',
         $routeProvider.when('/', {
             templateUrl: 'index.html',
             controller: 'WeechatCtrl'
+        })
+        //for legacy reasons redirect the /#! to /
+        .otherwise({
+          redirectTo: '/'
         });
     }
 ]);

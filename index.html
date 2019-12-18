@@ -12,6 +12,7 @@
     <meta http-equiv="x-dns-prefetch-control" content="off">
     <!-- https://w3c.github.io/manifest/ && https://developer.mozilla.org/en-US/docs/Web/Manifest -->
     <link rel="manifest" href="webapp.manifest.json">
+    <base href="/">
     <title ng-bind-template="{{ notificationStatus }}Glowing Bear {{ pageTitle}}"></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
     <link rel="shortcut icon" sizes="128x128" href="assets/img/glowing_bear_128x128.png">
@@ -230,7 +231,10 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
               </p>
               <h3>Setting a custom path</h3>
               <p> 
-                To connect to the weechat relay service we connect using a URL. A typical URL consists of 4 parts. <code>{scheme}://{host}:{port}/{path}</code>. The path can be changed by enterying the relay's full URL (except the scheme).
+                The hostname field can be used to set a custom path. Or a URL parameter can be used see section 'URL Parameters'. 
+              </p>
+              <p>
+                To connect to the weechat relay service we connect using a URL. A typical URL consists of 4 parts. <code>{scheme}://{host}:{port}/{path}</code>. The path can be changed by entering the relay's full URL (except the scheme).
               </p> 
                 <ul>
                   <li><b>scheme</b>: The scheme must never be input. The scheme is "ws" if TLS isn't used and it is "wss" if TLS is used.</li>
@@ -263,6 +267,27 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
                   <li><span class="text-danger">2001:db8:85a3::8a2e:370:7334</span> (must wrap IPv6 address in square brackets)</li>
                   <li><span class="text-danger">2001:db8:85a3::8a2e:370:7334:8000</span> (must wrap IPv6 address in square brackets)</li>
                 </ul>
+                <h3>URL Parameters</h3>
+                <p>
+                  Parameters can be passed in the URL to prefill the fields. This can be useful when you have multiple relays and want to use bookmarks to manage them.
+                  We do not recommend passing the password in this was as it will be visible in plain text and stored in the bookmark but it is possible. Special characters should be <a href="https://www.w3schools.com/tags/ref_urlencode.asp">URL encoded</a>.
+                </p>
+                <p>
+                  If we want just the path for example: <code>https://glowing-bear.org/?path=weechat2</code>
+                </p>
+                <p>
+                  An example: <code>https://glowing-bear.org/?host=my.domain.com&port=8000&password=hunter2&autoconnect=true</code>
+                </p>
+                <p>
+                  Available parameters:
+                  <ul>
+                    <li>host</li>
+                    <li>port</li>
+                    <li>path</li>
+                    <li>password</li>
+                    <li>autoconnect</li>
+                  </ul>
+                </p>
             </div>
           </div>
         </div>
