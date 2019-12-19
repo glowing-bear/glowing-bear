@@ -698,6 +698,22 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $scope.totpInvalid = !/^\d{4,10}$/.test($scope.totp);
     };
 
+    $scope.parseHash = function() {
+
+        //Fill in url parameters, they take precedence over the stored settings, but store them
+        var params = $location.$$hash.split('&').map(function(val) {return {key: val.split('=')[0], value: val.split('=')[1]}});
+        var hostParam = params.find(function(p) { return p.key === 'host'; });
+        var portParam = params.find(function(p) { return p.key === 'port'; });
+        var pathParam = params.find(function(p) { return p.key === 'path'; });
+        var passwordParam = params.find(function(p) { return p.key === 'password'; });
+        var autoconnectParam = params.find(function(p) { return p.key === 'autoconnect'; });
+        if(hostParam) { $scope.settings.host = hostParam.value; $scope.settings.hostField = hostParam.value;}
+        if(portParam) { $scope.settings.port =  parseInt(portParam.value);}
+        if(pathParam) { $scope.settings.path = pathParam.value;}
+        if(passwordParam) { $scope.settings.password = passwordParam.value;}
+        if(autoconnectParam) { $scope.settings.autoconnect = autoconnectParam.value === 'true';}
+    };
+
     $scope.connect = function() {
 
         notifications.requestNotificationPermission();
@@ -972,23 +988,21 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     };
 
+    window.onhashchange = function() {
+        console.log('hash has changed');
+        $scope.parseHash();
+    };
+
     $scope.init = function() {
         $scope.parseHost();
-
-        //Fill in url parameters, they take precedence over the stored settings, but store them
-        if($location.search().host) { $scope.settings.host = $location.search().host; $scope.settings.hostField = $location.search().host;}
-        if($location.search().port) { $scope.settings.port =  parseInt($location.search().port);}
-        if($location.search().path) { $scope.settings.path = $location.search().path;}
-        if($location.search().password) { $scope.settings.password = $location.search().password;}
-        if($location.search().autoconnect) { $scope.settings.autoconnect = $location.search().autoconnect === 'true';}
-
+        $scope.parseHash();
     };
 
 }]);
 
 weechat.config(['$routeProvider', '$locationProvider',
     function($routeProvider, $locationProvider) {
-        $routeProvider.when('/', {
+        $routeProvider.when('', {
             templateUrl: 'index.html',
             controller: 'WeechatCtrl'
         });
@@ -997,7 +1011,7 @@ weechat.config(['$routeProvider', '$locationProvider',
         $locationProvider.html5Mode({
             enabled: true,
             requireBase: false
-        }).hashPrefix('');
+        });
     }
 ]);
 
