@@ -688,12 +688,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     };
 
-    $scope.changeUseTOTP = function() {
+    settings.addCallback('useTotp', function() {
         if (settings.useTotp) {
             settings.autoconnect = false;
         }
-    };
-
+    });
 
     $scope.connect = function() {
         notifications.requestNotificationPermission();

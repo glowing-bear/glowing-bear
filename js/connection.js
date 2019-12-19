@@ -328,9 +328,15 @@ weechat.factory('connection',
     };
 
     var attemptReconnect = function (bufferId, timeout) {
+        // won't work if totp is mandatory
+        if (settings.useTotp)
+        {
+            $log.info('Not reconnecting because totp will be expired.');
+            return;
+        }
+
         $log.info('Attempting to reconnect...');
         var d = connectionData;
-        // won't work if totp is mandatory
         connect(d[0], d[1], d[2], d[3], d[4], false, "", function() {
             $rootScope.reconnecting = false;
             // on success, update active buffer

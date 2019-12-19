@@ -100,21 +100,31 @@
             <div class="panel-body">
                <form class="form-signin" role="form">
                 <div class="form-group">
-                  <label class="control-label" for="host">WeeChat relay hostname and port number</label>
+
                   <div class="input-group">
                     <div class="row no-gutter">
                       <div class="col-sm-9">
+                        <label class="control-label" for="host">WeeChat relay hostname</label>
                         <input type="text" class="form-control favorite-font" id="host" ng-model="settings.hostField" ng-change="parseHost()" ng-class="{'is-invalid': hostInvalid}" placeholder="Address" autocapitalize="off">
                       </div>
                       <div class="col-sm-3">
+                        <label class="control-label" for="port">Port</label>
                         <input type="text" class="form-control favorite-font" id="port" ng-model="settings.port" ng-disabled="portDisabled" placeholder="Port">
                       </div>
                     </div>
                   </div>
-                  <label class="control-label" for="password">WeeChat relay password</label>
-                  <input type="password" class="form-control favorite-font" id="password" ng-model="password" placeholder="Password">
+                  <div class="row no-gutter">
+                    <div ng-class="settings.useTotp ? 'col-sm-9' : 'col-sm-12'" ng>
+                      <label class="control-label" for="password">WeeChat relay password</label>
+                      <input type="password" class="form-control favorite-font" id="password" ng-model="password" placeholder="Password">
+                    </div>
+                    <div class="col-sm-3" ng-Show="settings.useTotp">
+                      <label class="control-label" for="totp">Token</label>
+                      <input type="text" class="form-control favorite-font" id="totp" ng-model="totp" autocomplete="off">
+                    </div>
+                  </div>
                   <div class="alert alert-danger" ng-show="passwordError" ng-cloak>
-                    Error: wrong password or one-time password
+                    Error: wrong password or token
                   </div>
 
                   <div class="checkbox">
@@ -137,12 +147,10 @@
                   </div>
                   <div class="checkbox">
                     <label class="control-label" for="useTotp">
-                      <input type="checkbox" id="useTotp" ng-model="settings.useTotp" ng-change="changeUseTOTP()">
-                      Use Time-based One-Time Password
+                      <input type="checkbox" id="useTotp" ng-model="settings.useTotp">
+                      Use Time-based One-Time Password <a href="https://blog.weechat.org/post/2019/01/14/Support-of-TOTP">ℹ️</a>
                     </label>
                   </div>
-                  <label class="control-label" for="totp" ng-Show="settings.useTotp">One time password</label>
-                  <input type="text" class="form-control favorite-font" id="totp" ng-model="totp" ng-Show="settings.useTotp" ng-model="totp" autocomplete="off">
                 </div>
                 <button class="btn btn-lg btn-primary" ng-disabled="hostInvalid" ng-click="connect()" ng-cloak>{{ connectbutton }}  <i ng-class="connectbuttonicon" class="glyphicon"></i></button>
               </form>
