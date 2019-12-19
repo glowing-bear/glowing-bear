@@ -989,7 +989,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     window.onhashchange = function() {
-        console.log('hash has changed');
         $scope.parseHash();
     };
 
