@@ -120,7 +120,7 @@
                     </div>
                     <div class="col-sm-3" ng-Show="settings.useTotp">
                       <label class="control-label" for="totp">Token</label>
-                      <input type="text" class="form-control favorite-font" id="totp" ng-model="totp" autocomplete="off">
+                      <input type="text" class="form-control favorite-font" id="totp" ng-model="totp" ng-change="parseTotp()" ng-class="{'is-invalid': totpInvalid}" autocomplete="off">
                     </div>
                   </div>
                   <div class="alert alert-danger" ng-show="passwordError" ng-cloak>
@@ -152,7 +152,7 @@
                     </label>
                   </div>
                 </div>
-                <button class="btn btn-lg btn-primary" ng-disabled="hostInvalid" ng-click="connect()" ng-cloak>{{ connectbutton }}  <i ng-class="connectbuttonicon" class="glyphicon"></i></button>
+                <button class="btn btn-lg btn-primary" ng-disabled="hostInvalid || (totpInvalid && settings.useTotp)" ng-click="connect()" ng-cloak>{{ connectbutton }}  <i ng-class="connectbuttonicon" class="glyphicon"></i></button>
               </form>
             </div>
           </div>

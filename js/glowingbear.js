@@ -694,6 +694,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     });
 
+    $scope.parseTotp = function() {
+        $scope.totpInvalid = !/^\d{6}$/.test($scope.totp);
+    };
+
     $scope.connect = function() {
         notifications.requestNotificationPermission();
         $rootScope.sslError = false;
