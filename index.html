@@ -144,7 +144,7 @@
                       Encryption. <strong>Strongly recommended!</strong> Need help? Check below.
                     </label>
                   </div>
-                  <div class="checkbox" ng-show="settings.savepassword">
+                  <div class="checkbox" ng-show="settings.savepassword || settings.autoconnect">
                     <label class="control-label" for="autoconnect">
                         <input type="checkbox" id="autoconnect" ng-model="settings.autoconnect"  ng-disabled="settings.useTotp">
                         Automatically connect
