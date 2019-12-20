@@ -701,17 +701,17 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.parseHash = function() {
 
         //Fill in url parameters, they take precedence over the stored settings, but store them
-        var params = $location.$$hash.split('&').map(function(val) { return {key: val.split('=')[0], value: val.split('=')[1]}; });
-        var hostParam = params.find(function(p) { return p.key === 'host'; });
-        var portParam = params.find(function(p) { return p.key === 'port'; });
-        var pathParam = params.find(function(p) { return p.key === 'path'; });
-        var passwordParam = params.find(function(p) { return p.key === 'password'; });
-        var autoconnectParam = params.find(function(p) { return p.key === 'autoconnect'; });
-        if(hostParam) { $scope.settings.host = hostParam.value; $scope.settings.hostField = hostParam.value;}
-        if(portParam) { $scope.settings.port =  parseInt(portParam.value);}
-        if(pathParam) { $scope.settings.path = pathParam.value;}
-        if(passwordParam) { $scope.settings.password = passwordParam.value;}
-        if(autoconnectParam) { $scope.settings.autoconnect = autoconnectParam.value === 'true';}
+        var params = {};
+        $location.$$hash.split('&').map(function(val) {
+            var segs = val.split('=');
+            params[segs[0]] = segs[1];
+        });
+        if(params.host) { $scope.settings.host = params.host; $scope.settings.hostField = params.host; }
+        if(params.port) { $scope.settings.port =  parseInt(params.port); }
+        if(params.path) { $scope.settings.path = params.path; $scope.settings.hostField = $scope.settings.host + ":" + $scope.settings.port + "/" + $scope.settings.path; }
+        if(params.password) { $scope.password = params.password; }
+        if(params.autoconnect) { $scope.settings.autoconnect = params.autoconnect === 'true'; }
+
     };
 
     $scope.connect = function() {
