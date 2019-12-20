@@ -701,7 +701,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.parseHash = function() {
 
         //Fill in url parameters, they take precedence over the stored settings, but store them
-        var params = $location.$$hash.split('&').map(function(val) {return {key: val.split('=')[0], value: val.split('=')[1]}});
+        var params = $location.$$hash.split('&').map(function(val) { return {key: val.split('=')[0], value: val.split('=')[1]}; });
         var hostParam = params.find(function(p) { return p.key === 'host'; });
         var portParam = params.find(function(p) { return p.key === 'port'; });
         var pathParam = params.find(function(p) { return p.key === 'path'; });
