@@ -126,11 +126,16 @@
                   <div class="alert alert-danger" ng-show="passwordError" ng-cloak>
                     Error: wrong password or token
                   </div>
-
                   <div class="checkbox">
                     <label class="control-label" for="savepassword">
                         <input type="checkbox" id="savepassword" ng-model="settings.savepassword">
                         Save password in your browser
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label class="control-label" for="useTotp">
+                      <input type="checkbox" id="useTotp" ng-model="settings.useTotp">
+                      Use Time-based One-Time Password <a href="https://blog.weechat.org/post/2019/01/14/Support-of-TOTP" target="_blank"><i class="glyphicon glyphicon-info-sign"></i></a>
                     </label>
                   </div>
                   <div class="checkbox">
@@ -143,12 +148,6 @@
                     <label class="control-label" for="autoconnect">
                         <input type="checkbox" id="autoconnect" ng-model="settings.autoconnect"  ng-disabled="settings.useTotp">
                         Automatically connect
-                    </label>
-                  </div>
-                  <div class="checkbox">
-                    <label class="control-label" for="useTotp">
-                      <input type="checkbox" id="useTotp" ng-model="settings.useTotp">
-                      Use Time-based One-Time Password <a href="https://blog.weechat.org/post/2019/01/14/Support-of-TOTP">ℹ️</a>
                     </label>
                   </div>
                 </div>
