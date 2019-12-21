@@ -19,8 +19,8 @@ weechat.config(['$compileProvider', function ($compileProvider) {
     }
 }]);
 
-weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'bufferResume', 'connection', 'notifications', 'utils', 'settings',
-    function ($rootScope, $scope, $store, $timeout, $log, models, bufferResume, connection, notifications, utils, settings)
+weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout','$location', '$log', 'models', 'bufferResume', 'connection', 'notifications', 'utils', 'settings',
+    function ($rootScope, $scope, $store, $timeout, $location, $log, models, bufferResume, connection, notifications, utils, settings)
 {
 
     window.openBuffer = function(channel) {
@@ -698,7 +698,36 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $scope.totpInvalid = !/^\d{4,10}$/.test($scope.totp);
     };
 
+    $scope.parseHash = function() {
+
+        //Fill in url parameters, they take precedence over the stored settings, but store them
+        var params = {};
+        $location.$$hash.split('&').map(function(val) {
+            var segs = val.split('=');
+            params[segs[0]] = segs[1];
+        });
+        if (params.host) {
+            $scope.settings.host = params.host;
+            $scope.settings.hostField = params.host;
+        }
+        if (params.port) {
+            $scope.settings.port =  parseInt(params.port);
+        }
+        if (params.path) {
+            $scope.settings.path = params.path;
+            $scope.settings.hostField = $scope.settings.host + ":" + $scope.settings.port + "/" + $scope.settings.path;
+        }
+        if (params.password) {
+            $scope.password = params.password;
+        }
+        if (params.autoconnect) {
+            $scope.settings.autoconnect = params.autoconnect === 'true';
+        }
+
+    };
+
     $scope.connect = function() {
+
         notifications.requestNotificationPermission();
         $rootScope.sslError = false;
         $rootScope.securityError = false;
@@ -971,35 +1000,28 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }
     };
 
+    window.onhashchange = function() {
+        $scope.parseHash();
+    };
+
     $scope.init = function() {
         $scope.parseHost();
-        if (window.location.hash) {
-            var rawStr = atob(window.location.hash.substring(1));
-            window.location.hash = "";
-            var spl = rawStr.split(":");
-            settings.host = spl[0];
-            settings.port = parseInt(spl[1]);
-            var password = spl[2];
-            var ssl = spl.length > 3;
-            notifications.requestNotificationPermission();
-            $rootScope.sslError = false;
-            $rootScope.securityError = false;
-            $rootScope.errorMessage = false;
-            $rootScope.bufferBottom = true;
-            $scope.connectbutton = 'Connecting';
-            $scope.connectbuttonicon = 'glyphicon-chevron-right';
-            $scope.parseHost();
-            connection.connect(settings.host, settings.port, settings.path, password, ssl);
-        }
+        $scope.parseHash();
     };
 
 }]);
 
-weechat.config(['$routeProvider',
-    function($routeProvider) {
-        $routeProvider.when('/', {
+weechat.config(['$routeProvider', '$locationProvider',
+    function($routeProvider, $locationProvider) {
+        $routeProvider.when('', {
             templateUrl: 'index.html',
             controller: 'WeechatCtrl'
+        });
+
+        //remove hashbang from url
+        $locationProvider.html5Mode({
+            enabled: true,
+            requireBase: false
         });
     }
 ]);

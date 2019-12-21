@@ -144,7 +144,7 @@
                       Encryption. <strong>Strongly recommended!</strong> Need help? Check below.
                     </label>
                   </div>
-                  <div class="checkbox" ng-show="settings.savepassword">
+                  <div class="checkbox" ng-show="settings.savepassword || settings.autoconnect">
                     <label class="control-label" for="autoconnect">
                         <input type="checkbox" id="autoconnect" ng-model="settings.autoconnect"  ng-disabled="settings.useTotp">
                         Automatically connect
@@ -230,7 +230,10 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
               </p>
               <h3>Setting a custom path</h3>
               <p> 
-                To connect to the weechat relay service we connect using a URL. A typical URL consists of 4 parts. <code>{scheme}://{host}:{port}/{path}</code>. The path can be changed by enterying the relay's full URL (except the scheme).
+                The hostname field can be used to set a custom path. Or a URL parameter can be used see section 'URL Parameters'. 
+              </p>
+              <p>
+                To connect to the weechat relay service we connect using a URL. A typical URL consists of 4 parts. <code>{scheme}://{host}:{port}/{path}</code>. The path can be changed by entering the relay's full URL (except the scheme).
               </p> 
                 <ul>
                   <li><b>scheme</b>: The scheme must never be input. The scheme is "ws" if TLS isn't used and it is "wss" if TLS is used.</li>
@@ -263,6 +266,27 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
                   <li><span class="text-danger">2001:db8:85a3::8a2e:370:7334</span> (must wrap IPv6 address in square brackets)</li>
                   <li><span class="text-danger">2001:db8:85a3::8a2e:370:7334:8000</span> (must wrap IPv6 address in square brackets)</li>
                 </ul>
+                <h3>URL Parameters</h3>
+                <p>
+                  Parameters can be passed in the URL to prefill the fields. This can be useful when you have multiple relays and want to use bookmarks to manage them.
+                  We do not recommend passing the password in this way as it will be visible in plain text and stored in history/bookmarks but it is possible. Special characters should be <a href="https://www.w3schools.com/tags/ref_urlencode.asp">URL encoded</a>.
+                </p>
+                <p>
+                  If we want just the path for example: <code>https://glowing-bear.org/#path=weechat2</code>
+                </p>
+                <p>
+                  An example: <code>https://glowing-bear.org/#host=my.domain.com&port=8000&password=hunter2&autoconnect=true</code>
+                </p>
+                <p>
+                  Available parameters:
+                  <ul>
+                    <li>host</li>
+                    <li>port</li>
+                    <li>path</li>
+                    <li>password</li>
+                    <li>autoconnect</li>
+                  </ul>
+                </p>
             </div>
           </div>
         </div>
