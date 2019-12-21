@@ -648,6 +648,9 @@
         if (params.password !== null) {
             keys.push('password=' + params.password);
         }
+        if (params.useTotp) {
+            keys.push('totp=' + params.totp);
+        }
         parts.push(keys.join(','));
 
         return WeeChatProtocol._formatCmd(null, 'init', parts);
