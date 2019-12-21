@@ -706,11 +706,23 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             var segs = val.split('=');
             params[segs[0]] = segs[1];
         });
-        if(params.host) { $scope.settings.host = params.host; $scope.settings.hostField = params.host; }
-        if(params.port) { $scope.settings.port =  parseInt(params.port); }
-        if(params.path) { $scope.settings.path = params.path; $scope.settings.hostField = $scope.settings.host + ":" + $scope.settings.port + "/" + $scope.settings.path; }
-        if(params.password) { $scope.password = params.password; }
-        if(params.autoconnect) { $scope.settings.autoconnect = params.autoconnect === 'true'; }
+        if (params.host) {
+            $scope.settings.host = params.host;
+            $scope.settings.hostField = params.host;
+        }
+        if (params.port) {
+            $scope.settings.port =  parseInt(params.port);
+        }
+        if (params.path) {
+            $scope.settings.path = params.path;
+            $scope.settings.hostField = $scope.settings.host + ":" + $scope.settings.port + "/" + $scope.settings.path;
+        }
+        if (params.password) {
+            $scope.password = params.password;
+        }
+        if (params.autoconnect) {
+            $scope.settings.autoconnect = params.autoconnect === 'true';
+        }
 
     };
 
