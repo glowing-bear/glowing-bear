@@ -1009,6 +1009,42 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $scope.parseHash();
     };
 
+    //drag sidebar
+    interact('.resize-drag')
+    .resizable({
+        // resize from all edges and corners
+        edges: { right: true },
+
+        modifiers: [
+        // keep the edges inside the parent
+        interact.modifiers.restrictEdges({
+            outer: 'parent',
+            endOnly: true
+        }),
+
+        // minimum size
+        interact.modifiers.restrictSize({
+            min: { width: 100, height: 50 }
+        })
+        ],
+
+        inertia: true
+    })
+    .on('resizemove', function (event) {
+        var target = event.target;
+
+        target.classList.add('notransition');
+
+        // update the sidebar's width
+        target.style.width = event.rect.width + 'px';
+
+        setTimeout(function() {
+            target.classList.remove('notransition');
+        }, 1000);
+
+
+    })
+
 }]);
 
 weechat.config(['$routeProvider', '$locationProvider',

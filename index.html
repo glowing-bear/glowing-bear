@@ -13,7 +13,7 @@
     <!-- https://w3c.github.io/manifest/ && https://developer.mozilla.org/en-US/docs/Web/Manifest -->
     <link rel="manifest" href="webapp.manifest.json">
     <title ng-bind-template="{{ notificationStatus }}Glowing Bear {{ pageTitle}}"></title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha256-L/W5Wfqfa0sdBNIKN9cG6QA5F2qx4qICmU2VgLruv9Y=" crossorigin="anonymous" />
     <link rel="shortcut icon" sizes="128x128" href="assets/img/glowing_bear_128x128.png">
     <link rel="apple-touch-icon" sizes="128x128" href="assets/img/glowing_bear_128x128.png">
     <link rel="shortcut icon" type="image/png" href="assets/img/favicon.png" >
@@ -26,6 +26,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js" integrity="sha256-G7A4JrJjJlFqP0yamznwPjAApIKPkadeHfyIwiaa9e0=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/lib/js/emojione.min.js" integrity="sha256-9cBkVeU53NiJ9/BdcJta3HbERAmf5X9DE2WvL8V+gDs=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="3rdparty/inflate.min.js"></script>
+    <script type="text/javascript" src="node_modules/interactjs/dist/interact.js"></script>
     <script type="text/javascript" src="js/localstorage.js"></script>
     <script type="text/javascript" src="js/weechat.js"></script>
     <script type="text/javascript" src="js/irc-utils.js"></script>
@@ -48,7 +49,7 @@
     <script type="text/javascript" src="js/imgur.js"></script>
     <script type="text/javascript" src="3rdparty/favico-0.3.10.min.js"></script>
   </head>
-  <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keyup="handleKeyRelease($event)"  ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" ng-init="init()" lang="en-US">
+  <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keyup="handleKeyRelease($event)"  ng-keypress="handleKeyPress($event)" ng-init="init()" lang="en-US">
     <div class="alert alert-danger upload-error" ng-show="uploadError" ng-cloak>
       <p><strong>Upload error:</strong> Image upload failed.</p>
     </div>
@@ -333,103 +334,107 @@ npm run build-electron-{windows, darwin, linux}</pre>
         </div>
       </div>
     </div>
-    <div class="content" id="content" sidebar-state="visible" ng-show="connected" ng-cloak>
-      <div id="topbar">
-        <div class="brand" ng-click="toggleSidebar()">
-          <a href="#">
-            <img alt="brand" src="assets/img/favicon.png" title="Connected to {{ settings.host }}:{{ settings.port}}">
-          </a>
-          <span class="badge" ng-show="unread > 0">{{unread}}</span>
-          <span class="badge danger" ng-show="notifications > 0">{{notifications}}</span>
-
-          <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
-        </div>
-
-        <div class="title"  ng-click="showModal('topicModal')">
-          <span class="desktop" ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank':{rel:'noopener noreferrer'} | DOMfilter:'irclinky')"></span>
-          <span class="mobile" ng-class="{'active': activeBuffer().active, 'channel': activeBuffer().type === 'channel', 'channel_hash': activeBuffer().prefix === '#', 'channel_plus': activeBuffer().prefix === '+', 'channel_ampersand': activeBuffer().prefix === '&'}">{{ activeBuffer().trimmedName || activeBuffer().fullName }}</span>
-        </div>
-
-        <div class="actions pull-right vertical-line-left">
-          <a class="settings-toggle" ng-click="showModal('settingsModal')" title="Options menu" href="#">
-            <i class="glyphicon glyphicon-cog"></i>
-          </a>
-          <a ng-click="disconnect()" title="Disconnect from WeeChat" href="#">
-            <i class="glyphicon glyphicon-off"></i>
-          </a>
-        </div>
-      </div>
-      <div id="sidebar" data-state="visible" ng-swipe-left="swipeLeft()" ng-swipe-disable-mouse class="vertical-line">
-        <ul class="nav nav-pills nav-stacked" ng-class="{'indented': (predicate === 'serverSortKey'), 'showquickkeys': showQuickKeys, 'showjumpkeys': showJumpKeys}">
-          <li class="bufferfilter">
-            <form role="form">
-              <div class="input-group">
-                <span class="input-group-addon" id="jump-addon">Jump</span>
-                <input class="form-control favorite-font" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="{{ search_placeholder || 'Search' }}" autocomplete="off" aria-describedby="jump-addon">
-              </div>
-            </form>
-          </li>
-          <li class="buffer" ng-class="{'active': buffer.active,
-                                        'unread': buffer.unread,
-                                        'notification': buffer.notification,
-                                        'highlight': search && search_highlight_key === key,
-                                        'indent': buffer.indent,
-                                        'channel': buffer.type === 'channel',
-                                        'channel_hash': buffer.prefix === '#',
-                                        'channel_plus': buffer.prefix === '+',
-                                        'channel_ampersand': buffer.prefix === '&',
-                                        'private': buffer.type === 'private'}"
-              ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray:'withidx' | filter:bufferlistfilter | filter:hasUnread | orderBy:predicate | getBufferQuickKeys:this))">
-            <a ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}" href="#">
-              <span class="badge pull-right" ng-class="{'danger': buffer.notification}" ng-bind="buffer.notification || buffer.unread"></span>
-              <span class="buffer-quick-key">{{ buffer.$quickKey }}</span>
-              <span class="buffer-jump-key">{{ ("0" + buffer.$jumpKey).slice(-2) }}</span>
-              <span class="buffername">{{ buffer.trimmedName || buffer.fullName }}</span>
+    <div class="container-fluid p-0 resize-container d-flex flex-column" id="content" sidebar-state="visible" ng-show="connected" ng-cloak>
+        <div id="topbar" class="d-flex">
+          <div class="brand" ng-click="toggleSidebar()">
+            <a href="#">
+              <img alt="brand" src="assets/img/favicon.png" title="Connected to {{ settings.host }}:{{ settings.port}}">
             </a>
-          </li>
-        </ul>
-      </div>
-      <div id="nicklist" ng-if="showNicklist" ng-swipe-right="swipeRight()" ng-swipe-disable-mouse class="favorite-font vertical-line-left">
-        <ul class="nicklistgroup list-unstyled" ng-repeat="group in nicklist">
-          <li ng-repeat="nick in group.nicks|orderBy:'name'">
-            <a ng-click="openBuffer(nick.name)"><span ng-class="::nick.prefixClasses" ng-bind="::nick.prefix"></span><span ng-class="::nick.nameClasses" ng-bind="::nick.name"></span></a>
-          </li>
-        </ul>
-      </div>
-      <div id="bufferlines" class="favorite-font" ng-swipe-right="swipeRight()" ng-swipe-left="swipeLeft()" ng-swipe-disable-mouse ng-class="{'withnicklist': showNicklist}" when-scrolled="infiniteScroll()" imgur-drop>
-        <table>
-          <tbody>
-            <tr class="bufferline">
-              <td ng-hide="activeBuffer().allLinesFetched" colspan="3">
-                <a class="fetchmorelines btn btn-xs btn-primary" ng-click="fetchMoreLines()" ng-hide="loadingLines" href="#">Fetch more lines</a>
-                <span ng-show="loadingLines">Fetching more lines <i class="glyphicon glyphicon-refresh glyphicon-spin"></i></span>
-              </td>
-            </tr>
-          </tbody>
-          <tbody ng-repeat="bufferline in bufferlines">
-            <tr class="bufferline">
-              <td class="time">
-                <span class="date" ng-class="::{'repeated-time': bufferline.shortTime==bufferlines[$index-1].shortTime}">
-                  <span class="cof-chat_time cob-chat_time coa-chat_time" ng-bind-html="::bufferline.formattedTime"></span>
-                </span>
-              </td>
-              <td class="prefix"><span ng-class="::{'repeated-prefix': bufferline.prefixtext==bufferlines[$index-1].prefixtext}"><a ng-click="addMention(bufferline)"><span class="hidden-bracket" ng-if="::(bufferline.showHiddenBrackets)">&lt;</span><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text|prefixlimit:25"></span><span class="hidden-bracket" ng-if="::(bufferline.showHiddenBrackets)">&gt;</span></a></span></td><!--
-           --><td class="message"><!--
-             --><div ng-repeat="metadata in ::bufferline.metadata" plugin data="::metadata"></div><!--
-             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes.concat(['line-' + part.$$hashKey.replace(':','_')])" ng-bind-html="::part.text | conditionalLinkify:part.classes.includes('cof-chat_host') | DOMfilter:'codify' | DOMfilter:'irclinky' | DOMfilter:'emojify':settings.enableJSEmoji | DOMfilter:'inlinecolour' |  DOMfilter:'latexmath':('.line-' + part.$$hashKey.replace(':','_')):settings.enableMathjax"></span>
-              </td>
-            </tr>
-            <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
-              <td colspan="3">
-                <hr id="readmarker">
-              </td>
-            </tr>
-          </tbody>
-        </table><span id="end-of-buffer"></span>
-      </div>
-      <div class="footer" ng-class="{'withnicklist': showNicklist}">
-        <div input-bar input-id="sendMessage" command="command"></div>
-      </div>
+            <span class="badge" ng-show="unread > 0">{{unread}}</span>
+            <span class="badge danger" ng-show="notifications > 0">{{notifications}}</span>
+  
+            <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
+          </div>
+  
+          <div class="title"  ng-click="showModal('topicModal')">
+            <span class="desktop" ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank':{rel:'noopener noreferrer'} | DOMfilter:'irclinky')"></span>
+            <span class="mobile" ng-class="{'active': activeBuffer().active, 'channel': activeBuffer().type === 'channel', 'channel_hash': activeBuffer().prefix === '#', 'channel_plus': activeBuffer().prefix === '+', 'channel_ampersand': activeBuffer().prefix === '&'}">{{ activeBuffer().trimmedName || activeBuffer().fullName }}</span>
+          </div>
+  
+          <div class="actions pull-right vertical-line-left">
+            <a class="settings-toggle" ng-click="showModal('settingsModal')" title="Options menu" href="#">
+              <i class="glyphicon glyphicon-cog"></i>
+            </a>
+            <a ng-click="disconnect()" title="Disconnect from WeeChat" href="#">
+              <i class="glyphicon glyphicon-off"></i>
+            </a>
+          </div>
+        </div>
+        <div class="d-flex align-items-stretch flex-grow-1" style="min-height: 0;">
+          <div id="sidebar" class="flexresize-drag" data-state="visible" ng-swipe-left="swipeLeft()" ng-swipe-disable-mouse class="vertical-line" >
+            <div class="d-flex flex-column" ng-class="{'indented': (predicate === 'serverSortKey'), 'showquickkeys': showQuickKeys, 'showjumpkeys': showJumpKeys}">
+              <div class="bufferfilter">
+                <form role="form">
+                  <div class="input-group">
+                    <span class="input-group-addon" id="jump-addon">Jump</span>
+                    <input class="form-control favorite-font" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="{{ search_placeholder || 'Search' }}" autocomplete="off" aria-describedby="jump-addon">
+                  </div>
+                </form>
+              </div>
+              <div class="btn btn-default buffer" ng-class="{'active': buffer.active,
+                                            'unread': buffer.unread,
+                                            'notification': buffer.notification,
+                                            'highlight': search && search_highlight_key === key,
+                                            'indent': buffer.indent,
+                                            'channel': buffer.type === 'channel',
+                                            'channel_hash': buffer.prefix === '#',
+                                            'channel_plus': buffer.prefix === '+',
+                                            'channel_ampersand': buffer.prefix === '&',
+                                            'private': buffer.type === 'private'}"
+                  ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray:'withidx' | filter:bufferlistfilter | filter:hasUnread | orderBy:predicate | getBufferQuickKeys:this))"
+                  ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}" href="#"
+                  >
+                  <span class="badge pull-right" ng-class="{'danger': buffer.notification}" ng-bind="buffer.notification || buffer.unread"></span>
+                  <span class="buffer-quick-key">{{ buffer.$quickKey }}</span>
+                  <span class="buffer-jump-key">{{ ("0" + buffer.$jumpKey).slice(-2) }}</span>
+                  <span class="buffername">{{ buffer.trimmedName || buffer.fullName }}</span>
+              </div>
+            </div>
+          </div>
+          <div id="middlecontainer" class="d-flex flex-column align-items-stretch justify-content-between flex-grow-1">
+             <div id="bufferlines" class="favorite-font flex-grow-1 flex-shrink-1" ng-swipe-right="swipeRight()" ng-swipe-left="swipeLeft()"  imgur-drop> <!--ng-swipe-disable-mouse when-scrolled="infiniteScroll()" -->
+              <table>
+                <tbody>
+                  <tr class="bufferline">
+                    <td ng-hide="activeBuffer().allLinesFetched" colspan="3">
+                      <a class="fetchmorelines btn btn-xs btn-primary" ng-click="fetchMoreLines()" ng-hide="loadingLines" href="#">Fetch more lines</a>
+                      <span ng-show="loadingLines">Fetching more lines <i class="glyphicon glyphicon-refresh glyphicon-spin"></i></span>
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody ng-repeat="bufferline in bufferlines">
+                  <tr class="bufferline">
+                    <td class="time">
+                      <span class="date" ng-class="::{'repeated-time': bufferline.shortTime==bufferlines[$index-1].shortTime}">
+                        <span class="cof-chat_time cob-chat_time coa-chat_time" ng-bind-html="::bufferline.formattedTime"></span>
+                      </span>
+                    </td>
+                    <td class="prefix"><span ng-class="::{'repeated-prefix': bufferline.prefixtext==bufferlines[$index-1].prefixtext}"><a ng-click="addMention(bufferline)"><span class="hidden-bracket" ng-if="::(bufferline.showHiddenBrackets)">&lt;</span><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text|prefixlimit:25"></span><span class="hidden-bracket" ng-if="::(bufferline.showHiddenBrackets)">&gt;</span></a></span></td><!--
+                 --><td class="message"><!--
+                   --><div ng-repeat="metadata in ::bufferline.metadata" plugin data="::metadata"></div><!--
+                   --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes.concat(['line-' + part.$$hashKey.replace(':','_')])" ng-bind-html="::part.text | conditionalLinkify:part.classes.includes('cof-chat_host') | DOMfilter:'codify' | DOMfilter:'irclinky' | DOMfilter:'emojify':settings.enableJSEmoji | DOMfilter:'inlinecolour' |  DOMfilter:'latexmath':('.line-' + part.$$hashKey.replace(':','_')):settings.enableMathjax"></span>
+                    </td>
+                  </tr>
+                  <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
+                    <td colspan="3">
+                      <hr id="readmarker">
+                    </td>
+                  </tr>
+                </tbody>
+              </table><span id="end-of-buffer"></span>
+            </div>
+            <div class="footer">
+              <div input-bar input-id="sendMessage" command="command"></div>
+            </div>
+          </div>
+          <div id="nicklist" class="" ng-if="showNicklist" ng-swipe-right="swipeRight()" ng-swipe-disable-mouse class="favorite-font vertical-line-left">
+            <ul class="nicklistgroup list-unstyled" ng-repeat="group in nicklist">
+              <li ng-repeat="nick in group.nicks|orderBy:'name'">
+                <a ng-click="openBuffer(nick.name)"><span ng-class="::nick.prefixClasses" ng-bind="::nick.prefix"></span><span ng-class="::nick.nameClasses" ng-bind="::nick.name"></span></a>
+              </li>
+            </ul>
+          </div>
+        </div>
     </div>
     <div id="soundNotification"></div>
     <div id="reconnect" class="alert alert-danger" ng-click="reconnect()" ng-show="reconnecting" ng-cloak>

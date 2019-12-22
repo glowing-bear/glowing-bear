@@ -3,9 +3,6 @@ body {
     height: 100%;
 /* The html and body elements cannot have any padding or margin. */
 }
-.no-overflow {
-    overflow: hidden;
-}
 
 .mobile {
   display: none;
@@ -136,21 +133,14 @@ input[type=text], input[type=password], #sendMessage {
 .input-group {
     width: 100%;
 }
-.row {
-    margin: 0px;
-    max-width: 300px;
-}
+
 .no-gutter [class*="col"] {
     padding: 0px
-}
-.col-sm-9 {
-    padding-right: 5px !important;
 }
 .glyphicon {
     top: 0; /* Fixes alignment issue in top bar */
 }
 #topbar {
-    position: fixed;
     width: 100%;
     height: 35px;
     max-height: 35px;
@@ -177,7 +167,6 @@ input[type=text], input[type=password], #sendMessage {
     margin-left: 10px
 }
 #topbar .title {
-    position: fixed;
     left: 145px; /* sidebar */
     overflow: hidden;
     width: 100%; /* for title modal click area */
@@ -191,7 +180,6 @@ input[type=text], input[type=password], #sendMessage {
     height: 35px;
     line-height: 35px;
     font-size: 22px;
-    position: fixed;
     right: 0;
 }
 #topbar .actions > * {
@@ -216,34 +204,13 @@ input[type=text], input[type=password], #sendMessage {
 }
 
 #sidebar {
-    position: fixed;
-    width: 140px;
-    min-height: 100%;
-    height: 100%;
     overflow-y: auto;
-    overflow-x: hidden;
-    padding-top: 35px; /* topbar */
-    padding-right: env(safe-area-inset-right);
-    padding-bottom: 1px; /* need to force a padding here */
-    padding-left: env(safe-area-inset-left);
-    font-size: smaller;
-    transition:0.2s ease-in-out;
-    z-index: 2;
+
 }
 
-#sidebar[data-state=visible] {
-    left: 0px;
+#sidebar[data-state=hidden], #sidebar.ng-hide {
+    display: none;
 }
-
-#sidebar form {
-}
-#sidebar.ng-hide-add, #sidebar.ng-hide-remove {
-  /* this needs to be here to make it visible during the animation
-     since the .ng-hide class is already on the element rendering
-     it as hidden. */
-  display:block!important;
-}
-
 
 #sidebar .buffer .badge {
    display: none;
@@ -259,29 +226,14 @@ input[type=text], input[type=password], #sendMessage {
 #sidebar ul.indented li.indent span.buffername {
     padding-left: 10px;
 }
-
-#sidebar.ng-hide {
-  width: 0;
-}
-    
-#sidebar[data-state=hidden] {
-    transform: translate(-200px,0);
-    -webkit-transform: translate(-200px,0);
-}
-
-#nicklist {
-    position: fixed;
-    width: 100px;
-    min-height: 100%;
+#content{
     height: 100%;
+}
+#nicklist {
+    height:0px;
+    min-height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    right: 0;
-    top: 0;
-    margin-top: 39px;
-    padding-left: 5px;
-    padding-bottom: 44px;
-    z-index: 2;
 }
 #nicklist ul {
     padding: 0;
@@ -337,28 +289,15 @@ input[type=text], input[type=password], #sendMessage {
     white-space: nowrap;
 }
 
-.content {
-    height: 100%;
-    min-height: 100%;
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-}
-
 #bufferlines {
-    position: relative;
-    height: 100%;
     overflow-y: auto;
-    width: auto;
-    bottom: 35px;      /* input bar */
-    padding-top: 42px; /* topbar */
-    padding-bottom: 7px;
-    -webkit-transition:0.2 ease-in-out all;
-    transition:0.2s ease-in-out all;
+    min-width: 0;
     -webkit-overflow-scrolling: touch; /* Native scroll on ios */
 }
-#bufferlines > table {
-    margin-top: 35px;
-    width: 100%;
+
+#middlecontainer {
 }
+
 tr.bufferline {
     line-height: 100%;
 }
@@ -368,16 +307,16 @@ td.time {
     vertical-align: top;
 }
 
-.withnicklist {
-    margin-right: 100px !important; /* nicklist */
+.notransition {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
 }
-.content[sidebar-state=visible] #bufferlines {
-    margin-left: 145px;    /* sidebar */
-}
+
 #bufferlines .btn {
     font-family: sans-serif;
 }
-
 #reconnect {
     top: 35px;
     position: fixed;
@@ -392,22 +331,7 @@ td.time {
 }
 
 .footer {
-    position: fixed;
-    bottom: 0;
-    height: 35px;
-    width: 100%;
-    margin-bottom: env(safe-area-inset-bottom); /* margin for home-indicator on iPhone X */
-    -webkit-transition:0.2s ease-in-out all;
-    transition:0.2s ease-in-out all;
-    z-index: 1;
-}
-.content[sidebar-state=visible] .footer {
-    margin-left: 0;
-    padding-left: 145px;
-}
 
-.footer.withnicklist {
-    padding-right: 100px;
 }
 
 #inputform {
@@ -727,199 +651,6 @@ img.emojione {
     -webkit-transform: rotate(359deg);
     transform: rotate(359deg);
   }
-}
-
-@media (min-width: 1400px) {
-    #sidebar[data-state=visible], #sidebar {
-        width: 200px;
-    }
-    .content[sidebar-state="visible"] #bufferlines {
-        margin-left: 205px;
-    }
-    #topbar .title {
-        left: 205px;
-    }
-    .content[sidebar-state=visible] .footer {
-        padding-left: 200px;
-    }
-
-    .nav-pills {
-        font-size: 14px;
-    }
-
-    .nav-pills li a {
-        padding: 10px 15px;
-    }
-
-    #nicklist {
-        width: 140px;
-    }
-    .withnicklist {
-      margin-right: 140px !important; /* nicklist */
-    }
-    .footer.withnicklist {
-        padding-right: 148px !important;
-    }
-}
-
-/* */
-/* Mobile layout */
-/* */
-@media (max-width: 968px) {
-
-    .mobile {
-      display: inherit;
-    }
-
-    .desktop {
-      display: none;
-    }
-
-    #bufferlines table {
-        border-collapse: separate;
-        border-spacing: 2px 3px;
-    }
-
-    #sidebar {
-        font-size: normal;
-        bottom: 0px;
-        top: 0px;
-        padding-bottom: 35px;
-        width: 200px;
-    }
-
-    #sidebar.in, #sidebar.collapsing {
-        -webkit-box-shadow: 0px 0px 120px #000;
-        box-shadow: 0px 0px 120px #000;
-        bottom: 0px;
-    }
-
-    #sidebar[data-state=visible] {
-        transform: translate(0,0);
-        -webkit-transform: translate(0,0); /* Safari */
-    }
-
-    .content[sidebar-state=visible] #bufferlines, .content[sidebar-state=visible] .footer {
-        margin-left: 0px;
-        transform: translate(200px,0);
-        -webkit-transform: translate(200px,0);
-    }
-
-    #topbar .title {
-        left: 40px;
-        right: 60px;
-        text-align: center;
-        font-size: 18px;
-        width: initial;
-        z-index: -1;
-    }
-
-    #topbar .brand a {
-        padding: 0 2px 0 10px;
-    }
-
-    #topbar .brand img {
-        height: 28px;
-    }
-
-    #bufferlines, #nicklist {
-        position: relative;
-        min-height: 0;
-        margin-left: 0;
-        max-width: 100%;
-        border: 0;
-    }
-
-    #nicklist {
-        height: auto;
-        padding: 35px 7px 35px 10px;
-        text-align: center;
-        position: fixed;
-        margin-top: 10px;
-        bottom: 0px;
-    }
-
-    .content[sidebar-state=visible] #nicklist {
-        display: none;
-    }
-
-    .navbar-fixed-bottom {
-        margin: 0;
-    }
-
-    .navbar {
-        min-height: 0%;
-    }
-
-    .nav-pills {
-        font-size: 14px;
-    }
-
-    .nav-pills li.buffer {
-        min-height: 30px;
-        max-height: 30px;
-    }
-
-    .nav-pills li a {
-        padding: 10px 15px;
-    }
-
-    #bufferlines {
-        height: 100%;
-        padding-bottom: 0;
-    }
-
-    #bufferlines tr.bufferline {
-        display: block;
-        overflow: hidden;
-    }
-
-    #bufferlines td.time {
-        display: inline-block;
-        padding-right: 3px;
-        font-size: 0.8em;
-    }
-
-    #bufferlines td.time span.date {
-        display: block;
-        margin-bottom: -1px;
-    }
-
-    #bufferlines td.prefix {
-        display: inline;
-        padding-right: 5px;
-        border: 0;
-        font-weight: bold;
-        font-size: 1.06em;
-    }
-
-    #bufferlines td.message {
-        display: inline;
-        padding: 0px !important;
-    }
-
-    .gb-modal .modal-dialog {
-        margin: 20px 2%;
-        width: 96%;
-    }
-
-    .footer {
-        padding-left: 0px !important;
-        padding-right: 0px !important;
-        width: 100% !important;
-    }
-
-    .footer.withnicklist {
-        padding-right: 108px !important;
-    }
-
-    ::-webkit-scrollbar {
-        width: 5px;
-        height: 5px;
-    }
-    .col-sm-9 {
-        padding-right: 0px !important;
-    }
 }
 
 /* ng-cloak hides elements until Angular loads, preventing flickering */
