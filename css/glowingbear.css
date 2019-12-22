@@ -61,9 +61,11 @@ td.message {
 }
 
 #sendMessage {
-    width: 100%;
     height: 35px;
     resize: none;
+    padding: 6px 12px;
+    outline: none;
+    border-bottom: none;  
 }
 
 #sendMessage:focus, #sendMessage:active {
@@ -93,28 +95,27 @@ td.message {
     padding: 6px 12px;
 }
 
-.footer button {
-    border-radius: 0;
-}
 .panel input, .panel .input-group {
     max-width: 300px;
 }
 input[type=text], input[type=password], #sendMessage {
     border: 0;
     border-radius: 0;
-    margin-bottom: 5px !important;
 }
 
 .btn-complete-nick {
-    position: relative;
-    overflow: hidden;
     cursor: pointer;
 }
 
 .btn-send-image {
-    position: relative;
-    overflow: hidden;
     cursor: pointer;
+}
+
+.btn-group-xs > .btn, .btn-xs {
+    padding: .25rem .4rem;
+    font-size: .875rem;
+    line-height: .5;
+    border-radius: .2rem;
 }
 
 .imgur-upload {
@@ -128,10 +129,7 @@ input[type=text], input[type=password], #sendMessage {
     padding: 0;
     opacity: 0;
     filter: ~"alpha(opacity=0)";
-}
-
-.input-group {
-    width: 100%;
+    pointer-events: none;
 }
 
 .no-gutter [class*="col"] {
@@ -158,7 +156,7 @@ input[type=text], input[type=password], #sendMessage {
 }
 #topbar .brand img {
     height: 32px;
-    padding: 2px;
+    padding: 0px 2px 4px 2px;
 }
 #topbar .brand button {
     position: absolute;
@@ -186,9 +184,9 @@ input[type=text], input[type=password], #sendMessage {
     padding: 0 5px;
     display: inline-block;
 }
-#topbar .actions .glyphicon {
-    line-height: 35px;
-    top: 0;
+#topbar .actions a {
+    font-size: 25px;
+    padding-top: 2px;
 }
 #topbar .dropdown-menu form {
     padding-left: 6px;
@@ -203,9 +201,13 @@ input[type=text], input[type=password], #sendMessage {
     z-index: 4;
 }
 
-#sidebar {
+#sidebar{
     overflow-y: auto;
+    min-width: 200px;
+}
 
+#topbar .brand{
+    min-width: 200px;
 }
 
 #sidebar[data-state=hidden], #sidebar.ng-hide {
@@ -232,6 +234,7 @@ input[type=text], input[type=password], #sendMessage {
 #nicklist {
     height:0px;
     min-height: 100%;
+    min-width: 150px;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -268,6 +271,8 @@ input[type=text], input[type=password], #sendMessage {
 }
 .nav-pills > li > a:hover, .nav-pills > li > a:hover span {
     color: #222;
+    text-decoration: none;
+    background-color: #eee;
 }
 /* fix for mobile firefox which ignores :hover */
 .nav-pills > li > a:active, .nav-pills > li > a:active span {
@@ -291,6 +296,7 @@ input[type=text], input[type=password], #sendMessage {
 
 #bufferlines {
     overflow-y: auto;
+    padding-left: 5px;
     min-width: 0;
     -webkit-overflow-scrolling: touch; /* Native scroll on ios */
 }
@@ -330,8 +336,9 @@ td.time {
     color: white;
 }
 
-.footer {
-
+.footer .btn {
+    padding: 8px 12px 1px 12px;
+    border-radius: 0;
 }
 
 #inputform {
@@ -444,6 +451,23 @@ div.colourbox {
     display: inline-block;
     width: 1em;
     align: right;
+}
+
+@media (max-width: 968px){
+    .mobile {
+        display: inherit;
+    }
+    .desktop {
+        display: none;
+    }
+    #topbar .title {
+        left: 40px;
+        right: 60px;
+        text-align: center;
+        font-size: 18px;
+        width: initial;
+        z-index: -1;
+    }
 }
 
 

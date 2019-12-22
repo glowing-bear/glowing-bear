@@ -25,6 +25,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-touch.min.js" integrity="sha256-4IS2pHNTST2Jl6dSzNsERpYleiQi1r4L2MLPElG8LZ4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js" integrity="sha256-G7A4JrJjJlFqP0yamznwPjAApIKPkadeHfyIwiaa9e0=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/lib/js/emojione.min.js" integrity="sha256-9cBkVeU53NiJ9/BdcJta3HbERAmf5X9DE2WvL8V+gDs=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ionicons/4.5.6/ionicons.js" integrity="sha256-bEHDLstR0JFeHx4SlYB9qBPORh2FHoGcPoqMwtOFE30=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="3rdparty/inflate.min.js"></script>
     <script type="text/javascript" src="node_modules/interactjs/dist/interact.js"></script>
     <script type="text/javascript" src="js/localstorage.js"></script>
@@ -345,33 +346,31 @@ npm run build-electron-{windows, darwin, linux}</pre>
   
             <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
           </div>
-  
-          <div class="title"  ng-click="showModal('topicModal')">
+          <div class="title flex-grow-1"  ng-click="showModal('topicModal')">
             <span class="desktop" ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank':{rel:'noopener noreferrer'} | DOMfilter:'irclinky')"></span>
             <span class="mobile" ng-class="{'active': activeBuffer().active, 'channel': activeBuffer().type === 'channel', 'channel_hash': activeBuffer().prefix === '#', 'channel_plus': activeBuffer().prefix === '+', 'channel_ampersand': activeBuffer().prefix === '&'}">{{ activeBuffer().trimmedName || activeBuffer().fullName }}</span>
           </div>
-  
-          <div class="actions pull-right vertical-line-left">
+          <div class="actions vertical-line-left">
             <a class="settings-toggle" ng-click="showModal('settingsModal')" title="Options menu" href="#">
-              <i class="glyphicon glyphicon-cog"></i>
+              <ion-icon name="settings"></ion-icon>
             </a>
             <a ng-click="disconnect()" title="Disconnect from WeeChat" href="#">
-              <i class="glyphicon glyphicon-off"></i>
+              <ion-icon name="power"></ion-icon>
             </a>
           </div>
         </div>
         <div class="d-flex align-items-stretch flex-grow-1" style="min-height: 0;">
-          <div id="sidebar" class="flexresize-drag" data-state="visible" ng-swipe-left="swipeLeft()" ng-swipe-disable-mouse class="vertical-line" >
-            <div class="d-flex flex-column" ng-class="{'indented': (predicate === 'serverSortKey'), 'showquickkeys': showQuickKeys, 'showjumpkeys': showJumpKeys}">
-              <div class="bufferfilter">
+          <div id="sidebar" class="flexresize-drag vertical-line" data-state="visible" ng-swipe-left="swipeLeft()" ng-swipe-disable-mouse class="vertical-line" >
+            <ul class="nav nav-pills flex-column" ng-class="{'indented': (predicate === 'serverSortKey'), 'showquickkeys': showQuickKeys, 'showjumpkeys': showJumpKeys}">
+              <li class="bufferfilter nav-item">
                 <form role="form">
                   <div class="input-group">
                     <span class="input-group-addon" id="jump-addon">Jump</span>
                     <input class="form-control favorite-font" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="{{ search_placeholder || 'Search' }}" autocomplete="off" aria-describedby="jump-addon">
                   </div>
                 </form>
-              </div>
-              <div class="btn btn-default buffer" ng-class="{'active': buffer.active,
+              </li>
+              <li class="buffer nav-item" ng-class="{'active': buffer.active,
                                             'unread': buffer.unread,
                                             'notification': buffer.notification,
                                             'highlight': search && search_highlight_key === key,
@@ -381,18 +380,18 @@ npm run build-electron-{windows, darwin, linux}</pre>
                                             'channel_plus': buffer.prefix === '+',
                                             'channel_ampersand': buffer.prefix === '&',
                                             'private': buffer.type === 'private'}"
-                  ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray:'withidx' | filter:bufferlistfilter | filter:hasUnread | orderBy:predicate | getBufferQuickKeys:this))"
-                  ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}" href="#"
-                  >
+                  ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray:'withidx' | filter:bufferlistfilter | filter:hasUnread | orderBy:predicate | getBufferQuickKeys:this))">
+                <a ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}" href="#">
                   <span class="badge pull-right" ng-class="{'danger': buffer.notification}" ng-bind="buffer.notification || buffer.unread"></span>
                   <span class="buffer-quick-key">{{ buffer.$quickKey }}</span>
                   <span class="buffer-jump-key">{{ ("0" + buffer.$jumpKey).slice(-2) }}</span>
                   <span class="buffername">{{ buffer.trimmedName || buffer.fullName }}</span>
-              </div>
-            </div>
+                </a>
+              </li>
+            </ul>
           </div>
           <div id="middlecontainer" class="d-flex flex-column align-items-stretch justify-content-between flex-grow-1">
-             <div id="bufferlines" class="favorite-font flex-grow-1 flex-shrink-1" ng-swipe-right="swipeRight()" ng-swipe-left="swipeLeft()"  imgur-drop> <!--ng-swipe-disable-mouse when-scrolled="infiniteScroll()" -->
+             <div id="bufferlines" class="favorite-font flex-grow-1 flex-shrink-1" ng-swipe-right="swipeRight()" ng-swipe-left="swipeLeft()" ng-swipe-disable-mouse when-scrolled="infiniteScroll()" imgur-drop>
               <table>
                 <tbody>
                   <tr class="bufferline">
@@ -427,7 +426,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
               <div input-bar input-id="sendMessage" command="command"></div>
             </div>
           </div>
-          <div id="nicklist" class="" ng-if="showNicklist" ng-swipe-right="swipeRight()" ng-swipe-disable-mouse class="favorite-font vertical-line-left">
+          <div id="nicklist" class="vertical-line-left" ng-if="showNicklist" ng-swipe-right="swipeRight()" ng-swipe-disable-mouse class="favorite-font vertical-line-left">
             <ul class="nicklistgroup list-unstyled" ng-repeat="group in nicklist">
               <li ng-repeat="nick in group.nicks|orderBy:'name'">
                 <a ng-click="openBuffer(nick.name)"><span ng-class="::nick.prefixClasses" ng-bind="::nick.prefix"></span><span ng-class="::nick.nameClasses" ng-bind="::nick.name"></span></a>

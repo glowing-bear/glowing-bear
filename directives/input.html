@@ -1,15 +1,11 @@
-<form class="form form-horizontal" id="inputform" ng-submit="sendMessage()" imgur-drop>
-  <div class="input-group">
-    <textarea id="{{inputId}}" class="form-control favorite-font" ng-trim="false" rows="1" ng-change="inputChanged()" autocomplete="on" ng-model="command" ng-focus="hideSidebar()" ng-paste="inputPasted($event)">
+<form id="inputform" ng-submit="sendMessage()" imgur-drop>
+  <div class="d-flex flex">
+    <textarea id="{{inputId}}" class="favorite-font flex-grow-1" ng-trim="false" rows="1" ng-change="inputChanged()" autocomplete="on" ng-model="command" ng-focus="hideSidebar()" ng-paste="inputPasted($event)">
     </textarea>
-    <span class="input-group-btn">
-      <button class="btn btn-complete-nick unselectable mobile" title="Complete nick" ng-click="handleCompleteNickButton($event)"><i class="glyphicon glyphicon-bullhorn"></i></button>
-      <label class="btn btn-send-image unselectable" for="imgur-upload" title="Send image">
-        <i class="glyphicon glyphicon-picture"></i>
-        <input type="file" accept="image/*" multiple title="Send image" id="imgur-upload" class="imgur-upload" file-change="uploadImage($event, files)">
-      </label>
-      <button class="btn btn-send unselectable" title="Send"><i class="glyphicon glyphicon-send"></i></button>
-    </span>
+    <button class="btn btn-complete-nick unselectable mobile" title="Complete nick" ng-click="handleCompleteNickButton($event)"><ion-icon name="search"></ion-icon></button>
+    <button class="btn btn-send-image unselectable" for="imgur-upload" title="Send image"><ion-icon name="image"></ion-icon></button>
+    <input type="file" accept="image/*" multiple title="Send image" id="imgur-upload" class="imgur-upload" file-change="uploadImage($event, files)">
+    <button class="btn btn-send unselectable" title="Send"><ion-icon name="paper-plane"></ion-icon></button>
   </div>
   <div id="imgur-upload-progress"></div>
 </form>
