@@ -130,7 +130,7 @@ input[type=text].is-invalid{
     color: #666;
 }
 
-#topbar, #sidebar, .panel, .dropdown-menu, .modal-content {
+#topbar, #sidebar, .card, .dropdown-menu, .modal-content {
     background: #282828;
 }
 
@@ -156,7 +156,7 @@ input[type=text].is-invalid{
     box-shadow: rgba(255, 255, 255, 0.07) -1px 0 0;
     border-left: 1px solid #121212;
 }
-.panel-group .panel-heading + .panel-collapse .panel-body, .modal-body, .modal-header, .modal-footer {
+.card-group .card-heading + .card-collapse .card-body, .modal-body, .modal-header, .modal-footer {
     -webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
     -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;
     box-shadow: rgba(255, 255, 255, 0.07) 0 -1px 0;

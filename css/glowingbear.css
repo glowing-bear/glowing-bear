@@ -424,7 +424,6 @@ div.colourbox {
     vertical-align: baseline;
     display: inline-block;
     width: 1em;
-    align: right;
 }
 
 #sidebar .showjumpkeys .buffer .buffer-jump-key {
@@ -450,7 +449,6 @@ div.colourbox {
     vertical-align: baseline;
     display: inline-block;
     width: 1em;
-    align: right;
 }
 
 @media (max-width: 968px){
@@ -562,29 +560,18 @@ h2 span, h2 small {
     display: block;
 }
 
-.panel[data-state=active] .panel-collapse {
-    transition: max-height 0.5s;
-    height: auto;
-    display: block;
-}
-.panel[data-state=collapsed] .panel-collapse {
-    transition: max-height 0.5s;
-    max-height: 0;
-}
-.panel[data-state=collapsed] {
-    border: 0px solid transparent;
-}
-.panel .panel-title:before {
-    display: inline-block;
-    font-size: 22px;
-    line-height: 20px;
-    margin: -3px 5px -3px 0;
-}
-.panel[data-state=active] .panel-title:before {
-    content: "–";
-}
-.panel[data-state=collapsed] .panel-title:before {
+.accordion .card-header h4:before {
     content: "+";
+}
+.accordion .card-header h4.collapsed:before {
+    content: "–"; 
+}
+.card-title {
+    font-size: 16px;
+    margin-bottom: 0;
+}
+.accordion>.card>.card-header {
+    padding: 8px 15px;
 }
 
 /* fix for firefox being stupid */

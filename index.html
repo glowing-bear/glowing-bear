@@ -14,18 +14,20 @@
     <link rel="manifest" href="webapp.manifest.json">
     <title ng-bind-template="{{ notificationStatus }}Glowing Bear {{ pageTitle}}"></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha256-L/W5Wfqfa0sdBNIKN9cG6QA5F2qx4qICmU2VgLruv9Y=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous" />
     <link rel="shortcut icon" sizes="128x128" href="assets/img/glowing_bear_128x128.png">
     <link rel="apple-touch-icon" sizes="128x128" href="assets/img/glowing_bear_128x128.png">
     <link rel="shortcut icon" type="image/png" href="assets/img/favicon.png" >
     <link href="css/glowingbear.css" rel="stylesheet" media="screen">
     <link href="css/themes/dark.css" rel="stylesheet" media="screen" id="themeCSS" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha256-WqU1JavFxSAMcLP2WIOI+GB2zWmShMI82mTpLDcqFUg=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular.min.js" integrity="sha256-QRJz3b0/ZZC4ilKmBRRjY0MgnVhQ+RR1tpWLYaRRjSo=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-route.min.js" integrity="sha256-PQfkC+TI/HZv0O9JbmrLmPyhgOT2hry24vA5yAV59zY=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-sanitize.min.js" integrity="sha256-LLlLr1XzKUXSFI9SiuEJOAn88Dwge+/zld523N2c8+8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-touch.min.js" integrity="sha256-4IS2pHNTST2Jl6dSzNsERpYleiQi1r4L2MLPElG8LZ4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js" integrity="sha256-G7A4JrJjJlFqP0yamznwPjAApIKPkadeHfyIwiaa9e0=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/lib/js/emojione.min.js" integrity="sha256-9cBkVeU53NiJ9/BdcJta3HbERAmf5X9DE2WvL8V+gDs=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ionicons/4.5.6/ionicons.js" integrity="sha256-bEHDLstR0JFeHx4SlYB9qBPORh2FHoGcPoqMwtOFE30=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="3rdparty/inflate.min.js"></script>
     <script type="text/javascript" src="node_modules/interactjs/dist/interact.js"></script>
     <script type="text/javascript" src="js/localstorage.js"></script>
@@ -70,17 +72,17 @@
       <div class="alert alert-danger" ng-show="securityError" ng-cloak>
         <strong>Secure connection error</strong> Unable to connect to unencrypted relay when you are connecting to Glowing Bear over HTTPS. Please use an encrypted relay or load the page without using HTTPS.
       </div>
-      <div class="panel-group accordion">
-        <div class="panel" data-state="active" ng-show=false>
-          <div class="panel-heading">
-            <h4 class="panel-title">
-              <a class="accordion-toggle">
+      <div id="accordion" class="accordion">
+        <div class="card" ng-show=false>
+          <div class="card-header">
+            <h4 class="card-title">
+              <a>
                 Important Note!
               </a>
             </h4>
           </div>
-          <div class="panel-collapse collapse">
-            <div class="panel-body">
+          <div class="card-collapse collapse">
+            <div class="card-body">
                 <div class="form-group">
                   <div class="alert alert-danger">
                     GlowingBear requires JavaScript support to function. Additionally, you must allow JS from <code>cdnjs.cloudflare.com</code>. Please check your script blocker or browser settings.
@@ -90,16 +92,14 @@
             </div>
           </div>
         </div>
-        <div class="panel" data-state="active">
-          <div class="panel-heading">
-            <h4 class="panel-title">
-              <a class="accordion-toggle" ng-click="toggleAccordion($event)">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title" data-toggle="collapse" data-target="#collapseOne">
                 Connection settings
-              </a>
             </h4>
           </div>
-          <div id="collapseOne" class="panel-collapse collapse">
-            <div class="panel-body">
+          <div id="collapseOne" class="collapse show" data-parent="#accordion">
+            <div class="card-body">
                <form class="form-signin" role="form">
                 <div class="form-group">
 
@@ -153,21 +153,19 @@
                     </label>
                   </div>
                 </div>
-                <button class="btn btn-lg btn-primary" ng-disabled="hostInvalid || (totpInvalid && settings.useTotp)" ng-click="connect()" ng-cloak>{{ connectbutton }}  <i ng-class="connectbuttonicon" class="glyphicon"></i></button>
+                <button class="btn btn-lg btn-primary" ng-disabled="hostInvalid || (totpInvalid && settings.useTotp)" ng-click="connect()" ng-cloak>{{ connectbutton }}  <i class="fas" ng-class="connectbuttonicon"></i></button>
               </form>
             </div>
           </div>
         </div>
-        <div class="panel" data-state="collapsed">
-          <div class="panel-heading">
-            <h4 class="panel-title">
-              <a class="accordion-toggle" ng-click="toggleAccordion($event)">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title collapsed" data-toggle="collapse" data-target="#collapseTwo">
                 Getting Started
-              </a>
             </h4>
           </div>
-          <div id="collapseTwo" class="panel-collapse collapse">
-            <div class="panel-body">
+          <div id="collapseTwo" class="collapse" data-parent="#accordion">
+            <div class="card-body">
               <h3>Use TLS encryption</h3>
               <p><span class="label label-danger">WeeChat version 0.4.2 or higher is required—we recommend at least 1.0.</p>
               <p>To start using Glowing Bear, follow the instructions below to set up an encrypted relay. All communication goes directly between your browser and your WeeChat relay! This means that your server must be accessible. We never see any of your data or your password, and you don't need to trust a "cloud". All settings, including your password, are saved locally in your own browser between sessions.</p>
@@ -194,16 +192,14 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
             </div>
           </div>
         </div>
-        <div class="panel" data-state="collapsed">
-          <div class="panel-heading">
-            <h4 class="panel-title">
-              <a class="accordion-toggle" ng-click="toggleAccordion($event)">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title collapsed" data-toggle="collapse" data-target="#collapseThree">
                 Usage instructions
-              </a>
             </h4>
           </div>
-          <div id="collapseThree" class="panel-collapse collapse">
-            <div class="panel-body">
+          <div id="collapseThree" class="collapse" data-parent="#accordion">
+            <div class="card-body">
               <h3 style="margin-top: 0px">Shortcuts</h3>
               Glowing Bear has a few shortcuts:
               <ul>
@@ -292,16 +288,14 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
             </div>
           </div>
         </div>
-        <div class="panel" data-state="collapsed">
-          <div class="panel-heading">
-            <h4 class="panel-title">
-              <a class="accordion-toggle" ng-click="toggleAccordion($event)">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title collapsed" data-toggle="collapse" data-target="#collapseFour">
                 Install app
-              </a>
             </h4>
           </div>
-          <div id="collapseFour" class="panel-collapse collapse">
-            <div class="panel-body">
+          <div id="collapseFour" class="collapse" data-parent="#accordion">
+            <div class="card-body">
               <p>You don't need to install anything to use Glowing Bear, it works with any modern browser. Start using it right now at the top of the page! However, there are a few ways to improve integration with your operating system.</p>
               <h3>Electron</h3>
               <p>Glowing Bear supports the electron shell. You'll have to build it yourself, though. Run the following commands, choosing your platform from the list in the last command: <pre>git clone https://github.com/glowing-bear/glowing-bear
@@ -318,16 +312,14 @@ npm run build-electron-{windows, darwin, linux}</pre>
             </div>
           </div>
         </div>
-        <div class="panel" data-state="collapsed">
-          <div class="panel-heading">
-            <h4 class="panel-title">
-              <a class="accordion-toggle" ng-click="toggleAccordion($event)">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title collapsed" data-toggle="collapse" data-target="#collapseFive">
                 Get involved
-              </a>
             </h4>
           </div>
-          <div id="collapseFive" class="panel-collapse collapse">
-            <div class="panel-body">
+          <div id="collapseFive" class="collapse" data-parent="#accordion">
+            <div class="card-body">
               <p>Glowing bear is built by a small group of developers in their free time. As we're always trying to improve it, we would love getting your feedback and help. If that sounds like something you might enjoy, check out our <a href="https://github.com/glowing-bear/glowing-bear">project page</a> on GitHub!</p>
               <p>If you're interested in contributing or simply want to say hello, head over to <strong>#glowing-bear</strong> on <strong>freenode!</strong> We won't bite, promise :)</p>
             </div>
@@ -382,7 +374,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
                                             'private': buffer.type === 'private'}"
                   ng-repeat="(key, buffer) in (filteredBuffers = (getBuffers() | toArray:'withidx' | filter:bufferlistfilter | filter:hasUnread | orderBy:predicate | getBufferQuickKeys:this))">
                 <a ng-click="setActiveBuffer(buffer.id)" title="{{ buffer.fullName }}" href="#">
-                  <span class="badge pull-right" ng-class="{'danger': buffer.notification}" ng-bind="buffer.notification || buffer.unread"></span>
+                  <span class="badge float-right mr-1" ng-class="{'danger': buffer.notification}" ng-bind="buffer.notification || buffer.unread"></span>
                   <span class="buffer-quick-key">{{ buffer.$quickKey }}</span>
                   <span class="buffer-jump-key">{{ ("0" + buffer.$jumpKey).slice(-2) }}</span>
                   <span class="buffername">{{ buffer.trimmedName || buffer.fullName }}</span>

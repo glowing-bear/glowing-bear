@@ -284,11 +284,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         models.reinitialize();
         $rootScope.$emit('notificationChanged');
         $scope.connectbutton = 'Connect';
-        $scope.connectbuttonicon = 'glyphicon-chevron-right';
+        $scope.connectbuttonicon = 'fa-chevron-right';
         bufferResume.reset();
     });
     $scope.connectbutton = 'Connect';
-    $scope.connectbuttonicon = 'glyphicon-chevron-right';
+    $scope.connectbuttonicon = 'fa-chevron-right';
 
     $scope.getBuffers = models.getBuffers.bind(models);
 
@@ -734,14 +734,14 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $rootScope.errorMessage = false;
         $rootScope.bufferBottom = true;
         $scope.connectbutton = 'Connecting';
-        $scope.connectbuttonicon = 'glyphicon-refresh glyphicon-spin';
+        $scope.connectbuttonicon = 'fa-spin fa-sync';
         connection.connect(settings.host, settings.port, settings.path, $scope.password, settings.ssl, settings.useTotp, $scope.totp);
         $scope.totp = "";//clear for next time
     };
 
     $scope.disconnect = function() {
         $scope.connectbutton = 'Connect';
-        $scope.connectbuttonicon = 'glyphicon-chevron-right';
+        $scope.connectbuttonicon = 'fa-chevron-right';
         bufferResume.reset();
         connection.disconnect();
     };
@@ -764,23 +764,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             }
         }
         closest($event.target, '.gb-modal').setAttribute('data-state', 'hidden');
-    };
-
-    $scope.toggleAccordion = function(event) {
-        event.stopPropagation();
-        event.preventDefault();
-
-        var target = event.target.parentNode.parentNode.parentNode;
-        target.setAttribute('data-state', target.getAttribute('data-state') === 'active' ? 'collapsed' : 'active');
-
-        // Hide all other siblings
-        var siblings = target.parentNode.children;
-        for (var childId in siblings) {
-            var child = siblings[childId];
-            if (child.nodeType === 1 && child !== target) {
-                child.setAttribute('data-state', 'collapsed');
-            }
-        }
     };
 
 //XXX what do we do with this?
@@ -1043,7 +1026,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         }, 1000);
 
 
-    })
+    });
 
 }]);
 
