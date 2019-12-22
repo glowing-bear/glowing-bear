@@ -2121,9 +2121,9 @@ button.close:hover {
     font-weight: bold;
 }
 
-code {
+pre, pre code {
   background-color: #444;
-  color: #fff;
+  color: #ddd;
 }
 
 /* */

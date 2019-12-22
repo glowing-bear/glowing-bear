@@ -2,10 +2,10 @@
   <div class="d-flex flex">
     <textarea id="{{inputId}}" class="favorite-font flex-grow-1" ng-trim="false" rows="1" ng-change="inputChanged()" autocomplete="on" ng-model="command" ng-focus="hideSidebar()" ng-paste="inputPasted($event)">
     </textarea>
-    <button class="btn btn-complete-nick unselectable mobile" title="Complete nick" ng-click="handleCompleteNickButton($event)"><ion-icon name="search"></ion-icon></button>
-    <button class="btn btn-send-image unselectable" for="imgur-upload" title="Send image"><ion-icon name="image"></ion-icon></button>
+    <button class="btn btn-complete-nick unselectable mobile" title="Complete nick" ng-click="handleCompleteNickButton($event)"><i class="fas fa-address-book"></i></button>
+    <button class="btn btn-send-image unselectable" for="imgur-upload" title="Send image"><i class="fas fa-image"></i></button>
     <input type="file" accept="image/*" multiple title="Send image" id="imgur-upload" class="imgur-upload" file-change="uploadImage($event, files)">
-    <button class="btn btn-send unselectable" title="Send"><ion-icon name="paper-plane"></ion-icon></button>
+    <button class="btn btn-send unselectable" title="Send"><i class="fas fa-paper-plane"></i></button>
   </div>
   <div id="imgur-upload-progress"></div>
 </form>

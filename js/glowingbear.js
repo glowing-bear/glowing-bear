@@ -752,18 +752,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.showModal = function(elementId) {
-        document.getElementById(elementId).setAttribute('data-state', 'visible');
+        $('#'+ elementId).modal('show');
     };
 
-    $scope.closeModal = function($event) {
-        function closest(elem, selector) {
-            var matchesSelector = elem.matches || elem.webkitMatchesSelector || elem.mozMatchesSelector || elem.msMatchesSelector;
-            while (elem) {
-                if (matchesSelector.call(elem, selector)) return elem;
-                else elem = elem.parentElement;
-            }
-        }
-        closest($event.target, '.gb-modal').setAttribute('data-state', 'hidden');
+    $scope.closeModal = function(elementId) {
+        $('#' + elementId).modal('hide');
     };
 
 //XXX what do we do with this?

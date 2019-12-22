@@ -12,10 +12,6 @@ a {
     cursor: pointer;
 }
 
-.version {
-   margin-right: 1em;
-}
-
 .hidden-bracket {
   position: absolute;
   left: -1000px;
@@ -60,6 +56,12 @@ td.message {
     white-space: pre-wrap;
 }
 
+.subtitle{
+    font-size: 20px;
+    line-height: 0.5;
+    color: #777;
+}
+
 #sendMessage {
     height: 35px;
     resize: none;
@@ -80,6 +82,10 @@ td.message {
     background: none;
     border: none;
     color: #ccc;
+}
+
+.narrow-row{
+    width: 350px;
 }
 
 #jump-addon {
@@ -135,9 +141,6 @@ input[type=text], input[type=password], #sendMessage {
 .no-gutter [class*="col"] {
     padding: 0px
 }
-.glyphicon {
-    top: 0; /* Fixes alignment issue in top bar */
-}
 #topbar {
     width: 100%;
     height: 35px;
@@ -184,10 +187,7 @@ input[type=text], input[type=password], #sendMessage {
     padding: 0 5px;
     display: inline-block;
 }
-#topbar .actions a {
-    font-size: 25px;
-    padding-top: 2px;
-}
+
 #topbar .dropdown-menu form {
     padding-left: 6px;
     padding-right: 6px;
@@ -468,73 +468,7 @@ div.colourbox {
     }
 }
 
-
-.gb-modal {
-    z-index: 1000;
-    height: 100%;
-    overflow-y: scroll;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-}
-
-.gb-modal[data-state=hidden] {
-    transition: .2s ease-in-out;
-    visibility: hidden;
-    opacity: 0;
-}
-
-.gb-modal[data-state=visible] {
-    transition: .2s ease-in-out;
-    visibility: visible;
-    opacity: 1;
-}
-
-.gb-modal[data-state=hidden] .modal-dialog {
-    transition: top .3s ease-in;
-    top: -150px;
-}
-
-.gb-modal[data-state=visible] .modal-dialog {
-    transition: top .3s ease-out;
-    top: 0px;
-}
-.gb-modal .backdrop {
-    z-index: 999;
-    position: fixed;
-    top: 0;
-    height: 100%;
-    width: 100%;
-    overflow: none;
-}
-
-.gb-modal .modal-dialog {
-    z-index: 1001;
-    position: absolute;
-    margin-left: auto;
-    margin-right: auto;
-    left: 0;
-    right: 0;
-    top: 35px;
-}
-.gb-modal[ng-click], .gb-modal div[ng-click] {
-    cursor: default;
-}
-
-.gb-modal ul {
-    list-style: none;
-    padding-left: 15px;
-}
-.gb-modal li {
-    font-size: larger;
-    margin-bottom: 10px;
-}
-.gb-modal li li {
-    font-size: medium;
-}
 .modal-header {
-    padding-top: 23px;
     border-bottom: 0;
 }
 
@@ -639,38 +573,7 @@ img.emojione {
     width: auto;
 }
 
-.glyphicon-spin {
-  -webkit-animation: spin 1000ms infinite linear;
-  animation: spin 1000ms infinite linear;
-}
-@-webkit-keyframes spin {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(359deg);
-    transform: rotate(359deg);
-  }
-}
-@keyframes spin {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(359deg);
-    transform: rotate(359deg);
-  }
-}
-
 /* ng-cloak hides elements until Angular loads, preventing flickering */
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
-}
-
-code {
-    padding: 0px 2px;
-    color: #444;
-    border: 1pt solid #444;
 }
