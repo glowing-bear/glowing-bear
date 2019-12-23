@@ -495,10 +495,10 @@ h2 span, h2 small {
 }
 
 .accordion .card-header h4:before {
-    content: "+";
+    content: "–";
 }
 .accordion .card-header h4.collapsed:before {
-    content: "–"; 
+    content: "+"; 
 }
 .card-title {
     font-size: 16px;
