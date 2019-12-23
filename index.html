@@ -94,7 +94,8 @@
       Bear over HTTPS. Please use an encrypted relay or load the page without using HTTPS.
     </div>
     <div id="accordion" class="accordion">
-      <div class="card" ng-show=false>
+      <noscript>
+      <div class="card">
         <div class="card-header">
           <h4 class="card-title">
             <a>
@@ -102,7 +103,7 @@
             </a>
           </h4>
         </div>
-        <div class="card-collapse collapse">
+        <div class="collapse show">
           <div class="card-body">
             <div class="form-group">
               <div class="alert alert-danger">
@@ -119,6 +120,7 @@
           </div>
         </div>
       </div>
+      </noscript>
       <div class="card">
         <div class="card-header">
           <h4 class="card-title" data-toggle="collapse" data-target="#collapseOne">
@@ -131,29 +133,31 @@
               <div class="form-group">
                 <div class="input-group">
                   <div class="row narrow-row">
-                    <div class="col-sm-9 pr-0">
+                    <div class="col-sm-8">
                       <label class="control-label mb-0" for="host">WeeChat relay hostname</label>
                       <input type="text" class="form-control favorite-font" id="host" ng-model="settings.hostField"
                         ng-change="parseHost()" ng-class="{'is-invalid': hostInvalid}" placeholder="Address"
                         autocapitalize="off">
                     </div>
-                    <div class="col-sm-3 pl-0">
+                    <div class="col-sm-4">
                       <label class="control-label mb-0" for="port">Port</label>
                       <input type="text" class="form-control favorite-font" id="port" ng-model="settings.port"
                         ng-disabled="portDisabled" placeholder="Port">
                     </div>
                   </div>
                 </div>
-                <div class="row narrow-row">
-                  <div class="pr-0" ng-class="settings.useTotp ? 'col-sm-9' : 'col-sm-12'" ng>
-                    <label class="control-label mb-0 mt-2" for="password">WeeChat relay password</label>
-                    <input type="password" class="form-control favorite-font" id="password" ng-model="password"
-                      placeholder="Password">
-                  </div>
-                  <div class="col-sm-3 pl-0" ng-Show="settings.useTotp">
-                    <label class="control-label mb-0 mt-2" for="totp">Token</label>
-                    <input type="text" class="form-control favorite-font" id="totp" ng-model="totp"
-                      ng-change="parseTotp()" ng-class="{'is-invalid': totpInvalid}" autocomplete="off">
+                <div class="input-group">
+                  <div class="row narrow-row">
+                    <div class="col-sm-8" ng-class="settings.useTotp ? 'col-sm-8' : 'col-sm-12'" ng>
+                      <label class="control-label mb-0 mt-2" for="password">WeeChat relay password</label>
+                      <input type="password" class="form-control favorite-font" id="password" ng-model="password"
+                        placeholder="Password">
+                    </div>
+                    <div class="col-sm-4" ng-Show="settings.useTotp">
+                      <label class="control-label mb-0 mt-2" for="totp">Token</label>
+                      <input type="text" class="form-control favorite-font" id="totp" ng-model="totp"
+                        ng-change="parseTotp()" ng-class="{'is-invalid': totpInvalid}" autocomplete="off">
+                    </div>
                   </div>
                 </div>
                 <div class="alert alert-danger" ng-show="passwordError" ng-cloak>
@@ -551,8 +555,8 @@ npm run build-electron-{windows, darwin, linux}</pre>
           <div input-bar input-id="sendMessage" command="command"></div>
         </div>
       </div>
-      <div id="nicklist" class="vertical-line-left" ng-if="showNicklist" ng-swipe-right="swipeRight()"
-        ng-swipe-disable-mouse class="favorite-font vertical-line-left">
+      <div id="nicklist" class="favorite-font vertical-line-left" ng-if="showNicklist" ng-swipe-right="swipeRight()"
+        ng-swipe-disable-mouse>
         <ul class="nicklistgroup list-unstyled" ng-repeat="group in nicklist">
           <li ng-repeat="nick in group.nicks|orderBy:'name'">
             <a ng-click="openBuffer(nick.name)"><span ng-class="::nick.prefixClasses"

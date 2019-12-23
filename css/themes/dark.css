@@ -101,10 +101,6 @@ input[type=text].is-invalid{
     color: white;
 }
 
-#connection-infos {
-    color: #aaa;
-}
-
 .nav-pills li:nth-child(2n) {
     background: #232323;
 }
@@ -2124,6 +2120,10 @@ button.close:hover {
 pre, pre code {
   background-color: #444;
   color: #ddd;
+}
+
+.alert-danger code{
+    color: #b9ef36;
 }
 
 /* */

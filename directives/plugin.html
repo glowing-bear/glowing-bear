@@ -1,5 +1,5 @@
 <div ng-show="plugin.visible">
-  <button class="btn btn-default btn-sm pull-right unselectable"
+  <button class="btn btn-default btn-sm float-right unselectable"
           ng-click="hideContent()">
     Hide {{ ::plugin.name }}
   </button>
@@ -8,7 +8,7 @@
 </div>
 
 <div ng-hide="plugin.visible">
-  <button class="btn btn-default btn-sm pull-right unselectable"
+  <button class="btn btn-default btn-sm float-right unselectable"
           ng-class="::{
                     'btn-warning': plugin.nsfw,
                     'btn-primary': !plugin.nsfw}"

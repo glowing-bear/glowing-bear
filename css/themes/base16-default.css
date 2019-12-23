@@ -349,10 +349,6 @@ input[type=text]:-moz-placeholder, input[type=password]:-moz-placeholder { /* Fi
     color: var(--base01);
 }
 
-#connection-infos {
-    color: var(--base04);
-}
-
 .color-light-green {
     color: var(--base0B);
 }

@@ -77,10 +77,6 @@ input[type=text].is-invalid{
     box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.1), 0px 1px 7px 0px rgba(255, 0, 0, 0.8) inset;
 }
 
-#connection-infos {
-    color: #aaa;
-}
-
 .nav-pills li:nth-child(2n) {
     background: #e1e1e1;
 }
