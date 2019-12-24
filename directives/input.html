@@ -1,6 +1,6 @@
 <form id="inputform" ng-submit="sendMessage()" imgur-drop>
   <div class="d-flex flex">
-    <textarea id="{{inputId}}" class="favorite-font flex-grow-1" ng-trim="false" rows="1" ng-change="inputChanged()" autocomplete="on" ng-model="command" ng-focus="hideSidebar()" ng-paste="inputPasted($event)">
+    <textarea id="{{inputId}}" class="favorite-font flex-grow-1" ng-trim="false" rows="1" cols="1" ng-change="inputChanged()" autocomplete="on" ng-model="command" ng-focus="hideSidebar()" ng-paste="inputPasted($event)">
     </textarea>
     <button class="btn btn-complete-nick unselectable mobile" title="Complete nick" ng-click="handleCompleteNickButton($event)"><i class="fas fa-address-book"></i></button>
     <button class="btn btn-send-image unselectable" for="imgur-upload" title="Send image"><i class="fas fa-image"></i></button>

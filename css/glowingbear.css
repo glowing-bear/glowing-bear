@@ -186,14 +186,27 @@ input[type=text], input[type=password], #sendMessage {
     z-index: 4;
 }
 
+:root {
+    --sidebar-width: 200px;
+    --nicklist-width: 100px;
+}
+
 #sidebar{
     overflow-y: auto;
-    min-width: 200px;
+    width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
 }
 
 #sidebar[data-state=hidden], #sidebar.ng-hide {
-    display: none;
+    margin-left:calc(0px - var(--sidebar-width));
+    transition: margin-left 0.3s ease
 }
+
+#sidebar[data-state=visible] {
+
+    transition: margin-left 0.3s ease;
+}
+
 
 #sidebar .buffer .badge {
    display: none;
@@ -215,11 +228,18 @@ input[type=text], input[type=password], #sendMessage {
 #nicklist {
     height:0px;
     min-height: 100%;
-    min-width: 150px;
+    width: var(--nicklist-width);
+    min-width: var(--nicklist-width);
     overflow-y: auto;
     overflow-x: hidden;
     line-height: 1.25;
+    transition: margin-right 0.3s ease;
 }
+#nicklist[data-state=hidden] {
+    transition: margin-right 0.3s ease;
+    margin-right:calc(0px - var(--nicklist-width));
+}
+
 #nicklist ul {
     padding: 0;
     margin: 0;
@@ -311,12 +331,19 @@ td.time {
 }
 
 .footer .btn {
-    padding: 8px 12px 1px 12px;
     border-radius: 0;
+}
+
+.footer {
+    line-height: 1;
 }
 
 #inputform {
     position: relative;
+}
+#sendMessage {
+    line-height: 1.3;
+    min-width: 0px;
 }
 
 #imgur-upload-progress {

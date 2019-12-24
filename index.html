@@ -551,11 +551,11 @@ npm run build-electron-{windows, darwin, linux}</pre>
             </tbody>
           </table><span id="end-of-buffer"></span>
         </div>
-        <div class="footer">
+        <div class="footer flex-shrink-1">
           <div input-bar input-id="sendMessage" command="command"></div>
         </div>
       </div>
-      <div id="nicklist" class="favorite-font vertical-line-left" ng-if="showNicklist" ng-swipe-right="swipeRight()"
+      <div id="nicklist" class="favorite-font vertical-line-left" ng-attr-data-state="{{ showNicklist ? 'visible' : 'hidden' }}" ng-swipe-right="swipeRight()"
         ng-swipe-disable-mouse>
         <ul class="nicklistgroup list-unstyled" ng-repeat="group in nicklist">
           <li ng-repeat="nick in group.nicks|orderBy:'name'">
