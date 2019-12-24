@@ -224,6 +224,7 @@ input[type=text], input[type=password], #sendMessage {
 }
 #content{
     height: 100%;
+    overflow: hidden;
 }
 #nicklist {
     height:0px;
@@ -232,6 +233,7 @@ input[type=text], input[type=password], #sendMessage {
     min-width: var(--nicklist-width);
     overflow-y: auto;
     overflow-x: hidden;
+    padding-left: 5px;
     line-height: 1.25;
     transition: margin-right 0.3s ease;
 }
