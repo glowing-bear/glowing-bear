@@ -1,15 +1,12 @@
 html, body {
     height: 100%;
+    width: 100%;
 }
 
 .noOverflow {
     position: fixed;
     top:0;
     overflow: hidden;
-}
-
-.mobile {
-  display: none;
 }
 
 a {
@@ -234,6 +231,7 @@ input[type=text], input[type=password], #sendMessage {
 }
 #content{
     height: 100%;
+    width: 100%;
     overflow: hidden;
     padding: 0;
 }
@@ -469,9 +467,17 @@ div.colourbox {
     width: 1em;
 }
 
+
+@media (min-width: 968px)
+{
+    .mobile {
+        display: none;
+      }
+}
+
 @media (max-width: 968px){
     .mobile {
-        display: inherit;
+        
     }
     .desktop {
         display: none;
