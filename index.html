@@ -66,7 +66,7 @@
 </head>
 
 <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keyup="handleKeyRelease($event)"
-  ng-keypress="handleKeyPress($event)" ng-init="init()" lang="en-US">
+  ng-keypress="handleKeyPress($event)" ng-init="init()" ng-class="{'noOverflow' : connected }" lang="en-US">
   <div class="alert alert-danger upload-error" ng-show="uploadError" ng-cloak>
     <p><strong>Upload error:</strong> Image upload failed.</p>
   </div>
@@ -451,7 +451,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
 
         <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
       </div>
-      <div class="title flex-grow-1" ng-click="showModal('topicModal')">
+      <div class="title flex-grow-1 flex" ng-click="showModal('topicModal')">
         <span class="desktop" ng-repeat="part in activeBuffer().title" ng-class="::part.classes"
           ng-bind-html="::(part.text | linky:'_blank':{rel:'noopener noreferrer'} | DOMfilter:'irclinky')"></span>
         <span class="mobile"
@@ -466,7 +466,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
         </a>
       </div>
     </div>
-    <div class="d-flex align-items-stretch flex-grow-1" style="min-height: 0;">
+    <div id="bottomblock" class="d-flex align-items-stretch flex-grow-1">
       <div id="sidebar" class="flexresize-drag vertical-line" data-state="visible" ng-swipe-left="swipeLeft()"
         ng-swipe-disable-mouse class="vertical-line">
         <ul class="nav nav-pills flex-column"

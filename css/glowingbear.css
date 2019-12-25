@@ -1,12 +1,11 @@
-html{
+html, body {
     height: 100%;
-    position: fixed;
-    overflow: hidden;
-    top: 0px;
 }
 
-body {
-    height: 100%;
+.noOverflow {
+    position: fixed;
+    top:0;
+    overflow: hidden;
 }
 
 .mobile {
@@ -145,7 +144,6 @@ input[type=text], input[type=password], #sendMessage {
     max-height: 35px;
     z-index: 3;
     line-height: 35px;
-    white-space: nowrap;
 }
 #topbar .brand {
     float: left;
@@ -177,10 +175,16 @@ input[type=text], input[type=password], #sendMessage {
     line-height: 35px;
     font-size: 22px;
     right: 0;
+    white-space: nowrap;
 }
 #topbar .actions > * {
     padding: 0 5px;
     display: inline-block;
+}
+
+#bottomblock
+{
+    min-height: 0;
 }
 
 .upload-error {
@@ -197,6 +201,7 @@ input[type=text], input[type=password], #sendMessage {
 }
 
 #sidebar{
+    min-height: 0;
     overflow-y: auto;
     width: var(--sidebar-width);
     min-width: var(--sidebar-width);
@@ -230,7 +235,9 @@ input[type=text], input[type=password], #sendMessage {
 #content{
     height: 100%;
     overflow: hidden;
+    padding: 0;
 }
+
 #nicklist {
     height:0px;
     min-height: 100%;
@@ -300,6 +307,9 @@ input[type=text], input[type=password], #sendMessage {
     padding-left: 5px;
     min-width: 0;
     -webkit-overflow-scrolling: touch; /* Native scroll on ios */
+}
+#bufferline{
+    word-break: break-all;
 }
 
 #middlecontainer {
