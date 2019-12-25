@@ -490,6 +490,45 @@ div.colourbox {
         width: initial;
         z-index: -1;
     }
+
+    #bufferlines {
+        height: 100%;
+        padding-bottom: 0;
+    }
+
+    #bufferlines tr.bufferline {
+        display: block;
+        overflow: hidden;
+    }
+
+    #bufferlines td.time {
+        display: inline-block;
+        padding-right: 3px;
+        font-size: 0.8em;
+    }
+
+    #bufferlines td.time span.date {
+        display: block;
+        margin-bottom: -1px;
+    }
+
+    #bufferlines td.prefix {
+        display: inline;
+        padding-right: 5px;
+        border: 0;
+        font-weight: bold;
+        font-size: 1.06em;
+    }
+
+    #bufferlines td.message {
+        display: inline;
+        padding: 0px !important;
+    }
+
+    ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+    }
 }
 
 .modal-header {
