@@ -337,7 +337,7 @@ weechat.factory('connection',
 
         $log.info('Attempting to reconnect...');
         var d = connectionData;
-        connect(d[0], d[1], d[2], d[3], d[4], false, "", function() {
+        connect(d[0], d[1], d[2], d[3], d[4], false, "", d[5], function() {
             $rootScope.reconnecting = false;
             // on success, update active buffer
             models.setActiveBuffer(bufferId);
