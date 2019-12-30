@@ -139,9 +139,9 @@
                     </label>
                   </div>
                   <div class="checkbox">
-                    <label class="control-label" for="ssl">
-                      <input type="checkbox" id="ssl" ng-model="settings.ssl">
-                      Encryption. <strong>Strongly recommended!</strong> Need help? Check below.
+                    <label class="control-label" for="forceUnencrypted">
+                      <input type="checkbox" id="forceUnencrypted" ng-model="settings.forceUnencrypted" ng-disabled="!allowUnencrypted">
+                      Force unencrypted connection (not recommended)
                     </label>
                   </div>
                   <div class="checkbox" ng-show="settings.savepassword || settings.autoconnect">
@@ -184,6 +184,8 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
 /relay add ssl.weechat {{ settings.port || 9001 }}
 </pre>
               <p>Your certificate needs to be renewed every couple of months. Either follow the instructions for automatic renewal at <a href="https://certbot.eff.org/">https://certbot.eff.org</a>, or run <code>certbot renew</code> manually when renewal is due. <strong>Important:</strong> You'll need to follow the instructions for copying the certificate to the right place again, and re-run <code>/relay sslcertkey</code> in WeeChat.</p>
+              <h4>Force unencrypted connections</h4>
+              By default connections are encrypted using TLS. The interface only allows unencrypted connections on local networks. The hostname must be: a local IPv4 address, a local IPv6 address, <code>localhost</code> or a tor hidden service (.onion).
               <h3>Use TOTP (Time-based One-Time Password)</h3>
               <p><a href="https://blog.weechat.org/post/2019/01/14/Support-of-TOTP">Configure</a> WeeChat for TOTP. The secret key has to be a base 32 string.</p>
               <pre>/secure set relay_totp_secret xxxxx
@@ -285,6 +287,7 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
                     <li>path</li>
                     <li>password</li>
                     <li>autoconnect</li>
+                    <li>forceUnencrypted</li>
                   </ul>
                 </p>
             </div>

@@ -44,7 +44,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'hostField': 'localhost',
         'port': 9001,
         'path': 'weechat',
-        'ssl': (window.location.protocol === "https:"),
+        'forceUnencrypted': false,
         'useTotp': false,
         'savepassword': false,
         'autoconnect': false,
@@ -686,6 +686,17 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         } else {
             $rootScope.hostInvalid = true;
         }
+
+        //Check if host is a local IP or Tor Hidden service to allow unencrypted connections
+        var regexPrivateV4OrV6 = /(^127\.)|(^192\.168\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^::1$)|(^\[[fF][cCdD].*\])|^localhost$/;
+        var regexOnion = /^[a-z2-7]{16}.onion$/;
+
+        if (regexPrivateV4OrV6.test(settings.host) || regexOnion.test(settings.host)) {
+            $rootScope.allowUnencrypted = true;
+        } else {
+            $rootScope.allowUnencrypted = false;
+            settings.forceUnencrypted = false;
+        }
     };
 
     settings.addCallback('useTotp', function() {
@@ -723,6 +734,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if (params.autoconnect) {
             $scope.settings.autoconnect = params.autoconnect === 'true';
         }
+        if (params.forceUnencrypted) {
+            $scope.settings.forceUnencrypted = params.forceUnencrypted === 'true';
+        }
 
     };
 
@@ -735,7 +749,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $rootScope.bufferBottom = true;
         $scope.connectbutton = 'Connecting';
         $scope.connectbuttonicon = 'glyphicon-refresh glyphicon-spin';
-        connection.connect(settings.host, settings.port, settings.path, $scope.password, settings.ssl, settings.useTotp, $scope.totp);
+        connection.connect(settings.host, settings.port, settings.path, $scope.password, !settings.forceUnencrypted, settings.useTotp, $scope.totp);
         $scope.totp = "";//clear for next time
     };
 
@@ -928,7 +942,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Support different browser quirks
         var code = $event.keyCode ? $event.keyCode : $event.charCode;
 
-        // Handle escape
+        // Handle escapeforceUnencrypted
         if (code === 27) {
             $event.preventDefault();
             $scope.search = '';
