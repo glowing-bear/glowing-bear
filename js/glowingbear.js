@@ -942,7 +942,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         // Support different browser quirks
         var code = $event.keyCode ? $event.keyCode : $event.charCode;
 
-        // Handle escapeforceUnencrypted
+        // Handle escape
         if (code === 27) {
             $event.preventDefault();
             $scope.search = '';
