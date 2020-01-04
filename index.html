@@ -238,15 +238,15 @@
               <p>Nearly done! Now you just need to copy the files into place. To do that, use the following commands,
                 replacing the <strong>username</strong> placeholder with your actual username:</p>
                 <pre><code>mkdir -p ~<strong>username</strong>/.weechat/ssl
-  cat /etc/letsencrypt/live/{{ settings.host || your.domain.com }}/{fullchain,privkey}.pem &gt; ~<strong>username</strong>/.weechat/ssl/relay.pem
-  chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</strong>/.weechat/ssl/</code></pre>
+cat /etc/letsencrypt/live/{{ settings.host || your.domain.com }}/{fullchain,privkey}.pem &gt; ~<strong>username</strong>/.weechat/ssl/relay.pem
+chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</strong>/.weechat/ssl/</code></pre>
               <p>Once you've got the certificate and moved it in place, you can set up an encrypted relay on port
                 {{ settings.port || 9001 }} with these WeeChat commands:</p>
               <pre>
-  /set relay.network.password y0ur_StRonG-pa$sw0rd:of*choice
-  /relay sslcertkey
-  /relay add ssl.weechat {{ settings.port || 9001 }}
-  </pre>
+/set relay.network.password y0ur_StRonG-pa$sw0rd:of*choice
+/relay sslcertkey
+/relay add ssl.weechat {{ settings.port || 9001 }}
+</pre>
               <p>Your certificate needs to be renewed every couple of months. Either follow the instructions for automatic
                 renewal at <a href="https://certbot.eff.org/">https://certbot.eff.org</a>, or run
                 <code>certbot renew</code> manually when renewal is due. <strong>Important:</strong> You'll need to follow
@@ -256,7 +256,7 @@
               <p><a href="https://blog.weechat.org/post/2019/01/14/Support-of-TOTP">Configure</a> WeeChat for TOTP. The
                 secret key has to be a base 32 string.</p>
               <pre>/secure set relay_totp_secret xxxxx
-  /set relay.network.totp_secret "${sec.data.relay_totp_secret}"</pre>
+/set relay.network.totp_secret "${sec.data.relay_totp_secret}"</pre>
               <p>Open an authenticator app and create an entry with the same secret. In Glowing Bear check the checkbox
                 for "use Time-based One-Time Password" and fill in the one time password as you see it in the
                 authenticator app.</p>
@@ -309,7 +309,7 @@
               <p>
                 Helpful trigger to automatically repin a buffer (in this instance, <var>irc.freenode.#weechat</var>) (code is one line):
                 <pre><code>/trigger add autopin signal "buffer_opened" "${buffer[${tg_signal_data}].full_name} =~ 
-  <var>irc.freenode.#weechat</var>" "" "/command -buffer ${buffer[${tg_signal_data}].full_name} * /buffer set localvar_set_pinned true"</code></pre>
+<var>irc.freenode.#weechat</var>" "" "/command -buffer ${buffer[${tg_signal_data}].full_name} * /buffer set localvar_set_pinned true"</code></pre>
               </p>
               <h3>Setting a custom path</h3>
               <p>
@@ -403,10 +403,10 @@
               <p>Glowing Bear supports the electron shell. You'll have to build it yourself, though. Run the following
                 commands, choosing your platform from the list in the last command:
                 <pre>git clone https://github.com/glowing-bear/glowing-bear
-  cd glowing-bear
-  npm install
-  npm install electron-packager
-  npm run build-electron-{windows, darwin, linux}</pre>
+cd glowing-bear
+npm install
+npm install electron-packager
+npm run build-electron-{windows, darwin, linux}</pre>
                 <h3>Chrome</h3>
                 <p>To install Glowing Bear as an app in Chrome for Android, select <kbd>Menu - Add to home screen</kbd>.
                   In the desktop version of Chrome, click <kbd>Menu - More tools - Create application shortcuts</kbd>.</p>
