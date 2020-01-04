@@ -179,6 +179,10 @@ input[type=text], input[type=password], #sendMessage {
     display: inline-block;
 }
 
+#topbar .badge {
+    max-height: 20px;
+}
+
 #bottomblock
 {
     min-height: 0;

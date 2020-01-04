@@ -440,17 +440,17 @@
     </div>
     <div class="container-fluid resize-container d-flex flex-column" id="content" sidebar-state="visible"
       ng-show="connected" ng-cloak>
-      <div id="topbar" class="d-flex">
+      <div id="topbar" class="d-flex align-items-center">
         <div class="brand" ng-click="toggleSidebar()">
           <a href="#">
             <img alt="brand" src="assets/img/favicon.png" title="Connected to {{ settings.host }}:{{ settings.port}}">
           </a>
-          <span class="badge" ng-show="unread > 0">{{unread}}</span>
-          <span class="badge danger" ng-show="notifications > 0">{{notifications}}</span>
-
-          <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
         </div>
-        <div class="title flex-grow-1 flex" ng-click="showModal('topicModal')">
+        <span class="badge" ng-show="unread > 0">{{unread}}</span>
+        <span class="badge danger" ng-show="notifications > 0">{{notifications}}</span>
+
+        <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
+        <div class="title flex-grow-1 flex pl-2" ng-click="showModal('topicModal')">
           <span class="desktop" ng-repeat="part in activeBuffer().title" ng-class="::part.classes"
             ng-bind-html="::(part.text | linky:'_blank':{rel:'noopener noreferrer'} | DOMfilter:'irclinky')"></span>
           <span class="mobile"
