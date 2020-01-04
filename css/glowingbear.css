@@ -198,7 +198,7 @@ input[type=text], input[type=password], #sendMessage {
 
 :root {
     --sidebar-width: 200px;
-    --nicklist-width: 100px;
+    --nicklist-width: 140px;
 }
 
 #sidebar{
@@ -266,6 +266,7 @@ input[type=text], input[type=password], #sendMessage {
 }
 #nicklist a {
     text-decoration: none;
+    padding-top: 3px;
 }
 
 .nav-pills li {
@@ -277,7 +278,11 @@ input[type=text], input[type=password], #sendMessage {
 .nav-pills > li > a {
     border-radius: 0;
     color: #ddd;
-    padding: 5px 10px;
+    padding: 8px 10px;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .nav-pills > li > a:hover, .nav-pills > li > a:hover span {
     color: #222;
@@ -295,13 +300,6 @@ input[type=text], input[type=password], #sendMessage {
     text-decoration: none;
     color: #fff;
     background: #428BCA;
-}
-
-.nav-pills > li > a {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 #bufferlines {
