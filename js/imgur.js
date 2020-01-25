@@ -3,7 +3,7 @@
 
 var weechat = angular.module('weechat');
 
-weechat.factory('imgur', ['$rootScope', function($rootScope) {
+weechat.factory('imgur', 'settings', ['$rootScope', function($rootScope) {
 
     var process = function(image, callback) {
 
@@ -26,8 +26,26 @@ weechat.factory('imgur', ['$rootScope', function($rootScope) {
 
     // Upload image to imgur from base64
     var upload = function( base64img, callback ) {
-        // Set client ID (Glowing Bear)
-        var clientId = "164efef8979cd4b";
+
+        // Declaring variables used later
+        var accessToken = "164efef8979cd4b";
+        var albumHash = "";
+        var albEnabled = false;
+        var isClientID = true;
+
+        // Set client ID
+        if(settings.iToken.length > 37){
+            accessToken = settings.iToken;
+            isClientID = false;
+        }
+
+        // Checks for a album hash
+        if(settings.iAlb.length < 6) {
+            albEnabled = false;
+        } else {
+            albEnabled = true;
+            albumHash = settings.iAlb;
+        }
 
         // Progress bars container
         var progressBars = document.getElementById("imgur-upload-progress"),
@@ -45,6 +63,10 @@ weechat.factory('imgur', ['$rootScope', function($rootScope) {
         fd.append("image", base64img); // Append the file
         fd.append("type", "base64"); // Set image type to base64
 
+        if(albEnabled) {
+            fd.append("album", albumHash); // If the user provided an album hash
+        }
+
         // Create new XMLHttpRequest
         var xhttp = new XMLHttpRequest();
 
@@ -52,7 +74,11 @@ weechat.factory('imgur', ['$rootScope', function($rootScope) {
         xhttp.open("POST", "https://api.imgur.com/3/image", true);
 
         // Set headers
-        xhttp.setRequestHeader("Authorization", "Client-ID " + clientId);
+        if(isClientID) {
+            xhttp.setRequestHeader("Authorization", "Client-ID " + accessToken);
+        } else {
+            xhttp.setRequestHeader("Authorization", "Bearer " + accessToken);
+        }
         xhttp.setRequestHeader("Accept", "application/json");
 
         // Handler for response

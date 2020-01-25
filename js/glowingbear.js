@@ -64,6 +64,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'enableQuickKeys': true,
         'customCSS': '',
         "currentlyViewedBuffers":{},
+        'iToken': '',
+        'iAlb': '',
     });
     $scope.settings = settings;
 
