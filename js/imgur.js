@@ -3,7 +3,7 @@
 
 var weechat = angular.module('weechat');
 
-weechat.factory('imgur', 'settings', ['$rootScope', function($rootScope) {
+weechat.factory('imgur', ['$rootScope', 'settings', function($rootScope, settings) {
 
     var process = function(image, callback) {
 
