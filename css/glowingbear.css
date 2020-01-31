@@ -681,6 +681,10 @@ li.buffer.indent.private a {
     font-size: small;
 }
 
+.lessleftpad {
+    padding-left: 5px;
+}
+
 .unselectable {
     -webkit-user-select: none;
     -moz-user-select: none;
