@@ -27,24 +27,16 @@ weechat.factory('imgur', 'settings', ['$rootScope', function($rootScope) {
     // Upload image to imgur from base64
     var upload = function( base64img, callback ) {
 
-        // Declaring variables used later
+        // API authorization, either via Client ID (anonymous) or access token
+        // (add to user's imgur account), see also:
+        // https://github.com/glowing-bear/glowing-bear/wiki/Getting-an-imgur-token-&-album-hash
         var accessToken = "164efef8979cd4b";
-        var albumHash = "";
-        var albEnabled = false;
         var isClientID = true;
 
-        // Set client ID
-        if(settings.iToken.length > 37){
+        // Check whether the user has provided an access token
+        if (settings.iToken.length > 37){
             accessToken = settings.iToken;
             isClientID = false;
-        }
-
-        // Checks for a album hash
-        if(settings.iAlb.length < 6) {
-            albEnabled = false;
-        } else {
-            albEnabled = true;
-            albumHash = settings.iAlb;
         }
 
         // Progress bars container
@@ -63,8 +55,9 @@ weechat.factory('imgur', 'settings', ['$rootScope', function($rootScope) {
         fd.append("image", base64img); // Append the file
         fd.append("type", "base64"); // Set image type to base64
 
-        if(albEnabled) {
-            fd.append("album", albumHash); // If the user provided an album hash
+        // Add the image to the provided album if configured to do so
+        if (!isClientID && settings.iAlb.length >= 6) {
+            fd.append("album", settings.iAlb);
         }
 
         // Create new XMLHttpRequest
@@ -74,7 +67,7 @@ weechat.factory('imgur', 'settings', ['$rootScope', function($rootScope) {
         xhttp.open("POST", "https://api.imgur.com/3/image", true);
 
         // Set headers
-        if(isClientID) {
+        if (isClientID) {
             xhttp.setRequestHeader("Authorization", "Client-ID " + accessToken);
         } else {
             xhttp.setRequestHeader("Authorization", "Bearer " + accessToken);
