@@ -100,7 +100,6 @@
             <div class="panel-body">
                <form class="form-signin" role="form">
                 <div class="form-group">
-
                   <div class="input-group">
                     <div class="row no-gutter">
                       <div class="col-sm-9">
@@ -458,7 +457,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
                     </div>
 
                     <label for="size" class="col-sm-1 control-label">Size</label>
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                       <input type="text" ng-model="settings.fontsize" class="form-control" id="size">
                     </div>
                   </div>
@@ -468,7 +467,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
                 <form class="form-horizontal" role="form">
                   <div class="form-group">
                     <label for="theme" class="col-sm-3 control-label make-thinner">Theme</label>
-                    <div class="col-sm-7">
+                    <div class="col-sm-8">
                       <select id="theme" class="form-control" ng-model="settings.theme" ng-options="theme for theme in themes"></select>
                     </div>
                   </div>
@@ -479,8 +478,23 @@ npm run build-electron-{windows, darwin, linux}</pre>
                 <form class="form-horizontal" role="form">
                   <div class="form-group">
                     <label for="custom-css" class="col-sm-3 control-label make-thinner">Custom CSS</label>
-                    <div class="col-sm-7">
+                    <div class="col-sm-8">
                       <textarea id="custom-css" class="form-control" ng-model="settings.customCSS"></textarea>
+                    </div>
+                  </div>
+                </form>
+              </li>
+
+              <li class="standard-labels">
+                <form class="form-horizontal" role="form">
+                  <div class="form-group">
+                    <label class="control-label col-sm-3" for="iToken">Imgur Token <a target="_blank" href="https://github.com/glowing-bear/glowing-bear/wiki/Getting-an-imgur-token-&-album-hash"><i class="glyphicon glyphicon-info-sign"></i></a></label>
+                    <div class="col-sm-4">
+                      <input type="text" class="form-control" ng-model="settings.iToken" placeholder="Access Token" autocapitalize="off">
+                    </div>
+                    <label class="control-label col-sm-1 lessleftpad" for="iAlb">Album</label>
+                    <div class="col-sm-3">
+                      <input type="text" class="form-control" ng-model="settings.iAlb" placeholder="Album Hash" autocapitalize="off">
                     </div>
                   </div>
                 </form>

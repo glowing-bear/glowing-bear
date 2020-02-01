@@ -146,7 +146,7 @@ input[type=text], input[type=password], #sendMessage {
 .col-sm-9 {
     padding-right: 5px !important;
 }
-.glyphicon {
+#topbar .glyphicon {
     top: 0; /* Fixes alignment issue in top bar */
 }
 #topbar {
@@ -679,6 +679,10 @@ li.buffer.indent.private a {
     display: block;
     margin: -5px 0 -3px 19px;
     font-size: small;
+}
+
+.lessleftpad {
+    padding-left: 5px;
 }
 
 .unselectable {
