@@ -2092,6 +2092,10 @@ input[type=text].is-invalid{
     font-weight: bold;
 }
 
+#toast {
+    background-color: #ddd;
+}
+
 /* */
 /* Mobile layout */
 /* */

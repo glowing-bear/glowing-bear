@@ -423,6 +423,10 @@ button.close:hover {
     color: var(--base01);
 }
 
+#toast {
+    background-color: var(--base01);
+}
+
 /****************************/
 /* Weechat colors and style */
 /****************************/
