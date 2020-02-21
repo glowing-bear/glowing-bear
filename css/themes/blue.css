@@ -134,6 +134,13 @@ input[type=text], input[type=password], #sendMessage, .badge, .btn-send, .btn-se
    border: 1px solid #363943;
 }
 
+#toast {
+    background-color: #283244;
+    border: 1px solid;
+    border-color: rgb(29, 94, 152);
+    border-radius: 0px;
+}
+
 .horizontal-line {
     -webkit-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;
     -moz-box-shadow: rgba(255, 255, 255, 0.07) 0 1px 0;

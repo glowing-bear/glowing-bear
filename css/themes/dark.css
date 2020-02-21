@@ -2126,6 +2126,10 @@ code {
   color: #fff;
 }
 
+#toast {
+    background-color: #333;
+}
+
 /* */
 /* Mobile layout */
 /* */

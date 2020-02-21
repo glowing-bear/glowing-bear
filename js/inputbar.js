@@ -217,6 +217,18 @@ weechat.directive('inputBar', function() {
                 // Extract nick from bufferline prefix
                 var nick = prefix[prefix.length - 1].text;
 
+                // Check whether the user is still online
+                var buffer = models.getBuffer(bufferline.buffer);
+                var is_online = buffer.queryNicklist(nick);
+                if (!is_online) {
+                    // show a toast that the user left
+                    var toast = document.createElement('div');
+                    toast.id = "toast";
+                    toast.innerHTML = nick + " has left the room";
+                    document.body.appendChild(toast);
+                    setTimeout(function() { document.body.removeChild(toast); }, 5000);
+                }
+
                 var newValue = $scope.command || '';  // can be undefined, in that case, use the empty string
                 var addColon = newValue.length === 0;
                 if (newValue.length > 0) {

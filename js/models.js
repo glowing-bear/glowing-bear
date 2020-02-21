@@ -308,6 +308,19 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             return nicklist.hasOwnProperty('root');
         };
 
+        // Check whether a particular nick is in the nicklist
+        var queryNicklist = function(nick) {
+            for (var groupIdx in nicklist) {
+                var nicks = nicklist[groupIdx].nicks;
+                for (var nickIdx in nicks)  {
+                    if (nicks[nickIdx].name === nick) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+
         /* Clear all our buffer lines */
         var clear = function() {
             while(lines.length > 0) {
@@ -353,6 +366,7 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             isNicklistEmpty: isNicklistEmpty,
             nicklistRequested: nicklistRequested,
             pinned: pinned,
+            queryNicklist: queryNicklist,
         };
 
     };
