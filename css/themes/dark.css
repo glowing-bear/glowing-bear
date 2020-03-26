@@ -10,6 +10,10 @@ body {
     border: 0px none;
 }
 
+.form-control[disabled] {
+    background: none repeat scroll 0% 0% rgba(63, 63, 63, 0.3);
+}
+
 .form-control option {
    color: #eee;
    background: #282828;
@@ -85,6 +89,9 @@ input[type=text], input[type=password], #sendMessage, .badge {
 input[type=text], input[type=password], #sendMessage, .badge, .btn-send, .btn-send-image, .btn-complete-nick {
     color: #ccc;
     background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.3);
+}
+input[type=text].is-invalid{
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(255, 0, 0, 0.8) inset;
 }
 
 .btn-complete-nick:hover, .btn-complete-nick:focus,
@@ -2117,6 +2124,10 @@ button.close:hover {
 code {
   background-color: #444;
   color: #fff;
+}
+
+#toast {
+    background-color: #333;
 }
 
 /* */

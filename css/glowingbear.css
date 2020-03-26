@@ -146,7 +146,7 @@ input[type=text], input[type=password], #sendMessage {
 .col-sm-9 {
     padding-right: 5px !important;
 }
-.glyphicon {
+#topbar .glyphicon {
     top: 0; /* Fixes alignment issue in top bar */
 }
 #topbar {
@@ -262,6 +262,11 @@ input[type=text], input[type=password], #sendMessage {
 
 #sidebar.ng-hide {
   width: 0;
+}
+    
+#sidebar[data-state=hidden] {
+    transform: translate(-200px,0);
+    -webkit-transform: translate(-200px,0);
 }
 
 #nicklist {
@@ -400,6 +405,7 @@ td.time {
     margin-left: 0;
     padding-left: 145px;
 }
+
 .footer.withnicklist {
     padding-right: 100px;
 }
@@ -610,7 +616,6 @@ h2 span, h2 small {
 
 .panel[data-state=active] .panel-collapse {
     transition: max-height 0.5s;
-    max-height: 60em;
     height: auto;
     display: block;
 }
@@ -676,6 +681,10 @@ li.buffer.indent.private a {
     font-size: small;
 }
 
+.lessleftpad {
+    padding-left: 5px;
+}
+
 .unselectable {
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -697,6 +706,30 @@ li.buffer.indent.private a {
 }
 img.emojione {
     width: auto;
+}
+
+#toast {
+  position: fixed;
+  left: 50%;
+  bottom: 50px;
+  width: 250px;
+  margin-left: -125px;
+
+  text-align: center;
+  border-radius: 3px;
+  padding: 10px 15px;
+  z-index: 100;
+  animation: fadein 0.5s, fadeout 0.5s 4.5s;
+}
+
+@keyframes fadein {
+  from { bottom: 0;    opacity: 0; }
+  to   { bottom: 50px; opacity: 1; }
+}
+
+@keyframes fadeout {
+  from { bottom: 50px; opacity: 1; }
+  to   { bottom: 0;    opacity: 0; }
 }
 
 .glyphicon-spin {
@@ -794,11 +827,6 @@ img.emojione {
         -webkit-transform: translate(0,0); /* Safari */
     }
 
-    #sidebar[data-state=hidden] {
-        transform: translate(-200px,0);
-        -webkit-transform: translate(-200px,0);
-    }
-
     .content[sidebar-state=visible] #bufferlines, .content[sidebar-state=visible] .footer {
         margin-left: 0px;
         transform: translate(200px,0);
@@ -811,16 +839,16 @@ img.emojione {
         text-align: center;
         font-size: 18px;
         width: initial;
+        z-index: -1;
+    }
+
+    #topbar .brand a {
+        padding: 0 2px 0 10px;
     }
 
     #topbar .brand img {
         height: 28px;
     }
-
-    #topbar .badge {
-        display: none;
-    }
-
 
     #bufferlines, #nicklist {
         position: relative;

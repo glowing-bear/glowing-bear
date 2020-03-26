@@ -119,7 +119,7 @@ IrcUtils.service('IrcUtils', [function() {
             suf = ':';
         }
         // addSpace defaults to true
-        var addSpaceChar = (addSpace === undefined || addSpace === true) ? ' ' : '';
+        var addSpaceChar = (addSpace === undefined || addSpace === 'on') ? ' ' : '';
 
         // new nick list to search in
         var searchNickList = _ciNickList(nickList);
@@ -144,7 +144,11 @@ IrcUtils.service('IrcUtils', [function() {
             if (doIterate) {
                 // try iterating
                 newNick = _nextNick(iterCandidate, m[1], searchNickList);
-                beforeCaret = newNick + suf + ' ';
+                if (suf.endsWith(' ')) {
+                    beforeCaret = newNick + suf;
+                } else {
+                    beforeCaret = newNick + suf + ' ';
+                }
                 return {
                     text: beforeCaret + afterCaret,
                     caretPos: beforeCaret.length,
@@ -166,7 +170,11 @@ IrcUtils.service('IrcUtils', [function() {
                 // no match
                 return ret;
             }
-            beforeCaret = newNick + suf + ' ';
+            if (suf.endsWith(' ')) {
+                beforeCaret = newNick + suf;
+            } else {
+                beforeCaret = newNick + suf + ' ';
+            }
             if (afterCaret[0] === ' ') {
                 // swallow first space after caret if any
                 afterCaret = afterCaret.substring(1);

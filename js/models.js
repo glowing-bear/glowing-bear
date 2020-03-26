@@ -155,6 +155,18 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             */
         };
         /*
+         * Clear the nicklist
+         */
+        var clearNicklist = function() {
+            //only keep the root node
+            for (var obj in nicklist) {
+                if (obj !== 'root') {
+                    delete nicklist[obj];
+                }
+            }
+        };
+
+        /*
          * Updates a nick in nicklist
          */
         var updateNick = function(group, nick) {
@@ -296,6 +308,19 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             return nicklist.hasOwnProperty('root');
         };
 
+        // Check whether a particular nick is in the nicklist
+        var queryNicklist = function(nick) {
+            for (var groupIdx in nicklist) {
+                var nicks = nicklist[groupIdx].nicks;
+                for (var nickIdx in nicks)  {
+                    if (nicks[nickIdx].name === nick) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+
         /* Clear all our buffer lines */
         var clear = function() {
             while(lines.length > 0) {
@@ -325,6 +350,7 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             nicklist: nicklist,
             addNick: addNick,
             delNick: delNick,
+            clearNicklist: clearNicklist,
             updateNick: updateNick,
             getNicklistByTime: getNicklistByTime,
             serverSortKey: serverSortKey,
@@ -340,6 +366,7 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             isNicklistEmpty: isNicklistEmpty,
             nicklistRequested: nicklistRequested,
             pinned: pinned,
+            queryNicklist: queryNicklist,
         };
 
     };

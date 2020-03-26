@@ -3,7 +3,7 @@
 
 var weechat = angular.module('weechat');
 
-weechat.factory('imgur', ['$rootScope', function($rootScope) {
+weechat.factory('imgur', ['$rootScope', 'settings', function($rootScope, settings) {
 
     var process = function(image, callback) {
 
@@ -26,8 +26,18 @@ weechat.factory('imgur', ['$rootScope', function($rootScope) {
 
     // Upload image to imgur from base64
     var upload = function( base64img, callback ) {
-        // Set client ID (Glowing Bear)
-        var clientId = "164efef8979cd4b";
+
+        // API authorization, either via Client ID (anonymous) or access token
+        // (add to user's imgur account), see also:
+        // https://github.com/glowing-bear/glowing-bear/wiki/Getting-an-imgur-token-&-album-hash
+        var accessToken = "164efef8979cd4b";
+        var isClientID = true;
+
+        // Check whether the user has provided an access token
+        if (settings.iToken.length > 37){
+            accessToken = settings.iToken;
+            isClientID = false;
+        }
 
         // Progress bars container
         var progressBars = document.getElementById("imgur-upload-progress"),
@@ -45,6 +55,11 @@ weechat.factory('imgur', ['$rootScope', function($rootScope) {
         fd.append("image", base64img); // Append the file
         fd.append("type", "base64"); // Set image type to base64
 
+        // Add the image to the provided album if configured to do so
+        if (!isClientID && settings.iAlb.length >= 6) {
+            fd.append("album", settings.iAlb);
+        }
+
         // Create new XMLHttpRequest
         var xhttp = new XMLHttpRequest();
 
@@ -52,7 +67,11 @@ weechat.factory('imgur', ['$rootScope', function($rootScope) {
         xhttp.open("POST", "https://api.imgur.com/3/image", true);
 
         // Set headers
-        xhttp.setRequestHeader("Authorization", "Client-ID " + clientId);
+        if (isClientID) {
+            xhttp.setRequestHeader("Authorization", "Client-ID " + accessToken);
+        } else {
+            xhttp.setRequestHeader("Authorization", "Bearer " + accessToken);
+        }
         xhttp.setRequestHeader("Accept", "application/json");
 
         // Handler for response

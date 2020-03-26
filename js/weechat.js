@@ -363,7 +363,8 @@
                 //   "*" + (A)STD + "," + EXT
                 //   "*" + (A)EXT + "," + STD
                 //   "*" + (A)EXT + "," + EXT
-                regex: /^\*(?:([\x01\x02\x03\x04*!\/_|]*)(\d{2})|@([\x01\x02\x03\x04*!\/_|]*)(\d{5})),(\d{2}|@\d{5})/,
+                // WeeChat 2.6+ use a tilde (~) instead of a comma (,) so recognise both
+                regex: /^\*(?:([\x01\x02\x03\x04*!\/_|]*)(\d{2})|@([\x01\x02\x03\x04*!\/_|]*)(\d{5}))[,~](\d{2}|@\d{5})/,
                 fn: function(m) {
                     var ret = {};
 
@@ -646,6 +647,9 @@
         keys.push('compression=' + params.compression);
         if (params.password !== null) {
             keys.push('password=' + params.password);
+        }
+        if (params.useTotp) {
+            keys.push('totp=' + params.totp);
         }
         parts.push(keys.join(','));
 

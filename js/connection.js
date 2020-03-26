@@ -20,15 +20,15 @@ weechat.factory('connection',
     var locked = false;
 
     // Takes care of the connection and websocket hooks
-    var connect = function (host, port, passwd, ssl, noCompression, successCallback, failCallback) {
+    var connect = function (host, port, path, passwd, ssl, useTotp, totp, noCompression, successCallback, failCallback) {
         $rootScope.passwordError = false;
-        connectionData = [host, port, passwd, ssl, noCompression];
+        connectionData = [host, port, path, passwd, ssl, noCompression];
         var proto = ssl ? 'wss' : 'ws';
         // If host is an IPv6 literal wrap it in brackets
         if (host.indexOf(":") !== -1 && host[0] !== "[" && host[host.length-1] !== "]") {
             host = "[" + host + "]";
         }
-        var url = proto + "://" + host + ":" + port + "/weechat";
+        var url = proto + "://" + host + ":" + port + "/" + path;
         $log.debug('Connecting to URL: ', url);
 
         var onopen = function () {
@@ -45,7 +45,9 @@ weechat.factory('connection',
                 ngWebsockets.send(
                     weeChat.Protocol.formatInit({
                         password: passwd,
-                        compression: noCompression ? 'off' : 'zlib'
+                        compression: noCompression ? 'off' : 'zlib',
+                        useTotp: useTotp,
+                        totp: totp
                     })
                 );
 
@@ -326,9 +328,16 @@ weechat.factory('connection',
     };
 
     var attemptReconnect = function (bufferId, timeout) {
+        // won't work if totp is mandatory
+        if (settings.useTotp)
+        {
+            $log.info('Not reconnecting because totp will be expired.');
+            return;
+        }
+
         $log.info('Attempting to reconnect...');
         var d = connectionData;
-        connect(d[0], d[1], d[2], d[3], d[4], function() {
+        connect(d[0], d[1], d[2], d[3], d[4], false, "", d[5], function() {
             $rootScope.reconnecting = false;
             // on success, update active buffer
             models.setActiveBuffer(bufferId);

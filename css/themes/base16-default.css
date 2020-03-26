@@ -65,6 +65,10 @@ a:visited:hover, a:visited:active, a:visited:focus {
     border: 0px none;
 }
 
+.form-control[disabled] {
+    background: var(--base03);
+}
+
 .form-control:focus {
     color: var(--base06);
     box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.2) inset;
@@ -301,6 +305,9 @@ tr.bufferline:hover {
 input[type=text], input[type=password], #sendMessage, .badge {
     box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.2) inset;
 }
+input[type=text].is-invalid{
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(255, 0, 0, 0.6) inset;
+}
 
 input[type=text], input[type=password], #sendMessage, .btn-send, .btn-send-image, .btn-complete-nick {
     color: var(--base05);
@@ -414,6 +421,10 @@ button.close {
 button.close:hover {
     background-color: var(--base07);
     color: var(--base01);
+}
+
+#toast {
+    background-color: var(--base01);
 }
 
 /****************************/

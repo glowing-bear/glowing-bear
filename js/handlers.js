@@ -168,7 +168,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
                     $rootScope.$emit('notificationChanged');
                 }
 
-                if ((buffer.notify !== 0 && message.highlight) || _.contains(message.tags, 'notify_private')) {
+                if ((buffer.notify !== 0) && (message.highlight || _.contains(message.tags, 'notify_private'))) {
                     buffer.notification++;
                     server.unread++;
                     notifications.createHighlight(buffer, message);
@@ -431,12 +431,24 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
 
     /*
      * Handle nicklist event
+     *
+     * This event can either fill or clear a nicklist. It is always a complete nicklist.
      */
     var handleNicklist = function(message) {
         var nicklist = message.objects[0].content;
         var group = 'root';
+
+        //clear the nicklists in case we are clearing
+        if (nicklist.length==1)
+        {
+            models.getBuffer(nicklist[0].pointers[0]).clearNicklist();
+        }
+
+        //fill the nicklist
         nicklist.forEach(function(n) {
             var buffer = models.getBuffer(n.pointers[0]);
+            
+            //buffer nicklist 
             if (n.group === 1) {
                 var g = new models.NickGroup(n);
                 group = g.name;
@@ -446,6 +458,9 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
                 buffer.addNick(group, nick);
             }
         });
+
+        //check if nicklist should be hidden or not
+        $rootScope.$emit('nickListChanged');
     };
     /*
      * Handle nicklist diff event
