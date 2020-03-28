@@ -220,7 +220,7 @@ weechat.directive('inputBar', function() {
                 // Check whether the user is still online
                 var buffer = models.getBuffer(bufferline.buffer);
                 var is_online = buffer.queryNicklist(nick);
-                if (!is_online) {
+                if (buffer.type === 'channel' && !is_online) {
                     // show a toast that the user left
                     var toast = document.createElement('div');
                     toast.id = "toast";
