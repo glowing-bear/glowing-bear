@@ -561,7 +561,7 @@ plugins.factory('userPlugins', function() {
         var regex = /^https?:\/\/(www\.)?tiktok\.com\/(.+)/i,
             match = url.match(regex);
 
-        if (match){
+        if (match) {
 
             return function() {
 
@@ -569,8 +569,7 @@ plugins.factory('userPlugins', function() {
 
                 GetEmbedContent( "https://www.tiktok.com/oembed?url=" + url, element);
 
-                function GetEmbedContent(embedurl, element)
-                {
+                function GetEmbedContent(embedurl, element) {
                     fetch(embedurl)
                     .then(function(response) {
                         return response.json();
