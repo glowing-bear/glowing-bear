@@ -558,12 +558,14 @@ plugins.factory('userPlugins', function() {
      * Very similar to twitter
      */
     var tikTokPlugin = new UrlPlugin('TikTok', function(url) {
-        var regex = /^https?:\/\/(www\.)?tiktok\.com\/(.+)/i,
+        var regex = /^https?:\/\/(www\.)?tiktok\.com\/@(.+)\/video\/(.+)/i,
             match = url.match(regex);
 
         if (match) {
 
             return function() {
+                var element = this.getElement();
+                
                 fetch("https://www.tiktok.com/oembed?url=" + url)
                 .then(function(response) {
                     return response.json();
@@ -573,7 +575,6 @@ plugins.factory('userPlugins', function() {
                     var scriptIndex = data.html.indexOf("<script ");
                     var content = data.html.substr(0, scriptIndex);
 
-                    var element = this.getElement();
                     element.innerHTML = content;
 
                     // The script tag needs to be generated manually or the browser won't load it
