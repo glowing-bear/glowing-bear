@@ -564,30 +564,24 @@ plugins.factory('userPlugins', function() {
         if (match) {
 
             return function() {
+                fetch("https://www.tiktok.com/oembed?url=" + url)
+                .then(function(response) {
+                    return response.json();
+                    })
+                .then(function(data) {
+                    // separate the HTML into content and script tag
+                    var scriptIndex = data.html.indexOf("<script ");
+                    var content = data.html.substr(0, scriptIndex);
 
-                var element = this.getElement();
+                    var element = this.getElement();
+                    element.innerHTML = content;
 
-                GetEmbedContent( "https://www.tiktok.com/oembed?url=" + url, element);
-
-                function GetEmbedContent(embedurl, element) {
-                    fetch(embedurl)
-                    .then(function(response) {
-                        return response.json();
-                      })
-                    .then(function(data) {
-                        // separate the HTML into content and script tag
-                        var scriptIndex = data.html.indexOf("<script ");
-                        var content = data.html.substr(0, scriptIndex);
-    
-                        element.innerHTML = content;
-    
-                        // The script tag needs to be generated manually or the browser won't load it
-                        var scriptElem = document.createElement('script');
-                        // Hardcoding the URL here, I don't suppose it's going to change anytime soon
-                        scriptElem.src = "https://www.tiktok.com/embed.js";
-                        element.appendChild(scriptElem);
-                    });
-                }
+                    // The script tag needs to be generated manually or the browser won't load it
+                    var scriptElem = document.createElement('script');
+                    // Hardcoding the URL here, I don't suppose it's going to change anytime soon
+                    scriptElem.src = "https://www.tiktok.com/embed.js";
+                    element.appendChild(scriptElem);
+                });
             };
         }
     });
