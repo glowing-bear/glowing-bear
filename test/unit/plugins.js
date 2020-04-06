@@ -169,5 +169,15 @@ describe('filter', function() {
             plugins);
         }));
 
+        it('should recognize tiktoks', inject(function(plugins) {
+            expectTheseMessagesToContain([
+                'https://www.tiktok.com/@scout2015/video/6718335390845095173',
+                'https://www.tiktok.com/@lewiscatpaldi/video/6800461190058298629',
+                'https://www.tiktok.com/@bhattrai_fam5_kavita/video/6811222914768047365',
+            ],
+            'TikTok',
+            plugins);
+        }));
+
     });
 });
