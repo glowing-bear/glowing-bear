@@ -7,7 +7,7 @@
 
 var models = angular.module('weechatModels', []);
 
-models.service('models', ['$rootScope', '$filter', 'bufferResume', function($rootScope, $filter, bufferResume) {
+models.service('models', ['$rootScope', '$filter', 'bufferResume', 'settings', function($rootScope, $filter, bufferResume, settings) {
     // WeeChat version
     this.version = null;
 
@@ -377,8 +377,8 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
     this.BufferLine = function(message) {
         var buffer = message.buffer;
         var date = message.date;
-        var shortTime = $filter('date')(date, 'HH:mm');
-        var formattedTime = $filter('date')(date, $rootScope.angularTimeFormat);
+        var shortTime = $filter('date')(date, 'HH:mm', settings.timezone);
+        var formattedTime = $filter('date')(date, $rootScope.angularTimeFormat, settings.timezone);
 
         var prefix = parseRichText(message.prefix);
         var tags_array = message.tags_array;

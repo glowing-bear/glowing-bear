@@ -477,6 +477,17 @@ npm run build-electron-{windows, darwin, linux}</pre>
               <li class="standard-labels">
                 <form class="form-horizontal" role="form">
                   <div class="form-group">
+                    <label for="timezone" class="col-sm-3 control-label make-thinner">Timezone</label>
+                    <div class="col-sm-8">
+                      <input type="text" ng-model="settings.timezone" class="form-control" id="timezone" placeholder="e.g.: UTC, +0430, or keep blank">
+                    </div>
+                  </div>
+                </form>
+              </li>
+
+              <li class="standard-labels">
+                <form class="form-horizontal" role="form">
+                  <div class="form-group">
                     <label for="custom-css" class="col-sm-3 control-label make-thinner">Custom CSS</label>
                     <div class="col-sm-8">
                       <textarea id="custom-css" class="form-control" ng-model="settings.customCSS"></textarea>
