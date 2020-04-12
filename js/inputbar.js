@@ -477,7 +477,7 @@ weechat.directive('inputBar', function() {
                 // Arrow up -> go up in history
                 if ($event.type === "keydown" && code === 38 && document.activeElement === inputNode) {
                     caretPos = inputNode.selectionStart;
-                    if ($scope.command.slice(0, caretPos).indexOf("\n") !== -1) {
+                    if (!$scope.command || $scope.command.slice(0, caretPos).indexOf("\n") !== -1) {
                         return false;
                     }
                     $scope.command = models.getActiveBuffer().getHistoryUp($scope.command);
@@ -494,7 +494,7 @@ weechat.directive('inputBar', function() {
                 // Arrow down -> go down in history
                 if ($event.type === "keydown" && code === 40 && document.activeElement === inputNode) {
                     caretPos = inputNode.selectionStart;
-                    if ($scope.command.slice(caretPos).indexOf("\n") !== -1) {
+                    if (!$scope.command || $scope.command.slice(caretPos).indexOf("\n") !== -1) {
                         return false;
                     }
                     $scope.command = models.getActiveBuffer().getHistoryDown($scope.command);
