@@ -90,7 +90,13 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
         // There are two kinds of types: bufferType (free vs formatted) and
         // the kind of type that distinguishes queries from channels etc
         var bufferType = message.type;
+        
+        // If type is undefined set it as other to avoid later errors
         var type = message.local_variables.type;
+        if (!type) {
+            type = 'other';
+        }
+
         var indent = (['channel', 'private'].indexOf(type) >= 0);
 
         var plugin = message.local_variables.plugin;
