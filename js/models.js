@@ -98,6 +98,9 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
 
         var pinned = message.local_variables.pinned === "true";
 
+        //hide timestamps for certain buffer types
+        var showTime = type && type !== 'relay';
+
         // Server buffers have this "irc.server.freenode" naming schema, which
         // messes the sorting up. We need it to be "irc.freenode" instead.
         var serverSortKey = plugin + "." + server +
@@ -365,6 +368,7 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             getHistoryDown: getHistoryDown,
             isNicklistEmpty: isNicklistEmpty,
             nicklistRequested: nicklistRequested,
+            showTime: showTime,
             pinned: pinned,
             queryNicklist: queryNicklist,
         };
