@@ -90,7 +90,7 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
         // There are two kinds of types: bufferType (free vs formatted) and
         // the kind of type that distinguishes queries from channels etc
         var bufferType = message.type;
-        
+
         // If type is undefined set it as other to avoid later errors
         var type = message.local_variables.type;
         if (!type) {
@@ -105,7 +105,7 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
         var pinned = message.local_variables.pinned === "true";
 
         //hide timestamps for certain buffer types
-        var showTime = type && type !== 'relay';
+        var showBufferLineTimes = type && type !== 'relay';
 
         // Server buffers have this "irc.server.freenode" naming schema, which
         // messes the sorting up. We need it to be "irc.freenode" instead.
@@ -374,7 +374,7 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             getHistoryDown: getHistoryDown,
             isNicklistEmpty: isNicklistEmpty,
             nicklistRequested: nicklistRequested,
-            showTime: showTime,
+            showBufferLineTimes: showBufferLineTimes,
             pinned: pinned,
             queryNicklist: queryNicklist,
         };
