@@ -33,7 +33,6 @@ weechat.factory('connection',
 
         var onopen = function () {
 
-
             // Helper methods for initialization commands
             var _initializeConnection = function(passwd) {
                 // Escape comma in password (#937)
@@ -204,51 +203,51 @@ weechat.factory('connection',
             _initializeConnection(passwd).then(
                 function() {
                     _requestVersion().then(
-                        function(version) {
-                            handlers.handleVersionInfo(version);
-                            // Connection is successful
-                            // Send all the other commands required for initialization
-                            _requestBufferInfos().then(function(bufinfo) {
-                                handlers.handleBufferInfo(bufinfo);
-                            });
-        
-                            _requestHotlist().then(function(hotlist) {
-                                handlers.handleHotlistInfo(hotlist);
-        
-                            });
-                            if (settings.hotlistsync) {
-                                // Schedule hotlist syncing every so often so that this
-                                // client will have unread counts (mostly) in sync with
-                                // other clients or terminal usage directly.
-                                setInterval(function() {
-                                    if ($rootScope.connected) {
-                                        _requestHotlist().then(function(hotlist) {
-                                            handlers.handleHotlistInfo(hotlist);
-        
-                                        });
-                                    }
-                                }, 60000); // Sync hotlist every 60 second
-                            }
-        
-        
-                            // Fetch weechat time format for displaying timestamps
-                            fetchConfValue('weechat.look.buffer_time_format',
-                                           function() {
-                                               // Will set models.wconfig['weechat.look.buffer_time_format']
-                                               _parseWeechatTimeFormat();
-                            });
-        
-                            // Fetch nick completion config
-                            fetchConfValue('weechat.completion.nick_completer');
-                            fetchConfValue('weechat.completion.nick_add_space');
-        
-                            _requestSync();
-                            $log.info("Connected to relay");
-                            $rootScope.connected = true;
-                            if (successCallback) {
-                                successCallback();
-                            }
+                    function(version) {
+                        handlers.handleVersionInfo(version);
+                        // Connection is successful
+                        // Send all the other commands required for initialization
+                        _requestBufferInfos().then(function(bufinfo) {
+                            handlers.handleBufferInfo(bufinfo);
                         });
+    
+                        _requestHotlist().then(function(hotlist) {
+                            handlers.handleHotlistInfo(hotlist);
+    
+                        });
+                        if (settings.hotlistsync) {
+                            // Schedule hotlist syncing every so often so that this
+                            // client will have unread counts (mostly) in sync with
+                            // other clients or terminal usage directly.
+                            setInterval(function() {
+                                if ($rootScope.connected) {
+                                    _requestHotlist().then(function(hotlist) {
+                                        handlers.handleHotlistInfo(hotlist);
+    
+                                    });
+                                }
+                            }, 60000); // Sync hotlist every 60 second
+                        }
+    
+    
+                        // Fetch weechat time format for displaying timestamps
+                        fetchConfValue('weechat.look.buffer_time_format',
+                                        function() {
+                                            // Will set models.wconfig['weechat.look.buffer_time_format']
+                                            _parseWeechatTimeFormat();
+                        });
+    
+                        // Fetch nick completion config
+                        fetchConfValue('weechat.completion.nick_completer');
+                        fetchConfValue('weechat.completion.nick_add_space');
+    
+                        _requestSync();
+                        $log.info("Connected to relay");
+                        $rootScope.connected = true;
+                        if (successCallback) {
+                            successCallback();
+                        }
+                    });
                 }
             , function() {
                 handleWrongPassword();
