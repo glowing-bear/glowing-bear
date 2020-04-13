@@ -38,6 +38,7 @@ weechat.factory('connection',
             var _initializeConnection = function(passwd) {
                 // Escape comma in password (#937)
                 passwd = passwd.replace(',', '\\,');
+
                 // This is not the proper way to do this.
                 // WeeChat does not send a confirmation for the init.
                 // Until it does, We need to "assume" that formatInit
@@ -51,6 +52,22 @@ weechat.factory('connection',
                     })
                 );
 
+                // After this init, weechat either does nothing and the connection stays open
+                // or weechat closes the connection of the password is wrong
+                // Give weechat the oportunity to close the connection before we send anything else
+                return new Promise(function(resolve, reject) {
+                    setTimeout(function() {
+                        //If it's still open after 100ms we'll assume we are connected
+                        if (ngWebsockets.readyState() === WebSocket.OPEN) {
+                            resolve();
+                        } else {
+                            reject();
+                        }
+                    },100);
+                });
+            };
+
+            var _requestVersion = function() {
                 return ngWebsockets.send(
                     weeChat.Protocol.formatInfo({
                         name: 'version'
@@ -185,56 +202,57 @@ weechat.factory('connection',
             // a version command. If it fails, it means the we
             // did not provide the proper password.
             _initializeConnection(passwd).then(
-                function(version) {
-                    handlers.handleVersionInfo(version);
-                    // Connection is successful
-                    // Send all the other commands required for initialization
-                    _requestBufferInfos().then(function(bufinfo) {
-                        handlers.handleBufferInfo(bufinfo);
-                    });
-
-                    _requestHotlist().then(function(hotlist) {
-                        handlers.handleHotlistInfo(hotlist);
-
-                    });
-                    if (settings.hotlistsync) {
-                        // Schedule hotlist syncing every so often so that this
-                        // client will have unread counts (mostly) in sync with
-                        // other clients or terminal usage directly.
-                        setInterval(function() {
-                            if ($rootScope.connected) {
-                                _requestHotlist().then(function(hotlist) {
-                                    handlers.handleHotlistInfo(hotlist);
-
-                                });
-                            }
-                        }, 60000); // Sync hotlist every 60 second
-                    }
-
-
-                    // Fetch weechat time format for displaying timestamps
-                    fetchConfValue('weechat.look.buffer_time_format',
-                                   function() {
-                                       // Will set models.wconfig['weechat.look.buffer_time_format']
-                                       _parseWeechatTimeFormat();
-                    });
-
-                    // Fetch nick completion config
-                    fetchConfValue('weechat.completion.nick_completer');
-                    fetchConfValue('weechat.completion.nick_add_space');
-
-                    _requestSync();
-                    $log.info("Connected to relay");
-                    $rootScope.connected = true;
-                    if (successCallback) {
-                        successCallback();
-                    }
-                },
                 function() {
-                    handleWrongPassword();
+                    _requestVersion().then(
+                        function(version) {
+                            handlers.handleVersionInfo(version);
+                            // Connection is successful
+                            // Send all the other commands required for initialization
+                            _requestBufferInfos().then(function(bufinfo) {
+                                handlers.handleBufferInfo(bufinfo);
+                            });
+        
+                            _requestHotlist().then(function(hotlist) {
+                                handlers.handleHotlistInfo(hotlist);
+        
+                            });
+                            if (settings.hotlistsync) {
+                                // Schedule hotlist syncing every so often so that this
+                                // client will have unread counts (mostly) in sync with
+                                // other clients or terminal usage directly.
+                                setInterval(function() {
+                                    if ($rootScope.connected) {
+                                        _requestHotlist().then(function(hotlist) {
+                                            handlers.handleHotlistInfo(hotlist);
+        
+                                        });
+                                    }
+                                }, 60000); // Sync hotlist every 60 second
+                            }
+        
+        
+                            // Fetch weechat time format for displaying timestamps
+                            fetchConfValue('weechat.look.buffer_time_format',
+                                           function() {
+                                               // Will set models.wconfig['weechat.look.buffer_time_format']
+                                               _parseWeechatTimeFormat();
+                            });
+        
+                            // Fetch nick completion config
+                            fetchConfValue('weechat.completion.nick_completer');
+                            fetchConfValue('weechat.completion.nick_add_space');
+        
+                            _requestSync();
+                            $log.info("Connected to relay");
+                            $rootScope.connected = true;
+                            if (successCallback) {
+                                successCallback();
+                            }
+                        });
                 }
-            );
-
+            , function() {
+                handleWrongPassword();
+            });
         };
 
         var onmessage = function() {

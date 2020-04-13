@@ -138,12 +138,17 @@ function($rootScope, $q) {
         ws.close();
     };
 
+    var readyState = function() {
+        return ws.readyState;
+    }
+
     return {
         send: send,
         sendAll: sendAll,
         connect: connect,
         disconnect: disconnect,
-        failCallbacks: failCallbacks
+        failCallbacks: failCallbacks,
+        readyState: readyState
     };
 
 }]);
