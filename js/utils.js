@@ -45,6 +45,40 @@ weechat.factory('utils', function() {
         head.appendChild(elem);
     };
 
+    // Convert string to ByteArray
+    function hexStringToByte(str) {
+        if (!str) {
+          return new Uint8Array();
+        }
+        
+        var a = [];
+        for (var i = 0, len = str.length; i < len; i+=2) {
+          a.push(parseInt(str.substr(i,2),16));
+        }
+        
+        return new Uint8Array(a);
+    }
+
+    function bytetoHexString(buffer) {
+        return Array
+        .from (new Uint8Array (buffer))
+        .map (b => b.toString (16).padStart (2, "0"))
+        .join ("");
+      }
+
+    function stringToUTF8Array(string) {
+        const encoder = new TextEncoder()
+        const view = encoder.encode(string)
+        return view;
+    }
+
+    function concatenateTypedArray(a, b) { // a, b TypedArray of same type
+        var c = new (a.constructor)(a.length + b.length);
+        c.set(a, 0);
+        c.set(b, a.length);
+        return c;
+    }
+
 
     return {
     	changeClassStyle: changeClassStyle,
@@ -53,5 +87,9 @@ weechat.factory('utils', function() {
         isCordova: isCordova,
         inject_script: inject_script,
         inject_css: inject_css,
+        hexStringToByte: hexStringToByte,
+        bytetoHexString: bytetoHexString,
+        stringToUTF8Array: stringToUTF8Array,
+        concatenateTypedArray: concatenateTypedArray
     };
 });

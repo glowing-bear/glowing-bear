@@ -4,12 +4,13 @@
 var weechat = angular.module('weechat');
 
 weechat.factory('connection',
-                ['$rootScope', '$log', 'handlers', 'models', 'settings', 'ngWebsockets', function($rootScope,
+                ['$rootScope', '$log', 'handlers', 'models', 'settings', 'ngWebsockets', 'utils', function($rootScope,
          $log,
          handlers,
          models,
          settings,
-         ngWebsockets) {
+         ngWebsockets,
+         utils) {
 
     var protocol = new weeChat.Protocol();
 
@@ -22,6 +23,7 @@ weechat.factory('connection',
     // Takes care of the connection and websocket hooks
     var connect = function (host, port, path, passwd, ssl, useTotp, totp, noCompression, successCallback, failCallback) {
         $rootScope.passwordError = false;
+        $rootScope.oldWeechatError = false;
         connectionData = [host, port, path, passwd, ssl, noCompression];
         var proto = ssl ? 'wss' : 'ws';
         // If host is an IPv6 literal wrap it in brackets
@@ -31,31 +33,143 @@ weechat.factory('connection',
         var url = proto + "://" + host + ":" + port + "/" + path;
         $log.debug('Connecting to URL: ', url);
 
+
+        var weechatIsPre2_9 = false;
         var onopen = function () {
 
+            var _performHandshake = function() {
+                return new Promise(function(resolve) {
+
+                    // First a handshake is sent to determine authentication method
+                    // This is only supported for weechat >= 2.9
+                    // If after 'a while' weechat does not respond
+                    // stop waiting for the handshake and assume it's an old version
+                    // This time is debatable, high latency connections may wrongfully
+                    // think weechat is an older version. This time is purposfully set
+                    // too high, this time should be reduced if determined the weechat
+                    // is lower than 2.9
+                    // This time also includes the time it takes to generate the hash
+                    const WAIT_TIME_OLD_WEECHAT = 2000; //ms
+
+                    // Wait long enough to assume we are on a version < 2.9
+                    var handShakeTimeout = setTimeout(function () {
+                        weechatIsPre2_9 = true;
+                        console.log('Weechat\'s version is assumed to be < 2.9');
+                        resolve();
+                    }, WAIT_TIME_OLD_WEECHAT);
+
+                    // Or wait for a response from the handshake
+                    ngWebsockets.send(
+                        weeChat.Protocol.formatHandshake({
+                            password: "pbkdf2+sha512", compression: noCompression ? 'off' : 'zlib'
+                        })
+                    ).then(function (message){
+                        clearTimeout(handShakeTimeout);
+                        resolve(message);
+                    });
+
+
+
+                });
+                
+            }
+
+            var _askTotp = function (useTotp) {
+                return new Promise(function(resolve) {
+
+                    // If weechat is < 2.9 the totp will be a setting (checkbox)
+                    // Otherwise the handshake will specify it
+                    if ( useTotp ) {
+                        // Ask the user to input his TOTP
+                        var totp = prompt("Please enter your TOTP Token");
+                        resolve (totp);
+                    } else {
+                        // User does not use TOTP, don't ask
+                        resolve(null);
+                    }
+                  
+                  })
+            }
 
             // Helper methods for initialization commands
-            var _initializeConnection = function(passwd) {
+            // This method is used to initialize weechat < 2.9
+            var _initializeConnectionPre29 = function(passwd, totp) {
+
+                // This is not secure, this has to be specifically allowed with a setting
+                // Otherwise an attacker could persuade the client to send it's password
+                // Or due to latency the client could think weechat was an older version
+                if (!settings.allowPlaintextAuthentication)
+                {
+                    $rootScope.oldWeechatError = true;
+                    $rootScope.$emit('relayDisconnect');
+                    $rootScope.$digest() // Have to do this otherwise change detection doesn't see the error.
+                    throw new Error('Plainttext authentication not allowed.');
+                }
+
                 // Escape comma in password (#937)
                 passwd = passwd.replace(',', '\\,');
-                // This is not the proper way to do this.
-                // WeeChat does not send a confirmation for the init.
-                // Until it does, We need to "assume" that formatInit
-                // will be received before formatInfo
+
                 ngWebsockets.send(
-                    weeChat.Protocol.formatInit({
+                    weeChat.Protocol.formatInitPre29({
                         password: passwd,
                         compression: noCompression ? 'off' : 'zlib',
-                        useTotp: useTotp,
                         totp: totp
                     })
                 );
 
-                return ngWebsockets.send(
-                    weeChat.Protocol.formatInfo({
-                        name: 'version'
+                // Wait a little bit until the init is sent
+                return new Promise(function(resolve) {
+                    setTimeout(() => resolve(), 5);
+                })
+
+            };
+
+            // Helper methods for initialization commands
+            // This method is used to initialize weechat >= 2.9
+            var salt;
+            var _initializeConnection29 = function(passwd, nonce, iterations, totp) {
+
+                return window.crypto.subtle.importKey(
+
+                    'raw',
+                    utils.stringToUTF8Array(passwd),
+                    {name: 'PBKDF2'},//{name: 'HMAC', hash: 'SHA-512'},
+                    false,
+                    ['deriveBits']
+
+                ).then( function (key) {
+
+                    salt = utils.concatenateTypedArray(utils.concatenateTypedArray(nonce, new Uint8Array([0x3A])), window.crypto.getRandomValues(new Uint8Array(16))); //nonce:cnonce, 3A is a ':' in ASCII
+                    return window.crypto.subtle.deriveBits(
+                        {
+                            name: 'PBKDF2',
+                            hash: 'SHA-512',
+                            salt: salt,
+                            iterations: iterations,
+                        },
+                        key, //your key from generateKey or importKey
+                        512
+                    );
+                    
+                }).then( function (hash) {
+
+
+                    ngWebsockets.send(
+                        weeChat.Protocol.formatInit29(
+                            'pbkdf2+sha512:' + utils.bytetoHexString(salt) + ':100000:' + utils.bytetoHexString(hash),
+                            totp
+                        )
+                    );
+
+                    // Wait a little bit until the init is sent
+                    return new Promise(function(resolve) {
+
+                        setTimeout(() => resolve(), 5);
+                    
                     })
-                );
+
+                });
+
             };
 
             var _requestHotlist = function() {
@@ -180,70 +294,123 @@ weechat.factory('connection',
                 $rootScope.angularTimeFormat = angularFormat;
             };
 
+            var passwordMethod
+            var totpRequested;
+            var nonce;
+            var iterations;
 
-            // First command asks for the password and issues
-            // a version command. If it fails, it means the we
-            // did not provide the proper password.
-            _initializeConnection(passwd).then(
-                function(version) {
-                    handlers.handleVersionInfo(version);
-                    // Connection is successful
-                    // Send all the other commands required for initialization
-                    _requestBufferInfos().then(function(bufinfo) {
-                        handlers.handleBufferInfo(bufinfo);
-                    });
+            _performHandshake().then(
 
-                    _requestHotlist().then(function(hotlist) {
-                        handlers.handleHotlistInfo(hotlist);
-
-                    });
-                    if (settings.hotlistsync) {
-                        // Schedule hotlist syncing every so often so that this
-                        // client will have unread counts (mostly) in sync with
-                        // other clients or terminal usage directly.
-                        setInterval(function() {
-                            if ($rootScope.connected) {
-                                _requestHotlist().then(function(hotlist) {
-                                    handlers.handleHotlistInfo(hotlist);
-
-                                });
-                            }
-                        }, 60000); // Sync hotlist every 60 second
+                //Wait for weechat to respond or handshake times out
+                function (message)
+                {
+                    // Do nothing if the handshake was received
+                    // after concluding weechat was an old version
+                    // TODO maybe warn the user here
+                    if(weechatIsPre2_9) {
+                        return;
                     }
 
-
-                    // Fetch weechat time format for displaying timestamps
-                    fetchConfValue('weechat.look.buffer_time_format',
-                                   function() {
-                                       // Will set models.wconfig['weechat.look.buffer_time_format']
-                                       _parseWeechatTimeFormat();
-                    });
-
-                    // Fetch nick completion config
-                    fetchConfValue('weechat.completion.nick_completer');
-                    fetchConfValue('weechat.completion.nick_add_space');
-
-                    _requestSync();
-                    $log.info("Connected to relay");
-                    $rootScope.connected = true;
-                    if (successCallback) {
-                        successCallback();
-                    }
-                },
-                function() {
-                    handleWrongPassword();
+                    passwordMethod = message.objects[0].content.auth_password;
+                    totpRequested = message.objects[0].content.totp === 'on' ? true : false;
+                    nonce = utils.hexStringToByte(message.objects[0].content.nonce);
+                    iterations = message.objects[0].content.hash_iterations;
+                    
                 }
-            );
 
+            ).then( function() {
+
+                if(weechatIsPre2_9)
+                {
+                    // Ask the user for the TOTP token if this is enabled
+                    return _askTotp(useTotp)
+                    .then( function (totp) {
+                        return _initializeConnectionPre29(passwd, totp)
+                    })
+
+
+                } else {
+                    
+                    // Weechat version >= 2.9
+                    return _askTotp(totpRequested)
+                    .then( function(totp) {
+                        return _initializeConnection29(passwd, nonce, iterations, totp)
+                    })
+
+                }
+
+            }).then( function(){
+
+                // The Init was sent, weechat will not respond
+                // Wait until either the connection closes
+                // Or try to send version and see if weechat responds
+                return ngWebsockets.send(
+                    weeChat.Protocol.formatInfo({
+                        name: 'version'
+                    })
+                );  
+
+            }).then( function(version) {
+
+                // From now on we are assumed initialized
+                // We don't know for sure because weechat does not respond
+                // All we know is the socket wasn't closed afer waiting a little bit
+                console.log('Succesfully connected');
+                $rootScope.waseverconnected = true;
+                handlers.handleVersionInfo(version);
+
+                // Send all the other commands required for initialization
+                _requestBufferInfos().then(function(bufinfo) {
+                    handlers.handleBufferInfo(bufinfo);
+                });
+
+                _requestHotlist().then(function(hotlist) {
+                    handlers.handleHotlistInfo(hotlist);
+
+                });
+                if (settings.hotlistsync) {
+                    // Schedule hotlist syncing every so often so that this
+                    // client will have unread counts (mostly) in sync with
+                    // other clients or terminal usage directly.
+                    setInterval(function() {
+                        if ($rootScope.connected) {
+                            _requestHotlist().then(function(hotlist) {
+                                handlers.handleHotlistInfo(hotlist);
+
+                            });
+                        }
+                    }, 60000); // Sync hotlist every 60 second
+                }
+
+                // Fetch weechat time format for displaying timestamps
+                fetchConfValue('weechat.look.buffer_time_format',
+                                function() {
+                                    // Will set models.wconfig['weechat.look.buffer_time_format']
+                                    _parseWeechatTimeFormat();
+                });
+
+                // Fetch nick completion config
+                fetchConfValue('weechat.completion.nick_completer');
+                fetchConfValue('weechat.completion.nick_add_space');
+
+                _requestSync();
+                $log.info("Connected to relay");
+                $rootScope.connected = true;
+                if (successCallback) {
+                    successCallback();
+                }
+
+            },
+            
+            //Sending version failed
+            function() {
+                handleWrongPassword();
+            });
         };
 
         var onmessage = function() {
-            // If we recieve a message from WeeChat it means that
-            // password was OK. Store that result and check for it
-            // in the failure handler.
-            $rootScope.waseverconnected = true;
+            
         };
-
 
         var onclose = function (evt) {
             /*
@@ -274,7 +441,7 @@ weechat.factory('connection',
 
         var handleWrongPassword = function() {
             // Connection got closed, lets check if we ever was connected successfully
-            if (!$rootScope.waseverconnected && !$rootScope.errorMessage) {
+            if (!$rootScope.waseverconnected && !$rootScope.errorMessage && !$rootScope.oldWeechatError) {
                 $rootScope.passwordError = true;
                 $rootScope.$apply();
             }
