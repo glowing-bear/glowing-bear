@@ -71,6 +71,11 @@
       <div class="alert alert-danger" ng-show="oldWeechatError" ng-cloak>
         <strong>Weechat version error</strong> Weechat connected but did not respond to a handshake. This could mean weechat < version 2.9. Verify your weechat version and check "Allow Plaintext Authentication" if it's < 2.9.
       </div>
+      <div class="alert alert-danger" ng-show="hashAlgorithemDisagree" ng-cloak>
+        <strong>Hash algorithem error</strong> Weechat and glowing bear did not agree on a hashing algorithem, please do /set relay.network.password_hash_algo "pbkdf2+sha512" in weechat.
+      </div>
+
+      hashAlgorithemDisagree
       <div class="panel-group accordion">
         <div class="panel" data-state="active" ng-show=false>
           <div class="panel-heading">
@@ -198,7 +203,7 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
               <p><strong>Required for Weechat < 2.9</strong></p>
               <p>Since weechat version 2.9 the authentication was made more secure and resistant to brute forcing. Glowing bear uses the most secure authentication method by default. However to supports older version of weechat this options allows glowing bear to still send your password in plaintext (wrapped in https if enabled). Only enable this if you are using Weechat < 2.9</p>
               <p>By default weechat 2.9 support all authentication methods, if you are only using glowing bear you can do the following command to improve security:</p>
-              <pre>/relay.network.auth_password "pbkdf2+sha512"</pre>
+              <pre>/set relay.network.password_hash_algo "pbkdf2+sha512"</pre>
             </div>
           </div>
         </div>
