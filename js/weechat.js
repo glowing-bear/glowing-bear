@@ -638,7 +638,7 @@
     //https://weechat.org/files/doc/stable/weechat_relay_protocol.en.html#command_handshake
     WeeChatProtocol.formatHandshake = function(params) {
         var defaultParams = {
-            password: 'pbkdf2+sha512',
+            password_hash_algo: 'pbkdf2+sha512',
             compression: 'zlib'
         };
         var keys = [];
@@ -651,7 +651,7 @@
         }
 
         if (params.password !== null) {
-            keys.push('password=' + params.password);
+            keys.push('password_hash_algo=' + params.password_hash_algo);
         }
 
         parts.push(keys.join(','));

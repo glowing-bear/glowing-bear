@@ -24,6 +24,7 @@ weechat.factory('connection',
     var connect = function (host, port, path, passwd, ssl, useTotp, totp, noCompression, successCallback, failCallback) {
         $rootScope.passwordError = false;
         $rootScope.oldWeechatError = false;
+        $rootScope.hashAlgorithemDisagree = false;
         connectionData = [host, port, path, passwd, ssl, noCompression];
         var proto = ssl ? 'wss' : 'ws';
         // If host is an IPv6 literal wrap it in brackets
@@ -61,7 +62,7 @@ weechat.factory('connection',
                     // Or wait for a response from the handshake
                     ngWebsockets.send(
                         weeChat.Protocol.formatHandshake({
-                            password: "pbkdf2+sha512", compression: noCompression ? 'off' : 'zlib'
+                            password_hash_algo: "pbkdf2+sha512", compression: noCompression ? 'off' : 'zlib'
                         })
                     ).then(function (message){
                         clearTimeout(handShakeTimeout);
@@ -311,10 +312,18 @@ weechat.factory('connection',
                         return;
                     }
 
-                    passwordMethod = message.objects[0].content.auth_password;
+                    passwordMethod = message.objects[0].content.password_hash_algo;
                     totpRequested = message.objects[0].content.totp === 'on' ? true : false;
                     nonce = utils.hexStringToByte(message.objects[0].content.nonce);
-                    iterations = message.objects[0].content.hash_iterations;
+                    iterations = message.objects[0].content.password_hash_iterations;
+
+                    if(passwordMethod != "pbkdf2+sha512")
+                    {
+                        $rootScope.hashAlgorithemDisagree = true;
+                        $rootScope.$emit('relayDisconnect');
+                        $rootScope.$digest() // Have to do this otherwise change detection doesn't see the error.
+                        throw new Error('No password hash algorithem returned.');
+                    }
                     
                 }
 
@@ -441,7 +450,7 @@ weechat.factory('connection',
 
         var handleWrongPassword = function() {
             // Connection got closed, lets check if we ever was connected successfully
-            if (!$rootScope.waseverconnected && !$rootScope.errorMessage && !$rootScope.oldWeechatError) {
+            if (!$rootScope.waseverconnected && !$rootScope.errorMessage && !$rootScope.oldWeechatError && !$rootScope.hashAlgorithemDisagree) {
                 $rootScope.passwordError = true;
                 $rootScope.$apply();
             }
