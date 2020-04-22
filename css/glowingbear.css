@@ -960,3 +960,11 @@ code {
     color: #444;
     border: 1pt solid #444;
 }
+
+#bufferlines.hideTime td.time {
+    display:none;
+}
+
+#bufferlines.hideTime td.prefix {
+    display:none;
+}
