@@ -964,3 +964,11 @@ code {
 .checkbox.indent {
     margin-left: 20px;
 }
+
+#bufferlines.hideTime td.time {
+    display:none;
+}
+
+#bufferlines.hideTime td.prefix {
+    display:none;
+}
