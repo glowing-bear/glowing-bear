@@ -646,11 +646,11 @@
 
         params = WeeChatProtocol._mergeParams(defaultParams, params);
 
-        if (params.password !== null) {
+        if (params.compression !== null) {
             keys.push('compression=' + params.compression);
         }
 
-        if (params.password !== null) {
+        if (params.password_hash_algo !== null) {
             keys.push('password_hash_algo=' + params.password_hash_algo);
         }
 
