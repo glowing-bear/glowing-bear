@@ -71,8 +71,8 @@
       <div class="alert alert-danger" ng-show="oldWeechatError" ng-cloak>
         <strong>Weechat version error</strong> Weechat connected but did not respond to a handshake. This could mean weechat < version 2.9. Verify your weechat version and check "Allow Plaintext Authentication" if it's < 2.9.
       </div>
-      <div class="alert alert-danger" ng-show="hashAlgorithemDisagree" ng-cloak>
-        <strong>Hash algorithem error</strong> Weechat and glowing bear did not agree on a hashing algorithem, please do /set relay.network.password_hash_algo "pbkdf2+sha512" in weechat.
+      <div class="alert alert-danger" ng-show="hashAlgorithmDisagree" ng-cloak>
+        <strong>Hash algorithm error</strong> Weechat and glowing bear did not agree on a hashing algorithm, please do /set relay.network.password_hash_algo "pbkdf2+sha512" in weechat.
       </div>
       <div class="panel-group accordion">
         <div class="panel" data-state="active" ng-show=false>

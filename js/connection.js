@@ -24,7 +24,7 @@ weechat.factory('connection',
     var connect = function (host, port, path, passwd, ssl, useTotp, totp, noCompression, successCallback, failCallback) {
         $rootScope.passwordError = false;
         $rootScope.oldWeechatError = false;
-        $rootScope.hashAlgorithemDisagree = false;
+        $rootScope.hashAlgorithmDisagree = false;
         connectionData = [host, port, path, passwd, ssl, noCompression];
         var proto = ssl ? 'wss' : 'ws';
         // If host is an IPv6 literal wrap it in brackets
@@ -319,10 +319,10 @@ weechat.factory('connection',
 
                     if(passwordMethod != "pbkdf2+sha512")
                     {
-                        $rootScope.hashAlgorithemDisagree = true;
+                        $rootScope.hashAlgorithmDisagree = true;
                         $rootScope.$emit('relayDisconnect');
                         $rootScope.$digest() // Have to do this otherwise change detection doesn't see the error.
-                        throw new Error('No password hash algorithem returned.');
+                        throw new Error('No password hash algorithm returned.');
                     }
                     
                 }
@@ -450,7 +450,7 @@ weechat.factory('connection',
 
         var handleWrongPassword = function() {
             // Connection got closed, lets check if we ever was connected successfully
-            if (!$rootScope.waseverconnected && !$rootScope.errorMessage && !$rootScope.oldWeechatError && !$rootScope.hashAlgorithemDisagree) {
+            if (!$rootScope.waseverconnected && !$rootScope.errorMessage && !$rootScope.oldWeechatError && !$rootScope.hashAlgorithmDisagree) {
                 $rootScope.passwordError = true;
                 $rootScope.$apply();
             }

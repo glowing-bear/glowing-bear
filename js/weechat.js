@@ -631,7 +631,7 @@
      * Formats a handshake command.
      *
      * @param params Parameters:
-     *            password: list of supported hash algorithems, colon separated (optional)
+     *            password: list of supported hash algorithms, colon separated (optional)
      *            compression: compression ('off' or 'zlib') (optional)
      * @return Formatted handshake command string
      */
