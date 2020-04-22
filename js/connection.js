@@ -99,7 +99,7 @@ weechat.factory('connection',
                 // This is not secure, this has to be specifically allowed with a setting
                 // Otherwise an attacker could persuade the client to send it's password
                 // Or due to latency the client could think weechat was an older version
-                if (!settings.allowPlaintextAuthentication)
+                if (!settings.compatibilityWeechat28)
                 {
                     $rootScope.oldWeechatError = true;
                     $rootScope.$emit('relayDisconnect');

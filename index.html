@@ -134,12 +134,12 @@
                     </label>
                   </div>
                   <div class="checkbox">
-                    <label class="control-label" for="allowPlaintextAuthentication">
-                      <input type="checkbox" id="allowPlaintextAuthentication" ng-model="settings.allowPlaintextAuthentication">
-                      Allow Plaintext Authentication (Weechat < 2.9) <a href="#plaintext" ng-click="toggleAccordionByName('gettingStartedAccordion')"><i class="glyphicon glyphicon-info-sign"></i></a>
+                    <label class="control-label" for="compatibilityWeechat28">
+                      <input type="checkbox" id="compatibilityWeechat28" ng-model="settings.compatibilityWeechat28">
+                      Compatibility with Weechat 2.8 and older <a href="#plaintext" ng-click="toggleAccordionByName('gettingStartedAccordion')"><i class="glyphicon glyphicon-info-sign"></i></a>
                     </label>
                   </div>
-                  <div class="checkbox indent" ng-show="settings.allowPlaintextAuthentication">
+                  <div class="checkbox indent" ng-show="settings.compatibilityWeechat28">
                     <label class="control-label" for="useTotp">
                       <input type="checkbox" id="useTotp" ng-model="settings.useTotp">
                       Use Time-based One-Time Password (automatic for Weechat >= 2.9)<a href="https://blog.weechat.org/post/2019/01/14/Support-of-TOTP" target="_blank"><i class="glyphicon glyphicon-info-sign"></i></a>
@@ -153,7 +153,7 @@
                   </div>
                   <div class="checkbox indent" ng-show="settings.savepassword || settings.autoconnect">
                     <label class="control-label" for="autoconnect">
-                        <input type="checkbox" id="autoconnect" ng-model="settings.autoconnect"  ng-disabled="settings.allowPlaintextAuthentication && settings.useTotp">
+                        <input type="checkbox" id="autoconnect" ng-model="settings.autoconnect"  ng-disabled="settings.compatibilityWeechat28 && settings.useTotp">
                         Automatically connect
                     </label>
                   </div>
@@ -197,8 +197,8 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
 /set relay.network.totp_secret "${sec.data.relay_totp_secret}"</pre>
               <p>Open an authenticator app and create an entry with the same secret. In Glowing Bear check the checkbox for "use Time-based One-Time Password" and fill in the one time password as you see it in the authenticator app.</p>
               
-              <h3><a name="plaintext"></a>Allow plaintext authentication</h3>
-              <p><strong>Required for Weechat < 2.9</strong></p>
+              <h3><a name="plaintext"></a>Compatibility with Weechat 2.8 and older</h3>
+              <p><strong>Required for Weechat <= 2.8</strong></p>
               <p>Since weechat version 2.9 the authentication was made more secure and resistant to brute forcing. Glowing bear uses the most secure authentication method by default. However to supports older version of weechat this options allows glowing bear to still send your password in plaintext (wrapped in https if enabled). Only enable this if you are using Weechat < 2.9</p>
               <p>By default weechat 2.9 support all authentication methods, if you are only using glowing bear you can do the following command to improve security:</p>
               <pre>/set relay.network.password_hash_algo "pbkdf2+sha512"</pre>
