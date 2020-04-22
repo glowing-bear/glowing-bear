@@ -157,7 +157,7 @@ weechat.factory('connection',
 
                     ngWebsockets.send(
                         weeChat.Protocol.formatInit29(
-                            'pbkdf2+sha512:' + utils.bytetoHexString(salt) + ':100000:' + utils.bytetoHexString(hash),
+                            'pbkdf2+sha512:' + utils.bytetoHexString(salt) + ':' + iterations + ':' + utils.bytetoHexString(hash),
                             totp
                         )
                     );
