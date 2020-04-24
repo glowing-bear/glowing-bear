@@ -69,7 +69,7 @@
         <strong>Secure connection error</strong> Unable to connect to unencrypted relay when you are connecting to Glowing Bear over HTTPS. Please use an encrypted relay or load the page without using HTTPS.
       </div>
       <div class="alert alert-danger" ng-show="oldWeechatError" ng-cloak>
-        <strong>Weechat version error</strong> Weechat connected but did not respond to a handshake. This could mean weechat < version 2.9. Verify your weechat version and check "Allow Plaintext Authentication" if it's < 2.9.
+        <strong>Weechat version error</strong> Weechat connected but did not respond to a handshake. This could mean weechat < version 2.9. Verify your weechat version and check "Compatibility with Weechat 2.8 and older" if it's <= 2.8.
       </div>
       <div class="alert alert-danger" ng-show="hashAlgorithmDisagree" ng-cloak>
         <strong>Hash algorithm error</strong> Weechat and glowing bear did not agree on a hashing algorithm, please do /set relay.network.password_hash_algo "pbkdf2+sha512" in weechat.
