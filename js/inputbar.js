@@ -711,6 +711,7 @@ weechat.directive('inputBar', function() {
             $scope.handleCompleteNickButton = function($event) {
                 $event.preventDefault();
                 $scope.completeNick();
+                $scope.completeCommand('forward');
 
                 setTimeout(function() {
                     $scope.getInputNode().focus();
