@@ -76,6 +76,11 @@ weechat.directive('inputBar', function() {
             };
 
             $scope.completeNick = function() {
+                if ( $scope.command.startsWith('/') ) {
+                    // We are completing a command, an other function will do this
+                    return;
+                }
+
                 // input DOM node
                 var inputNode = $scope.getInputNode();
 
@@ -107,6 +112,98 @@ weechat.directive('inputBar', function() {
                     inputNode.setSelectionRange(nickComp.caretPos, nickComp.caretPos);
                 }, 0);
             };
+
+            var previousInput;
+            var commandCompletionList;
+            var commandCompletionBaseWord;
+            var commandCompletionPosition;
+            var commandCompletionPositionInList;
+            $scope.completeCommand = function(direction) {
+                if ( !$scope.command.startsWith('/') ) {
+                    // We are not completing a command, maybe a nick?
+                    return;
+                }
+
+                // input DOM node
+                var inputNode = $scope.getInputNode();
+
+                // get current caret position
+                var caretPos = inputNode.selectionStart;
+
+                // get current active buffer
+                var activeBuffer = models.getActiveBuffer();
+
+                // Empty input makes $scope.command undefined -- use empty string instead
+                var input = $scope.command || '';
+
+                // This function is for later cycling the list after we got it
+                var cycleCompletionList = function (direction) {
+                    // Check if the list has elements and we have not cycled to the end yet
+                    if ( !commandCompletionList || !commandCompletionList[0] ) {
+                        return;
+                    }
+
+                    // If we are cycling in the other direction, go back two placed in the list
+                    if ( direction === 'backward' ) {
+                        commandCompletionPositionInList -= 2;
+
+                        if ( commandCompletionPositionInList < 0 ) {
+                            // We have reached the beginning of list and are going backward, so go to the end;
+                            commandCompletionPositionInList = commandCompletionList.length - 1;
+                        }
+                    }
+
+                    // Check we have not reached the end of the cycle list
+                    if ( commandCompletionList.length <= commandCompletionPositionInList ) {
+                        // We have reached the end of the list, start at the beginning
+                        commandCompletionPositionInList = 0;
+                    }
+
+                    // Cycle the list
+                    // First remove the word that's to be completed
+                    var commandBeforeReplace = $scope.command.substring(0, commandCompletionPosition - commandCompletionBaseWord.length);
+                    var commandAfterReplace = $scope.command.substring(commandCompletionPosition + commandCompletionBaseWord.length);
+                    var replacedWord = commandCompletionList[commandCompletionPositionInList];
+                    $scope.command = commandBeforeReplace + replacedWord + commandAfterReplace;
+
+                    // Set the cursor position
+                    var newCursorPos = commandBeforeReplace.length + replacedWord.length;
+                    setTimeout(function() {
+                        inputNode.focus();
+                        inputNode.setSelectionRange(newCursorPos, newCursorPos);
+                    }, 0);
+
+                    // Setup for the next cycle
+                    commandCompletionPositionInList++;
+                    commandCompletionBaseWord = replacedWord;
+                    previousInput = $scope.command + activeBuffer.id;
+                    commandCompletionPosition = $scope.command.length;
+                }
+
+                // Check if we have requested this completion info before
+                if (input + activeBuffer.id !== previousInput) {
+                    // Remeber we requested this input for next time
+                    previousInput = input + activeBuffer.id;
+
+                    // Ask weechat for the completion list
+                    connection.requestCompletion(activeBuffer.id, caretPos, input).then( function(completionObject) {
+                        // Save the list of completion object, we will only request is once
+                        // and cycle through it as long as the input doesn't change
+                        commandCompletionList = completionObject.list;
+                        commandCompletionBaseWord = completionObject.base_word;
+                        commandCompletionPosition = caretPos;
+                        commandCompletionPositionInList = 0;
+                    }).then( function () {
+                        //after we get the list we can continue with our first cycle
+                        cycleCompletionList(direction);
+                    });
+                } else {
+                    // Input hasn't changed so we should already have our completion list
+                    cycleCompletionList(direction);
+                }
+            };
+
+
 
             $rootScope.insertAtCaret = function(toInsert) {
                 // caret position in the input bar
@@ -367,10 +464,18 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Tab -> nick completion
-                if (code === 9 && !$event.altKey && !$event.ctrlKey) {
+                if (code === 9 && !$event.altKey && !$event.ctrlKey && !$event.shiftKey) {
                     $event.preventDefault();
                     $scope.iterCandidate = tmpIterCandidate;
                     $scope.completeNick();
+                    $scope.completeCommand('forward');
+                    return true;
+                }
+
+                // Tab -> nick completion
+                if (code === 9 && !$event.altKey && !$event.ctrlKey && $event.shiftKey) {
+                    $event.preventDefault();
+                    $scope.completeCommand('backward');
                     return true;
                 }
 
