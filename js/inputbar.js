@@ -472,7 +472,7 @@ weechat.directive('inputBar', function() {
                     return true;
                 }
 
-                // Tab -> nick completion
+                // Shitft-Tab -> nick completion backward (only commands)
                 if (code === 9 && !$event.altKey && !$event.ctrlKey && $event.shiftKey) {
                     $event.preventDefault();
                     $scope.completeCommand('backward');
