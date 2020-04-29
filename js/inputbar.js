@@ -189,6 +189,11 @@ weechat.directive('inputBar', function() {
                         inputNode.setSelectionRange(newCursorPos, newCursorPos);
                     }, 0);
 
+                    // If there is only one item in the list, we are done, no next cycle
+                    if ( commandCompletionList.length === 1) {
+                        previousInput = '';
+                        return;
+                    }
                     // Setup for the next cycle
                     commandCompletionPositionInList++;
                     commandCompletionBaseWord = replacedWord + suffix;
