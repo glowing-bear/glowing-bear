@@ -31,6 +31,9 @@ weechat.directive('inputBar', function() {
             // Emojify input. E.g. Turn :smile: into the unicode equivalent, but
             // don't do replacements in the middle of a word (e.g. std::io::foo)
             $scope.inputChanged = function() {
+                // Cancel any command completion that was still ongoing
+                commandCompletionInputChanged = true;
+
                 var emojiRegex = /^(?:[\uD800-\uDBFF][\uDC00-\uDFFF])+$/, // *only* emoji
                     changed = false,  // whether a segment was modified
                     inputNode = $scope.getInputNode(),
@@ -115,14 +118,19 @@ weechat.directive('inputBar', function() {
 
             var previousInput;
             var commandCompletionList;
+            var commandCompletionAddSpace;
             var commandCompletionBaseWord;
             var commandCompletionPosition;
             var commandCompletionPositionInList;
+            var commandCompletionInputChanged;
             $scope.completeCommand = function(direction) {
                 if ( !$scope.command.startsWith('/') ) {
                     // We are not completing a command, maybe a nick?
                     return;
                 }
+
+                // Cancel if input changes
+                commandCompletionInputChanged = false;
 
                 // input DOM node
                 var inputNode = $scope.getInputNode();
@@ -138,6 +146,11 @@ weechat.directive('inputBar', function() {
 
                 // This function is for later cycling the list after we got it
                 var cycleCompletionList = function (direction) {
+                    // Don't do anything, the input has changed before we were able to complete the command
+                    if ( commandCompletionInputChanged ) {
+                        return;
+                    }
+
                     // Check if the list has elements and we have not cycled to the end yet
                     if ( !commandCompletionList || !commandCompletionList[0] ) {
                         return;
@@ -162,12 +175,15 @@ weechat.directive('inputBar', function() {
                     // Cycle the list
                     // First remove the word that's to be completed
                     var commandBeforeReplace = $scope.command.substring(0, commandCompletionPosition - commandCompletionBaseWord.length);
-                    var commandAfterReplace = $scope.command.substring(commandCompletionPosition + commandCompletionBaseWord.length);
+                    var commandAfterReplace = $scope.command.substring(commandCompletionPosition, $scope.command.length);
                     var replacedWord = commandCompletionList[commandCompletionPositionInList];
-                    $scope.command = commandBeforeReplace + replacedWord + commandAfterReplace;
+                    var suffix = commandCompletionAddSpace ? ' ' : '';
+
+                    // Fill in the new command
+                    $scope.command = commandBeforeReplace + replacedWord + suffix + commandAfterReplace;
 
                     // Set the cursor position
-                    var newCursorPos = commandBeforeReplace.length + replacedWord.length;
+                    var newCursorPos = commandBeforeReplace.length + replacedWord.length + suffix.length;
                     setTimeout(function() {
                         inputNode.focus();
                         inputNode.setSelectionRange(newCursorPos, newCursorPos);
@@ -175,9 +191,9 @@ weechat.directive('inputBar', function() {
 
                     // Setup for the next cycle
                     commandCompletionPositionInList++;
-                    commandCompletionBaseWord = replacedWord;
+                    commandCompletionBaseWord = replacedWord + suffix;
                     previousInput = $scope.command + activeBuffer.id;
-                    commandCompletionPosition = $scope.command.length;
+                    commandCompletionPosition = newCursorPos;
                 }
 
                 // Check if we have requested this completion info before
@@ -190,6 +206,7 @@ weechat.directive('inputBar', function() {
                         // Save the list of completion object, we will only request is once
                         // and cycle through it as long as the input doesn't change
                         commandCompletionList = completionObject.list;
+                        commandCompletionAddSpace = completionObject.add_space
                         commandCompletionBaseWord = completionObject.base_word;
                         commandCompletionPosition = caretPos;
                         commandCompletionPositionInList = 0;
@@ -197,6 +214,8 @@ weechat.directive('inputBar', function() {
                         //after we get the list we can continue with our first cycle
                         cycleCompletionList(direction);
                     });
+
+
                 } else {
                     // Input hasn't changed so we should already have our completion list
                     cycleCompletionList(direction);
