@@ -528,6 +528,25 @@ weechat.factory('connection',
         });
     };
 
+    var requestCompletion = function(bufferId, position, data) {
+        // Prevent requesting completion if bufferId is invalid
+        if (!bufferId) {
+            return;
+        }
+
+        return ngWebsockets.send(
+            weeChat.Protocol.formatCompletion({
+                buffer: "0x" + bufferId,
+                position: position,
+                data: data
+            })
+        ).then(function(message) {
+            return new Promise(function (resolve) {
+                resolve( handlers.handleCompletion(message) );
+            });
+        });
+    };
+
 
     return {
         connect: connect,
@@ -538,7 +557,8 @@ weechat.factory('connection',
         sendHotlistClearAll: sendHotlistClearAll,
         fetchMoreLines: fetchMoreLines,
         requestNicklist: requestNicklist,
-        attemptReconnect: attemptReconnect
+        attemptReconnect: attemptReconnect,
+        requestCompletion: requestCompletion
     };
 }]);
 })();
