@@ -53,7 +53,7 @@ weechat.factory('utils', function() {
         
         var a = [];
         for (var i = 0, len = str.length; i < len; i+=2) {
-          a.push(parseInt(str.substr(i,2),16));
+          a.push(parseInt(str.substr(i, 2), 16));
         }
         
         return new Uint8Array(a);
@@ -61,24 +61,23 @@ weechat.factory('utils', function() {
 
     function bytetoHexString(buffer) {
         return Array
-        .from (new Uint8Array (buffer))
-        .map (b => b.toString (16).padStart (2, "0"))
-        .join ("");
+        .from(new Uint8Array (buffer))
+        .map(function(b) { return b.toString(16).padStart(2, "0"); })
+        .join("");
       }
 
     function stringToUTF8Array(string) {
-        const encoder = new TextEncoder()
-        const view = encoder.encode(string)
-        return view;
+        return new TextEncoder().encode(string);
     }
 
-    function concatenateTypedArray(a, b) { // a, b TypedArray of same type
-        var c = new (a.constructor)(a.length + b.length);
-        c.set(a, 0);
-        c.set(b, a.length);
-        return c;
+    // Concatenate three TypedArrays of the same type
+    function concatenateTypedArrays(a, b, c) {
+        var res = new (a.constructor)(a.length + b.length + c.length);
+        res.set(a, 0);
+        res.set(b, a.length);
+        res.set(c, a.length + b.length);
+        return res;
     }
-
 
     return {
     	changeClassStyle: changeClassStyle,
@@ -90,6 +89,6 @@ weechat.factory('utils', function() {
         hexStringToByte: hexStringToByte,
         bytetoHexString: bytetoHexString,
         stringToUTF8Array: stringToUTF8Array,
-        concatenateTypedArray: concatenateTypedArray
+        concatenateTypedArrays: concatenateTypedArrays
     };
 });

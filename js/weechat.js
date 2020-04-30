@@ -690,7 +690,7 @@
         return WeeChatProtocol._formatCmd(null, 'init', parts);
     };
 
-        /**
+    /**
      * Formats an init command for weechat versions >= 2.9
      *
      * @param params Parameters:
@@ -699,7 +699,6 @@
      * @return Formatted init command string
      */
     WeeChatProtocol.formatInit29 = function(password_hash, totp) {
-
         var keys = [];
         var parts = [];
 

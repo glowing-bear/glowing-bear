@@ -35,12 +35,10 @@ weechat.factory('connection',
         $log.debug('Connecting to URL: ', url);
 
 
-        var weechatIsPre2_9 = false;
+        var weechatAssumedPre2_9 = false;
         var onopen = function () {
-
             var _performHandshake = function() {
                 return new Promise(function(resolve) {
-
                     // First a handshake is sent to determine authentication method
                     // This is only supported for weechat >= 2.9
                     // If after 'a while' weechat does not respond
@@ -54,7 +52,7 @@ weechat.factory('connection',
 
                     // Wait long enough to assume we are on a version < 2.9
                     var handShakeTimeout = setTimeout(function () {
-                        weechatIsPre2_9 = true;
+                        weechatAssumedPre2_9 = true;
                         console.log('Weechat\'s version is assumed to be < 2.9');
                         resolve();
                     }, WAIT_TIME_OLD_WEECHAT);
@@ -68,43 +66,35 @@ weechat.factory('connection',
                         clearTimeout(handShakeTimeout);
                         resolve(message);
                     });
-
-
-
                 });
-                
-            }
+            };
 
             var _askTotp = function (useTotp) {
                 return new Promise(function(resolve) {
-
                     // If weechat is < 2.9 the totp will be a setting (checkbox)
                     // Otherwise the handshake will specify it
-                    if ( useTotp ) {
+                    if (useTotp) {
                         // Ask the user to input his TOTP
                         var totp = prompt("Please enter your TOTP Token");
-                        resolve (totp);
+                        resolve(totp);
                     } else {
                         // User does not use TOTP, don't ask
                         resolve(null);
                     }
-                  
-                  })
-            }
+                });
+            };
 
             // Helper methods for initialization commands
             // This method is used to initialize weechat < 2.9
             var _initializeConnectionPre29 = function(passwd, totp) {
-
                 // This is not secure, this has to be specifically allowed with a setting
                 // Otherwise an attacker could persuade the client to send it's password
                 // Or due to latency the client could think weechat was an older version
-                if (!settings.compatibilityWeechat28)
-                {
+                if (!settings.compatibilityWeechat28) {
                     $rootScope.oldWeechatError = true;
                     $rootScope.$emit('relayDisconnect');
-                    $rootScope.$digest() // Have to do this otherwise change detection doesn't see the error.
-                    throw new Error('Plainttext authentication not allowed.');
+                    $rootScope.$digest(); // Have to do this otherwise change detection doesn't see the error.
+                    throw new Error('Plaintext authentication not allowed.');
                 }
 
                 // Escape comma in password (#937)
@@ -120,8 +110,8 @@ weechat.factory('connection',
 
                 // Wait a little bit until the init is sent
                 return new Promise(function(resolve) {
-                    setTimeout(() => resolve(), 5);
-                })
+                    setTimeout(function() { resolve(); }, 5);
+                });
 
             };
 
@@ -129,48 +119,39 @@ weechat.factory('connection',
             // This method is used to initialize weechat >= 2.9
             var salt;
             var _initializeConnection29 = function(passwd, nonce, iterations, totp) {
-
                 return window.crypto.subtle.importKey(
-
                     'raw',
                     utils.stringToUTF8Array(passwd),
                     {name: 'PBKDF2'},//{name: 'HMAC', hash: 'SHA-512'},
                     false,
                     ['deriveBits']
-
-                ).then( function (key) {
-
-                    salt = utils.concatenateTypedArray(utils.concatenateTypedArray(nonce, new Uint8Array([0x3A])), window.crypto.getRandomValues(new Uint8Array(16))); //nonce:cnonce, 3A is a ':' in ASCII
+                ).then(function (key) {
+                    var clientnonce = window.crypto.getRandomValues(new Uint8Array(16));
+                    //nonce:clientnonce, 3A is a ':' in ASCII
+                    salt = utils.concatenateTypedArrays(
+                        nonce, new Uint8Array([0x3A]), clientnonce);
                     return window.crypto.subtle.deriveBits(
                         {
                             name: 'PBKDF2',
                             hash: 'SHA-512',
                             salt: salt,
                             iterations: iterations,
-                        },
-                        key, //your key from generateKey or importKey
-                        512
+                        }, key, 512
                     );
-                    
-                }).then( function (hash) {
-
-
+                }).then(function (hash) {
                     ngWebsockets.send(
                         weeChat.Protocol.formatInit29(
-                            'pbkdf2+sha512:' + utils.bytetoHexString(salt) + ':' + iterations + ':' + utils.bytetoHexString(hash),
+                            'pbkdf2+sha512:' + utils.bytetoHexString(salt) + ':' +
+                                iterations + ':' + utils.bytetoHexString(hash),
                             totp
                         )
                     );
 
                     // Wait a little bit until the init is sent
                     return new Promise(function(resolve) {
-
-                        setTimeout(() => resolve(), 5);
-                    
-                    })
-
+                        setTimeout(function() { resolve(); }, 5);
+                    });
                 });
-
             };
 
             var _requestHotlist = function() {
@@ -295,61 +276,49 @@ weechat.factory('connection',
                 $rootScope.angularTimeFormat = angularFormat;
             };
 
-            var passwordMethod
+            var passwordMethod;
             var totpRequested;
             var nonce;
             var iterations;
 
             _performHandshake().then(
-
-                //Wait for weechat to respond or handshake times out
-                function (message)
-                {
+                // Wait for weechat to respond or handshake times out
+                function (message) {
                     // Do nothing if the handshake was received
                     // after concluding weechat was an old version
                     // TODO maybe warn the user here
-                    if(weechatIsPre2_9) {
+                    if (weechatAssumedPre2_9) {
                         return;
                     }
 
-                    passwordMethod = message.objects[0].content.password_hash_algo;
-                    totpRequested = message.objects[0].content.totp === 'on' ? true : false;
-                    nonce = utils.hexStringToByte(message.objects[0].content.nonce);
-                    iterations = message.objects[0].content.password_hash_iterations;
+                    var content = message.objects[0].content;
+                    passwordMethod = content.password_hash_algo;
+                    totpRequested = (content.totp === 'on');
+                    nonce = utils.hexStringToByte(content.nonce);
+                    iterations = content.password_hash_iterations;
 
-                    if(passwordMethod != "pbkdf2+sha512")
-                    {
+                    if (passwordMethod != "pbkdf2+sha512") {
                         $rootScope.hashAlgorithmDisagree = true;
                         $rootScope.$emit('relayDisconnect');
-                        $rootScope.$digest() // Have to do this otherwise change detection doesn't see the error.
-                        throw new Error('No password hash algorithm returned.');
+                        $rootScope.$digest(); // Have to do this otherwise change detection doesn't see the error.
+                        throw new Error('No supported password hash algorithm returned.');
                     }
-                    
                 }
-
-            ).then( function() {
-
-                if(weechatIsPre2_9)
-                {
+            ).then(function() {
+                if (weechatAssumedPre2_9) {
                     // Ask the user for the TOTP token if this is enabled
                     return _askTotp(useTotp)
-                    .then( function (totp) {
-                        return _initializeConnectionPre29(passwd, totp)
-                    })
-
-
+                    .then(function (totp) {
+                        return _initializeConnectionPre29(passwd, totp);
+                    });
                 } else {
-                    
                     // Weechat version >= 2.9
                     return _askTotp(totpRequested)
-                    .then( function(totp) {
-                        return _initializeConnection29(passwd, nonce, iterations, totp)
-                    })
-
+                    .then(function(totp) {
+                        return _initializeConnection29(passwd, nonce, iterations, totp);
+                    });
                 }
-
-            }).then( function(){
-
+            }).then(function(){
                 // The Init was sent, weechat will not respond
                 // Wait until either the connection closes
                 // Or try to send version and see if weechat responds
@@ -357,10 +326,8 @@ weechat.factory('connection',
                     weeChat.Protocol.formatInfo({
                         name: 'version'
                     })
-                );  
-
-            }).then( function(version) {
-
+                );
+            }).then(function(version) {
                 // From now on we are assumed initialized
                 // We don't know for sure because weechat does not respond
                 // All we know is the socket wasn't closed afer waiting a little bit
@@ -417,10 +384,6 @@ weechat.factory('connection',
             });
         };
 
-        var onmessage = function() {
-            
-        };
-
         var onclose = function (evt) {
             /*
              * Handles websocket disconnection
@@ -450,7 +413,9 @@ weechat.factory('connection',
 
         var handleWrongPassword = function() {
             // Connection got closed, lets check if we ever was connected successfully
-            if (!$rootScope.waseverconnected && !$rootScope.errorMessage && !$rootScope.oldWeechatError && !$rootScope.hashAlgorithmDisagree) {
+            if (!$rootScope.waseverconnected && !$rootScope.errorMessage &&
+                !$rootScope.oldWeechatError && !$rootScope.hashAlgorithmDisagree)
+            {
                 $rootScope.passwordError = true;
                 $rootScope.$apply();
             }
@@ -485,7 +450,6 @@ weechat.factory('connection',
                          'binaryType': "arraybuffer",
                          'onopen': onopen,
                          'onclose': onclose,
-                         'onmessage': onmessage,
                          'onerror': onerror
                      });
         } catch(e) {

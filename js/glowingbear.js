@@ -778,13 +778,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.toggleAccordionByName = function(name) {
-
-        var target = document.getElementById(name);;
+        var target = document.getElementById(name);
         toggleAccordionByTarget(target);
     };
 
     var toggleAccordionByTarget = function(target) {
-
         target.setAttribute('data-state', target.getAttribute('data-state') === 'active' ? 'collapsed' : 'active');
 
         // Hide all other siblings
