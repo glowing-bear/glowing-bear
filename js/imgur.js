@@ -140,11 +140,6 @@ weechat.factory('imgur', ['$rootScope', 'settings', function($rootScope, setting
             isClientID = false;
         }
 
-        // Add the image to the provided album if configured to do so
-        if (!isClientID && settings.iAlb.length >= 6) {
-            fd.append("album", settings.iAlb);
-        }
-
         // Create new XMLHttpRequest
         var xhttp = new XMLHttpRequest();
 
