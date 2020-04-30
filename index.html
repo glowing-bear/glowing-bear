@@ -119,7 +119,7 @@
                     </div>
                   </div>
                   <div class="row no-gutter">
-                    <div ng-class="col-sm-12" ng>
+                    <div class="col-sm-12">
                       <label class="control-label" for="password">WeeChat relay password</label>
                       <input type="password" class="form-control favorite-font" id="password" ng-model="password" placeholder="Password">
                     </div>
@@ -197,11 +197,11 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
 /set relay.network.totp_secret "${sec.data.relay_totp_secret}"</pre>
               <p>Open an authenticator app and create an entry with the same secret. In Glowing Bear check the checkbox for "use Time-based One-Time Password" and fill in the one time password as you see it in the authenticator app.</p>
               
-              <h3><a name="plaintext"></a>Compatibility with Weechat 2.8 and older</h3>
-              <p><strong>Required for Weechat <= 2.8</strong></p>
-              <p>Since weechat version 2.9 the authentication was made more secure and resistant to brute forcing. Glowing bear uses the most secure authentication method by default. However to supports older version of weechat this options allows glowing bear to still send your password in plaintext (wrapped in https if enabled). Only enable this if you are using Weechat < 2.9</p>
-              <p>By default weechat 2.9 support all authentication methods, if you are only using glowing bear you can do the following command to improve security:</p>
-              <pre>/set relay.network.password_hash_algo "pbkdf2+sha512"</pre>
+              <h3><a name="plaintext"></a>Compatibility with WeeChat 2.8 and older</h3>
+              <p><strong>Required for WeeChat <= 2.8</strong></p>
+              <p>With WeeChat 2.9, relay client authentication was made more secure and resistant to brute forcing. Glowing Bear uses the most secure authentication method by default. However, to support older versions of WeeChat, this option allows Glowing Bear to still use the old authentication method, sending your password to WeeChat (in plain text if you are not using encryption!). Only enable this if you are using a WeeChat version before 2.9!</p>
+              <p>By default, WeeChat 2.9 support several authentication methdos.  Of these, Glowing Bear only uses the most secure one, <pre>pbkdf2+sha512</pre>. You can check the list of enabled methods to ensure it is in there:</p>
+              <pre>/set relay.network.password_hash_algo</pre>
             </div>
           </div>
         </div>
