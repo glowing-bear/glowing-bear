@@ -137,6 +137,7 @@
                     <label class="control-label" for="compatibilityWeechat28">
                       <input type="checkbox" id="compatibilityWeechat28" ng-model="settings.compatibilityWeechat28">
                       Compatibility with Weechat 2.8 and older <a href="#plaintext" ng-click="toggleAccordionByName('gettingStartedAccordion')"><i class="glyphicon glyphicon-info-sign"></i></a>
+                      <span style="color: #888;display:block">WeeChat 2.9 is scheduled for release in July 2020, so you&apos;ll likely want to keep this enabled for now.</span>
                     </label>
                   </div>
                   <div class="checkbox indent" ng-show="settings.compatibilityWeechat28">
@@ -199,7 +200,7 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
               
               <h3><a name="plaintext"></a>Compatibility with WeeChat 2.8 and older</h3>
               <p><strong>Required for WeeChat <= 2.8</strong></p>
-              <p>With WeeChat 2.9, relay client authentication was made more secure and resistant to brute forcing. Glowing Bear uses the most secure authentication method by default. However, to support older versions of WeeChat, this option allows Glowing Bear to still use the old authentication method, sending your password to WeeChat (in plain text if you are not using encryption!). Only enable this if you are using a WeeChat version before 2.9!</p>
+              <p>With WeeChat 2.9—scheduled for release in July 2020—relay client authentication was made more secure and resistant to brute forcing. Glowing Bear uses the most secure authentication method by default. However, to support older versions of WeeChat, this option allows Glowing Bear to still use the old authentication method, sending your password to WeeChat (in plain text if you are not using encryption!). Only enable this if you are using a WeeChat version before 2.9!</p>
               <p>By default, WeeChat 2.9 support several authentication methods.  Of these, Glowing Bear only uses the most secure one, <code>pbkdf2+sha512</code>. You can check the list of enabled methods to ensure it is in there:
                 <code>/set relay.network.password_hash_algo</code>
               </p>
