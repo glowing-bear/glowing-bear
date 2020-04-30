@@ -79,8 +79,10 @@ weechat.directive('inputBar', function() {
             };
 
             $scope.completeNick = function() {
-                if ( $scope.command.startsWith('/') ) {
-                    // We are completing a command, an other function will do this
+                if ((models.version[0] == 2 && models.version[1] >= 9 || models.version[0] > 2) &&
+                    $scope.command.startsWith('/') ) {
+                    // We are completing a command, another function will do
+                    // this on WeeChat 2.9 and later
                     return;
                 }
 
@@ -124,6 +126,11 @@ weechat.directive('inputBar', function() {
             var commandCompletionPositionInList;
             var commandCompletionInputChanged;
             $scope.completeCommand = function(direction) {
+                if (models.version[0] < 2 || (models.version[0] == 2 && models.version[1] < 9)) {
+                    // Command completion is only supported on WeeChat 2.9+
+                    return;
+                }
+
                 if ( !$scope.command.startsWith('/') ) {
                     // We are not completing a command, maybe a nick?
                     return;
