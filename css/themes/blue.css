@@ -134,7 +134,7 @@ input[type=text], input[type=password], #sendMessage, .badge, .btn-send, .btn-se
    border: 1px solid #363943;
 }
 
-#toast {
+.toast {
     background-color: #283244;
     border: 1px solid;
     border-color: rgb(29, 94, 152);

@@ -14,10 +14,11 @@ weechat.directive('inputBar', function() {
             command: '=command'
         },
 
-        controller: ['$rootScope', '$scope', '$element', '$log', 'connection', 'imgur', 'models', 'IrcUtils', 'settings', 'utils', function($rootScope,
+        controller: ['$rootScope', '$scope', '$element', '$log', '$compile', 'connection', 'imgur', 'models', 'IrcUtils', 'settings', 'utils', function($rootScope,
                              $scope,
                              $element, //XXX do we need this? don't seem to be using it
                              $log,
+                             $compile,
                              connection, //XXX we should eliminate this dependency and use signals instead
                              imgur,
                              models,
@@ -263,8 +264,8 @@ weechat.directive('inputBar', function() {
 
             $scope.uploadImage = function($event, files) {
                 // Send image url after upload
-                var sendImageUrl = function(imageUrl) {
-                    // Send image
+                var sendImageUrl = function(imageUrl, deleteHash) {
+                    // Put link in input box
                     if(imageUrl !== undefined && imageUrl !== '') {
                         $rootScope.insertAtCaret(String(imageUrl));
                     }
@@ -276,8 +277,19 @@ weechat.directive('inputBar', function() {
                         // Process image
                         imgur.process(files[i], sendImageUrl);
                     }
-
                 }
+            };
+
+            var deleteCallback = function () {
+                // Image got sucessfully deleted.
+                // Show toast with delete link
+                var toastDeleted = $compile('<div class="toast">Successfully deleted.')($scope)[0];
+                document.body.appendChild(toastDeleted);
+                setTimeout(function() { document.body.removeChild(toastDeleted); }, 5000);
+            }
+
+            $scope.imgurDelete = function (deleteHash) {
+                imgur.deleteImage( deleteHash, deleteCallback );
             };
 
             // Send the message to the websocket
@@ -351,7 +363,7 @@ weechat.directive('inputBar', function() {
                 if (buffer.type === 'channel' && !is_online) {
                     // show a toast that the user left
                     var toast = document.createElement('div');
-                    toast.id = "toast";
+                    toast.className = "toast";
                     toast.innerHTML = nick + " has left the room";
                     document.body.appendChild(toast);
                     setTimeout(function() { document.body.removeChild(toast); }, 5000);
@@ -750,15 +762,24 @@ weechat.directive('inputBar', function() {
 
                 return true;
             };
+            
             $scope.inputPasted = function(e) {
                 if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length) {
                     e.stopPropagation();
                     e.preventDefault();
 
-                    var sendImageUrl = function(imageUrl) {
+                    var sendImageUrl = function(imageUrl, deleteHash) {
                         if(imageUrl !== undefined && imageUrl !== '') {
                             $rootScope.insertAtCaret(String(imageUrl));
                         }
+
+                        // Show toast with delete link
+                        var toastImgur = $compile('<div class="toast">Image uploaded to Imgur. <a id="deleteImgur" ng-click="imgurDelete(\'' + deleteHash + '\')" href="">Delete?</a></div>')($scope)[0];
+                        document.body.appendChild(toastImgur);
+                        setTimeout(function() { document.body.removeChild(toastImgur); }, 5000);
+
+                        // Log the delete hash to the console in case the toast was missed.
+                        console.log('An image was uploaded to imgur, delete it with $scope.imgurDelete(\'' + deleteHash + '\')');
                     };
 
                     for (var i = 0; i < e.clipboardData.files.length; i++) {

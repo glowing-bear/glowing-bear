@@ -708,7 +708,7 @@ img.emojione {
     width: auto;
 }
 
-#toast {
+.toast {
   position: fixed;
   left: 50%;
   bottom: 50px;

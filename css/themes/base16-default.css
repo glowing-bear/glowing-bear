@@ -423,7 +423,7 @@ button.close:hover {
     color: var(--base01);
 }
 
-#toast {
+.toast {
     background-color: var(--base01);
 }
 
