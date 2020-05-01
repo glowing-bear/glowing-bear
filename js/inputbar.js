@@ -776,7 +776,7 @@ weechat.directive('inputBar', function() {
                         // Show toast with delete link
                         var toastImgur = $compile('<div class="toast">Image uploaded to Imgur. <a id="deleteImgur" ng-click="imgurDelete(\'' + deleteHash + '\')" href="">Delete?</a></div>')($scope)[0];
                         document.body.appendChild(toastImgur);
-                        setTimeout(function() { document.body.removeChild(toastImgur); }, 5000);
+                        setTimeout(function() { document.body.removeChild(toastImgur); }, 10000);
 
                         // Log the delete hash to the console in case the toast was missed.
                         console.log('An image was uploaded to imgur, delete it with $scope.imgurDelete(\'' + deleteHash + '\')');
