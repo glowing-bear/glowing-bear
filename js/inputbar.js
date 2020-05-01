@@ -283,7 +283,7 @@ weechat.directive('inputBar', function() {
             var deleteCallback = function () {
                 // Image got sucessfully deleted.
                 // Show toast with delete link
-                var toastDeleted = $compile('<div class="toast">Successfully deleted.')($scope)[0];
+                var toastDeleted = $compile('<div class="toast">Successfully deleted.</div>')($scope)[0];
                 document.body.appendChild(toastDeleted);
                 setTimeout(function() { document.body.removeChild(toastDeleted); }, 5000);
             }
