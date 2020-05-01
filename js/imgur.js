@@ -104,10 +104,8 @@ weechat.factory('imgur', ['$rootScope', 'settings', function($rootScope, setting
         };
 
         if( "upload" in xhttp ) {
-
             // Set progress
             xhttp.upload.onprogress = function (event) {
-
                 // Check if we can compute progress
                 if (event.lengthComputable) {
                     // Complete in percent
@@ -117,12 +115,9 @@ weechat.factory('imgur', ['$rootScope', 'settings', function($rootScope, setting
                     currentProgressBar.style.width = complete + '%';
                 }
             };
-
         }
-
         // Send request with form data
         xhttp.send(fd);
-
     };
 
     // Delete an image from imgur with the deletion link
@@ -156,22 +151,16 @@ weechat.factory('imgur', ['$rootScope', 'settings', function($rootScope, setting
 
         // Handler for response
         xhttp.onload = function() {
-
             // Check state and response status
             if(xhttp.status === 200) {
-
                 callback();
-
             } else {
                 showErrorMsg();
             }
-
         };
-
-
+        
         // Send request with form data
         xhttp.send(null);
-
     };
 
     var showErrorMsg = function() {
