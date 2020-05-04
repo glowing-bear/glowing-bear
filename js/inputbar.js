@@ -283,7 +283,7 @@ weechat.directive('inputBar', function() {
             var deleteCallback = function () {
                 // Image got sucessfully deleted.
                 // Show toast with delete link
-                var toastDeleted = $compile('<div class="toast">Successfully deleted.</div>')($scope)[0];
+                var toastDeleted = $compile('<div class="toast toast-short">Successfully deleted.</div>')($scope)[0];
                 document.body.appendChild(toastDeleted);
                 setTimeout(function() { document.body.removeChild(toastDeleted); }, 5000);
             }
@@ -363,7 +363,7 @@ weechat.directive('inputBar', function() {
                 if (buffer.type === 'channel' && !is_online) {
                     // show a toast that the user left
                     var toast = document.createElement('div');
-                    toast.className = "toast";
+                    toast.className = "toast toast-short";
                     toast.innerHTML = nick + " has left the room";
                     document.body.appendChild(toast);
                     setTimeout(function() { document.body.removeChild(toast); }, 5000);
@@ -774,9 +774,9 @@ weechat.directive('inputBar', function() {
                         }
 
                         // Show toast with delete link
-                        var toastImgur = $compile('<div class="toast">Image uploaded to Imgur. <a id="deleteImgur" ng-click="imgurDelete(\'' + deleteHash + '\')" href="">Delete?</a></div>')($scope)[0];
+                        var toastImgur = $compile('<div class="toast toast-long">Image uploaded to Imgur. <a id="deleteImgur" ng-click="imgurDelete(\'' + deleteHash + '\')" href="">Delete?</a></div>')($scope)[0];
                         document.body.appendChild(toastImgur);
-                        setTimeout(function() { document.body.removeChild(toastImgur); }, 10000);
+                        setTimeout(function() { document.body.removeChild(toastImgur); }, 15000);
 
                         // Log the delete hash to the console in case the toast was missed.
                         console.log('An image was uploaded to imgur, delete it with $scope.imgurDelete(\'' + deleteHash + '\')');

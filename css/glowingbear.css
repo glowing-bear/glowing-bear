@@ -704,7 +704,14 @@ li.buffer.indent.private a {
   border-radius: 3px;
   padding: 10px 15px;
   z-index: 100;
-  animation: fadein 0.5s, fadeout 0.5s 4.5s;
+}
+
+.toast-short {
+    animation: fadein 0.5s, fadeout 0.5s 4.5s;
+}
+
+.toast-long {
+    animation: fadein 0.5s, fadeout 0.5s 14.5s;
 }
 
 @keyframes fadein {
