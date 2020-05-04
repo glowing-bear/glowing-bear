@@ -693,21 +693,6 @@ li.buffer.indent.private a {
     user-select: none;
 }
 
-.emojione {
-    font-size: inherit;
-    height: 1em;
-    width: 1.1em;
-    min-height: 16px;
-    min-width: 16px;
-    display: inline-block;
-    margin: -.2ex .15em .2ex;
-    line-height: normal;
-    vertical-align: middle;
-}
-img.emojione {
-    width: auto;
-}
-
 #toast {
   position: fixed;
   left: 50%;
