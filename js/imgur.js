@@ -153,7 +153,7 @@ weechat.factory('imgur', ['$rootScope', 'settings', function($rootScope, setting
         xhttp.onload = function() {
             // Check state and response status
             if(xhttp.status === 200) {
-                callback();
+                callback(deletehash);
             } else {
                 showErrorMsg();
             }
