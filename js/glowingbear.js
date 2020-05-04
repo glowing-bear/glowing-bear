@@ -59,7 +59,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'fontsize': '14px',
         'fontfamily': (utils.isMobileUi() ? 'sans-serif' : 'Inconsolata, Consolas, Monaco, Ubuntu Mono, monospace'),
         'readlineBindings': false,
-        'enableJSEmoji': !utils.isMobileUi(),
         'enableMathjax': false,
         'enableQuickKeys': true,
         'customCSS': '',
@@ -118,13 +117,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.show_tls_warning = (["https:", "file:"].indexOf(window.location.protocol) === -1) &&
         (["localhost", "127.0.0.1", "::1"].indexOf(window.location.hostname) === -1) &&
         !window.is_electron && !utils.isCordova();
-
-    if (window.is_electron) {
-        // Use packaged emojione sprite in the electron app
-        emojione.imageType = 'svg';
-        emojione.sprites = true;
-        emojione.imagePathSVGSprites = './3rdparty/emojione.sprites.svg';
-    }
 
     $rootScope.isWindowFocused = function() {
         if (typeof $scope.documentHidden === "undefined") {
