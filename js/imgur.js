@@ -24,20 +24,23 @@ weechat.factory('imgur', ['$rootScope', 'settings', function($rootScope, setting
 
     };
 
-    // Upload image to imgur from base64
-    var upload = function( base64img, callback ) {
 
+    var authenticate = function(xhr) {
         // API authorization, either via Client ID (anonymous) or access token
         // (add to user's imgur account), see also:
         // https://github.com/glowing-bear/glowing-bear/wiki/Getting-an-imgur-token-&-album-hash
         var accessToken = "164efef8979cd4b";
-        var isClientID = true;
 
         // Check whether the user has provided an access token
         if (settings.iToken.length > 37){
-            accessToken = settings.iToken;
-            isClientID = false;
+            xhr.setRequestHeader("Authorization", "Bearer " + settings.iToken);
+        } else {
+            xhr.setRequestHeader("Authorization", "Client-ID " + accessToken);
         }
+    };
+
+    // Upload image to imgur from base64
+    var upload = function( base64img, callback ) {
 
         // Progress bars container
         var progressBars = document.getElementById("imgur-upload-progress"),
@@ -65,13 +68,7 @@ weechat.factory('imgur', ['$rootScope', 'settings', function($rootScope, setting
 
         // Post request to imgur api
         xhttp.open("POST", "https://api.imgur.com/3/image", true);
-
-        // Set headers
-        if (isClientID) {
-            xhttp.setRequestHeader("Authorization", "Client-ID " + accessToken);
-        } else {
-            xhttp.setRequestHeader("Authorization", "Bearer " + accessToken);
-        }
+        authenticate(xhttp);
         xhttp.setRequestHeader("Accept", "application/json");
 
         // Handler for response
@@ -123,30 +120,12 @@ weechat.factory('imgur', ['$rootScope', 'settings', function($rootScope, setting
     // Delete an image from imgur with the deletion link
     var deleteImage = function( deletehash, callback ) {
 
-        // API authorization, either via Client ID (anonymous) or access token
-        // (add to user's imgur account), see also:
-        // https://github.com/glowing-bear/glowing-bear/wiki/Getting-an-imgur-token-&-album-hash
-        var accessToken = "164efef8979cd4b";
-        var isClientID = true;
-
-        // Check whether the user has provided an access token
-        if (settings.iToken.length > 37){
-            accessToken = settings.iToken;
-            isClientID = false;
-        }
-
         // Create new XMLHttpRequest
         var xhttp = new XMLHttpRequest();
 
         // Post request to imgur api
         xhttp.open("DELETE", "https://api.imgur.com/3/image/" + deletehash, true);
-
-        // Set headers
-        if (isClientID) {
-            xhttp.setRequestHeader("Authorization", "Client-ID " + accessToken);
-        } else {
-            xhttp.setRequestHeader("Authorization", "Bearer " + accessToken);
-        }
+        authenticate(xhttp);
         xhttp.setRequestHeader("Accept", "application/json");
 
         // Handler for response
