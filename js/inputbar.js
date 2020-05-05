@@ -207,7 +207,7 @@ weechat.directive('inputBar', function() {
                     commandCompletionBaseWord = replacedWord + suffix;
                     previousInput = $scope.command + activeBuffer.id;
                     commandCompletionPosition = newCursorPos;
-                }
+                };
 
                 // Check if we have requested this completion info before
                 if (input + activeBuffer.id !== previousInput) {
@@ -219,7 +219,7 @@ weechat.directive('inputBar', function() {
                         // Save the list of completion object, we will only request is once
                         // and cycle through it as long as the input doesn't change
                         commandCompletionList = completionObject.list;
-                        commandCompletionAddSpace = completionObject.add_space
+                        commandCompletionAddSpace = completionObject.add_space;
                         commandCompletionBaseWord = completionObject.base_word;
                         commandCompletionPosition = caretPos;
                         commandCompletionPositionInList = 0;
@@ -294,7 +294,7 @@ weechat.directive('inputBar', function() {
                 if (!!pasteToast) {
                     document.body.removeChild(pasteToast);
                 }
-            }
+            };
 
             $scope.imgurDelete = function (deleteHash) {
                 imgur.deleteImage( deleteHash, deleteCallback );
