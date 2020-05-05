@@ -90,7 +90,7 @@ weechat.factory('imgur', ['$rootScope', 'settings', function($rootScope, setting
                 if( response.data && response.data.link ) {
 
                     if (callback && typeof(callback) === "function") {
-                        callback(response.data.link.replace(/^http:/, "https:"));
+                        callback(response.data.link.replace(/^http:/, "https:"), response.data.deletehash);
                     }
 
                 } else {
@@ -104,10 +104,8 @@ weechat.factory('imgur', ['$rootScope', 'settings', function($rootScope, setting
         };
 
         if( "upload" in xhttp ) {
-
             // Set progress
             xhttp.upload.onprogress = function (event) {
-
                 // Check if we can compute progress
                 if (event.lengthComputable) {
                     // Complete in percent
@@ -117,12 +115,52 @@ weechat.factory('imgur', ['$rootScope', 'settings', function($rootScope, setting
                     currentProgressBar.style.width = complete + '%';
                 }
             };
-
         }
-
         // Send request with form data
         xhttp.send(fd);
+    };
 
+    // Delete an image from imgur with the deletion link
+    var deleteImage = function( deletehash, callback ) {
+
+        // API authorization, either via Client ID (anonymous) or access token
+        // (add to user's imgur account), see also:
+        // https://github.com/glowing-bear/glowing-bear/wiki/Getting-an-imgur-token-&-album-hash
+        var accessToken = "164efef8979cd4b";
+        var isClientID = true;
+
+        // Check whether the user has provided an access token
+        if (settings.iToken.length > 37){
+            accessToken = settings.iToken;
+            isClientID = false;
+        }
+
+        // Create new XMLHttpRequest
+        var xhttp = new XMLHttpRequest();
+
+        // Post request to imgur api
+        xhttp.open("DELETE", "https://api.imgur.com/3/image/" + deletehash, true);
+
+        // Set headers
+        if (isClientID) {
+            xhttp.setRequestHeader("Authorization", "Client-ID " + accessToken);
+        } else {
+            xhttp.setRequestHeader("Authorization", "Bearer " + accessToken);
+        }
+        xhttp.setRequestHeader("Accept", "application/json");
+
+        // Handler for response
+        xhttp.onload = function() {
+            // Check state and response status
+            if(xhttp.status === 200) {
+                callback(deletehash);
+            } else {
+                showErrorMsg();
+            }
+        };
+        
+        // Send request with form data
+        xhttp.send(null);
     };
 
     var showErrorMsg = function() {
@@ -139,7 +177,8 @@ weechat.factory('imgur', ['$rootScope', 'settings', function($rootScope, setting
     };
 
     return {
-        process: process
+        process: process,
+        deleteImage: deleteImage
     };
 
 }]);
