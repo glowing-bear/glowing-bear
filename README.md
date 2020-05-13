@@ -61,7 +61,7 @@ Now you can point your browser to [http://localhost:8000](http://localhost:8000)
 
 Remember that **you don't need to host Glowing Bear yourself to use it**, you can just use [our hosted version](https://www.glowing-bear.org) powered by GitHub pages, and we'll take care of updates for you. Your browser connects to WeeChat directly, so it does not matter where Glowing Bear is hosted.
 
-You can also use the latest and greatest development version of Glowing Bear at [https://latest.glowing-bear.org/](https://latest.glowing-bear.org/).  Branches of this repository are available as [https://latest.glowing-bear.org/**branchname**/](https://latest.glowing-bear.org/branchname/), and pull requests as [https://latest.glowing-bear.org/pull/**123**/](https://latest.glowing-bear.org/pull/123/)—note the trailing slashes.
+You can also use the latest and greatest development version of Glowing Bear at [https://latest.glowing-bear.org/](https://latest.glowing-bear.org/).  For developers, branches of this repository are available at [https://pull.glowing-bear.org/**branchname**/](https://pull.glowing-bear.org/branchname/), and pull requests at [https://pull.glowing-bear.org/**123**/](https://pull.glowing-bear.org/123/)—note the trailing slashes.
 
 ### Running the tests
 Glowing Bear uses Karma and Jasmine to run its unit tests. To run the tests locally, you will first need to install `npm` on your machine. Check out the wonderful [nvm](https://github.com/creationix/nvm) if you don't know it already, it's highly recommended.
