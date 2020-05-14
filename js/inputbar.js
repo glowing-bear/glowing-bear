@@ -632,9 +632,12 @@ weechat.directive('inputBar', function() {
 
                 // Arrow up -> go up in history
                 if ($event.type === "keydown" && code === 38 && document.activeElement === inputNode) {
-                    caretPos = inputNode.selectionStart;
-                    if (!$scope.command || $scope.command.slice(0, caretPos).indexOf("\n") !== -1) {
-                        return false;
+                    // In case of multiline we don't want to do this unless at the first line
+                    if ($scope.command) {
+                        caretPos = inputNode.selectionStart;
+                        if ($scope.command.slice(0, caretPos).indexOf("\n") !== -1) {
+                            return false;
+                        }
                     }
                     $scope.command = models.getActiveBuffer().getHistoryUp($scope.command);
                     // Set cursor to last position. Need 0ms timeout because browser sets cursor
@@ -649,9 +652,12 @@ weechat.directive('inputBar', function() {
 
                 // Arrow down -> go down in history
                 if ($event.type === "keydown" && code === 40 && document.activeElement === inputNode) {
-                    caretPos = inputNode.selectionStart;
-                    if (!$scope.command || $scope.command.slice(caretPos).indexOf("\n") !== -1) {
-                        return false;
+                    // In case of multiline we don't want to do this
+                    if ($scope.command) {
+                        caretPos = inputNode.selectionStart;
+                        if ( $scope.command.slice(caretPos).indexOf("\n") !== -1) {
+                            return false;
+                        }
                     }
                     $scope.command = models.getActiveBuffer().getHistoryDown($scope.command);
                     // We don't need to set the cursor to the rightmost position here, the browser does that for us
