@@ -652,7 +652,7 @@ weechat.directive('inputBar', function() {
 
                 // Arrow down -> go down in history
                 if ($event.type === "keydown" && code === 40 && document.activeElement === inputNode) {
-                    // In case of multiline we don't want to do this
+                    // In case of multiline we don't want to do this unless it's the last line
                     if ($scope.command) {
                         caretPos = inputNode.selectionStart;
                         if ( $scope.command.slice(caretPos).indexOf("\n") !== -1) {
