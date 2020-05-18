@@ -632,26 +632,32 @@ weechat.directive('inputBar', function() {
 
                 // Arrow up -> go up in history
                 if ($event.type === "keydown" && code === 38 && document.activeElement === inputNode) {
-                    caretPos = inputNode.selectionStart;
-                    if (!$scope.command || $scope.command.slice(0, caretPos).indexOf("\n") !== -1) {
-                        return false;
+                    // In case of multiline we don't want to do this unless at the first line
+                    if ($scope.command) {
+                        caretPos = inputNode.selectionStart;
+                        if ($scope.command.slice(0, caretPos).indexOf("\n") !== -1) {
+                            return false;
+                        }
                     }
                     $scope.command = models.getActiveBuffer().getHistoryUp($scope.command);
-                    // Set cursor to last position. Need 0ms timeout because browser sets cursor
-                    // position to the beginning after this key handler returns.
+                    // Set cursor to last position. Need 1ms (0ms works for chrome) timeout because
+                    // browser sets cursor position to the beginning after this key handler returns.
                     setTimeout(function() {
                         if ($scope.command) {
                             inputNode.setSelectionRange($scope.command.length, $scope.command.length);
                         }
-                    }, 0);
+                    }, 1);
                     return true;
                 }
 
                 // Arrow down -> go down in history
                 if ($event.type === "keydown" && code === 40 && document.activeElement === inputNode) {
-                    caretPos = inputNode.selectionStart;
-                    if (!$scope.command || $scope.command.slice(caretPos).indexOf("\n") !== -1) {
-                        return false;
+                    // In case of multiline we don't want to do this unless it's the last line
+                    if ($scope.command) {
+                        caretPos = inputNode.selectionStart;
+                        if ( $scope.command.slice(caretPos).indexOf("\n") !== -1) {
+                            return false;
+                        }
                     }
                     $scope.command = models.getActiveBuffer().getHistoryDown($scope.command);
                     // We don't need to set the cursor to the rightmost position here, the browser does that for us
