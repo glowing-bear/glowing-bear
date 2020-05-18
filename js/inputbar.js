@@ -640,8 +640,8 @@ weechat.directive('inputBar', function() {
                         }
                     }
                     $scope.command = models.getActiveBuffer().getHistoryUp($scope.command);
-                    // Set cursor to last position. Need 0ms timeout because browser sets cursor
-                    // position to the beginning after this key handler returns.
+                    // Set cursor to last position. Need 1ms (0ms works for chrome) timeout because
+                    // browser sets cursor position to the beginning after this key handler returns.
                     setTimeout(function() {
                         if ($scope.command) {
                             inputNode.setSelectionRange($scope.command.length, $scope.command.length);
