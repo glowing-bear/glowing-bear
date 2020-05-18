@@ -646,7 +646,7 @@ weechat.directive('inputBar', function() {
                         if ($scope.command) {
                             inputNode.setSelectionRange($scope.command.length, $scope.command.length);
                         }
-                    }, 0);
+                    }, 1);
                     return true;
                 }
 
