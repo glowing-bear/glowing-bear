@@ -78,7 +78,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $log.debug($rootScope.$$watchersCount);
     };
 
-
     // Detect page visibility attributes
     (function() {
         // Sadly, the page visibility API still has a lot of vendor prefixes
@@ -721,7 +720,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.connect = function() {
-
+        document.getElementById('audioNotificationInitializer').play(); // Plays some silence, this will enable autoplay for notifications
         notifications.requestNotificationPermission();
         $rootScope.sslError = false;
         $rootScope.securityError = false;
@@ -730,7 +729,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $scope.connectbutton = 'Connecting';
         $scope.connectbuttonicon = 'glyphicon-refresh glyphicon-spin';
         connection.connect(settings.host, settings.port, settings.path, $scope.password, settings.ssl, settings.useTotp, $scope.totp);
-        $scope.totp = "";//clear for next time
+        $scope.totp = ""; // Clear for next time
     };
 
     $scope.disconnect = function() {
