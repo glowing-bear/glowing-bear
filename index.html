@@ -49,6 +49,7 @@
     <script type="text/javascript" src="3rdparty/favico-0.3.10.min.js"></script>
   </head>
   <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keyup="handleKeyRelease($event)"  ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" ng-init="init()" lang="en-US">
+    <audio id="audioNotificationInitializer"><source src="data:audio/mp3;base64,/+MYxAAJs2H8AABLSZv4Af/5yAsCIElB/v/+Y///U+QiEaSchGO+IMQjZCgOLw4KVoIEkf/r69Kbfc7/WbLRPsyvp7/p/p///+MYxBQK+1oUAACNMUWSyLcrqpERhDqKCBWcgbTmuIq8ISkQSv+yf/tbZf9krRTptRUv/XT////66NJQFZTpOd3KUEtM+a+l/+MYxCMKM2YcAACNMB+Jqe+HLv+75fSreYSWGtqHJghl6y///89fcz/p8qIRKeFWYKEGo5mLFmCGBjV0FEJn/9f85V87iy98/+MYxDULA1YYAABHLbI52f2/4v////n7U/swVr0SzhrRIueMLLog0qIKcOwu/5v/lLR/r9DPN/R+vmf//////V8tAxlMY1sy/+MYxEQKM2IYAABHLZjRjUlgUSUAhTUBFHVMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxFYJ22oAAACHMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV"></audio>
     <div class="alert alert-danger upload-error" ng-show="uploadError" ng-cloak>
       <p><strong>Upload error:</strong> Image upload failed.</p>
     </div>
