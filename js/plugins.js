@@ -558,8 +558,8 @@ plugins.factory('userPlugins', function() {
      * Very similar to twitter
      */
     var tikTokPlugin = new UrlPlugin('TikTok', function(url) {
-        var regex = /^https?:\/\/(www\.)?tiktok\.com\/@(.+)\/video\/(.+)/i,
-            match = url.match(regex);
+        var regex = /^https?:\/\/(?:www\.)?tiktok\.com\/@(?:.+)\/video\/(?:.+)\/?$|^https?:\/\/vm\.tiktok\.com\/[a-zA-Z1-9]{7}\/?$/i;
+        var match = url.match(regex);
 
         if (match) {
 
@@ -571,12 +571,12 @@ plugins.factory('userPlugins', function() {
                     return response.json();
                     })
                 .then(function(data) {
-                    // separate the HTML into content and script tag
+                    // Separate the HTML into content and script tag
                     var scriptIndex = data.html.indexOf("<script ");
                     var content = data.html.substr(0, scriptIndex);
-
                     element.innerHTML = content;
-
+                    // Change the width so we get the deskop version of the embed
+                    element.children[0].style.maxWidth = "650px";
                     // The script tag needs to be generated manually or the browser won't load it
                     var scriptElem = document.createElement('script');
                     // Hardcoding the URL here, I don't suppose it's going to change anytime soon
