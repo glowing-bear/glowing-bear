@@ -10,7 +10,7 @@ Glowing Bear connects to the WeeChat instance you're already running (version 0.
 	/relay add weechat 9001
 	/set relay.network.password YOURPASSWORD
 
-Now point your browser to the [Glowing Bear](http://www.glowing-bear.org)! If you're having trouble connecting, check that the host and port of your WeeChat host are entered correctly, and that your server's firewall permits incoming connections on the relay port (9001 in this example).
+Now point your browser to the [Glowing Bear](https://www.glowing-bear.org)! If you're having trouble connecting, check that the host and port of your WeeChat host are entered correctly, and that your server's firewall permits incoming connections on the relay port (9001 in this example).
 
 **Please note that the above instructions set up an unencrypted relay, and all your data will be transmitted in clear.** You should not use this over the internet. We strongly recommend that you set up encryption if you want to keep using Glowing Bear. There's a guide on setting it up with Let's Encrypt on the landing page of the [next version of Glowing Bear](https://latest.glowing-bear.org), under "Getting Started". Ask us in `#glowing-bear` on freenode if something is unclear.
 
