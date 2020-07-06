@@ -2092,7 +2092,7 @@ input[type=text].is-invalid{
     font-weight: bold;
 }
 
-#toast {
+.toast {
     background-color: #ddd;
 }
 

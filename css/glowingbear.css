@@ -693,22 +693,7 @@ li.buffer.indent.private a {
     user-select: none;
 }
 
-.emojione {
-    font-size: inherit;
-    height: 1em;
-    width: 1.1em;
-    min-height: 16px;
-    min-width: 16px;
-    display: inline-block;
-    margin: -.2ex .15em .2ex;
-    line-height: normal;
-    vertical-align: middle;
-}
-img.emojione {
-    width: auto;
-}
-
-#toast {
+.toast {
   position: fixed;
   left: 50%;
   bottom: 50px;
@@ -719,7 +704,14 @@ img.emojione {
   border-radius: 3px;
   padding: 10px 15px;
   z-index: 100;
-  animation: fadein 0.5s, fadeout 0.5s 4.5s;
+}
+
+.toast-short {
+    animation: fadein 0.5s, fadeout 0.5s 4.5s;
+}
+
+.toast-long {
+    animation: fadein 0.5s, fadeout 0.5s 14.5s;
 }
 
 @keyframes fadein {
@@ -959,4 +951,12 @@ code {
     padding: 0px 2px;
     color: #444;
     border: 1pt solid #444;
+}
+
+#bufferlines.hideTime td.time {
+    display:none;
+}
+
+#bufferlines.hideTime td.prefix {
+    display:none;
 }

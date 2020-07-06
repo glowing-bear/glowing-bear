@@ -778,6 +778,33 @@
     };
 
     /**
+     * Formats a completion command.
+     * https://weechat.org/files/doc/stable/weechat_relay_protocol.en.html#command_completion
+     * @param params Parameters:
+     *            id: command ID (optional)
+     *            buffer: target buffer (mandatory)
+     *            position: position for completion in string (optional)
+     *            data: input data (optional)
+     * @return Formatted input command string
+     */
+    WeeChatProtocol.formatCompletion = function(params) {
+        var defaultParams = {
+            id: null,
+            position: -1
+        };
+        var parts = [];
+
+        params = WeeChatProtocol._mergeParams(defaultParams, params);
+        parts.push(params.buffer);
+        parts.push(params.position);
+        if (params.data) {
+            parts.push(params.data);
+        }
+
+        return WeeChatProtocol._formatCmd(params.id, 'completion', parts);
+    };
+
+    /**
      * Formats a sync or a desync command.
      *
      * @param params Parameters (see _formatSync and _formatDesync)

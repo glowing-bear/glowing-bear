@@ -14,10 +14,11 @@ weechat.directive('inputBar', function() {
             command: '=command'
         },
 
-        controller: ['$rootScope', '$scope', '$element', '$log', 'connection', 'imgur', 'models', 'IrcUtils', 'settings', 'utils', function($rootScope,
+        controller: ['$rootScope', '$scope', '$element', '$log', '$compile', 'connection', 'imgur', 'models', 'IrcUtils', 'settings', 'utils', function($rootScope,
                              $scope,
                              $element, //XXX do we need this? don't seem to be using it
                              $log,
+                             $compile,
                              connection, //XXX we should eliminate this dependency and use signals instead
                              imgur,
                              models,
@@ -31,6 +32,9 @@ weechat.directive('inputBar', function() {
             // Emojify input. E.g. Turn :smile: into the unicode equivalent, but
             // don't do replacements in the middle of a word (e.g. std::io::foo)
             $scope.inputChanged = function() {
+                // Cancel any command completion that was still ongoing
+                commandCompletionInputChanged = true;
+
                 var emojiRegex = /^(?:[\uD800-\uDBFF][\uDC00-\uDFFF])+$/, // *only* emoji
                     changed = false,  // whether a segment was modified
                     inputNode = $scope.getInputNode(),
@@ -76,6 +80,13 @@ weechat.directive('inputBar', function() {
             };
 
             $scope.completeNick = function() {
+                if ((models.version[0] == 2 && models.version[1] >= 9 || models.version[0] > 2) &&
+                    $scope.command.startsWith('/') ) {
+                    // We are completing a command, another function will do
+                    // this on WeeChat 2.9 and later
+                    return;
+                }
+
                 // input DOM node
                 var inputNode = $scope.getInputNode();
 
@@ -108,6 +119,124 @@ weechat.directive('inputBar', function() {
                 }, 0);
             };
 
+            var previousInput;
+            var commandCompletionList;
+            var commandCompletionAddSpace;
+            var commandCompletionBaseWord;
+            var commandCompletionPosition;
+            var commandCompletionPositionInList;
+            var commandCompletionInputChanged;
+            $scope.completeCommand = function(direction) {
+                if (models.version[0] < 2 || (models.version[0] == 2 && models.version[1] < 9)) {
+                    // Command completion is only supported on WeeChat 2.9+
+                    return;
+                }
+
+                if ( !$scope.command.startsWith('/') ) {
+                    // We are not completing a command, maybe a nick?
+                    return;
+                }
+
+                // Cancel if input changes
+                commandCompletionInputChanged = false;
+
+                // input DOM node
+                var inputNode = $scope.getInputNode();
+
+                // get current caret position
+                var caretPos = inputNode.selectionStart;
+
+                // get current active buffer
+                var activeBuffer = models.getActiveBuffer();
+
+                // Empty input makes $scope.command undefined -- use empty string instead
+                var input = $scope.command || '';
+
+                // This function is for later cycling the list after we got it
+                var cycleCompletionList = function (direction) {
+                    // Don't do anything, the input has changed before we were able to complete the command
+                    if ( commandCompletionInputChanged ) {
+                        return;
+                    }
+
+                    // Check if the list has elements and we have not cycled to the end yet
+                    if ( !commandCompletionList || !commandCompletionList[0] ) {
+                        return;
+                    }
+
+                    // If we are cycling in the other direction, go back two placed in the list
+                    if ( direction === 'backward' ) {
+                        commandCompletionPositionInList -= 2;
+
+                        if ( commandCompletionPositionInList < 0 ) {
+                            // We have reached the beginning of list and are going backward, so go to the end;
+                            commandCompletionPositionInList = commandCompletionList.length - 1;
+                        }
+                    }
+
+                    // Check we have not reached the end of the cycle list
+                    if ( commandCompletionList.length <= commandCompletionPositionInList ) {
+                        // We have reached the end of the list, start at the beginning
+                        commandCompletionPositionInList = 0;
+                    }
+
+                    // Cycle the list
+                    // First remove the word that's to be completed
+                    var commandBeforeReplace = $scope.command.substring(0, commandCompletionPosition - commandCompletionBaseWord.length);
+                    var commandAfterReplace = $scope.command.substring(commandCompletionPosition, $scope.command.length);
+                    var replacedWord = commandCompletionList[commandCompletionPositionInList];
+                    var suffix = commandCompletionAddSpace ? ' ' : '';
+
+                    // Fill in the new command
+                    $scope.command = commandBeforeReplace + replacedWord + suffix + commandAfterReplace;
+
+                    // Set the cursor position
+                    var newCursorPos = commandBeforeReplace.length + replacedWord.length + suffix.length;
+                    setTimeout(function() {
+                        inputNode.focus();
+                        inputNode.setSelectionRange(newCursorPos, newCursorPos);
+                    }, 0);
+
+                    // If there is only one item in the list, we are done, no next cycle
+                    if ( commandCompletionList.length === 1) {
+                        previousInput = '';
+                        return;
+                    }
+                    // Setup for the next cycle
+                    commandCompletionPositionInList++;
+                    commandCompletionBaseWord = replacedWord + suffix;
+                    previousInput = $scope.command + activeBuffer.id;
+                    commandCompletionPosition = newCursorPos;
+                };
+
+                // Check if we have requested this completion info before
+                if (input + activeBuffer.id !== previousInput) {
+                    // Remeber we requested this input for next time
+                    previousInput = input + activeBuffer.id;
+
+                    // Ask weechat for the completion list
+                    connection.requestCompletion(activeBuffer.id, caretPos, input).then( function(completionObject) {
+                        // Save the list of completion object, we will only request is once
+                        // and cycle through it as long as the input doesn't change
+                        commandCompletionList = completionObject.list;
+                        commandCompletionAddSpace = completionObject.add_space;
+                        commandCompletionBaseWord = completionObject.base_word;
+                        commandCompletionPosition = caretPos;
+                        commandCompletionPositionInList = 0;
+                    }).then( function () {
+                        //after we get the list we can continue with our first cycle
+                        cycleCompletionList(direction);
+                    });
+
+
+                } else {
+                    // Input hasn't changed so we should already have our completion list
+                    cycleCompletionList(direction);
+                }
+            };
+
+
+
             $rootScope.insertAtCaret = function(toInsert) {
                 // caret position in the input bar
                 var inputNode = $scope.getInputNode(),
@@ -135,8 +264,8 @@ weechat.directive('inputBar', function() {
 
             $scope.uploadImage = function($event, files) {
                 // Send image url after upload
-                var sendImageUrl = function(imageUrl) {
-                    // Send image
+                var sendImageUrl = function(imageUrl, deleteHash) {
+                    // Put link in input box
                     if(imageUrl !== undefined && imageUrl !== '') {
                         $rootScope.insertAtCaret(String(imageUrl));
                     }
@@ -148,8 +277,27 @@ weechat.directive('inputBar', function() {
                         // Process image
                         imgur.process(files[i], sendImageUrl);
                     }
-
                 }
+            };
+
+            var deleteCallback = function (deleteHash) {
+                // Image got sucessfully deleted.
+                // Show toast with delete link
+                var toastDeleted = $compile('<div class="toast toast-short">Successfully deleted.</div>')($scope)[0];
+                document.body.appendChild(toastDeleted);
+                setTimeout(function() { document.body.removeChild(toastDeleted); }, 5000);
+
+                // Try to remove the toast with the deletion link (it stays 15s
+                // instead of the 5 of the deletion notification, so it could
+                // come back beneath it, which would be confusing)
+                var pasteToast = document.querySelector("[data-imgur-deletehash='" + deleteHash + "']");
+                if (!!pasteToast) {
+                    document.body.removeChild(pasteToast);
+                }
+            };
+
+            $scope.imgurDelete = function (deleteHash) {
+                imgur.deleteImage( deleteHash, deleteCallback );
             };
 
             // Send the message to the websocket
@@ -220,10 +368,10 @@ weechat.directive('inputBar', function() {
                 // Check whether the user is still online
                 var buffer = models.getBuffer(bufferline.buffer);
                 var is_online = buffer.queryNicklist(nick);
-                if (!is_online) {
+                if (buffer.type === 'channel' && !is_online) {
                     // show a toast that the user left
                     var toast = document.createElement('div');
-                    toast.id = "toast";
+                    toast.className = "toast toast-short";
                     toast.innerHTML = nick + " has left the room";
                     document.body.appendChild(toast);
                     setTimeout(function() { document.body.removeChild(toast); }, 5000);
@@ -367,10 +515,18 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Tab -> nick completion
-                if (code === 9 && !$event.altKey && !$event.ctrlKey) {
+                if (code === 9 && !$event.altKey && !$event.ctrlKey && !$event.shiftKey) {
                     $event.preventDefault();
                     $scope.iterCandidate = tmpIterCandidate;
                     $scope.completeNick();
+                    $scope.completeCommand('forward');
+                    return true;
+                }
+
+                // Shitft-Tab -> nick completion backward (only commands)
+                if (code === 9 && !$event.altKey && !$event.ctrlKey && $event.shiftKey) {
+                    $event.preventDefault();
+                    $scope.completeCommand('backward');
                     return true;
                 }
 
@@ -476,26 +632,32 @@ weechat.directive('inputBar', function() {
 
                 // Arrow up -> go up in history
                 if ($event.type === "keydown" && code === 38 && document.activeElement === inputNode) {
-                    caretPos = inputNode.selectionStart;
-                    if ($scope.command.slice(0, caretPos).indexOf("\n") !== -1) {
-                        return false;
+                    // In case of multiline we don't want to do this unless at the first line
+                    if ($scope.command) {
+                        caretPos = inputNode.selectionStart;
+                        if ($scope.command.slice(0, caretPos).indexOf("\n") !== -1) {
+                            return false;
+                        }
                     }
                     $scope.command = models.getActiveBuffer().getHistoryUp($scope.command);
-                    // Set cursor to last position. Need 0ms timeout because browser sets cursor
-                    // position to the beginning after this key handler returns.
+                    // Set cursor to last position. Need 1ms (0ms works for chrome) timeout because
+                    // browser sets cursor position to the beginning after this key handler returns.
                     setTimeout(function() {
                         if ($scope.command) {
                             inputNode.setSelectionRange($scope.command.length, $scope.command.length);
                         }
-                    }, 0);
+                    }, 1);
                     return true;
                 }
 
                 // Arrow down -> go down in history
                 if ($event.type === "keydown" && code === 40 && document.activeElement === inputNode) {
-                    caretPos = inputNode.selectionStart;
-                    if ($scope.command.slice(caretPos).indexOf("\n") !== -1) {
-                        return false;
+                    // In case of multiline we don't want to do this unless it's the last line
+                    if ($scope.command) {
+                        caretPos = inputNode.selectionStart;
+                        if ( $scope.command.slice(caretPos).indexOf("\n") !== -1) {
+                            return false;
+                        }
                     }
                     $scope.command = models.getActiveBuffer().getHistoryDown($scope.command);
                     // We don't need to set the cursor to the rightmost position here, the browser does that for us
@@ -606,6 +768,7 @@ weechat.directive('inputBar', function() {
             $scope.handleCompleteNickButton = function($event) {
                 $event.preventDefault();
                 $scope.completeNick();
+                $scope.completeCommand('forward');
 
                 setTimeout(function() {
                     $scope.getInputNode().focus();
@@ -613,15 +776,24 @@ weechat.directive('inputBar', function() {
 
                 return true;
             };
+            
             $scope.inputPasted = function(e) {
                 if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length) {
                     e.stopPropagation();
                     e.preventDefault();
 
-                    var sendImageUrl = function(imageUrl) {
+                    var sendImageUrl = function(imageUrl, deleteHash) {
                         if(imageUrl !== undefined && imageUrl !== '') {
                             $rootScope.insertAtCaret(String(imageUrl));
                         }
+
+                        // Show toast with delete link
+                        var toastImgur = $compile('<div class="toast toast-long" data-imgur-deletehash=\'' + deleteHash + '\'>Image uploaded to Imgur. <a id="deleteImgur" ng-click="imgurDelete(\'' + deleteHash + '\')" href="">Delete?</a></div>')($scope)[0];
+                        document.body.appendChild(toastImgur);
+                        setTimeout(function() { document.body.removeChild(toastImgur); }, 15000);
+
+                        // Log the delete hash to the console in case the toast was missed.
+                        console.log('An image was uploaded to imgur, delete it with $scope.imgurDelete(\'' + deleteHash + '\')');
                     };
 
                     for (var i = 0; i < e.clipboardData.files.length; i++) {

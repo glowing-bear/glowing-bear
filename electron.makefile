@@ -9,7 +9,6 @@ bower:
 copylocal:
 	find bower_components \( -name "*min.js" -o -name "*min.css" \) -exec cp {} 3rdparty \;
 	cp -r bower_components/bootstrap/fonts .
-	cp bower_components/emojione/assets/sprites/emojione.sprites.svg 3rdparty
 
 # modify index.html to use local files
 uselocal: copylocal

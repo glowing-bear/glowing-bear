@@ -491,6 +491,12 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         });
     };
 
+    var handleCompletion = function(message) {
+        var completionInfo = message.objects[0].content[0];
+
+        return completionInfo;
+    };
+
     var eventHandlers = {
         _buffer_closing: handleBufferClosing,
         _buffer_line_added: handleBufferLineAdded,
@@ -529,7 +535,8 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         handleLineInfo: handleLineInfo,
         handleHotlistInfo: handleHotlistInfo,
         handleNicklist: handleNicklist,
-        handleBufferInfo: handleBufferInfo
+        handleBufferInfo: handleBufferInfo,
+        handleCompletion: handleCompletion
     };
 
 }]);

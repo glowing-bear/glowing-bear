@@ -19,10 +19,10 @@
     <link rel="shortcut icon" type="image/png" href="assets/img/favicon.png" >
     <link href="css/glowingbear.css" rel="stylesheet" media="screen">
     <link href="css/themes/dark.css" rel="stylesheet" media="screen" id="themeCSS" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular.min.js" integrity="sha256-QRJz3b0/ZZC4ilKmBRRjY0MgnVhQ+RR1tpWLYaRRjSo=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-route.min.js" integrity="sha256-PQfkC+TI/HZv0O9JbmrLmPyhgOT2hry24vA5yAV59zY=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-sanitize.min.js" integrity="sha256-LLlLr1XzKUXSFI9SiuEJOAn88Dwge+/zld523N2c8+8=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-touch.min.js" integrity="sha256-4IS2pHNTST2Jl6dSzNsERpYleiQi1r4L2MLPElG8LZ4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.9/angular.min.js" integrity="sha256-b5NvmvUcyr0wpBOLnNbaWH5zKQAivhj8yMYhfXEumQA=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-route/1.7.9/angular-route.min.js" integrity="sha256-WTkeb5AZHX/sDacGSGiF3NX38HvQhfv0U1uilADksXc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.7.9/angular-sanitize.min.js" integrity="sha256-nne9nFlD03jNmaV9DT9Ns51XCopbolhNWl8C2s379tU=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-touch/1.7.9/angular-touch.min.js" integrity="sha256-tqkwQDD7/6S5kru/7UjpaiFx9xbdotmPhVJSNhwsdUM=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js" integrity="sha256-G7A4JrJjJlFqP0yamznwPjAApIKPkadeHfyIwiaa9e0=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/lib/js/emojione.min.js" integrity="sha256-9cBkVeU53NiJ9/BdcJta3HbERAmf5X9DE2WvL8V+gDs=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="3rdparty/inflate.min.js"></script>
@@ -30,6 +30,7 @@
     <script type="text/javascript" src="3rdparty/favico-0.3.10.min.js"></script>
   </head>
   <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keyup="handleKeyRelease($event)"  ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" ng-init="init()" lang="en-US">
+    <audio id="audioNotificationInitializer"><source src="data:audio/mp3;base64,/+MYxAAJs2H8AABLSZv4Af/5yAsCIElB/v/+Y///U+QiEaSchGO+IMQjZCgOLw4KVoIEkf/r69Kbfc7/WbLRPsyvp7/p/p///+MYxBQK+1oUAACNMUWSyLcrqpERhDqKCBWcgbTmuIq8ISkQSv+yf/tbZf9krRTptRUv/XT////66NJQFZTpOd3KUEtM+a+l/+MYxCMKM2YcAACNMB+Jqe+HLv+75fSreYSWGtqHJghl6y///89fcz/p8qIRKeFWYKEGo5mLFmCGBjV0FEJn/9f85V87iy98/+MYxDULA1YYAABHLbI52f2/4v////n7U/swVr0SzhrRIueMLLog0qIKcOwu/5v/lLR/r9DPN/R+vmf//////V8tAxlMY1sy/+MYxEQKM2IYAABHLZjRjUlgUSUAhTUBFHVMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxFYJ22oAAACHMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV"></audio>
     <div class="alert alert-danger upload-error" ng-show="uploadError" ng-cloak>
       <p><strong>Upload error:</strong> Image upload failed.</p>
     </div>
@@ -376,7 +377,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
           </li>
         </ul>
       </div>
-      <div id="bufferlines" class="favorite-font" ng-swipe-right="swipeRight()" ng-swipe-left="swipeLeft()" ng-swipe-disable-mouse ng-class="{'withnicklist': showNicklist}" when-scrolled="infiniteScroll()" imgur-drop>
+      <div id="bufferlines" class="favorite-font" ng-swipe-right="swipeRight()" ng-swipe-left="swipeLeft()" ng-swipe-disable-mouse ng-class="{'withnicklist': showNicklist, 'hideTime': activeBuffer().hideBufferLineTimes}" when-scrolled="infiniteScroll()" imgur-drop>
         <table>
           <tbody>
             <tr class="bufferline">
@@ -396,7 +397,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
               <td class="prefix"><span ng-class="::{'repeated-prefix': bufferline.prefixtext==bufferlines[$index-1].prefixtext}"><a ng-click="addMention(bufferline)"><span class="hidden-bracket" ng-if="::(bufferline.showHiddenBrackets)">&lt;</span><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text|prefixlimit:25"></span><span class="hidden-bracket" ng-if="::(bufferline.showHiddenBrackets)">&gt;</span></a></span></td><!--
            --><td class="message"><!--
              --><div ng-repeat="metadata in ::bufferline.metadata" plugin data="::metadata"></div><!--
-             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes.concat(['line-' + part.$$hashKey.replace(':','_')])" ng-bind-html="::part.text | conditionalLinkify:part.classes.includes('cof-chat_host') | DOMfilter:'codify' | DOMfilter:'irclinky' | DOMfilter:'emojify':settings.enableJSEmoji | DOMfilter:'inlinecolour' |  DOMfilter:'latexmath':('.line-' + part.$$hashKey.replace(':','_')):settings.enableMathjax"></span>
+             --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes.concat(['line-' + part.$$hashKey.replace(':','_')])" ng-bind-html="::part.text | conditionalLinkify:part.classes.includes('cof-chat_host') | DOMfilter:'codify' | DOMfilter:'irclinky' | DOMfilter:'inlinecolour' |  DOMfilter:'latexmath':('.line-' + part.$$hashKey.replace(':','_')):settings.enableMathjax"></span>
               </td>
             </tr>
             <tr class="readmarker" ng-if="activeBuffer().lastSeen==$index">
@@ -423,7 +424,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" ng-click="closeModal($event)" aria-hidden="true">&times;</button>
-            <span class="pull-right version">Glowing Bear version 0.8.0</span>
+            <span class="pull-right version">Glowing Bear version 0.9.0</span>
             <h4 class="modal-title">Settings</h4>
             <p>Settings will be stored in your browser.</p>
           </div>
@@ -567,16 +568,6 @@ npm run build-electron-{windows, darwin, linux}</pre>
                     <label>
                       <input type="checkbox" ng-model="settings.soundnotification">
                       Play sound on notification
-                    </label>
-                  </div>
-                </form>
-              </li>
-              <li>
-                <form class="form-inline" role="form">
-                  <div class="checkbox">
-                    <label>
-                      <input type="checkbox" ng-model="settings.enableJSEmoji">
-                      Enable non-native Emoji support <span class="text-muted settings-help">Displays Emoji characters as images. Emoji provided free by <a href="http://emojione.com">http://emojione.com</a></span>
                     </label>
                   </div>
                 </form>

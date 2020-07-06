@@ -553,8 +553,42 @@ plugins.factory('userPlugins', function() {
         }
     });
 
+    /*
+     * TikTok embedded player
+     * Very similar to twitter
+     */
+    var tikTokPlugin = new UrlPlugin('TikTok', function(url) {
+        var regex = /^https?:\/\/(?:www\.)?tiktok\.com\/@(?:.+)\/video\/(?:.+)\/?$|^https?:\/\/vm\.tiktok\.com\/[a-zA-Z1-9]{7}\/?$/i;
+        var match = url.match(regex);
+
+        if (match) {
+
+            return function() {
+                var element = this.getElement();
+                
+                fetch("https://www.tiktok.com/oembed?url=" + url)
+                .then(function(response) {
+                    return response.json();
+                    })
+                .then(function(data) {
+                    // Separate the HTML into content and script tag
+                    var scriptIndex = data.html.indexOf("<script ");
+                    var content = data.html.substr(0, scriptIndex);
+                    element.innerHTML = content;
+                    // Change the width so we get the deskop version of the embed
+                    element.children[0].style.maxWidth = "650px";
+                    // The script tag needs to be generated manually or the browser won't load it
+                    var scriptElem = document.createElement('script');
+                    // Hardcoding the URL here, I don't suppose it's going to change anytime soon
+                    scriptElem.src = "https://www.tiktok.com/embed.js";
+                    element.appendChild(scriptElem);
+                });
+            };
+        }
+    });
+
     return {
-        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, audioPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, pastebinPlugin, giphyPlugin, tweetPlugin, streamablePlugin]
+        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, audioPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, pastebinPlugin, giphyPlugin, tweetPlugin, streamablePlugin, tikTokPlugin]
     };
 
 
