@@ -61,12 +61,21 @@ weechat.filter('inlinecolour', function() {
 
 // Calls the 'linky' filter unless the disable flag is set. Useful for things like join/quit messages,
 // so you don't accidentally click a mailto: on someone's hostmask.
-weechat.filter('conditionalLinkify', ['$filter', function($filter) {
+weechat.filter('conditionalLinkify', [function() {
     return function(text, disable) {
         if (!text || disable) {
             return text;
         }
-        return $filter('linky')(text, '_blank', {rel:'noopener noreferrer'});
+
+        // Defaults to _blank
+        return Autolinker.link(text, {
+            urls: {
+                schemeMatches: true,
+                wwwMatches: true,
+                tldMatches: false,
+            },
+            stripPrefix: false
+        });
     };
 }]);
 

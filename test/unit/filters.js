@@ -10,6 +10,15 @@ describe('Filters', function() {
         expect($filter('irclinky')).not.toBeNull();
     }));
 
+    describe('conditionalLinkify', function() {
+        it('should create links from an url', inject(function($filter) {
+            var url = 'https://a.example.com/wiki/asdf_qwer_(rivi%C3%A8re)',
+                link = '<a href="https://a.example.com/wiki/asdf_qwer_(rivi%C3%A8re)" target="_blank" rel="noopener noreferrer">https://a.example.com/wiki/asdf_qwer_(rivière)</a>',
+                result = $filter('conditionalLinkify')(url);
+            expect(result).toEqual(link);        
+        }));
+    });
+
     describe('irclinky', function() {
         it('should not mess up text', inject(function(irclinkyFilter) {
             expect(irclinkyFilter('foo')).toEqual('foo');

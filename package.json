@@ -7,6 +7,7 @@
   "main": "electron-main.js",
   "license": "GPLv3",
   "devDependencies": {
+    "babel-polyfill": "^6.26.0",
     "bower": "^1.8.8",
     "electron-packager": "^15.0.0",
     "http-server": "^0.12.3",
@@ -15,7 +16,7 @@
     "karma": "^5.1.0",
     "karma-jasmine": "~3.1",
     "karma-junit-reporter": "~2.0",
-    "karma-phantomjs-launcher": "^1.0.0",
+    "karma-phantomjs-launcher": "^1.0.4",
     "protractor": "^7.0.0",
     "shelljs": "^0.8.4",
     "uglify-js": "^3.10.0"
@@ -38,5 +39,8 @@
     "build-electron-darwin": "make -f electron.makefile bower build-electron-darwin",
     "build-electron-linux": "make -f electron.makefile bower build-electron-linux",
     "update-index-async": "node -e \"require('shelljs/global'); sed('-i', /\\/\\/@@NG_LOADER_START@@[\\s\\S]*\\/\\/@@NG_LOADER_END@@/, '//@@NG_LOADER_START@@\\n' + cat('app/bower_components/angular-loader/angular-loader.min.js') + '\\n//@@NG_LOADER_END@@', 'app/index-async.html');\""
+  },
+  "dependencies": {
+    "autolinker": "^3.14.1"
   }
 }
