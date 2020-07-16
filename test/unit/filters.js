@@ -116,11 +116,9 @@ describe('Filters', function() {
             expect(codifyFilter('foo`bar')).toEqual('foo`bar');
         }));
 
-
         it('should not codify double backticks', inject(function(codifyFilter) {
             expect(codifyFilter('some ``non-code``')).toEqual('some ``non-code``');
         }));
-
 
         it('should not codify pseudo-fancy quotes', inject(function(codifyFilter) {
             expect(codifyFilter('some ``fancy qoutes\'\'')).toEqual('some ``fancy qoutes\'\'');
@@ -130,7 +128,5 @@ describe('Filters', function() {
             expect(codifyFilter('https://foo.bar/`wat`')).toEqual('https://foo.bar/`wat`');
             expect(codifyFilter('Weird`ness`')).toEqual('Weird`ness`');
         }));
-
-        
     });
 });
