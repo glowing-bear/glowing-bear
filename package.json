@@ -7,9 +7,9 @@
   "main": "electron-main.js",
   "license": "GPLv3",
   "devDependencies": {
-    "bower": "^1.8.8",
     "electron-packager": "^15.0.0",
     "http-server": "^0.12.3",
+    "inflate": "0.0.7",
     "jasmine-core": "^3.5.0",
     "jshint": "^2.11.1",
     "karma": "^5.1.0",
@@ -21,7 +21,6 @@
     "uglify-js": "^3.10.0"
   },
   "scripts": {
-    "postinstall": "bower install -p",
     "minify": " uglifyjs js/localstorage.js js/weechat.js js/irc-utils.js js/glowingbear.js js/settings.js js/utils.js js/notifications.js js/filters.js js/handlers.js js/connection.js js/file-change.js js/imgur-drop-directive.js js/whenscrolled-directive.js js/inputbar.js js/plugin-directive.js js/websockets.js js/models.js js/bufferResume.js js/plugins.js js/imgur.js -c -m --screw-ie8 -o min.js --source-map url='min.js.map'",
     "prestart": "npm install",
     "start": "http-server -a localhost -p 8000",
@@ -32,7 +31,6 @@
     "update-webdriver": "webdriver-manager update",
     "preprotractor": "npm run update-webdriver",
     "protractor": "protractor test/protractor-conf.js",
-    "premake-local": "bower install --dev",
     "make-local": "make -f electron.makefile uselocal",
     "build-electron-windows": "make -f electron.makefile bower build-electron-windows",
     "build-electron-darwin": "make -f electron.makefile bower build-electron-darwin",
