@@ -74,7 +74,9 @@ weechat.filter('conditionalLinkify', [function() {
                 wwwMatches: true,
                 tldMatches: false,
             },
-            stripPrefix: false
+            stripPrefix: false,
+            stripTrailingSlash: false,
+            email: false,
         });
     };
 }]);
