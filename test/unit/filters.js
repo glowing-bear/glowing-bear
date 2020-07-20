@@ -12,13 +12,6 @@ describe('Filters', function() {
 
     describe('conditionalLinkify', function() {
         it('should create links from an url', inject(function($filter) {
-            var url = 'https://a.example.com/wiki/asdf_qwer_(rivi%C3%A8re)',
-                link = '<a href="https://a.example.com/wiki/asdf_qwer_(rivi%C3%A8re)" target="_blank" rel="noopener noreferrer">https://a.example.com/wiki/asdf_qwer_(rivi%C3%A8re)</a>',
-                result = $filter('conditionalLinkify')(url);
-            expect(result).toEqual(link);        
-        }));
-
-        it('should not affect text before and after links', inject(function($filter) {
             var url = 'asdf https://a.example.com/wiki/asdf_qwer_(rivi%C3%A8re) Some text.',
                 link = 'asdf <a href="https://a.example.com/wiki/asdf_qwer_(rivi%C3%A8re)" target="_blank" rel="noopener noreferrer">https://a.example.com/wiki/asdf_qwer_(rivi%C3%A8re)</a> Some text.',
                 result = $filter('conditionalLinkify')(url);
