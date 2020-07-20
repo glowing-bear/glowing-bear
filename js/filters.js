@@ -67,17 +67,20 @@ weechat.filter('conditionalLinkify', [function() {
             return text;
         }
 
-        // Defaults to _blank
-        return Autolinker.link(text, {
-            urls: {
-                schemeMatches: true,
-                wwwMatches: true,
-                tldMatches: false,
+        return linkifyStr(text, {
+            className: '',
+            attributes: {
+                rel: 'noopener noreferrer'
             },
-            stripPrefix: false,
-            stripTrailingSlash: false,
-            email: false,
-        });
+            target: {
+                url: '_blank'
+            },
+            validate: {
+                email: function () {
+                    return false; //Do not linkify emails
+                }
+            }
+          });
     };
 }]);
 

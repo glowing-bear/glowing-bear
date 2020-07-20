@@ -8,7 +8,6 @@
   "dependencies": {
     "angular": "1.8.x",
     "angular-route": "1.8.x",
-    "angular-sanitize": "1.8.x",
     "angular-touch": "1.8.x",
     "angular-loader": "1.8.x",
     "angular-mocks": "1.8.x",
