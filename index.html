@@ -21,6 +21,7 @@
     <link href="css/themes/dark.css" rel="stylesheet" media="screen" id="themeCSS" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.0/angular.min.js" integrity="sha512-jiG+LwJB0bmXdn4byKzWH6whPpnLy1pnGA/p3VCXFLk4IJ/Ftfcb22katPTapt35Q6kwrlnRheK6UPOIdJhYTA==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-route/1.8.0/angular-route.min.js" integrity="sha512-KgQeEw8J2b0mJH/09XwcsYPr0koz6wqhHR4Kpii/4Tjayshk4swTbyGpWRCPpQQlP/4kJEXGqBXsXgkL+wPTpw==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.8.0/angular-sanitize.min.js" integrity="sha512-ZKFv9PnfnRmoBms0LvWmODQW9dXBwualot+o5RowVKQAxxY/6t/El/qTM9E+U+EB5+xcrxxDvhcUcTYBw/kbiQ==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-touch/1.8.0/angular-touch.min.js" integrity="sha512-Fv9vdYa1UF171Mgs1hGeRXULvHflaw78t5EPI/cG6pVp9SjhjlhfL2ifdkwxEP0EBAhlA02UuE8mEjm65CYYpw==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.10.2/underscore-min.js" integrity="sha512-HKvDCFVKg8ZPGjecy6on7UECEpE76Y86h3GaE4JMCz+deFWdjcW/tWnh0hCfaBvURvlOa9f5CNVzt7EFkulYbw==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/lib/js/emojione.min.js" integrity="sha256-9cBkVeU53NiJ9/BdcJta3HbERAmf5X9DE2WvL8V+gDs=" crossorigin="anonymous"></script>
@@ -347,7 +348,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
         </div>
 
         <div class="title"  ng-click="showModal('topicModal')">
-          <span class="desktop" ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | DOMfilter:'irclinky')"></span>
+          <span class="desktop" ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank':{rel:'noopener noreferrer'} | DOMfilter:'irclinky')"></span>
           <span class="mobile" ng-class="{'active': activeBuffer().active, 'channel': activeBuffer().type === 'channel', 'channel_hash': activeBuffer().prefix === '#', 'channel_plus': activeBuffer().prefix === '+', 'channel_ampersand': activeBuffer().prefix === '&'}">{{ activeBuffer().trimmedName || activeBuffer().fullName }}</span>
         </div>
 
@@ -627,7 +628,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
           <div class="modal-header">
             <button type="button" class="close" ng-click="closeModal($event)" aria-hidden="true">&times;</button>
             <h4 class="modal-title">Channel topic {{ activeBuffer().shortName || activeBuffer().fullName }}</h4>
-            <span ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | DOMfilter:'irclinky')"></span>
+            <span ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank':{rel:'noopener noreferrer'} | DOMfilter:'irclinky')"></span>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" ng-click="closeModal($event)">Close</button>
