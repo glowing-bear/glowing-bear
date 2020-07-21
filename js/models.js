@@ -18,6 +18,10 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
     this.outgoingQueries = [];
 
     var parseRichText = function(text) {
+        if(!text) {
+            return [{'text': text}];
+        }
+
         var textElements = weeChat.Protocol.rawText2Rich(text),
             typeToClassPrefixFg = {
                 'option': 'cof-',
@@ -64,8 +68,8 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
      */
     this.Buffer = function(message) {
         // weechat properties
-        var fullName = message.full_name;
-        var shortName = message.short_name;
+        var fullName = parseRichText(message.full_name)[0].text;
+        var shortName = parseRichText(message.short_name)[0].text;
         var hidden = message.hidden;
         // If it's a channel, trim away the prefix (#, &, or +). If that is empty and the buffer
         // has a short name, use a space (because the prefix will be displayed separately, and we don't want
