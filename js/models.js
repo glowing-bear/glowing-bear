@@ -19,7 +19,7 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
 
     var parseRichText = function(text) {
         if(!text) {
-            return [{text}];
+            return [{'text': text}];
         }
 
         var textElements = weeChat.Protocol.rawText2Rich(text),
