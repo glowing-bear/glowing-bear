@@ -4,8 +4,8 @@
 var websockets = angular.module('ngWebsockets', []);
 
 websockets.factory('ngWebsockets',
-                   ['$rootScope','$q', '$sce',
-function($rootScope, $q, $sce) {
+                   ['$rootScope','$q',
+function($rootScope, $q) {
 
 
     var protocol = null;
