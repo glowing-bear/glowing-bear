@@ -515,16 +515,12 @@ plugins.factory('userPlugins', function() {
         var regexp = /^https?:\/\/twitter\.com\/(?:#!\/)?(\w+)\/status(?:es)?\/(\d+)/i;
         var match = url.match(regexp);
         if (match) {
-            url = 'https://api.twitter.com/1/statuses/oembed.json?id=' + match[2];
+            url = 'https://api.twitter.com/1/statuses/oembed.json?omit_script=true&id=' + match[2];
             return function() {
                 var element = this.getElement();
                 jsonp(url, function(data) {
-                    // separate the HTML into content and script tag
-                    var scriptIndex = data.html.indexOf("<script ");
-                    var content = data.html.substr(0, scriptIndex);
                     // Set DNT (Do Not Track)
-                    content = content.replace("<blockquote class=\"twitter-tweet\">", "<blockquote class=\"twitter-tweet\" data-dnt=\"true\">");
-                    element.innerHTML = content;
+                    element.innerHTML = data.html.replace("<blockquote class=\"twitter-tweet\">", "<blockquote class=\"twitter-tweet\" data-dnt=\"true\">");
 
                     // The script tag needs to be generated manually or the browser won't load it
                     var scriptElem = document.createElement('script');
@@ -569,7 +565,7 @@ plugins.factory('userPlugins', function() {
                 fetch("https://www.tiktok.com/oembed?url=" + url)
                 .then(function(response) {
                     return response.json();
-                    })
+                })
                 .then(function(data) {
                     // Separate the HTML into content and script tag
                     var scriptIndex = data.html.indexOf("<script ");
