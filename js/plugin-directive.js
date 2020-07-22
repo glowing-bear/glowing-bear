@@ -31,6 +31,24 @@ weechat.directive('plugin', ['$rootScope', 'settings', function($rootScope, sett
 
             $scope.hideContent = function() {
                 $scope.plugin.visible = false;
+                // Pause noise makers
+                var element = $scope.plugin.getElement()
+                // If it's video we can pause it
+                var video = element.querySelector( 'video' );
+                if ( video ) {
+                    video.pause();
+                }
+                // If it's audio we can pause it
+                var audio = element.querySelector( 'audio' );
+                if ( audio ) {
+                    audio.pause();
+                }
+                // If it has an iframe, have to reload it so it would stop
+                var iframe = element.querySelector( 'iframe');
+                if ( iframe ) {
+                    var innerHTML = element.innerHTML;
+                    element.innerHTML = innerHTML;
+                }
             };
 
             $scope.showContent = function(automated) {
