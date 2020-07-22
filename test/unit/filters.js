@@ -10,6 +10,22 @@ describe('Filters', function() {
         expect($filter('irclinky')).not.toBeNull();
     }));
 
+    describe('conditionalLinkify', function() {
+        it('should create links from an url', inject(function($filter) {
+            var url = 'asdf https://a.example.com/wiki/asdf_qwer_(rivi%C3%A8re) Some text.',
+                link = 'asdf <a href="https://a.example.com/wiki/asdf_qwer_(rivi%C3%A8re)" target="_blank" rel="noopener noreferrer">https://a.example.com/wiki/asdf_qwer_(rivi%C3%A8re)</a> Some text.',
+                result = $filter('conditionalLinkify')(url);
+            expect(result).toEqual(link);        
+        }));
+
+        it('should not make emails into links', inject(function($filter) {
+            var url = 'asdf@gmail.com',
+                link = 'asdf@gmail.com',
+                result = $filter('conditionalLinkify')(url);
+            expect(result).toEqual(link);        
+        }));
+    });
+
     describe('irclinky', function() {
         it('should not mess up text', inject(function(irclinkyFilter) {
             expect(irclinkyFilter('foo')).toEqual('foo');
@@ -23,9 +39,9 @@ describe('Filters', function() {
             expect(irclinkyFilter('<"#foo">')).toEqual('<"<a href="#" onclick="openBuffer(\'#foo">\');">#foo"></a>');
         }));
 
-        it('should not touch links created by `linky`', inject(function(linkyFilter, DOMfilterFilter) {
+        it('should not touch links created by `linky`', inject(function($filter, DOMfilterFilter) {
             var url = 'http://foo.bar/#baz',
-                link = linkyFilter(url, '_blank'),
+                link = $filter('conditionalLinkify')(url),
                 result = DOMfilterFilter(link, 'irclinky').$$unwrapTrustedValue();
             expect(result).toEqual(link);
         }));
@@ -84,9 +100,9 @@ describe('Filters', function() {
             expect(result).toEqual(expected);
         }));
 
-        it('should never lock up like in bug #688', inject(function(linkyFilter, DOMfilterFilter) {
+        it('should never lock up like in bug #688', inject(function($filter, DOMfilterFilter) {
             var msg = '#crash http://google.com',
-                linked = linkyFilter(msg),
+                linked = $filter('conditionalLinkify')(msg),
                 irclinked = DOMfilterFilter(linked, 'irclinky');
             // With the bug, the DOMfilterFilter call ends up in an infinite loop.
             // I.e. if we ever got this far, the bug is fixed.

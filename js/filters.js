@@ -66,7 +66,21 @@ weechat.filter('conditionalLinkify', ['$filter', function($filter) {
         if (!text || disable) {
             return text;
         }
-        return $filter('linky')(text, '_blank', {rel:'noopener noreferrer'});
+
+        return linkifyStr(text, {
+            className: '',
+            attributes: {
+                rel: 'noopener noreferrer'
+            },
+            target: {
+                url: '_blank'
+            },
+            validate: {
+                email: function () {
+                    return false; //Do not linkify emails
+                }
+            }
+          });
     };
 }]);
 

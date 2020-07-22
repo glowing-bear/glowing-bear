@@ -12,7 +12,8 @@
     "angular-touch": "1.8.x",
     "angular-loader": "1.8.x",
     "angular-mocks": "1.8.x",
-    "underscore": "~1.10"
+    "underscore": "~1.10",
+    "linkifyjs": "jQuery-linkify#^2.1.9"
   },
   "devDependencies": {
     "bootstrap": "~3.4",
