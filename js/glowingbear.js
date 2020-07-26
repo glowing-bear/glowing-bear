@@ -720,7 +720,19 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.connect = function() {
-        document.getElementById('audioNotificationInitializer').play(); // Plays some silence, this will enable autoplay for notifications
+        var AudioInit = document.getElementById("audioNotificationInitializer");
+        AudioInit.play(); // Plays some silence, this will enable autoplay for notifications
+        // Prevent iOS lockscreen media info for the audioNotificationInitializer
+        var AudioInitSrcMem = AudioInit.src;
+        document.addEventListener("visibilitychange", function() {
+            if (document.visibilityState === 'hidden') {
+                AudioInitSrcMem = AudioInit.src;
+                AudioInit.src = undefined;
+            } else if (document.visibilityState === 'visible') {
+                AudioInit.src = AudioInitSrcMem;
+            }
+        });
+        // End of lockscreen bug prevention
         notifications.requestNotificationPermission();
         $rootScope.sslError = false;
         $rootScope.securityError = false;
