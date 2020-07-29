@@ -45,6 +45,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'port': 9001,
         'path': 'weechat',
         'ssl': (window.location.protocol === "https:"),
+        'compatibilityWeechat28': true,
         'useTotp': false,
         'savepassword': false,
         'autoconnect': false,
@@ -764,6 +765,15 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         event.preventDefault();
 
         var target = event.target.parentNode.parentNode.parentNode;
+        toggleAccordionByTarget(target);
+    };
+
+    $scope.toggleAccordionByName = function(name) {
+        var target = document.getElementById(name);
+        toggleAccordionByTarget(target);
+    };
+
+    var toggleAccordionByTarget = function(target) {
         target.setAttribute('data-state', target.getAttribute('data-state') === 'active' ? 'collapsed' : 'active');
 
         // Hide all other siblings

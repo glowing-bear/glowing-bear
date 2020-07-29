@@ -71,6 +71,12 @@
       <div class="alert alert-danger" ng-show="securityError" ng-cloak>
         <strong>Secure connection error</strong> Unable to connect to unencrypted relay when you are connecting to Glowing Bear over HTTPS. Please use an encrypted relay or load the page without using HTTPS.
       </div>
+      <div class="alert alert-danger" ng-show="oldWeechatError" ng-cloak>
+        <strong>Weechat version error</strong> Weechat connected but did not respond to a handshake. This could mean weechat < version 2.9. Verify your weechat is 2.8 or older and check "Compatibility with Weechat 2.8 and older" or consider updating weechat.
+      </div>
+      <div class="alert alert-danger" ng-show="hashAlgorithmDisagree" ng-cloak>
+        <strong>Hash algorithm error</strong> Weechat and glowing bear did not agree on a hashing algorithm, please do /set relay.network.password_hash_algo "pbkdf2+sha512" in weechat.
+      </div>
       <div class="panel-group accordion">
         <div class="panel" data-state="active" ng-show=false>
           <div class="panel-heading">
@@ -116,29 +122,13 @@
                     </div>
                   </div>
                   <div class="row no-gutter">
-                    <div ng-class="settings.useTotp ? 'col-sm-9' : 'col-sm-12'" ng>
+                    <div class="col-sm-12">
                       <label class="control-label" for="password">WeeChat relay password</label>
                       <input type="password" class="form-control favorite-font" id="password" ng-model="password" placeholder="Password">
-                    </div>
-                    <div class="col-sm-3" ng-Show="settings.useTotp">
-                      <label class="control-label" for="totp">Token</label>
-                      <input type="text" class="form-control favorite-font" id="totp" ng-model="totp" ng-change="parseTotp()" ng-class="{'is-invalid': totpInvalid}" autocomplete="off">
                     </div>
                   </div>
                   <div class="alert alert-danger" ng-show="passwordError" ng-cloak>
                     Error: wrong password or token
-                  </div>
-                  <div class="checkbox">
-                    <label class="control-label" for="savepassword">
-                        <input type="checkbox" id="savepassword" ng-model="settings.savepassword">
-                        Save password in your browser
-                    </label>
-                  </div>
-                  <div class="checkbox">
-                    <label class="control-label" for="useTotp">
-                      <input type="checkbox" id="useTotp" ng-model="settings.useTotp">
-                      Use Time-based One-Time Password <a href="https://blog.weechat.org/post/2019/01/14/Support-of-TOTP" target="_blank"><i class="glyphicon glyphicon-info-sign"></i></a>
-                    </label>
                   </div>
                   <div class="checkbox">
                     <label class="control-label" for="ssl">
@@ -146,9 +136,28 @@
                       Encryption. <strong>Strongly recommended!</strong> Need help? Check below.
                     </label>
                   </div>
+                  <div class="checkbox">
+                    <label class="control-label" for="compatibilityWeechat28">
+                      <input type="checkbox" id="compatibilityWeechat28" ng-model="settings.compatibilityWeechat28">
+                      Compatibility with Weechat 2.8 and older <a href="#plaintext" ng-click="toggleAccordionByName('gettingStartedAccordion')"><i class="glyphicon glyphicon-info-sign"></i></a>
+                      <span style="color: #888;display:block">WeeChat 2.9 is scheduled for release in July 2020, so you&apos;ll likely want to keep this enabled for now.</span>
+                    </label>
+                  </div>
+                  <div class="checkbox indent" ng-show="settings.compatibilityWeechat28">
+                    <label class="control-label" for="useTotp">
+                      <input type="checkbox" id="useTotp" ng-model="settings.useTotp">
+                      Use Time-based One-Time Password (automatic for Weechat >= 2.9)<a href="https://blog.weechat.org/post/2019/01/14/Support-of-TOTP" target="_blank"><i class="glyphicon glyphicon-info-sign"></i></a>
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label class="control-label" for="savepassword">
+                        <input type="checkbox" id="savepassword" ng-model="settings.savepassword">
+                        Save password in your browser
+                    </label>
+                  </div>
                   <div class="checkbox" ng-show="settings.savepassword || settings.autoconnect">
                     <label class="control-label" for="autoconnect">
-                        <input type="checkbox" id="autoconnect" ng-model="settings.autoconnect"  ng-disabled="settings.useTotp">
+                        <input type="checkbox" id="autoconnect" ng-model="settings.autoconnect"  ng-disabled="settings.compatibilityWeechat28 && settings.useTotp">
                         Automatically connect
                     </label>
                   </div>
@@ -158,7 +167,7 @@
             </div>
           </div>
         </div>
-        <div class="panel" data-state="collapsed">
+        <div class="panel" data-state="collapsed" id="gettingStartedAccordion">
           <div class="panel-heading">
             <h4 class="panel-title">
               <a class="accordion-toggle" ng-click="toggleAccordion($event)">
@@ -168,8 +177,8 @@
           </div>
           <div id="collapseTwo" class="panel-collapse collapse">
             <div class="panel-body">
+              <p><span class="label label-danger">WeeChat version 0.4.2 or higher is required, but WeeChat 2.9 or later is recommended for the best experience.</p>
               <h3>Use TLS encryption</h3>
-              <p><span class="label label-danger">WeeChat version 0.4.2 or higher is required—we recommend at least 1.0.</p>
               <p>To start using Glowing Bear, follow the instructions below to set up an encrypted relay. All communication goes directly between your browser and your WeeChat relay! This means that your server must be accessible. We never see any of your data or your password, and you don't need to trust a "cloud". All settings, including your password, are saved locally in your own browser between sessions.</p>
               <div class="alert alert-warning" ng-show="show_tls_warning"><strong>You're using Glowing Bear over an unencrypted connection (http://). This is not recommended!</strong> We recommend using our secure hosted version at <a href="https://www.glowing-bear.org/">https://www.glowing-bear.org/</a>, or <a href="https://latest.glowing-bear.org/">https://latest.glowing-bear.org</a> for the latest and greatest development version. You can still follow the instructions below to set up an encrypted relay, though.</div>
               <p>When using encryption, all communication between your browser and WeeChat will be securely encrypted with TLS. This means that you have to set up a certificate. While it's possible to use a self-signed cert, we recommend against it, because it's handled poorly in browsers, and may not work at all on mobile devices. If you don't already have a certificate for your domain (or you don't have a domain), we strongly encourage you to get a certificate from <a href="https://letsencrypt.org/">Let's Encrypt</a>—it's free and easy. We'll walk you through it.</p>
@@ -191,6 +200,13 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
               <pre>/secure set relay_totp_secret xxxxx
 /set relay.network.totp_secret "${sec.data.relay_totp_secret}"</pre>
               <p>Open an authenticator app and create an entry with the same secret. In Glowing Bear check the checkbox for "use Time-based One-Time Password" and fill in the one time password as you see it in the authenticator app.</p>
+              
+              <h3><a name="plaintext"></a>Compatibility with WeeChat 2.8 and older</h3>
+              <p><strong>Required for WeeChat <= 2.8</strong></p>
+              <p>With WeeChat 2.9—scheduled for release in July 2020—relay client authentication was made more secure and resistant to brute forcing. Glowing Bear uses the most secure authentication method by default. However, to support older versions of WeeChat, this option allows Glowing Bear to still use the old authentication method, sending your password to WeeChat (in plain text if you are not using encryption!). Only enable this if you are using a WeeChat version before 2.9!</p>
+              <p>By default, WeeChat 2.9 support several authentication methods.  Of these, Glowing Bear only uses the most secure one, <code>pbkdf2+sha512</code>. You can check the list of enabled methods to ensure it is in there:
+                <code>/set relay.network.password_hash_algo</code>
+              </p>
             </div>
           </div>
         </div>

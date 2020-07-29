@@ -628,17 +628,51 @@
     };
 
     /**
-     * Formats an init command.
+     * Formats a handshake command.
+     *
+     * @param params Parameters:
+     *            password: list of supported hash algorithms, colon separated (optional)
+     *            compression: compression ('off' or 'zlib') (optional)
+     * @return Formatted handshake command string
+     */
+    //https://weechat.org/files/doc/stable/weechat_relay_protocol.en.html#command_handshake
+    WeeChatProtocol.formatHandshake = function(params) {
+        var defaultParams = {
+            password_hash_algo: 'pbkdf2+sha512',
+            compression: 'zlib'
+        };
+        var keys = [];
+        var parts = [];
+
+        params = WeeChatProtocol._mergeParams(defaultParams, params);
+
+        if (params.compression !== null) {
+            keys.push('compression=' + params.compression);
+        }
+
+        if (params.password_hash_algo !== null) {
+            keys.push('password_hash_algo=' + params.password_hash_algo);
+        }
+
+        parts.push(keys.join(','));
+
+        return WeeChatProtocol._formatCmd(null, 'handshake', parts);
+    };
+
+    /**
+     * Formats an init command for weechat versions < 2.9
      *
      * @param params Parameters:
      *            password: password (optional)
      *            compression: compression ('off' or 'zlib') (optional)
+     *            totp: One Time Password (optional)
      * @return Formatted init command string
      */
-    WeeChatProtocol.formatInit = function(params) {
+    WeeChatProtocol.formatInitPre29 = function(params) {
         var defaultParams = {
             password: null,
-            compression: 'zlib'
+            compression: 'zlib',
+            totp: null
         };
         var keys = [];
         var parts = [];
@@ -648,8 +682,31 @@
         if (params.password !== null) {
             keys.push('password=' + params.password);
         }
-        if (params.useTotp) {
+        if (params.totp !== null) {
             keys.push('totp=' + params.totp);
+        }
+        parts.push(keys.join(','));
+
+        return WeeChatProtocol._formatCmd(null, 'init', parts);
+    };
+
+    /**
+     * Formats an init command for weechat versions >= 2.9
+     *
+     * @param params Parameters:
+     *            password_hash: hash of password with method and salt
+     *            totp: One Time Password (can be null)
+     * @return Formatted init command string
+     */
+    WeeChatProtocol.formatInit29 = function(password_hash, totp) {
+        var keys = [];
+        var parts = [];
+
+        if (totp != null) {
+            keys.push('totp=' + totp);
+        }
+        if (password_hash !== null) {
+            keys.push('password_hash=' + password_hash);
         }
         parts.push(keys.join(','));
 

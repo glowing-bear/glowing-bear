@@ -953,6 +953,10 @@ code {
     border: 1pt solid #444;
 }
 
+.checkbox.indent {
+    margin-left: 20px;
+}
+
 #bufferlines.hideTime td.time {
     display:none;
 }
