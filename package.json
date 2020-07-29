@@ -10,7 +10,7 @@
     "bower": "^1.8.8",
     "electron-packager": "^15.0.0",
     "http-server": "^0.12.3",
-    "jasmine-core": "^3.5.0",
+    "jasmine-core": "^3.6.0",
     "jshint": "^2.11.1",
     "karma": "^5.1.0",
     "karma-jasmine": "~3.1",
