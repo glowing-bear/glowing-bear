@@ -212,10 +212,16 @@ plugins.factory('userPlugins', function() {
         var regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/i,
             match = url.match(regex);
 
+        var regexTimeArgument = /(?:\?|\&)t=(\d+)/i,
+            matchTimeArgument = url.match(regexTimeArgument);
+
         if (match){
-            var token = match[1],
-                embedurl = "https://www.youtube.com/embed/" + token + "?html5=1&iv_load_policy=3&modestbranding=1&rel=0",
-                element = angular.element('<iframe></iframe>')
+            var token = match[1];
+            var timeArgument = matchTimeArgument ? "&start=" + matchTimeArgument[1] : "";
+            var embedurl = "https://www.youtube.com/embed/" + token + "?html5=1&iv_load_policy=3&modestbranding=1&rel=0" + timeArgument;
+
+
+            var element = angular.element('<iframe></iframe>')
                     .attr('src', embedurl)
                     .attr('width', '560')
                     .attr('height', '315')
