@@ -374,6 +374,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.showSidebar = function() {
         document.getElementById('sidebar').setAttribute('data-state', 'visible');
         document.getElementById('content').setAttribute('sidebar-state', 'visible');
+        document.getElementById('bufferlines').setAttribute('sidebar-state', 'visible');
+        document.getElementById('footer').setAttribute('sidebar-state', 'visible');
         if (utils.isMobileUi()) {
             // de-focus the input bar when opening the sidebar on mobile, so that the keyboard goes down
             _.each(document.getElementsByTagName('textarea'), function(elem) {
@@ -388,6 +390,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             // make sure nicklist is hidden
             document.getElementById('sidebar').setAttribute('data-state', 'hidden');
             document.getElementById('content').setAttribute('sidebar-state', 'hidden');
+            document.getElementById('bufferlines').setAttribute('sidebar-state', 'hidden');
+            document.getElementById('footer').setAttribute('sidebar-state', 'hidden');
         }
         $scope.swipeStatus = 0;
     };

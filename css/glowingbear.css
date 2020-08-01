@@ -59,10 +59,6 @@ td.message {
     height: 2px;
 }
 
-.text {
-    white-space: pre-wrap;
-}
-
 #sendMessage {
     width: 100%;
     height: 35px;
@@ -821,8 +817,12 @@ li.buffer.indent.private a {
 
     .content[sidebar-state=visible] #bufferlines, .content[sidebar-state=visible] .footer {
         margin-left: 0px;
+        margin-right: 200px !important;
         transform: translate(200px,0);
         -webkit-transform: translate(200px,0);
+    }
+    .withnicklist[sidebar-state=visible] {
+        margin-right: 300px !important; /* Compensate for the translation */
     }
 
     #topbar .title {
@@ -931,6 +931,10 @@ li.buffer.indent.private a {
 
     .footer.withnicklist {
         padding-right: 108px !important;
+    }
+    .footer.withnicklist[sidebar-state=visible] {
+        padding-right: 200px !important;
+        margin-right: 300px !important; /* Compensate for the translation */
     }
 
     ::-webkit-scrollbar {
