@@ -213,11 +213,19 @@ plugins.factory('userPlugins', function() {
             match = url.match(regex);
 
         if (match){
-            var regexTimeArgument = /(?:\?|\&)t=(\d+)/i,
-            matchTimeArgument = url.match(regexTimeArgument);
-
             var token = match[1];
-            var timeArgument = matchTimeArgument ? "&start=" + matchTimeArgument[1] : "";
+
+            var matchTimeArgumentNoUnit = url.match(/(?:\?|\&)*?(\d+)(?:$|\&)/i);
+            var matchTimeArgumentSecs = url.match(/(?:\?|\&)*?(\d+)s/i);
+            var matchTimeArgumentMin = url.match(/(?:\?|\&)*?(\d+)m/i);
+            var matchTimeArgumentHour = url.match(/(?:\?|\&)*?(\d+)h/i);
+            var noUnit = matchTimeArgumentNoUnit ? parseInt(matchTimeArgumentNoUnit[0]) : 0;
+            var secs = matchTimeArgumentSecs ? parseInt(matchTimeArgumentSecs[0]) : 0;
+            var mins = matchTimeArgumentMin ? parseInt(matchTimeArgumentMin[0]) : 0;
+            var hours = matchTimeArgumentHour ? parseInt(matchTimeArgumentHour[0]) : 0;
+            var totalSecs = noUnit + secs + mins*60 + hours*60*60;
+
+            var timeArgument = "&start=" + totalSecs;
             var embedurl = "https://www.youtube.com/embed/" + token + "?html5=1&iv_load_policy=3&modestbranding=1&rel=0" + timeArgument;
 
 
