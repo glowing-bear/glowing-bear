@@ -216,9 +216,9 @@ plugins.factory('userPlugins', function() {
             var token = match[1];
 
             var matchTimeArgumentNoUnit = url.match(/(?:\?|\&|\#)*?(\d+)(?:$|\&)/i);
-            var matchTimeArgumentSecs = url.match(/(?:\?|\&\#)*?(\d+)s/i);
-            var matchTimeArgumentMin = url.match(/(?:\?|\&\#)*?(\d+)m/i);
-            var matchTimeArgumentHour = url.match(/(?:\?|\&\#)*?(\d+)h/i);
+            var matchTimeArgumentSecs = url.match(/(?:\?|\&|\#)*?(\d+)s/i);
+            var matchTimeArgumentMin = url.match(/(?:\?|\&|\#)*?(\d+)m/i);
+            var matchTimeArgumentHour = url.match(/(?:\?|\&|\#)*?(\d+)h/i);
             var noUnit = matchTimeArgumentNoUnit ? parseInt(matchTimeArgumentNoUnit[0]) : 0;
             var secs = matchTimeArgumentSecs ? parseInt(matchTimeArgumentSecs[0]) : 0;
             var mins = matchTimeArgumentMin ? parseInt(matchTimeArgumentMin[0]) : 0;
