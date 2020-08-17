@@ -209,25 +209,16 @@ plugins.factory('userPlugins', function() {
      * See: https://developers.google.com/youtube/player_parameters
      */
     var youtubePlugin = new UrlPlugin('YouTube video', function(url) {
-        var regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/i,
+        var regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})(?:\?|\&|\#)*?t=(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s?)/i,
             match = url.match(regex);
 
         if (match){
             var token = match[1];
-
-            var matchTimeArgumentNoUnit = url.match(/(?:\?|\&|\#)*?(\d+)(?:$|\&)/i);
-            var matchTimeArgumentSecs = url.match(/(?:\?|\&|\#)*?(\d+)s/i);
-            var matchTimeArgumentMin = url.match(/(?:\?|\&|\#)*?(\d+)m/i);
-            var matchTimeArgumentHour = url.match(/(?:\?|\&|\#)*?(\d+)h/i);
-            var noUnit = matchTimeArgumentNoUnit ? parseInt(matchTimeArgumentNoUnit[0]) : 0;
-            var secs = matchTimeArgumentSecs ? parseInt(matchTimeArgumentSecs[0]) : 0;
-            var mins = matchTimeArgumentMin ? parseInt(matchTimeArgumentMin[0]) : 0;
-            var hours = matchTimeArgumentHour ? parseInt(matchTimeArgumentHour[0]) : 0;
-            var totalSecs = noUnit + secs + mins*60 + hours*60*60;
-
-            var timeArgument = "&start=" + totalSecs;
-            var embedurl = "https://www.youtube.com/embed/" + token + "?html5=1&iv_load_policy=3&modestbranding=1&rel=0" + timeArgument;
-
+            var hours = match[2] ? parseInt(match[2]) : 0;
+            var mins = match[3] ? parseInt(match[3]) : 0;
+            var secs = match[4] ? parseInt(match[4]) : 0;
+            var totalSecs = secs + mins*60 + hours*60*60;
+            var embedurl = "https://www.youtube.com/embed/" + token + "?html5=1&iv_load_policy=3&modestbranding=1&rel=0&start=" + totalSecs;
 
             var element = angular.element('<iframe></iframe>')
                     .attr('src', embedurl)
