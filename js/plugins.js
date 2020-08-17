@@ -209,7 +209,7 @@ plugins.factory('userPlugins', function() {
      * See: https://developers.google.com/youtube/player_parameters
      */
     var youtubePlugin = new UrlPlugin('YouTube video', function(url) {
-        var regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})(?:\?|\&|\#)*?t=(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s?)/i,
+        var regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})(?:.)*t=(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s?)?/i,
             match = url.match(regex);
 
         if (match){
