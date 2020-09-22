@@ -392,8 +392,8 @@ td.time {
 }
 
 .footer {
-    position: fixed;
-    bottom: 0;
+    position: relative;
+    bottom: 35px;
     height: 35px;
     width: 100%;
     margin-bottom: env(safe-area-inset-bottom); /* margin for home-indicator on iPhone X */
