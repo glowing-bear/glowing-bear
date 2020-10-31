@@ -1,0 +1,157 @@
+@import "dark.css";
+
+/* TODO: Figure out what doesn't need to be !important */
+
+#topbar, #sidebar, #nicklist {
+    background-color: #1a1a1a !important;
+    box-shadow: none !important;
+}
+
+tr.bufferline {
+    line-height: 1.7 !important;
+}
+
+body, .footer {
+    background-color: #222 !important;
+    scrollbar-color: #fff2 transparent !important;
+}
+
+#readmarker {
+    border-bottom-color: transparent !important;
+}
+
+.repeated-time .cob-chat_time, .repeated-time .cob-chat_time_delimiters {
+    color: #444 !important;
+}
+
+#sidebar {
+    scrollbar-width: thin !important;
+    border-right: none !important;
+}
+
+.buffer {
+    background: none !important;
+}
+
+.buffer-quick-key, .buffer-jump-key {
+    display: none !important;
+}
+
+.badge {
+    color: #aaa !important;
+    border-radius: 5px !important;
+    padding-left: 0.3em !important;
+    padding-right: 0.3em !important;
+    font-size: 13.5px !important;
+    border: 1px solid #888 !important;
+    background-color: #151515 !important;
+    box-shadow: none !important;
+    font-weight: normal !important;
+}
+
+.badge.danger {
+    background-color: #7f0000 !important;
+    color: #fff !important;
+    border-color: #aaa !important;
+}
+
+.buffer > a {
+    border-radius: 5px !important;
+    padding: 7px !important;
+    padding-left: 10px !important;
+    margin: 5px !important;
+    margin-top: 10px !important;
+    display: block !important;
+    white-space: nowrap !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    user-select: none !important;
+    position: relative !important;
+    background: none !important;
+    color: #aaa !important;
+}
+
+.buffer > a > .buffername {
+    color: #aaa !important;
+    background: none !important;
+    font-size: 15px !important;
+    line-height: 24px !important;
+}
+
+.buffer > a > .badge.pull-right {
+    margin-right: 5px !important;
+}
+
+.buffer > a:hover {
+    background-color: #333 !important;
+}
+
+.buffer > a:hover, .buffer > a:hover > .buffername, .buffer > a:hover > .badge.pull-right {
+    color: #eee !important;
+}
+
+.buffer.active > a {
+    background-color: #444 !important;
+}
+
+.buffer.active > a, .buffer.active > a > .buffername {
+    color: #eee !important;
+}
+
+#topbar .actions {
+    background: #1a1a1a !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+#topbar .actions > a:not(:hover) {
+    filter: grayscale(1) !important;
+}
+
+#bufferlines {
+    bottom: 90px !important;
+    padding-top: 97px !important;
+}
+
+.footer {
+    bottom: 25px !important;
+    left: 25px !important;
+    width: calc(100% - 50px) !important;
+    height: 50px !important;
+}
+
+.footer #inputform {
+    border-radius: 10px !important;
+    border: 1px solid #444 !important;
+    overflow: hidden !important;
+}
+
+.footer #inputform #sendMessage {
+    box-shadow: none !important;
+    margin: 0 !important;
+    background-color: #333 !important;
+    color: #eee !important;
+    height: 48px !important;
+}
+
+.footer #inputform .btn {
+    background-color: #333 !important;
+    padding-top: 13px !important;
+    padding-bottom: 13px !important;
+}
+
+#nicklist {
+    margin-top: 35px !important;
+    padding-top: 5px !important;
+    border-left: 2px solid #1a1a1a !important;
+    scrollbar-width: thin !important;
+}
+
+.cwf-black.cwb-black {
+    transition: ease-in-out 250ms 25ms !important;
+}
+
+.cwf-black.cwb-black:hover {
+    color: inherit !important;
+    background-color: #444 !important;
+}

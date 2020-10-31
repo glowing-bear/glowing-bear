@@ -29,7 +29,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.command = '';
-    $scope.themes = ['dark', 'light', 'black', 'dark-spacious', 'blue', 'base16-default', 'base16-light', 'base16-mocha', 'base16-ocean-dark', 'base16-solarized-dark', 'base16-solarized-light'];
+    $scope.themes = ['dark', 'light', 'black', 'dark-spacious', 'blue', 'base16-default', 'base16-light', 'base16-mocha', 'base16-ocean-dark', 'base16-solarized-dark', 'base16-solarized-light', 'modern-ish'];
 
     // Current swipe status. Values:
     // +1: bufferlist open, nicklist closed
@@ -72,7 +72,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     //For upgrade reasons because we changed the name of host to hostField
     //check if the value might still be in the host key instead of the hostField key
     if (!settings.hostField && settings.host) {
-        settings.hostField = settings.host; 
+        settings.hostField = settings.host;
     }
 
     $rootScope.countWatchers = function () {
@@ -739,7 +739,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         bufferResume.reset();
         connection.disconnect();
     };
-    
+
     $scope.reconnect = function() {
         var bufferId = models.getActiveBuffer().id;
         connection.attemptReconnect(bufferId, 3000);
