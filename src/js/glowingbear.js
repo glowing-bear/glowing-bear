@@ -1,6 +1,7 @@
 'use strict';
 
 import * as Favico from "favico.js";
+import * as _ from "underscore";
 
 import { connectionFactory } from './connection';
 

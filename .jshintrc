@@ -6,7 +6,6 @@
   "globals": {
     "angular": false,
     "weeChat": false,
-    "_": false,
     "Notification": false,
     "Favico": false,
     "linkifyStr": false,

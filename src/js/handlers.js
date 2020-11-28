@@ -1,5 +1,7 @@
-(function() {
+
 'use strict';
+
+import * as _ from "underscore";
 
 var weechat = angular.module('weechat');
 
@@ -540,4 +542,3 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
     };
 
 }]);
-})();

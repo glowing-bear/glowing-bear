@@ -4,6 +4,8 @@
  */
 'use strict';
 
+import * as _ from "underscore";
+
 import * as weeChat from './weechat';
 
 var models = angular.module('weechatModels', []);

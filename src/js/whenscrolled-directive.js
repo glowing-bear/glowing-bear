@@ -1,7 +1,10 @@
-(function() {
+
 'use strict';
 
+import * as _ from "underscore";
+
 var weechat = angular.module('weechat');
+
 weechat.directive('whenScrolled', function() {
     return function(scope, elm, attr) {
         var raw = elm[0];
@@ -17,5 +20,3 @@ weechat.directive('whenScrolled', function() {
         });
     };
 });
-
-})();
