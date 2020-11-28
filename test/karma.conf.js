@@ -52,7 +52,7 @@ module.exports = function (config) {
         splitChunks: false
       },
     },
-    
+
     preprocessors: {
       //add webpack as preprocessor to support require() in test-suits .js files
       './test/unit/*.js': ['webpack'],
