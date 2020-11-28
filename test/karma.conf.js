@@ -20,7 +20,7 @@ module.exports = function (config) {
     singleRun: true,
 
     plugins: [
-      'karma-phantomjs-launcher',
+      'karma-chrome-launcher',
       'karma-jasmine',
       'karma-junit-reporter',
       'karma-webpack'
@@ -70,3 +70,4 @@ module.exports = function (config) {
     config.browsers = ['ChromeHeadlessNoSandbox'];
   }
 };
+
