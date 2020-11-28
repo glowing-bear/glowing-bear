@@ -1,10 +1,10 @@
 language: node_js
 node_js:
   - "12"
-dist: trusty
+dist: bionic
 addons:
   - chrome: stable
-install: "npm install"
+# install: "npm install"
 script: "sh -e run_tests.sh"
 notifications:
   email: false
