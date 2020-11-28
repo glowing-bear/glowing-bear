@@ -1,10 +1,12 @@
-(function() {
+// (function() {
 'use strict';
 
-var weechat = angular.module('weechat');
+import * as weeChat from './weechat';
 
-weechat.factory('connection',
-                ['$rootScope', '$log', 'handlers', 'models', 'settings', 'ngWebsockets', 'utils', function($rootScope,
+// var weechat = angular.module('weechat');
+
+// weechat.factory('connection',
+export const connectionFactory = ['$rootScope', '$log', 'handlers', 'models', 'settings', 'ngWebsockets', 'utils', function($rootScope,
          $log,
          handlers,
          models,
@@ -700,5 +702,5 @@ weechat.factory('connection',
         attemptReconnect: attemptReconnect,
         requestCompletion: requestCompletion
     };
-}]);
-})();
+}];
+// })();

@@ -1,5 +1,8 @@
-(function() {
 'use strict';
+
+import * as Favico from "favico.js";
+
+import { connectionFactory } from './connection';
 
 // cordova splash screen
 document.addEventListener("deviceready", function () {
@@ -1029,4 +1032,4 @@ weechat.config(['$routeProvider', '$locationProvider',
     }
 ]);
 
-})();
+weechat.factory('connection', connectionFactory);

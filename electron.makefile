@@ -1,5 +1,8 @@
 # Common flags for electron-packager on all platforms
-ELECTRON_COMMON=. "Glowing Bear" --overwrite --version-string.FileDescription="Glowing Bear" --ignore=node_modules --ignore=test --ignore=bower_components
+ELECTRON_COMMON=./build "Glowing Bear" --overwrite --version-string.FileDescription="Glowing Bear" --ignore=node_modules --ignore=test --ignore=bower_components
+
+build:
+	npm run build
 
 # fetch dependencies for local installation
 bower:
@@ -22,5 +25,5 @@ build-electron-windows: uselocal
 build-electron-darwin: uselocal
 	electron-packager ${ELECTRON_COMMON} --platform=darwin --arch=x64 --electron-version=9.0.5 --icon=assets/img/glowing-bear.icns
 
-build-electron-linux: uselocal
+build-electron-linux: build
 	electron-packager ${ELECTRON_COMMON} --platform=linux --arch=x64 --electron-version=9.0.5 --icon=assets/img/favicon.ico

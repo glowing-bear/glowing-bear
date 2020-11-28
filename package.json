@@ -7,8 +7,13 @@
   "main": "electron-main.js",
   "license": "GPLv3",
   "devDependencies": {
+    "@babel/core": "^7.12.9",
+    "@babel/preset-env": "^7.12.7",
+    "babel-loader": "^8.2.2",
     "bower": "^1.8.8",
+    "copy-webpack-plugin": "^6.3.2",
     "electron-packager": "^15.0.0",
+    "html-webpack-plugin": "^4.5.0",
     "http-server": "^0.12.3",
     "jasmine-core": "^3.6.0",
     "jshint": "^2.11.1",
@@ -19,13 +24,17 @@
     "linkifyjs": "^2.1.9",
     "protractor": "^7.0.0",
     "shelljs": "^0.8.4",
-    "uglify-js": "^3.10.4"
+    "uglify-js": "^3.10.4",
+    "webpack": "^5.8.0",
+    "webpack-cli": "^4.2.0",
+    "webpack-dev-server": "^3.11.0"
   },
   "scripts": {
+    "build": "webpack",
     "postinstall": "bower install -p",
     "minify": " uglifyjs js/localstorage.js js/weechat.js js/irc-utils.js js/glowingbear.js js/settings.js js/utils.js js/notifications.js js/filters.js js/handlers.js js/connection.js js/file-change.js js/imgur-drop-directive.js js/whenscrolled-directive.js js/inputbar.js js/plugin-directive.js js/websockets.js js/models.js js/bufferResume.js js/plugins.js js/imgur.js -c -m -o min.js --source-map url='min.js.map'",
     "prestart": "npm install",
-    "start": "http-server -a localhost -p 8000",
+    "start": "webpack serve",
     "pretest": "npm install",
     "test": "karma start test/karma.conf.js",
     "test-single-run": "karma start test/karma.conf.js  --single-run",
@@ -37,7 +46,15 @@
     "make-local": "make -f electron.makefile uselocal",
     "build-electron-windows": "make -f electron.makefile bower build-electron-windows",
     "build-electron-darwin": "make -f electron.makefile bower build-electron-darwin",
-    "build-electron-linux": "make -f electron.makefile bower build-electron-linux",
+    "build-electron-linux": "make -f electron.makefile build-electron-linux",
     "update-index-async": "node -e \"require('shelljs/global'); sed('-i', /\\/\\/@@NG_LOADER_START@@[\\s\\S]*\\/\\/@@NG_LOADER_END@@/, '//@@NG_LOADER_START@@\\n' + cat('app/bower_components/angular-loader/angular-loader.min.js') + '\\n//@@NG_LOADER_END@@', 'app/index-async.html');\""
+  },
+  "dependencies": {
+    "angular": "^1.8.2",
+    "angular-route": "^1.8.2",
+    "angular-sanitize": "^1.8.2",
+    "angular-touch": "^1.8.2",
+    "favico.js": "^0.3.10",
+    "zlibjs": "^0.3.1"
   }
 }

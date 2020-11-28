@@ -19,36 +19,10 @@
     <link rel="shortcut icon" type="image/png" href="assets/img/favicon.png" >
     <link href="css/glowingbear.css" rel="stylesheet" media="screen">
     <link href="css/themes/dark.css" rel="stylesheet" media="screen" id="themeCSS" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.0/angular.min.js" integrity="sha512-jiG+LwJB0bmXdn4byKzWH6whPpnLy1pnGA/p3VCXFLk4IJ/Ftfcb22katPTapt35Q6kwrlnRheK6UPOIdJhYTA==" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-route/1.8.0/angular-route.min.js" integrity="sha512-KgQeEw8J2b0mJH/09XwcsYPr0koz6wqhHR4Kpii/4Tjayshk4swTbyGpWRCPpQQlP/4kJEXGqBXsXgkL+wPTpw==" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.8.0/angular-sanitize.min.js" integrity="sha512-ZKFv9PnfnRmoBms0LvWmODQW9dXBwualot+o5RowVKQAxxY/6t/El/qTM9E+U+EB5+xcrxxDvhcUcTYBw/kbiQ==" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-touch/1.8.0/angular-touch.min.js" integrity="sha512-Fv9vdYa1UF171Mgs1hGeRXULvHflaw78t5EPI/cG6pVp9SjhjlhfL2ifdkwxEP0EBAhlA02UuE8mEjm65CYYpw==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.10.2/underscore-min.js" integrity="sha512-HKvDCFVKg8ZPGjecy6on7UECEpE76Y86h3GaE4JMCz+deFWdjcW/tWnh0hCfaBvURvlOa9f5CNVzt7EFkulYbw==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/lib/js/emojione.min.js" integrity="sha256-9cBkVeU53NiJ9/BdcJta3HbERAmf5X9DE2WvL8V+gDs=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-linkify/2.1.9/linkify.min.js" integrity="sha512-kxj7VjlzsQgiku2vbRcZI0FJ0dXmPsiRLugiRxJrCROusKHaFfX/hGDD1/L/R0Y+xI8zlA2B5nm6USapz7nQbg==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-linkify/2.1.9/linkify-string.min.js" integrity="sha512-CMBjJdVIcw7zafkE+uedZCnw6r4ABU1Fev5xA7db0D097/NzhO6Ajo2kdZFOQ+y0kg9sE/t44bPAwuuNhUVIcQ==" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="3rdparty/inflate.min.js"></script>
-    <script type="text/javascript" src="js/localstorage.js"></script>
-    <script type="text/javascript" src="js/weechat.js"></script>
-    <script type="text/javascript" src="js/irc-utils.js"></script>
-    <script type="text/javascript" src="js/glowingbear.js"></script>
-    <script type="text/javascript" src="js/settings.js"></script>
-    <script type="text/javascript" src="js/utils.js"></script>
-    <script type="text/javascript" src="js/notifications.js"></script>
-    <script type="text/javascript" src="js/filters.js"></script>
-    <script type="text/javascript" src="js/handlers.js"></script>
-    <script type="text/javascript" src="js/connection.js"></script>
-    <script type="text/javascript" src="js/file-change.js"></script>
-    <script type="text/javascript" src="js/imgur-drop-directive.js"></script>
-    <script type="text/javascript" src="js/whenscrolled-directive.js"></script>
-    <script type="text/javascript" src="js/inputbar.js"></script>
-    <script type="text/javascript" src="js/plugin-directive.js"></script>
-    <script type="text/javascript" src="js/websockets.js"></script>
-    <script type="text/javascript" src="js/bufferResume.js"></script>
-    <script type="text/javascript" src="js/models.js"></script>
-    <script type="text/javascript" src="js/plugins.js"></script>
-    <script type="text/javascript" src="js/imgur.js"></script>
-    <script type="text/javascript" src="3rdparty/favico-0.3.10.min.js"></script>
   </head>
   <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keyup="handleKeyRelease($event)"  ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" ng-init="init()" lang="en-US">
     <audio id="audioNotificationInitializer"><source src="data:audio/mp3;base64,/+MYxAAJs2H8AABLSZv4Af/5yAsCIElB/v/+Y///U+QiEaSchGO+IMQjZCgOLw4KVoIEkf/r69Kbfc7/WbLRPsyvp7/p/p///+MYxBQK+1oUAACNMUWSyLcrqpERhDqKCBWcgbTmuIq8ISkQSv+yf/tbZf9krRTptRUv/XT////66NJQFZTpOd3KUEtM+a+l/+MYxCMKM2YcAACNMB+Jqe+HLv+75fSreYSWGtqHJghl6y///89fcz/p8qIRKeFWYKEGo5mLFmCGBjV0FEJn/9f85V87iy98/+MYxDULA1YYAABHLbI52f2/4v////n7U/swVr0SzhrRIueMLLog0qIKcOwu/5v/lLR/r9DPN/R+vmf//////V8tAxlMY1sy/+MYxEQKM2IYAABHLZjRjUlgUSUAhTUBFHVMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxFYJ22oAAACHMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV"></audio>
