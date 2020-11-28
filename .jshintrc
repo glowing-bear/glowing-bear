@@ -13,6 +13,7 @@
     "it": false,
     "expect": false,
     "beforeEach": false,
-    "escape": true
+    "escape": true,
+    "emojione": true
   }
 }
