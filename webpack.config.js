@@ -30,9 +30,9 @@ module.exports = {
                 "serviceworker.js",
                 "electron-*.js",
                 "../package.json",
-                "../manifest.json",
-                "../manifest.webapp",
-                "../webapp.manifest.json"
+                "manifest.json",
+                "manifest.webapp",
+                "webapp.manifest.json"
             ]
         })
     ],
