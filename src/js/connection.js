@@ -18,6 +18,7 @@ export const connectionFactory = ['$rootScope', '$log', 'handlers', 'models', 's
 
     var connectionData = [];
     var reconnectTimer;
+    var handleClose;
 
     // Global connection lock to prevent multiple connections from being opened
     var locked = false;
@@ -402,7 +403,7 @@ export const connectionFactory = ['$rootScope', '$log', 'handlers', 'models', 's
             handleWrongPassword();
         };
 
-        var handleClose = function (evt) {
+        handleClose = function (evt) {
             if (ssl && evt && evt.code === 1006) {
                 // A password error doesn't trigger onerror, but certificate issues do. Check time of last error.
                 if (typeof $rootScope.lastError !== "undefined" && (Date.now() - $rootScope.lastError) < 1000) {

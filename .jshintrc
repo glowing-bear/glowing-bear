@@ -1,11 +1,20 @@
 {
   "browser": true,
+  "esversion": 6,
+  "node": true,
   "devel": true,
   "globals": {
     "angular": false,
     "weeChat": false,
     "_": false,
     "Notification": false,
-    "Favico": false
+    "Favico": false,
+    "linkifyStr": false,
+    "renderMathInElement": false,
+    "describe": false,
+    "it": false,
+    "expect": false,
+    "beforeEach": false,
+    "escape": true
   }
 }
