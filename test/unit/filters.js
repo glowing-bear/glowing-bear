@@ -1,7 +1,13 @@
-var weechat = angular.module('weechat');
+"use strict";
+
+import angular from "angular";
+
+import "angular-mocks";
+
+import "../../src/main";
 
 describe('Filters', function() {
-    beforeEach(module('weechat'));
+    beforeEach(angular.mock.module('weechat'));
     /*beforeEach(module(function($provide) {
         $provide.value('version', 'TEST_VER');
     }));*/

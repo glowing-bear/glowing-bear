@@ -1,4 +1,3 @@
-(function() {
 'use strict';
 
 var weechat = angular.module('weechat');
@@ -236,5 +235,3 @@ weechat.filter('codify', function() {
         });
     };
 });
-
-})();

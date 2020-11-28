@@ -8,7 +8,10 @@ import "angular-touch";
 
 import "./js/localstorage.js";
 import "./js/irc-utils.js";
+import "./js/bufferResume.js";
+import "./js/models.js";
 import "./js/plugins.js";
+import "./js/websockets.js";
 import "./js/glowingbear.js";
 import "./js/settings.js";
 import "./js/utils.js";
@@ -20,8 +23,5 @@ import "./js/imgur-drop-directive.js";
 import "./js/whenscrolled-directive.js";
 import "./js/inputbar.js";
 import "./js/plugin-directive.js";
-import "./js/websockets.js";
-import "./js/bufferResume.js";
-import "./js/models.js";
 
 import "./js/imgur.js";

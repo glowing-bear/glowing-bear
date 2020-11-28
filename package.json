@@ -9,6 +9,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@babel/preset-env": "^7.12.7",
+    "angular-mocks": "^1.8.2",
     "babel-loader": "^8.2.2",
     "bower": "^1.8.8",
     "copy-webpack-plugin": "^6.3.2",
@@ -21,6 +22,7 @@
     "karma-jasmine": "~3.1",
     "karma-junit-reporter": "~2.0",
     "karma-phantomjs-launcher": "^1.0.4",
+    "karma-webpack": "^5.0.0-alpha.3.0",
     "linkifyjs": "^2.1.9",
     "protractor": "^7.0.0",
     "shelljs": "^0.8.4",
@@ -31,11 +33,9 @@
   },
   "scripts": {
     "build": "webpack",
-    "postinstall": "bower install -p",
-    "minify": " uglifyjs js/localstorage.js js/weechat.js js/irc-utils.js js/glowingbear.js js/settings.js js/utils.js js/notifications.js js/filters.js js/handlers.js js/connection.js js/file-change.js js/imgur-drop-directive.js js/whenscrolled-directive.js js/inputbar.js js/plugin-directive.js js/websockets.js js/models.js js/bufferResume.js js/plugins.js js/imgur.js -c -m -o min.js --source-map url='min.js.map'",
+    "lint": "jshint src/js/*.js test/unit/*.js",
     "prestart": "npm install",
     "start": "webpack serve",
-    "pretest": "npm install",
     "test": "karma start test/karma.conf.js",
     "test-single-run": "karma start test/karma.conf.js  --single-run",
     "preupdate-webdriver": "npm install",
@@ -55,6 +55,8 @@
     "angular-sanitize": "^1.8.2",
     "angular-touch": "^1.8.2",
     "favico.js": "^0.3.10",
+    "jquery-linkify": "^2.2.1",
+    "underscore": "^1.10.2",
     "zlibjs": "^0.3.1"
   }
 }

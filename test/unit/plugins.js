@@ -1,5 +1,11 @@
 /* plugins go here */
 
+import angular from "angular";
+
+import "angular-mocks";
+
+import "../../src/main";
+
 var msg = function(msg) {
     return {'text': msg };
 };
@@ -22,10 +28,10 @@ var expectTheseMessagesToContain = function(urls, pluginType, plugins) {
 };
 
 describe('filter', function() {
-    beforeEach(module('plugins'));
+    beforeEach(angular.mock.module('plugins'));
 
     describe('Plugins', function() {
-        beforeEach(module(function($provide) {
+        beforeEach(angular.mock.module(function($provide) {
             $provide.value('version', 'TEST_VER');
         }));
 
