@@ -17,7 +17,6 @@ import "./js/utils.js";
 import "./js/notifications.js";
 import "./js/filters.js";
 import "./js/handlers.js";
-import "./js/file-change.js";
 import "./js/imgur-drop-directive.js";
 import "./js/whenscrolled-directive.js";
 import "./js/inputbar.js";

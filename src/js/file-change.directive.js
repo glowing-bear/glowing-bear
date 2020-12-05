@@ -1,9 +1,7 @@
-(function() {
+
 'use strict';
 
-var weechat = angular.module('weechat');
-
-weechat.directive('fileChange', ['$parse', function($parse) {
+export const fileChangeDirective = ['$parse', function fileChangeDirective($parse) {
 
     return {
         restrict: 'A',
@@ -18,6 +16,4 @@ weechat.directive('fileChange', ['$parse', function($parse) {
         }
     };
 
-  }]);
-
-})();
+}];
