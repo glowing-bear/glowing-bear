@@ -12,6 +12,7 @@ import { prefixlimitFilter } from './prefixlimit.filter';
 import { latexmathFilter } from './latexmath.filter';
 import { bufferResumeService } from './buffer-resume.service';
 import { fileChangeDirective } from './file-change.directive';
+import { handlersFactory } from './handlers.factory';
 import { sortBy } from './misc';
 
 /* debounce helper so we dont have to use underscore.js */
@@ -40,7 +41,8 @@ weechat.filter('toArray', toArrayFilter)
     .filter('prefixlimit', prefixlimitFilter)
     .filter('latexmath', latexmathFilter)
     .service('bufferResume', bufferResumeService)
-    .directive('fileChange', fileChangeDirective);
+    .directive('fileChange', fileChangeDirective)
+    .factory('handlers', handlersFactory);
 
 weechat.config(['$compileProvider', function ($compileProvider) {
     // hack to determine whether we're executing the tests

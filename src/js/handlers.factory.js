@@ -3,9 +3,7 @@
 
 
 
-var weechat = angular.module('weechat');
-
-weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notifications', 'bufferResume', function($rootScope, $log, models, plugins, notifications, bufferResume) {
+export const handlersFactory = ['$rootScope', '$log', 'models', 'plugins', 'notifications', 'bufferResume', function handlersFactory($rootScope, $log, models, plugins, notifications, bufferResume) {
 
     var handleVersionInfo = function(message) {
         var content = message.objects[0].content;
@@ -554,4 +552,4 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         handleCompletion: handleCompletion
     };
 
-}]);
+}];
