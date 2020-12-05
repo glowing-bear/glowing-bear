@@ -17,5 +17,4 @@ import "./js/utils.js";
 import "./js/notifications.js";
 import "./js/filters.js";
 import "./js/whenscrolled-directive.js";
-import "./js/inputbar.js";
 import "./js/plugin-directive.js";
