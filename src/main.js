@@ -8,7 +8,6 @@ import "angular-touch";
 
 import "./js/localstorage.js";
 import "./js/irc-utils.js";
-import "./js/bufferResume.js";
 import "./js/models.js";
 import "./js/plugins.js";
 import "./js/websockets.js";

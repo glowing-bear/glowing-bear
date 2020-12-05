@@ -4,12 +4,10 @@
  * accessed buffer and return to it when reconnecting to 
  * the relay.
  */
-(function() {
+
 'use strict';
 
-var bufferResume = angular.module('bufferResume', []);
-
-bufferResume.service('bufferResume', ['settings', function(settings) {
+export const bufferResumeService =  ['settings', function bufferResumeService(settings) {
     var resumer = {};
     var key = settings.host + ":" + settings.port + "/" + settings.path;
 
@@ -52,5 +50,4 @@ bufferResume.service('bufferResume', ['settings', function(settings) {
     };
 
     return resumer;
-}]);
-})();
+}];
