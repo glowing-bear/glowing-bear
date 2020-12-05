@@ -1,9 +1,7 @@
-(function() {
+
 'use strict';
 
-var weechat = angular.module('weechat');
-
-weechat.directive('imgurDrop', ['connection','imgur','$rootScope', function(connection, imgur, $rootScope) {
+export const imgurDropDirective = ['imgur','$rootScope', function imgurDropDirective(imgur, $rootScope) {
     return {
         restrict: 'A',
         link: function($scope, element, attr) {
@@ -44,6 +42,4 @@ weechat.directive('imgurDrop', ['connection','imgur','$rootScope', function(conn
             };
         }
     };
-}]);
-
-})();
+}];
