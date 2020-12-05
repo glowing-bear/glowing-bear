@@ -35,7 +35,7 @@ describe('filter', function() {
             $provide.value('version', 'TEST_VER');
         }));
 
-        it('should recognize spotify links', angular.mock.  angular.mock.inject(function(plugins) {
+        it('should recognize spotify links', angular.mock.inject(function(plugins) {
             expectTheseMessagesToContain([
                 'spotify:track:6JEK0CvvjDjjMUBFoXShNZ',
                 'spotify:user:lorenzhs:playlist:18aXdzQ4Ar1p019OSICtu4',
