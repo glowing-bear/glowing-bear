@@ -4,6 +4,12 @@ import * as Favico from "favico.js";
 
 
 import { connectionFactory } from './connection';
+import { toArrayFilter } from './to-array.filter';
+import { irclinkyFilter } from './irclinky.filter'; 
+import { inlinecolourFilter } from './inlinecolour.filter';
+import { codifyFilter } from './codify.filter';
+import { prefixlimitFilter } from './prefixlimit.filter';
+import { latexmathFilter } from './latexmath.filter';
 import { sortBy } from './misc';
 
 /* debounce helper so we dont have to use underscore.js */
@@ -24,6 +30,14 @@ var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatMode
     // hacky way to be able to find out if we're in debug mode
     weechat.compileProvider = $compileProvider;
 }]);
+
+weechat.filter('toArray', toArrayFilter)
+    .filter('irclinky', irclinkyFilter)
+    .filter('inlinecolour', inlinecolourFilter)
+    .filter('codify', codifyFilter)
+    .filter('prefixlimit', prefixlimitFilter)
+    .filter('latexmath', latexmathFilter);
+
 weechat.config(['$compileProvider', function ($compileProvider) {
     // hack to determine whether we're executing the tests
     if (typeof(it) === "undefined" && typeof(describe) === "undefined") {
