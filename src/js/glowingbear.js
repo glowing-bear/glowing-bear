@@ -3,7 +3,7 @@
 import * as Favico from "favico.js";
 
 
-import { connectionFactory } from './connection';
+import { connectionFactory } from './connection.factory';
 import { toArrayFilter } from './to-array.filter';
 import { irclinkyFilter } from './irclinky.filter'; 
 import { inlinecolourFilter } from './inlinecolour.filter';
