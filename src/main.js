@@ -19,5 +19,3 @@ import "./js/filters.js";
 import "./js/whenscrolled-directive.js";
 import "./js/inputbar.js";
 import "./js/plugin-directive.js";
-
-import "./js/imgur.js";
