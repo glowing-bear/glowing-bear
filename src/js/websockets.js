@@ -1,5 +1,7 @@
-(function() {
+
 'use strict';
+
+import * as _ from "underscore";
 
 var websockets = angular.module('ngWebsockets', []);
 
@@ -147,4 +149,3 @@ function($rootScope, $q) {
     };
 
 }]);
-})();

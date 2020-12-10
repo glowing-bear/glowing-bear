@@ -1,5 +1,11 @@
 /* plugins go here */
 
+import angular from "angular";
+
+import "angular-mocks";
+
+import "../../src/main";
+
 var msg = function(msg) {
     return {'text': msg };
 };
@@ -22,14 +28,14 @@ var expectTheseMessagesToContain = function(urls, pluginType, plugins) {
 };
 
 describe('filter', function() {
-    beforeEach(module('plugins'));
+    beforeEach(angular.mock.module('plugins'));
 
     describe('Plugins', function() {
-        beforeEach(module(function($provide) {
+        beforeEach(angular.mock.module(function($provide) {
             $provide.value('version', 'TEST_VER');
         }));
 
-        it('should recognize spotify links', inject(function(plugins) {
+        it('should recognize spotify links', angular.mock.inject(function(plugins) {
             expectTheseMessagesToContain([
                 'spotify:track:6JEK0CvvjDjjMUBFoXShNZ',
                 'spotify:user:lorenzhs:playlist:18aXdzQ4Ar1p019OSICtu4',
@@ -43,7 +49,7 @@ describe('filter', function() {
         }));
 
 
-        it('should recognize youtube videos', inject(function(plugins) {
+        it('should recognize youtube videos', angular.mock.inject(function(plugins) {
             expectTheseMessagesToContain([
                 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
                 'http://www.youtube.com/watch?v=dQw4w9WgXcQ',
@@ -56,7 +62,7 @@ describe('filter', function() {
             plugins);
         }));
 
-        it('should recognize dailymotion videos', inject(function(plugins) {
+        it('should recognize dailymotion videos', angular.mock.inject(function(plugins) {
             expectTheseMessagesToContain([
                 'dailymotion.com/video/test',
                 'dailymotion.com/video/#video=asdf',
@@ -66,7 +72,7 @@ describe('filter', function() {
             plugins);
         }));
 
-        it('should recognize allocine videos', inject(function(plugins) {
+        it('should recognize allocine videos', angular.mock.inject(function(plugins) {
             expectTheseMessagesToContain([
                 'allocine.fr/videokast/video-12',
                 'allocine.fr/cmedia=234'
@@ -75,7 +81,7 @@ describe('filter', function() {
             plugins);
         }));
 
-        it('should recognize html5 videos', inject(function(plugins) {
+        it('should recognize html5 videos', angular.mock.inject(function(plugins) {
             expectTheseMessagesToContain([
                 'http://www.quirksmode.org/html5/videos/big_buck_bunny.mp4',
                 'http://www.quirksmode.org/html5/videos/big_buck_bunny.webm',
@@ -85,7 +91,7 @@ describe('filter', function() {
             plugins);
         }));
 
-        it('should recognize images', inject(function(plugins) {
+        it('should recognize images', angular.mock.inject(function(plugins) {
             expectTheseMessagesToContain([
                 'http://i.imgur.com/BTNIDBR.gif',
                 'https://i.imgur.com/1LmDmct.jpg',
@@ -101,7 +107,7 @@ describe('filter', function() {
             plugins);
         }));
 
-        it('should recognize cloud music', inject(function(plugins) {
+        it('should recognize cloud music', angular.mock.inject(function(plugins) {
             expectTheseMessagesToContain([
                 'http://soundcloud.com/',
                 'https://sadf.mixcloud.com/',
@@ -110,7 +116,7 @@ describe('filter', function() {
             plugins);
         }));
 
-        it('should recognize google map', inject(function(plugins) {
+        it('should recognize google map', angular.mock.inject(function(plugins) {
             expectTheseMessagesToContain([
                 'https://www.google.com/maps/@48.0034139,-74.9129088,6z',
             ],
@@ -118,7 +124,7 @@ describe('filter', function() {
             plugins);
         }));
 
-        it('should recognize google map', inject(function(plugins) {
+        it('should recognize google map', angular.mock.inject(function(plugins) {
             expectTheseMessagesToContain([
                 'https://asciinema.org/a/10625',
             ],
@@ -126,7 +132,7 @@ describe('filter', function() {
             plugins);
         }));
 
-        it('should recognize meteograms', inject(function(plugins) {
+        it('should recognize meteograms', angular.mock.inject(function(plugins) {
             expectTheseMessagesToContain([
                 'http://www.yr.no/sted/Canada/Quebec/Montreal/',
             ],
@@ -134,7 +140,7 @@ describe('filter', function() {
             plugins);
         }));
 
-        it('should recognize gists', inject(function(plugins) {
+        it('should recognize gists', angular.mock.inject(function(plugins) {
             expectTheseMessagesToContain([
                 'https://gist.github.com/lorenzhs/e8c1a7d56fa170320eb8',
                 'https://gist.github.com/e8c1a7d56fa170320eb8',
@@ -143,7 +149,7 @@ describe('filter', function() {
             plugins);
         }));
 
-        it('should recognize pastebins', inject(function(plugins) {
+        it('should recognize pastebins', angular.mock.inject(function(plugins) {
             expectTheseMessagesToContain([
                 'http://pastebin.com/Wn3TetSE',
                 'http://pastebin.com/raw/Wn3TetSE',
@@ -152,7 +158,7 @@ describe('filter', function() {
             plugins);
         }));
 
-        it('should recognize giphy gifs', inject(function(plugins) {
+        it('should recognize giphy gifs', angular.mock.inject(function(plugins) {
             expectTheseMessagesToContain([
                 'https://giphy.com/gifs/eyes-shocked-bird-feqkVgjJpYtjy/',
                 'http://giphy.com/gifs/funny-cat-FiGiRei2ICzzG',
@@ -161,7 +167,7 @@ describe('filter', function() {
             plugins);
         }));
 
-        it('should recognize tweets', inject(function(plugins) {
+        it('should recognize tweets', angular.mock.inject(function(plugins) {
             expectTheseMessagesToContain([
                 'https://twitter.com/DFB_Team_EN/statuses/488436782959448065',
             ],
@@ -169,7 +175,7 @@ describe('filter', function() {
             plugins);
         }));
 
-        it('should recognize tiktoks', inject(function(plugins) {
+        it('should recognize tiktoks', angular.mock.inject(function(plugins) {
             expectTheseMessagesToContain([
                 'https://www.tiktok.com/@scout2015/video/6718335390845095173',
                 'https://www.tiktok.com/@lewiscatpaldi/video/6800461190058298629',

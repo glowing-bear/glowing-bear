@@ -1,5 +1,6 @@
-(function() {
 'use strict';
+
+import * as _ from "underscore";
 
 var weechat = angular.module('weechat');
 
@@ -236,5 +237,3 @@ weechat.filter('codify', function() {
         });
     };
 });
-
-})();

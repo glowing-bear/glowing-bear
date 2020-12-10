@@ -2,8 +2,11 @@
  * This file contains the weechat models and various
  * helper methods to work with them.
  */
-(function() {
 'use strict';
+
+import * as _ from "underscore";
+
+import * as weeChat from './weechat';
 
 var models = angular.module('weechatModels', []);
 
@@ -707,4 +710,3 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
         delete(this.model.buffers[bufferId]);
     };
 }]);
-})();

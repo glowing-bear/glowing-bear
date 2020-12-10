@@ -45,17 +45,7 @@ Glowing Bear uses WeeChat directly as its backend through the relay plugin. This
 ## Development
 
 ### Setup
-Getting started with the development of Glowing Bear is really simple, partly because we don't have a build process (pure client-side JS, remember). All you have to do is clone the repository, fire up a webserver to host the files, and start fiddling around. You can try out your changes by reloading the page.
-
-Here's a simple example using the python simple web server:
-```bash
-git clone https://github.com/glowing-bear/glowing-bear
-cd glowing-bear
-# python 2.*
-python -m SimpleHTTPServer
-# or python 3.*
-python -m http.server
-```
+Getting started with the development of Glowing Bear requires the installation of [Node.js](https://nodejs.org). All you have to do is clone the repository, install dependencies using command `npm install`, fire up the development webserver using command `npm start`, and start fiddling around. Once a change is made the development server will instruct the Web browser to reload the page for you.
 
 Now you can point your browser to [http://localhost:8000](http://localhost:8000)!
 

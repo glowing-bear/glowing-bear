@@ -1,10 +1,12 @@
-(function() {
+// (function() {
 'use strict';
 
-var weechat = angular.module('weechat');
+import * as weeChat from './weechat';
 
-weechat.factory('connection',
-                ['$rootScope', '$log', 'handlers', 'models', 'settings', 'ngWebsockets', 'utils', function($rootScope,
+// var weechat = angular.module('weechat');
+
+// weechat.factory('connection',
+export const connectionFactory = ['$rootScope', '$log', 'handlers', 'models', 'settings', 'ngWebsockets', 'utils', function($rootScope,
          $log,
          handlers,
          models,
@@ -16,6 +18,7 @@ weechat.factory('connection',
 
     var connectionData = [];
     var reconnectTimer;
+    var handleClose;
 
     // Global connection lock to prevent multiple connections from being opened
     var locked = false;
@@ -400,7 +403,7 @@ weechat.factory('connection',
             handleWrongPassword();
         };
 
-        var handleClose = function (evt) {
+        handleClose = function (evt) {
             if (ssl && evt && evt.code === 1006) {
                 // A password error doesn't trigger onerror, but certificate issues do. Check time of last error.
                 if (typeof $rootScope.lastError !== "undefined" && (Date.now() - $rootScope.lastError) < 1000) {
@@ -700,5 +703,5 @@ weechat.factory('connection',
         attemptReconnect: attemptReconnect,
         requestCompletion: requestCompletion
     };
-}]);
-})();
+}];
+// })();

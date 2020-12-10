@@ -1,53 +1,73 @@
-module.exports = function(config){
+const webpackConfig = require('../webpack.config');
+
+module.exports = function (config) {
   config.set({
 
-    basePath : '../',
+    basePath: '../',
 
-    files : [
-      'bower_components/angular/angular.js',
-      'bower_components/angular-route/angular-route.js',
-      'bower_components/angular-mocks/angular-mocks.js',
-      'bower_components/angular-sanitize/angular-sanitize.js',
-      'bower_components/angular-touch/angular-touch.js',
-      'bower_components/underscore/underscore.js',
+    files: [
       'node_modules/linkifyjs/dist/linkify.js',
       'node_modules/linkifyjs/dist/linkify-string.js',
-      'js/localstorage.js',
-      'js/weechat.js',
-      'js/irc-utils.js',
-      'js/glowingbear.js',
-      'js/utils.js',
-      'js/notifications.js',
-      'js/filters.js',
-      'js/handlers.js',
-      'js/connection.js',
-      'js/inputbar.js',
-      'js/plugin-directive.js',
-      'js/websockets.js',
-      'js/models.js',
-      'js/bufferResume.js',
-      'js/plugins.js',
-      'test/unit/**/*.js'
+      'test/unit/main.test.js'
     ],
 
-    autoWatch : true,
+    autoWatch: true,
 
     frameworks: ['jasmine'],
 
-    browsers : ['PhantomJS'],
+    browsers: ['Chrome', 'ChromeHeadless', 'ChromeHeadlessNoSandbox'],
 
     singleRun: true,
 
-    plugins : [
-            'karma-phantomjs-launcher',
-            'karma-jasmine',
-            'karma-junit-reporter'
-            ],
+    plugins: [
+      'karma-chrome-launcher',
+      'karma-jasmine',
+      'karma-junit-reporter',
+      'karma-webpack'
+    ],
 
-    junitReporter : {
+    customLaunchers: {
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox']
+      }
+      
+    },
+
+    junitReporter: {
       outputFile: 'test_out/unit.xml',
       suite: 'unit'
-    }
+    },
+
+    /* karma-webpack config
+       pass your webpack configuration for karma
+       add `babel-loader` to the webpack configuration to make 
+       the ES6+ code in the test files readable to the browser  
+       eg. import, export keywords */
+    webpack: {
+      devtool: webpackConfig.devtool,
+      module: webpackConfig.module,
+      optimization: {
+        runtimeChunk: false,
+        splitChunks: false
+      },
+    },
+
+    preprocessors: {
+      //add webpack as preprocessor to support require() in test-suits .js files
+      './test/unit/*.js': ['webpack'],
+      './src/**/*.js': ['webpack']
+    },
+    // webpackMiddleware: {
+    //   //turn off webpack bash output when run the tests
+    //   noInfo: true,
+    //   stats: 'errors-only'
+    // }
 
   });
+
+  if(process.env.TRAVIS){
+    config.browsers = ['ChromeHeadlessNoSandbox'];
+  }
 };
+

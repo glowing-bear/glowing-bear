@@ -2,8 +2,9 @@
  * This file contains the plugin definitions
  */
 
-(function() {
 'use strict';
+
+import * as _ from "underscore";
 
 var plugins = angular.module('plugins', []);
 
@@ -594,4 +595,3 @@ plugins.factory('userPlugins', function() {
 
 
 });
-})();

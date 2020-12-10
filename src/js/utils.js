@@ -1,3 +1,6 @@
+
+import * as _ from "underscore";
+
 var weechat = angular.module('weechat');
 
 weechat.factory('utils', function() {
