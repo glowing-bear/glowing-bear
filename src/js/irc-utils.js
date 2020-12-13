@@ -1,8 +1,8 @@
 /**
  * Portable utilities for IRC.
  */
+import {sortBy, pluck} from "underscore";
 
-(function() {
 'use strict';
 
 var IrcUtils = angular.module('IrcUtils', []);
@@ -25,10 +25,10 @@ IrcUtils.service('IrcUtils', [function() {
      */
     var _ciNickList = function(nickList) {
 
-        var newList = _(nickList).sortBy(function(nickObj) {
+        var newList = sortBy(nickList, function(nickObj) {
             return -nickObj.spokeAt;
         });
-        newList = _(newList).pluck('name');
+        newList = pluck(newList, 'name');
 
         return newList;
     };
@@ -236,4 +236,3 @@ IrcUtils.service('IrcUtils', [function() {
         'completeNick': completeNick
     };
 }]);
-})();
