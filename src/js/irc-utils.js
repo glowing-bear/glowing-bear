@@ -1,9 +1,10 @@
 /**
  * Portable utilities for IRC.
  */
+'use strict';
+
 import {sortBy, pluck} from "underscore";
 
-'use strict';
 
 var IrcUtils = angular.module('IrcUtils', []);
 
