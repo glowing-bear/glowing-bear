@@ -23,10 +23,14 @@ function createWindow () {
   // Create the browser window.
   const bounds = (data && data.bounds) ? data.bounds : {width: 1280, height:800 }
   mainWindow = new BrowserWindow({
+    title: "Glowing Bear",
+    icon: path.join(__dirname, "assets/img/glowing-bear.png");
     width: bounds.width,
     height: bounds.height,
     webPreferences: {
-      preload: path.join(__dirname, 'electron-globals.js')
+      preload: path.join(__dirname, 'electron-globals.js'),
+      contextIsolation: true,
+      nodeIntegration: false
     }
   })
 
