@@ -25,6 +25,12 @@ if (argv['profile']) {
 }
 app.setPath('userData', userDataPath);
 
+// Force all browser windows to use a sandboxed renderer.
+// With this option enabled, the renderer must communicate
+// via IPC to the main process in order to access node APIs.
+// https://www.electronjs.org/docs/api/sandbox-option
+app.enableSandbox();
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow = null;
