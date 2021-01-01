@@ -12,7 +12,7 @@ const template = [
     submenu: [
       { role: 'about' },
       { type: 'separator' },
-      { role: 'services' },
+      { role: 'services', submenu: [] },
       { type: 'separator' },
       { role: 'hide' },
       { role: 'hideothers' },
@@ -39,8 +39,6 @@ const template = [
       { role: 'copy' },
       { role: 'paste' },
       ...(isMac ? [
-        { role: 'pasteAndMatchStyle' },
-        { role: 'delete' },
         { role: 'selectAll' },
         { type: 'separator' },
         {
@@ -51,7 +49,6 @@ const template = [
           ]
         }
       ] : [
-        { role: 'delete' },
         { type: 'separator' },
         { role: 'selectAll' }
       ])
