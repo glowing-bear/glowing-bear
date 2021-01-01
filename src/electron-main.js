@@ -62,7 +62,7 @@ function createWindow () {
     height: bounds.height,
     webPreferences: {
       preload: path.join(__dirname, 'electron-globals.js'),
-      contextIsolation: true,
+      contextIsolation: false,
       nodeIntegration: false,
       spellcheck: true,
       webgl: false
