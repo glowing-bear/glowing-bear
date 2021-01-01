@@ -24,7 +24,7 @@ function createWindow () {
   const bounds = (data && data.bounds) ? data.bounds : {width: 1280, height:800 }
   mainWindow = new BrowserWindow({
     title: "Glowing Bear",
-    icon: path.join(__dirname, "assets/img/glowing-bear.png");
+    icon: path.join(__dirname, "assets/img/glowing-bear.png"),
     width: bounds.width,
     height: bounds.height,
     webPreferences: {
