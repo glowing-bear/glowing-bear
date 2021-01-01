@@ -89,9 +89,12 @@ function createWindow () {
   }
 
   var handleLink = (e, url) => {
-    if(url != mainWindow.webContents.getURL()) {
+    if (!url.startsWith('blob:') && !url.startsWith('file:')) {
         e.preventDefault()
         shell.openExternal(url)
+    } else {
+        e.preventDefault()
+        return true
     }
   }
 
