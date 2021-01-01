@@ -325,7 +325,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
       </div>
     </div>
     <div class="content" id="content" sidebar-state="visible" ng-show="connected" ng-cloak>
-      <div id="topbar">
+      <div id="topbar" class="unselectable">
         <div class="brand" ng-click="toggleSidebar()">
           <a href="#">
             <img alt="brand" src="assets/img/favicon.png" title="Connected to {{ settings.host }}:{{ settings.port}}">
@@ -336,12 +336,12 @@ npm run build-electron-{windows, darwin, linux}</pre>
           <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
         </div>
 
-        <div class="title"  ng-click="showModal('topicModal')">
+        <div class="title unselectable" ng-click="showModal('topicModal')">
           <span class="desktop" ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | conditionalLinkify | DOMfilter:'irclinky')"></span>
           <span class="mobile" ng-class="{'active': activeBuffer().active, 'channel': activeBuffer().type === 'channel', 'channel_hash': activeBuffer().prefix === '#', 'channel_plus': activeBuffer().prefix === '+', 'channel_ampersand': activeBuffer().prefix === '&'}">{{ activeBuffer().trimmedName || activeBuffer().fullName }}</span>
         </div>
 
-        <div class="actions pull-right vertical-line-left">
+        <div class="actions pull-right vertical-line-left unselectable">
           <a class="settings-toggle" ng-click="showModal('settingsModal')" title="Options menu" href="#">
             <i class="glyphicon glyphicon-cog"></i>
           </a>
@@ -350,7 +350,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
           </a>
         </div>
       </div>
-      <div id="sidebar" data-state="visible" ng-swipe-left="swipeLeft()" ng-swipe-disable-mouse class="vertical-line">
+      <div id="sidebar" data-state="visible" ng-swipe-left="swipeLeft()" ng-swipe-disable-mouse class="vertical-line unselectable">
         <ul class="nav nav-pills nav-stacked" ng-class="{'indented': (predicate === 'serverSortKey'), 'showquickkeys': showQuickKeys, 'showjumpkeys': showJumpKeys}">
           <li class="bufferfilter">
             <form role="form">
@@ -380,7 +380,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
           </li>
         </ul>
       </div>
-      <div id="nicklist" ng-if="showNicklist" ng-swipe-right="swipeRight()" ng-swipe-disable-mouse class="favorite-font vertical-line-left">
+      <div id="nicklist" ng-if="showNicklist" ng-swipe-right="swipeRight()" ng-swipe-disable-mouse class="favorite-font vertical-line-left unselectable">
         <ul class="nicklistgroup list-unstyled" ng-repeat="group in nicklist">
           <li ng-repeat="nick in group.nicks|orderBy:'name'">
             <a ng-click="openBuffer(nick.name)"><span ng-class="::nick.prefixClasses" ng-bind="::nick.prefix"></span><span ng-class="::nick.nameClasses" ng-bind="::nick.name"></span></a>
