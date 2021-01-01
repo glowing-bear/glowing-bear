@@ -32,14 +32,14 @@ global.mainWindow.webContents.on('context-menu', (event, params) => {
 			}))
 		}
 
-		let did_we_show_dictionary = 0;
+		let did_we_show_dictionary = false;
 		// Add each spelling suggestion
 		for (const suggestion of params.dictionarySuggestions) {
 			menu.append(new MenuItem({
 				label: suggestion,
 				click: () => global.mainWindow.webContents.replaceMisspelling(suggestion)
 			}))
-			did_we_show_dictionary = 1;
+			did_we_show_dictionary = true;
 		}
 
 		// Allow users to add the misspelled word to the dictionary
@@ -49,11 +49,11 @@ global.mainWindow.webContents.on('context-menu', (event, params) => {
 				label: 'Add to dictionary',
 				click: () => global.mainWindow.webContents.session.addWordToSpellCheckerDictionary(params.misspelledWord)
 			}))
-			did_we_show_dictionary = 1;
+			did_we_show_dictionary = true;
 		}
 
 		// Show seperator only if dictionary was shown above
-		if (did_we_show_dictionary == 1) {
+		if (did_we_show_dictionary) {
 			menu.append(new MenuItem({
 				type: 'separator'
 			}));
