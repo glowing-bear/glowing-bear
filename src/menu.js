@@ -95,7 +95,7 @@ const template = [
         label: 'Learn More',
         click: async () => {
           const { shell } = require('electron')
-          await shell.openExternal('https://www.glowing-bear.org')
+          await shell.openExternal('https://github.com/glowing-bear/glowing-bear/blob/master/README.md#readme')
         }
       }
     ]
