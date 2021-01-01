@@ -77,7 +77,6 @@ const template = [
     label: 'Window',
     submenu: [
       { role: 'minimize' },
-      { role: 'zoom' },
       ...(isMac ? [
         { type: 'separator' },
         { role: 'front' },
