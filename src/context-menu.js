@@ -74,6 +74,16 @@ global.mainWindow.webContents.on('context-menu', (event, params) => {
 			label: 'Paste',
 			enabled: params.editFlags.canPaste
 		}));
+		// Below only makes sense in editable input
+		// because you wouldn't want to select the entire
+		// Electron page
+		if (params.isEditable) {
+			menu.append(new MenuItem({
+				role: 'selectall',
+				label: 'Select All',
+				enabled: params.editFlags.canSelectAll
+			}));
+		}
 	}
 
 	if (params.linkURL || params.srcURL) {
