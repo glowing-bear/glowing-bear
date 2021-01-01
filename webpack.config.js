@@ -26,6 +26,8 @@ module.exports = {
                 "**/*.css",
                 "**/*.svg",
                 "**/*.png",
+                "**/*.mp3",
+                "**/*.ogg",
                 "directives/*.html",
                 "serviceworker.js",
                 "electron-*.js",
