@@ -12,6 +12,21 @@ document.addEventListener("deviceready", function () {
     }
 }, false);
 
+// disable clicking any href="#" link and contextmenus
+// on objects which shouldn't have them
+for (let x of ["click", "auxclick", "contextmenu"]) {
+    document.addEventListener(x, (e) => {
+        try {
+            let anchor = e.target.closest("a");
+            if (anchor.href == (window.location.href + "#")) e.preventDefault();
+        } catch (e) {}
+        try {
+            let anchor = e.target.closest("div");
+            if (["sidebar","nicklist"].indexOf(anchor.id) >= 0) e.preventDefault();
+        } catch (e) {}
+    }, false);
+}
+
 var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'bufferResume', 'plugins', 'IrcUtils', 'ngSanitize', 'ngWebsockets', 'ngTouch'], ['$compileProvider', function($compileProvider) {
     // hacky way to be able to find out if we're in debug mode
     weechat.compileProvider = $compileProvider;
