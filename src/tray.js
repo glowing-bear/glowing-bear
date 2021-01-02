@@ -11,7 +11,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-const {app, Tray, Menu, nativeImage} = require('electron');
+const {
+    app,
+    Tray,
+    Menu,
+    nativeImage
+} = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -42,21 +47,24 @@ exports.create = function() {
         }
     };
 
-	const contextMenu = Menu.buildFromTemplate([
-		{
-			label: 'Show/Hide Glowing Bear',
-			click: toggleWin
-		},
-		{ type: "separator" },
-		{
-			label: 'Quit',
-			click: function() { app.quit(); }
-		},
-	]);
+    const contextMenu = Menu.buildFromTemplate([{
+            label: 'Show/Hide Glowing Bear',
+            click: toggleWin
+        },
+        {
+            type: "separator"
+        },
+        {
+            label: 'Quit',
+            click: function() {
+                app.quit();
+            }
+        },
+    ]);
 
-	tray = new Tray(global.defaultIcon);
-	tray.setToolTip('Glowing Bear');
-	tray.setContextMenu(contextMenu);
+    tray = new Tray(global.defaultIcon);
+    tray.setToolTip('Glowing Bear');
+    tray.setContextMenu(contextMenu);
 
     let lastFavicon = null;
     global.mainWindow.webContents.on('page-favicon-updated', async function(ev, favicons) {

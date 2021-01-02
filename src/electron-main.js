@@ -1,29 +1,43 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, shell, ipcMain, nativeImage, Menu} = require('electron')
+const {
+    app,
+    BrowserWindow,
+    shell,
+    ipcMain,
+    nativeImage,
+    Menu
+} = require('electron')
 const path = require('path')
 const fs = require('fs')
 
 // Get arguments passed to app
 if (app.isPackaged) {
-	var argv = require('minimist')(process.argv.slice(1));
+    var argv = require('minimist')(process.argv.slice(1));
 } else {
-	var argv = require('minimist')(process.argv.slice(2));
+    var argv = require('minimist')(process.argv.slice(2));
 }
 
 if (argv["help"]) {
-	console.log("Options:");
-	console.log("  --profile {name}:  Name of alternate profile to use, allows for running multiple accounts");
-	console.log("  --devtools:        Open Developer Tools");
-	console.log("  --hidden:          Hide application on startup, useful for autostarting on login")
-	console.log("  --help:            Show this help page");
-	app.exit();
+    console.log("Options:");
+    console.log("  --profile {name}:  Name of alternate profile to use, allows for running multiple accounts");
+    console.log("  --devtools:        Open Developer Tools");
+    console.log("  --hidden:          Hide application on startup, useful for autostarting on login")
+    console.log("  --help:            Show this help page");
+    app.exit();
 }
 
 let userDataPath = app.getPath('userData');
 if (argv['profile']) {
-	userDataPath += '-' + argv['profile'];
+    userDataPath += '-' + argv['profile'];
 }
 app.setPath('userData', userDataPath);
+
+// Prevent having more than one instance running
+const gotLock = app.requestSingleInstanceLock();
+if (!gotLock) {
+    console.log('Other instance detected: exiting');
+    app.exit();
+}
 
 // Force all browser windows to use a sandboxed renderer.
 // With this option enabled, the renderer must communicate
@@ -38,7 +52,7 @@ global.appQuitting = false;
 
 // We use this to store some tiny amount of preferences specific to electron
 // things like window bounds and location
-const initPath  = path.join(userDataPath, "init.json")
+const initPath = path.join(userDataPath, "init.json")
 
 // Set default icon and import other js files
 global.defaultIcon = nativeImage.createFromPath((path.join(__dirname, '/assets/img/glowing-bear.png')));
@@ -46,102 +60,111 @@ const tray = require("./tray");
 const contextmenu = require("./context-menu");
 const titlemenu = require("./menu");
 
-function createWindow () {
+function createWindow() {
     let data
     // read saved state from file (e.g. window bounds)
     // don't show any errors because on initial start file is not created
     // (makes output ugly and error is useless and confusing)
-    try { data = JSON.parse(fs.readFileSync(initPath, 'utf8')) } catch(e) {}
+    try {
+        data = JSON.parse(fs.readFileSync(initPath, 'utf8'))
+    } catch (e) {}
 
-  // Create the browser window.
-  const bounds = (data && data.bounds) ? data.bounds : {width: 1280, height:800 }
-  mainWindow = global.mainWindow = new BrowserWindow({
-    title: "Glowing Bear",
-    icon: global.defaultIcon,
-    width: bounds.width,
-    height: bounds.height,
-    webPreferences: {
-      preload: path.join(__dirname, 'electron-globals.js'),
-      contextIsolation: false,
-      nodeIntegration: false,
-      spellcheck: true,
-      webgl: false
+    // Create the browser window.
+    const bounds = (data && data.bounds) ? data.bounds : {
+        width: 1280,
+        height: 800
     }
-  })
+    mainWindow = global.mainWindow = new BrowserWindow({
+        title: "Glowing Bear",
+        icon: global.defaultIcon,
+        width: bounds.width,
+        height: bounds.height,
+        webPreferences: {
+            preload: path.join(__dirname, 'electron-globals.js'),
+            contextIsolation: false,
+            nodeIntegration: false,
+            spellcheck: true,
+            webgl: false
+        }
+    })
 
-  // Remember window position
-  if (data && data.bounds.x && data.bounds.y) {
-      mainWindow.x = data.bounds.x;
-      mainWindow.y = data.bounds.y;
-  }
-
-  mainWindow.setMenu(null)
-  mainWindow.setMenuBarVisibility(false)
-  mainWindow.setAutoHideMenuBar(true)
-
-  // and load the index.html of the app.
-  mainWindow.loadFile('index.html')
-  Menu.setApplicationMenu(titlemenu)
-
-  // Open the DevTools.
-  if (argv['devtools']) {
-  	mainWindow.webContents.openDevTools()
-  }
-
-  var handleLink = (e, url) => {
-    e.preventDefault()
-    if (!url.startsWith('blob:') && !url.startsWith('file:')) {
-        shell.openExternal(url)
-    } else {
-        return true
+    // Remember window position
+    if (data && data.bounds.x && data.bounds.y) {
+        mainWindow.x = data.bounds.x;
+        mainWindow.y = data.bounds.y;
     }
-  }
 
-  mainWindow.webContents.on('will-navigate', handleLink)
-  mainWindow.webContents.on('new-window', handleLink)
+    mainWindow.setMenu(null)
+    mainWindow.setMenuBarVisibility(false)
+    mainWindow.setAutoHideMenuBar(true)
 
-  // Emitted when the window is closing.
-  mainWindow.on('close', function () {
-    let data = {
-        bounds: mainWindow.getBounds()
+    // and load the index.html of the app.
+    mainWindow.loadFile('index.html')
+    Menu.setApplicationMenu(titlemenu)
+
+    // Open the DevTools.
+    if (argv['devtools']) {
+        mainWindow.webContents.openDevTools()
     }
-    fs.writeFileSync(initPath, JSON.stringify(data))
-  })
 
-  // Hide when --hidden is passed
-  // useful for autostart
-  mainWindow.on('ready-to-show', () => {
-  	if (!argv['hidden']) {
-  		mainWindow.show();
-  	} else {
-  		mainWindow.hide();
-  	}
-  });
-
-  // Emitted when the window is closed.
-  mainWindow.on('closed', function () {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    mainWindow = global.mainWindow = null;
-  })
-
-  mainWindow.on('close', (e) => {
-    // If we are not quitting and have a tray icon then minimize to tray
-    if (!global.appQuitting && (tray.hasTray() || process.platform === 'darwin')) {
-      // On Mac, closing the window just hides it
-      // (this is generally how single-window Mac apps
-      // behave, eg. Mail.app)
-      e.preventDefault();
-      mainWindow.hide();
-      return false;
+    var handleLink = (e, url) => {
+        e.preventDefault()
+        if (!url.startsWith('blob:') && !url.startsWith('file:')) {
+            shell.openExternal(url)
+        } else {
+            return true
+        }
     }
-  });
 
-  app.on('browser-window-focus', function() {
-      setTimeout(function() { mainWindow.webContents.focus() }, 0)
-      setTimeout(function() { mainWindow.webContents.executeJavaScript("document.getElementById(\"sendMessage\").focus()") }, 0)
-  })
+    mainWindow.webContents.on('will-navigate', handleLink)
+    mainWindow.webContents.on('new-window', handleLink)
+
+    // Emitted when the window is closing.
+    mainWindow.on('close', function() {
+        let data = {
+            bounds: mainWindow.getBounds()
+        }
+        fs.writeFileSync(initPath, JSON.stringify(data))
+    })
+
+    // Hide when --hidden is passed
+    // useful for autostart
+    mainWindow.on('ready-to-show', () => {
+        if (!argv['hidden']) {
+            mainWindow.show();
+        } else {
+            mainWindow.hide();
+        }
+    });
+
+    // Emitted when the window is closed.
+    mainWindow.on('closed', function() {
+        // Dereference the window object, usually you would store windows
+        // in an array if your app supports multi windows, this is the time
+        // when you should delete the corresponding element.
+        mainWindow = global.mainWindow = null;
+    })
+
+    mainWindow.on('close', (e) => {
+        // If we are not quitting and have a tray icon then minimize to tray
+        if (!global.appQuitting && (tray.hasTray() || process.platform === 'darwin')) {
+            // On Mac, closing the window just hides it
+            // (this is generally how single-window Mac apps
+            // behave, eg. Mail.app)
+            e.preventDefault();
+            mainWindow.hide();
+            return false;
+        }
+    });
+
+    app.on('browser-window-focus', function() {
+        setTimeout(function() {
+            mainWindow.webContents.focus()
+        }, 0)
+        setTimeout(function() {
+            mainWindow.webContents.executeJavaScript("document.getElementById(\"sendMessage\").focus()")
+        }, 0)
+    })
 }
 
 // This method will be called when Electron has finished
@@ -158,8 +181,7 @@ app.on('ready', function() {
 ipcMain.on('badge', function(event, arg) {
     if (process.platform === "darwin") {
         app.dock.setBadge(String(arg));
-    }
-    else if (process.platform === "win32") {
+    } else if (process.platform === "win32") {
         let n = parseInt(arg, 10)
         // Only show notifications with number
         if (isNaN(n)) {
@@ -174,10 +196,10 @@ ipcMain.on('badge', function(event, arg) {
 })
 
 // Quit when all windows are closed.
-app.on('window-all-closed', function () {
-  // On macOS it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') app.quit()
+app.on('window-all-closed', function() {
+    // On macOS it is common for applications and their menu bar
+    // to stay active until the user quits explicitly with Cmd + Q
+    if (process.platform !== 'darwin') app.quit()
 })
 
 app.on('activate', () => {
