@@ -36,7 +36,8 @@ weechat.filter('irclinky', function() {
         // However, it matches all *common* IRC channels while trying to minimise false positives.
         // "#1" is much more likely to be "number 1" than "IRC channel #1".
         // Thus, we only match channels beginning with a # and having at least one letter in them.
-        var channelRegex = /(^|[\s,.:;?!"'()+@-\~%])(#+[^\x00\x07\r\n\s,:]*[a-z][^\x00\x07\r\n\s,:]*)/gmi;
+        // Also trailing punctiations are not matched
+        var channelRegex = /(^|[\s,.:;?!"'()+@-\~%])(#+[^\x00\x07\r\n\s,:]*[a-z][^\x00\x07\r\n\s,:]*[^\s\?\.,\/#!$%\^&\*;:{}=\-_`~()])/gmi
         // Call the method we bound to window.openBuffer when we instantiated
         // the Weechat controller.
         var substitute = '$1<a href="#" onclick="openBuffer(\'$2\');">$2</a>';
