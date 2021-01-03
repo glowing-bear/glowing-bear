@@ -77,6 +77,7 @@ function createWindow() {
     mainWindow = global.mainWindow = new BrowserWindow({
         title: "Glowing Bear",
         icon: global.defaultIcon,
+        show: false,
         width: bounds.width,
         height: bounds.height,
         webPreferences: {
@@ -102,10 +103,18 @@ function createWindow() {
     mainWindow.loadFile('index.html')
     Menu.setApplicationMenu(titlemenu)
 
-    // Open the DevTools.
-    if (argv['devtools']) {
-        mainWindow.webContents.openDevTools()
-    }
+    // Hide when --hidden is passed
+    // useful for autostart
+    mainWindow.on('ready-to-show', () => {
+        if (!argv['hidden']) {
+            mainWindow.show();
+        } else {
+            mainWindow.hide();
+        }
+    });
+
+    // Open the DevTools
+    if (argv['devtools']) mainWindow.webContents.openDevTools()
 
     var handleLink = (e, url) => {
         e.preventDefault()
@@ -126,16 +135,6 @@ function createWindow() {
         }
         fs.writeFileSync(initPath, JSON.stringify(data))
     })
-
-    // Hide when --hidden is passed
-    // useful for autostart
-    mainWindow.on('ready-to-show', () => {
-        if (!argv['hidden']) {
-            mainWindow.show();
-        } else {
-            mainWindow.hide();
-        }
-    });
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function() {
@@ -176,7 +175,6 @@ app.on('ready', function() {
     contextmenu.create();
 });
 
-
 // Listen for badge changes
 ipcMain.on('badge', function(event, arg) {
     if (process.platform === "darwin") {
@@ -195,11 +193,18 @@ ipcMain.on('badge', function(event, arg) {
     }
 })
 
+// Listen for window focus requests
+ipcMain.on('windowfocus', function(event, arg) {
+    let n = parseInt(arg, 10);
+    if (n == 1) {
+        mainWindow.show();
+        mainWindow.focus();
+    }
+})
+
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
-    // On macOS it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform !== 'darwin') app.quit()
+    app.quit();
 })
 
 app.on('activate', () => {

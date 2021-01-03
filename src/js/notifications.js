@@ -104,6 +104,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', 'u
             notification.onclick = function() {
                 models.setActiveBuffer(buffer.id);
                 window.focus();
+                if (window.is_electron == 1) setWindowFocus(1);
                 notification.close();
             };
 
