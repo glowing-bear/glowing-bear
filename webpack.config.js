@@ -8,9 +8,23 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     context: path.resolve(__dirname, 'src'),
-    entry: './main.js',
+    entry: {
+        main: {
+            import: './main.js',
+            dependOn: 'shared',
+        },
+        main2: {
+            import: './main2.js',
+            dependOn: 'shared',
+        },
+        shared: 'lodash',
+    },
     output: {
         path: path.resolve(__dirname, 'build'),
+        filename: '[name].bundle.js',
+    },
+    optimization: {
+        runtimeChunk: 'single',
     },
     devServer: {
         contentBase: path.resolve(__dirname, 'build')

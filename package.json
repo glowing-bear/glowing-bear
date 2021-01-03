@@ -13,7 +13,7 @@
     "babel-loader": "^8.2.2",
     "copy-webpack-plugin": "^6.3.2",
     "electron-packager": "^15.0.0",
-    "html-webpack-plugin": "^4.5.0",
+    "html-webpack-plugin": "^5.0.0-beta.1",
     "http-server": "^0.12.3",
     "jasmine-core": "^3.6.0",
     "jshint": "^2.11.1",
