@@ -18,7 +18,7 @@ for (let x of ["click", "auxclick", "contextmenu"]) {
     document.addEventListener(x, (e) => {
         try {
             let anchor = e.target.closest("a");
-            if (anchor.href == (window.location.href + "#")) e.preventDefault();
+            if (anchor.href == (window.location.href.split("#")[0] + "#")) e.preventDefault();
         } catch (e) {}
         try {
             let anchor = e.target.closest("div");
