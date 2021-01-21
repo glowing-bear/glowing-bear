@@ -40,8 +40,8 @@
     "update-webdriver": "webdriver-manager update",
     "preprotractor": "npm run update-webdriver",
     "protractor": "protractor test/protractor-conf.js",
-    "build-electron-windows": "make -f electron.makefile bower build-electron-windows",
-    "build-electron-darwin": "make -f electron.makefile bower build-electron-darwin",
+    "build-electron-windows": "make -f electron.makefile build-electron-windows",
+    "build-electron-darwin": "make -f electron.makefile build-electron-darwin",
     "build-electron-linux": "make -f electron.makefile build-electron-linux"
   },
   "dependencies": {
