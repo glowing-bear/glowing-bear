@@ -61,7 +61,11 @@ function createWindow () {
     let data = {
         bounds: mainWindow.getBounds()
     }
-    fs.writeFileSync(initPath, JSON.stringify(data))
+    try {
+      fs.writeFileSync(initPath, JSON.stringify(data));
+    } catch (e) {
+      console.log('Unable to save save init.json: ', e);
+    }
   })
 
   // Emitted when the window is closed.
