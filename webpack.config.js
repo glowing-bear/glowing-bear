@@ -1,10 +1,10 @@
-
 "use strict";
 
 const path = require("path");
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const webpack = require("webpack");
 
 module.exports = {
     context: path.resolve(__dirname, 'src'),
@@ -35,7 +35,13 @@ module.exports = {
                 "manifest.webapp",
                 "webapp.manifest.json"
             ]
-        })
+        }),
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery",
+            "window.jQuery": "jquery",
+            Popper: ["popper.js", "default"],
+        }),
     ],
     module: {
         rules: [
@@ -45,6 +51,22 @@ module.exports = {
                 use: [
                     {
                         loader: 'babel-loader'
+                    }
+                ]
+            },
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader']
+            },
+            {
+                test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: '[name].[ext]',
+                            outputPath: 'fonts/'
+                        }
                     }
                 ]
             }

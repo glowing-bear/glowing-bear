@@ -13,15 +13,11 @@
     <!-- https://w3c.github.io/manifest/ && https://developer.mozilla.org/en-US/docs/Web/Manifest -->
     <link rel="manifest" href="webapp.manifest.json">
     <title ng-bind-template="{{ notificationStatus }}Glowing Bear {{ pageTitle}}"></title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha512-Dop/vW3iOtayerlYAqCgkVr2aTr2ErwwTYOvRFUpzl2VhCMJyjQF0Q9TjUXIo6JhuM/3i0vVEt2e/7QQmnHQqw==" crossorigin="anonymous" />
     <link rel="shortcut icon" sizes="128x128" href="assets/img/glowing_bear_128x128.png">
     <link rel="apple-touch-icon" sizes="128x128" href="assets/img/glowing_bear_128x128.png">
     <link rel="shortcut icon" type="image/png" href="assets/img/favicon.png" >
     <link href="css/glowingbear.css" rel="stylesheet" media="screen">
     <link href="css/themes/dark.css" rel="stylesheet" media="screen" id="themeCSS" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/lib/js/emojione.min.js" integrity="sha256-9cBkVeU53NiJ9/BdcJta3HbERAmf5X9DE2WvL8V+gDs=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-linkify/2.1.9/linkify.min.js" integrity="sha512-kxj7VjlzsQgiku2vbRcZI0FJ0dXmPsiRLugiRxJrCROusKHaFfX/hGDD1/L/R0Y+xI8zlA2B5nm6USapz7nQbg==" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-linkify/2.1.9/linkify-string.min.js" integrity="sha512-CMBjJdVIcw7zafkE+uedZCnw6r4ABU1Fev5xA7db0D097/NzhO6Ajo2kdZFOQ+y0kg9sE/t44bPAwuuNhUVIcQ==" crossorigin="anonymous"></script>
   </head>
   <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keyup="handleKeyRelease($event)"  ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" ng-init="init()" lang="en-US">
     <audio id="audioNotificationInitializer"><source src="data:audio/mp3;base64,/+MYxAAJs2H8AABLSZv4Af/5yAsCIElB/v/+Y///U+QiEaSchGO+IMQjZCgOLw4KVoIEkf/r69Kbfc7/WbLRPsyvp7/p/p///+MYxBQK+1oUAACNMUWSyLcrqpERhDqKCBWcgbTmuIq8ISkQSv+yf/tbZf9krRTptRUv/XT////66NJQFZTpOd3KUEtM+a+l/+MYxCMKM2YcAACNMB+Jqe+HLv+75fSreYSWGtqHJghl6y///89fcz/p8qIRKeFWYKEGo5mLFmCGBjV0FEJn/9f85V87iy98/+MYxDULA1YYAABHLbI52f2/4v////n7U/swVr0SzhrRIueMLLog0qIKcOwu/5v/lLR/r9DPN/R+vmf//////V8tAxlMY1sy/+MYxEQKM2IYAABHLZjRjUlgUSUAhTUBFHVMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxFYJ22oAAACHMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV"></audio>
@@ -45,7 +41,7 @@
         <strong>Secure connection error</strong> Unable to connect to unencrypted relay when you are connecting to Glowing Bear over HTTPS. Please use an encrypted relay or load the page without using HTTPS.
       </div>
       <div class="alert alert-danger" ng-show="oldWeechatError" ng-cloak>
-        <strong>Weechat version error</strong> Weechat connected but did not respond to a handshake. This could mean weechat < version 2.9. Verify your weechat is 2.8 or older and check "Compatibility with Weechat 2.8 and older" or consider updating weechat.
+        <strong>Weechat version error</strong> Weechat connected but did not respond to a handshake. This could mean weechat &lt; version 2.9. Verify your weechat is 2.8 or older and check "Compatibility with Weechat 2.8 and older" or consider updating weechat.
       </div>
       <div class="alert alert-danger" ng-show="hashAlgorithmDisagree" ng-cloak>
         <strong>Hash algorithm error</strong> Weechat and glowing bear did not agree on a hashing algorithm, please do /set relay.network.password_hash_algo "pbkdf2+sha512" in weechat.
@@ -119,7 +115,7 @@
                   <div class="checkbox indent" ng-show="settings.compatibilityWeechat28">
                     <label class="control-label" for="useTotp">
                       <input type="checkbox" id="useTotp" ng-model="settings.useTotp">
-                      Use Time-based One-Time Password (automatic for Weechat >= 2.9)<a href="https://blog.weechat.org/post/2019/01/14/Support-of-TOTP" target="_blank"><i class="glyphicon glyphicon-info-sign"></i></a>
+                      Use Time-based One-Time Password (automatic for Weechat &gt;= 2.9)<a href="https://blog.weechat.org/post/2019/01/14/Support-of-TOTP" target="_blank"><i class="glyphicon glyphicon-info-sign"></i></a>
                     </label>
                   </div>
                   <div class="checkbox">
@@ -173,7 +169,7 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
               <pre>/secure set relay_totp_secret xxxxx
 /set relay.network.totp_secret "${sec.data.relay_totp_secret}"</pre>
               <p>Open an authenticator app and create an entry with the same secret. In Glowing Bear check the checkbox for "use Time-based One-Time Password" and fill in the one time password as you see it in the authenticator app.</p>
-              
+
               <h3><a name="plaintext"></a>Compatibility with WeeChat 2.8 and older</h3>
               <p><strong>Required for WeeChat <= 2.8</strong></p>
               <p>With WeeChat 2.9—scheduled for release in July 2020—relay client authentication was made more secure and resistant to brute forcing. Glowing Bear uses the most secure authentication method by default. However, to support older versions of WeeChat, this option allows Glowing Bear to still use the old authentication method, sending your password to WeeChat (in plain text if you are not using encryption!). Only enable this if you are using a WeeChat version before 2.9!</p>
@@ -220,19 +216,19 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
               Helpful trigger to automatically repin a buffer (in this instance, <var>irc.freenode.#weechat</var>): <pre><code>/trigger add autopin signal "buffer_opened" "${buffer[${tg_signal_data}].full_name} =~ <var>irc.freenode.#weechat</var>" "" "/command -buffer ${buffer[${tg_signal_data}].full_name} * /buffer set localvar_set_pinned true"</code></pre>
               </p>
               <h3>Setting a custom path</h3>
-              <p> 
-                The hostname field can be used to set a custom path. Or a URL parameter can be used see section 'URL Parameters'. 
+              <p>
+                The hostname field can be used to set a custom path. Or a URL parameter can be used see section 'URL Parameters'.
               </p>
               <p>
                 To connect to the weechat relay service we connect using a URL. A typical URL consists of 4 parts. <code>{scheme}://{host}:{port}/{path}</code>. The path can be changed by entering the relay's full URL (except the scheme).
-              </p> 
+              </p>
                 <ul>
                   <li><b>scheme</b>: The scheme must never be input. The scheme is "ws" if TLS isn't used and it is "wss" if TLS is used.</li>
                   <li><b>host</b>: Can be an IPv4, IPv6 or a FQDN. IPv6 addresses must be wrapped in square brackets.</li>
                   <li><b>port</b>: can be specified in the host field or the seperate port field. However if the path is specified in the host field the port must also be specified.</li>
                   <li><b>path</b>: by defautl this is "weechat". In case <a href="https://github.com/glowing-bear/glowing-bear/wiki/Proxying-WeeChat-relay-with-a-web-server">a proxy</a> is used the path can be changed by entering it in the host field.</li>
                 </ul>
-              <p> 
+              <p>
                 Examples of correct input for the host field are:
               </p>
                 <ul>
