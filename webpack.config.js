@@ -4,8 +4,8 @@ const path = require("path");
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const webpack = require("webpack");
 
+require("webpack");
 module.exports = {
     context: path.resolve(__dirname, 'src'),
     entry: './main.js',
@@ -34,8 +34,14 @@ module.exports = {
                 "manifest.json",
                 "manifest.webapp",
                 "webapp.manifest.json",
-                { from: "../node_modules/bootstrap/dist/css/bootstrap.min.css", to: "css/" },
-                { from: "../node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2", to: "css/" },
+                {
+                    from: "../node_modules/bootstrap/dist/css/bootstrap.min.css",
+                    to: "css/"
+                },
+                {
+                    from: "../node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2",
+                    to: "css/"
+                },
                 { from: "../node_modules/emojione/lib/js/emojione.min.js" },
                 { from: "../node_modules/linkifyjs/dist/linkify.min.js" },
                 { from: "../node_modules/linkifyjs/dist/linkify-string.min.js" },
