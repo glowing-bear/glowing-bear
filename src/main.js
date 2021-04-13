@@ -6,11 +6,11 @@ import "angular-route";
 import "angular-sanitize";
 import "angular-touch";
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/fonts/glyphicons-halflings-regular.woff2';
-import 'emojione/lib/js/emojione.min.js';
-import 'linkifyjs/dist/linkify.min.js';
-import 'linkifyjs/dist/linkify-string.min.js';
+// import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/fonts/glyphicons-halflings-regular.woff2';
+// import 'emojione/lib/js/emojione.min.js';
+// import 'linkifyjs/dist/linkify.min.js';
+// import 'linkifyjs/dist/linkify-string.min.js';
 
 import "./js/localstorage.js";
 import "./js/irc-utils.js";

@@ -33,14 +33,13 @@ module.exports = {
                 "../package.json",
                 "manifest.json",
                 "manifest.webapp",
-                "webapp.manifest.json"
+                "webapp.manifest.json",
+                { from: "../node_modules/bootstrap/dist/css/bootstrap.min.css", to: "css/" },
+                { from: "../node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2", to: "css/" },
+                { from: "../node_modules/emojione/lib/js/emojione.min.js" },
+                { from: "../node_modules/linkifyjs/dist/linkify.min.js" },
+                { from: "../node_modules/linkifyjs/dist/linkify-string.min.js" },
             ]
-        }),
-        new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery",
-            "window.jQuery": "jquery",
-            Popper: ["popper.js", "default"],
         }),
     ],
     module: {
@@ -54,22 +53,6 @@ module.exports = {
                     }
                 ]
             },
-            {
-                test: /\.css$/,
-                use: ['style-loader', 'css-loader']
-            },
-            {
-                test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-                use: [
-                    {
-                        loader: 'file-loader',
-                        options: {
-                            name: '[name].[ext]',
-                            outputPath: 'fonts/'
-                        }
-                    }
-                ]
-            }
         ]
     }
 };
