@@ -207,7 +207,7 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
               To pin a buffer, type <code>/buffer set localvar_set_pinned true</code>. <strong>Note</strong>: Local variables on buffers are not persisted across WeeChat restarts, so either use script <code>buffer_autoset.py</code> to automatically apply that upon buffer creation or use a trigger if you want automatic repinning when buffers get recreated. To unpin, you can use the same command and set anything other than <code>true</code>.
               </p>
               <p>
-              Helpful trigger to automatically repin a buffer (in this instance, <var>irc.freenode.#weechat</var>): <pre><code>/trigger add autopin signal "buffer_opened" "${buffer[${tg_signal_data}].full_name} =~ <var>irc.freenode.#weechat</var>" "" "/command -buffer ${buffer[${tg_signal_data}].full_name} * /buffer set localvar_set_pinned true"</code></pre>
+              Helpful trigger to automatically repin a buffer (in this instance, <var>irc.libera.#weechat</var>): <pre><code>/trigger add autopin signal "buffer_opened" "${buffer[${tg_signal_data}].full_name} =~ <var>irc.libera.#weechat</var>" "" "/command -buffer ${buffer[${tg_signal_data}].full_name} * /buffer set localvar_set_pinned true"</code></pre>
               </p>
               <h3>Setting a custom path</h3>
               <p> 
@@ -308,7 +308,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
           <div id="collapseFive" class="panel-collapse collapse">
             <div class="panel-body">
               <p>Glowing bear is built by a small group of developers in their free time. As we're always trying to improve it, we would love getting your feedback and help. If that sounds like something you might enjoy, check out our <a href="https://github.com/glowing-bear/glowing-bear">project page</a> on GitHub!</p>
-              <p>If you're interested in contributing or simply want to say hello, head over to <strong>#glowing-bear</strong> on <strong>freenode!</strong> We won't bite, promise :)</p>
+              <p>If you're interested in contributing or simply want to say hello, head over to <strong>#glowing-bear</strong> on <a href="https://libera.chat">libera!</a> We won't bite, promise :)</p>
             </div>
           </div>
         </div>
