@@ -50,6 +50,10 @@
       <div class="alert alert-danger" ng-show="hashAlgorithmDisagree" ng-cloak>
         <strong>Hash algorithm error</strong> Weechat and glowing bear did not agree on a hashing algorithm, please do /set relay.network.password_hash_algo "pbkdf2+sha512" in weechat.
       </div>
+      <div class="alert alert-warning alert-dismissible" role="alert" ng-hide="settings.freenodeWarningRead">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close" ng-click="settings.freenodeWarningRead=1"><span aria-hidden="true">&times;</span></button>
+        <strong>Our channel has moved to Libera Chat!</strong> Freenode is no longer trustworthy - they have hijacked our channel on their network, and we strongly recommend all users to join us in #glowing-bear on <a href="https://libera.chat/">Libera Chat</a> instead. The same goes for WeeChat&apos;s channel, #weechat, and many other open source projects.
+      </div>
       <div class="panel-group accordion">
         <div class="panel" data-state="active" ng-show=false>
           <div class="panel-heading">
