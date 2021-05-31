@@ -200,6 +200,7 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
                 <li><kbd>ALT-n</kbd>: Toggle nicklist</li>
                 <li><kbd>ALT-l</kbd>: Focus on input bar</li>
                 <li><kbd>ALT-[0-9]</kbd>: Switch to buffer number N</li>
+                <li><kbd>ALT-j NN</kbd>: Switch to buffer number NN</li>
                 <li><kbd>ALT-↑/↓</kbd>: Switch to buffer above/below</li>
                 <li><kbd>ALT-a</kbd>: Focus on next buffer with activity</li>
                 <li><kbd>ALT-&lt;</kbd>: Switch to previous active buffer</li>
@@ -212,13 +213,13 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
               </ul>
               <h3>Pinning buffers</h3>
               <p>
-                The option "Only show buffers with unread messages" is useful when you have a lot of buffers and can't meaningfully look at all of them at the same time. However, often you have a select few buffers that you use more frequently and would like to have displayed permanently.
+                The option "Only show buffers with unread messages" is useful when you have a lot of buffers and can&apos;t meaningfully look at all of them at the same time. However, often you have a select few buffers that you use more frequently and would like to have displayed permanently.
               </p>
               <p>
               To pin a buffer, type <code>/buffer set localvar_set_pinned true</code>. <strong>Note</strong>: Local variables on buffers are not persisted across WeeChat restarts, so either use script <code>buffer_autoset.py</code> to automatically apply that upon buffer creation or use a trigger if you want automatic repinning when buffers get recreated. To unpin, you can use the same command and set anything other than <code>true</code>.
               </p>
               <p>
-              Helpful trigger to automatically repin a buffer (in this instance, <var>irc.freenode.#weechat</var>): <pre><code>/trigger add autopin signal "buffer_opened" "${buffer[${tg_signal_data}].full_name} =~ <var>irc.freenode.#weechat</var>" "" "/command -buffer ${buffer[${tg_signal_data}].full_name} * /buffer set localvar_set_pinned true"</code></pre>
+              Helpful trigger to automatically repin a buffer (in this instance, <var>irc.libera.#weechat</var>): <pre><code>/trigger add autopin signal "buffer_opened" "${buffer[${tg_signal_data}].full_name} =~ <var>irc.libera.#weechat</var>" "" "/command -buffer ${buffer[${tg_signal_data}].full_name} * /buffer set localvar_set_pinned true"</code></pre>
               </p>
               <h3>Setting a custom path</h3>
               <p>
@@ -292,9 +293,9 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
           </div>
           <div id="collapseFour" class="panel-collapse collapse">
             <div class="panel-body">
-              <p>You don't need to install anything to use Glowing Bear, it works with any modern browser. Start using it right now at the top of the page! However, there are a few ways to improve integration with your operating system.</p>
+              <p>You don&apos;t need to install anything to use Glowing Bear, it works with any modern browser. Start using it right now at the top of the page! However, there are a few ways to improve integration with your operating system.</p>
               <h3>Electron</h3>
-              <p>Glowing Bear supports the electron shell. You'll have to build it yourself, though. Run the following commands, choosing your platform from the list in the last command: <pre>git clone https://github.com/glowing-bear/glowing-bear
+              <p>Glowing Bear supports the electron shell. You&apos;ll have to build it yourself, though. Run the following commands, choosing your platform from the list in the last command: <pre>git clone https://github.com/glowing-bear/glowing-bear
 cd glowing-bear
 npm install
 npm install electron-packager
@@ -304,7 +305,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
               <h3>Android App</h3>
               <p>We used to have an Android app, but discontinued it for lack of maintainers. You can still build it for yourself, see <a href="https://github.com/glowing-bear/glowing-bear-cordova">the app repository</a> for instructions. Sorry!</p>
               <h3>Firefox Browser</h3>
-              <p>Firefox used to support apps, but this was removed from Firefox. There's nothing we can do about it. Sorry!</p>
+              <p>Firefox used to support apps, but this was removed from Firefox. There&apos;s nothing we can do about it. Sorry!</p>
             </div>
           </div>
         </div>
@@ -318,8 +319,8 @@ npm run build-electron-{windows, darwin, linux}</pre>
           </div>
           <div id="collapseFive" class="panel-collapse collapse">
             <div class="panel-body">
-              <p>Glowing bear is built by a small group of developers in their free time. As we're always trying to improve it, we would love getting your feedback and help. If that sounds like something you might enjoy, check out our <a href="https://github.com/glowing-bear/glowing-bear">project page</a> on GitHub!</p>
-              <p>If you're interested in contributing or simply want to say hello, head over to <strong>#glowing-bear</strong> on <strong>freenode!</strong> We won't bite, promise :)</p>
+              <p>Glowing bear is built by a small group of developers in their free time. As we&apos;re always trying to improve it, we would love getting your feedback and help. If that sounds like something you might enjoy, check out our <a href="https://github.com/glowing-bear/glowing-bear">project page</a> on GitHub!</p>
+              <p>If you&apos;re interested in contributing or simply want to say hello, head over to <strong>#glowing-bear</strong> on <a href="https://libera.chat/">libera.chat!</a> We won&apos;t bite, promise :)</p>
             </div>
           </div>
         </div>
