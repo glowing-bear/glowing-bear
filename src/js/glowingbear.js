@@ -663,9 +663,20 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         $rootScope.hostInvalid = false;
 
         var parts;
+        var regexProto = /^(https?|wss?):\/\/(.+)$/;
         var regexHost = /^([^:\/]*|\[.*\])$/;
         var regexHostPort = /^([^:]*|\[.*\]):(\d+)$/;
-        var regexHostPortPath = /^([^:]*|\[.*\]):(\d*)\/(.+)$/;
+        var regexHostPortPath = /^([^:]*|\[.*\]):(\d+)\/(.+)$/;
+
+        // First, remove possible protocol info - we don't want it
+        if ((parts = regexProto.exec(settings.hostField)) !== null) {
+            settings.hostField = parts[2];
+            if (parts[1] === "http" || parts[1] === "ws") {
+                settings.ssl = false;
+            } else if (parts[1] === "https" || parts[1] === "wss") {
+                settings.ssl = true;
+            }
+        }
 
         if ((parts = regexHost.exec(settings.hostField)) !== null) { //host only
             settings.host = parts[1];
