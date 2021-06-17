@@ -1,4 +1,3 @@
-
 "use strict";
 
 const path = require("path");
@@ -6,6 +5,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
+require("webpack");
 module.exports = {
     context: path.resolve(__dirname, 'src'),
     entry: './main.js',
@@ -33,9 +33,20 @@ module.exports = {
                 "../package.json",
                 "manifest.json",
                 "manifest.webapp",
-                "webapp.manifest.json"
+                "webapp.manifest.json",
+                {
+                    from: "../node_modules/bootstrap/dist/css/bootstrap.min.css",
+                    to: "css/"
+                },
+                {
+                    from: "../node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2",
+                    to: "css/"
+                },
+                { from: "../node_modules/emojione/lib/js/emojione.min.js" },
+                { from: "../node_modules/linkifyjs/dist/linkify.min.js" },
+                { from: "../node_modules/linkifyjs/dist/linkify-string.min.js" },
             ]
-        })
+        }),
     ],
     module: {
         rules: [
@@ -47,7 +58,7 @@ module.exports = {
                         loader: 'babel-loader'
                     }
                 ]
-            }
+            },
         ]
     }
 };

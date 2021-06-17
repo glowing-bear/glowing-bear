@@ -7,3 +7,6 @@ Glowing\ Bear-*/
 
 # local build products
 build/ 
+
+# IntelliJ / WebStorm
+.idea/
