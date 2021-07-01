@@ -1,11 +1,8 @@
-// (function() {
+
 'use strict';
 
 import * as weeChat from './weechat';
 
-// var weechat = angular.module('weechat');
-
-// weechat.factory('connection',
 export const connectionFactory = ['$rootScope', '$log', 'handlers', 'models', 'settings', 'ngWebsockets', 'utils', function($rootScope,
          $log,
          handlers,
@@ -704,4 +701,3 @@ export const connectionFactory = ['$rootScope', '$log', 'handlers', 'models', 's
         requestCompletion: requestCompletion
     };
 }];
-// })();

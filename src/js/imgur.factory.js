@@ -1,9 +1,7 @@
-(function() {
+
 'use strict';
 
-var weechat = angular.module('weechat');
-
-weechat.factory('imgur', ['$rootScope', 'settings', function($rootScope, settings) {
+export const imgurFactory = ['$rootScope', 'settings', function imgurFactory($rootScope, settings) {
 
     var process = function(image, callback) {
         // Is it an image?
@@ -136,6 +134,4 @@ weechat.factory('imgur', ['$rootScope', 'settings', function($rootScope, setting
         deleteImage: deleteImage
     };
 
-}]);
-
-})();
+}];

@@ -4,62 +4,6 @@ import * as _ from "underscore";
 
 var weechat = angular.module('weechat');
 
-weechat.filter('toArray', function () {
-    return function (obj, storeIdx) {
-        if (!(obj instanceof Object)) {
-            return obj;
-        }
-
-        if (storeIdx) {
-            return Object.keys(obj).map(function (key, idx) {
-                return Object.defineProperties(obj[key], {
-                    '$key' : { value: key },
-                    '$idx' : { value: idx, configurable: true }
-                });
-            });
-        }
-
-        return Object.keys(obj).map(function (key) {
-            return Object.defineProperty(obj[key], '$key', { value: key });
-        });
-    };
-});
-
-weechat.filter('irclinky', function() {
-    return function(text) {
-        if (!text) {
-            return text;
-        }
-
-        // This regex in no way matches all IRC channel names (they could also begin with &, + or an
-        // exclamation mark followed by 5 alphanumeric characters, and are bounded in length by 50).
-        // However, it matches all *common* IRC channels while trying to minimise false positives.
-        // "#1" is much more likely to be "number 1" than "IRC channel #1".
-        // Thus, we only match channels beginning with a # and having at least one letter in them.
-        var channelRegex = /(^|[\s,.:;?!"'()+@-\~%])(#+[^\x00\x07\r\n\s,:]*[a-z][^\x00\x07\r\n\s,:]*)/gmi;
-        // Call the method we bound to window.openBuffer when we instantiated
-        // the Weechat controller.
-        var substitute = '$1<a href="#" onclick="openBuffer(\'$2\');">$2</a>';
-        return text.replace(channelRegex, substitute);
-    };
-});
-
-weechat.filter('inlinecolour', function() {
-    return function(text) {
-        if (!text) {
-            return text;
-        }
-
-        // only match 6-digit colour codes, 3-digit ones have too many false positives (issue numbers, etc)
-        var hexColourRegex = /(^|[^&])(\#[0-9a-f]{6};?)(?!\w)/gmi;
-        var rgbColourRegex = /(.?)(rgba?\((?:\s*\d+\s*,){2}\s*\d+\s*(?:,\s*[\d.]+\s*)?\);?)/gmi;
-        var substitute = '$1$2 <div class="colourbox" style="background-color:$2"></div>';
-        text = text.replace(hexColourRegex, substitute);
-        text = text.replace(rgbColourRegex, substitute);
-        return text;
-    };
-});
-
 // Calls the 'linky' filter unless the disable flag is set. Useful for things like join/quit messages,
 // so you don't accidentally click a mailto: on someone's hostmask.
 weechat.filter('conditionalLinkify', ['$filter', function($filter) {
@@ -185,55 +129,5 @@ weechat.filter('getBufferQuickKeys', function () {
             });
         }
         return obj;
-    };
-});
-
-weechat.filter('latexmath', function() {
-    return function(text, selector, enabled) {
-        if (!enabled || typeof(katex) === "undefined") {
-            return text;
-        }
-        if (text.indexOf("$$") != -1 || text.indexOf("\\[") != -1 || text.indexOf("\\(") != -1) {
-            // contains math -> delayed rendering
-            setTimeout(function() {
-                var math = document.querySelector(selector);
-                renderMathInElement(math, {
-                    delimiters: [
-                        {left: "$$", right: "$$", display: false},
-                        {left: "\\[", right: "\\]", display: true},
-                        {left: "\\(", right: "\\)", display: false}
-                    ]
-                });
-            });
-        }
-
-        return text;
-    };
-});
-
-weechat.filter('prefixlimit', function() {
-    return function(input, chars) {
-        if (isNaN(chars)) return input;
-        if (chars <= 0) return '';
-        if (input && input.length > chars) {
-            input = input.substring(0, chars);
-            return input + '+';
-        }
-        return input;
-    };
-});
-
-weechat.filter('codify', function() {
-    return function(text) {
-        // The groups of this regex are:
-        // 1. Start of line or space, to prevent codifying weird`stuff` like this
-        // 2. Opening single or triple backticks (not 2, not more than 3)
-        // 3. The code block, does not start with another backtick, non-greedy expansion
-        // 4. The closing backticks, identical to group 2
-        var re = /(^|\s)(```|`)([^`].*?)\2/g;
-        return text.replace(re, function(match, ws, open, code) {
-            var rr = ws + '<span class="hidden-bracket">' + open + '</span><code>' + code + '</code><span class="hidden-bracket">' + open + '</span>';
-            return rr;
-        });
     };
 });
