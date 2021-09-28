@@ -51,7 +51,7 @@ export const connectionFactory = ['$rootScope', '$log', 'handlers', 'models', 's
                     // too high, this time should be reduced if determined the weechat
                     // is lower than 2.9
                     // This time also includes the time it takes to generate the hash
-                    var WAIT_TIME_OLD_WEECHAT = 200; //ms
+                    var WAIT_TIME_OLD_WEECHAT = 2000; //ms
 
                     // Wait long enough to assume we are on a version < 2.9
                     var handShakeTimeout = setTimeout(function () {
