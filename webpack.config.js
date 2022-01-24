@@ -14,7 +14,9 @@ module.exports = {
         path: path.resolve(__dirname, 'build'),
     },
     devServer: {
-        contentBase: path.resolve(__dirname, 'build')
+        static: {
+            directory: path.resolve(__dirname, 'build')
+        },
     },
     devtool: 'source-map',
     plugins: [
