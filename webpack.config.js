@@ -42,7 +42,7 @@ module.exports = {
                 },
                 {
                     from: "../node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2",
-                    to: "css/"
+                    to: "fonts/"
                 },
                 { from: "../node_modules/emojione/lib/js/emojione.min.js" },
                 { from: "../node_modules/linkifyjs/dist/linkify.min.js" },
