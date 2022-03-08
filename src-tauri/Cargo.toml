@@ -1,10 +1,10 @@
 [package]
-name = "app"
+name = "glowing-bear"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
-license = ""
-repository = ""
+description = "A web client for WeeChat"
+authors = ["glowing-bear-contributors"]
+license = "GPL-3.0"
+repository = "https://github.com/glowing-bear/glowing-bear"
 default-run = "app"
 edition = "2021"
 rust-version = "1.57"
