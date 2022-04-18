@@ -230,6 +230,29 @@ plugins.factory('userPlugins', function() {
             return element.prop('outerHTML');
         }
     });
+    
+    /*
+     * Twitch Clips Embedded Player
+     *
+     * See: https://dev.twitch.tv/docs/embed/video-and-clips/#non-interactive-iframes-for-clips
+     */
+	
+    var twitchClipsPlugin = new UrlPlugin('TwitchClips video', function(url) {
+        var regex = /(?:https?:\/\/)?clips\.twitch\.tv\/([^\?\&\/\s]+)/i,
+            match = url.match(regex);
+
+        if (match){
+            var clipId = match[1];
+            var embedurl = "https://clips.twitch.tv/embed?clip=" + clipId + "&parent=" + window.location.hostname;
+
+            var element = angular.element('<iframe></iframe>')
+                    .attr('src', embedurl)
+                    .attr('width', '560')
+                    .attr('height', '315')
+                    .attr('allowfullscreen', 'true');
+            return element.prop('outerHTML');
+        }
+    });
 
     /*
      * Dailymotion Embedded Player
@@ -590,7 +613,7 @@ plugins.factory('userPlugins', function() {
     });
 
     return {
-        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, audioPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, pastebinPlugin, giphyPlugin, tweetPlugin, streamablePlugin, tikTokPlugin]
+        plugins: [youtubePlugin, twitchClipsPlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, audioPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, pastebinPlugin, giphyPlugin, tweetPlugin, streamablePlugin, tikTokPlugin]
     };
 
 
