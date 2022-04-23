@@ -122,8 +122,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.show_tls_warning = (["https:", "file:"].indexOf(window.location.protocol) === -1) &&
         (["localhost", "127.0.0.1", "::1"].indexOf(window.location.hostname) === -1) &&
         !window.is_electron && !utils.isCordova();
-    // Perhaps to be combined with show_tls_warning - the above conditions should reflect the same as isSecureContext
-    $scope.isSecureContext = window.isSecureContext;
 
     $rootScope.isWindowFocused = function() {
         if (typeof $scope.documentHidden === "undefined") {

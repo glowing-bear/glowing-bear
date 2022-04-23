@@ -36,7 +36,6 @@
         <small>WeeChat web frontend</small>
       </h2>
       <div class="alert alert-warning" ng-show="show_tls_warning" ng-cloak><strong>You're using Glowing Bear over an unencrypted connection (http://). This is not recommended!</strong> We recommend using our secure hosted version at <a href="https://www.glowing-bear.org/">https://www.glowing-bear.org/</a>, or <a href="https://latest.glowing-bear.org/">https://latest.glowing-bear.org</a> for the latest development version. If your relay is on your local network, that is unfortunately impossible, but be aware of the implications.</div>
-      <div class="alert alert-danger" ng-show="!isSecureContext" ng-cloak><strong>You're using Glowing Bear over an unencrypted connection.</strong> Password will be transmitted in plain text!</div>
       <div class="alert alert-danger" ng-show="errorMessage" ng-cloak>
         <strong>Connection error</strong> The client was unable to connect to the WeeChat relay
       </div>
@@ -118,7 +117,7 @@
                   <div class="checkbox">
                     <label class="control-label" for="compatibilityWeechat28">
                       <input type="checkbox" id="compatibilityWeechat28" ng-model="settings.compatibilityWeechat28">
-                      Compatibility with Weechat 2.8 and older (Password in Plaintext) <a href="#plaintext" ng-click="toggleAccordionByName('gettingStartedAccordion')"><i class="glyphicon glyphicon-info-sign"></i></a>
+                      Compatibility with Weechat 2.8 and older <a href="#plaintext" ng-click="toggleAccordionByName('gettingStartedAccordion')"><i class="glyphicon glyphicon-info-sign"></i></a>
                       <span style="color: #888;display:block">WeeChat 2.9 was released in July 2020, so you can disable this if you&apos;re up to date.</span>
                     </label>
                   </div>
