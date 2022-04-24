@@ -10,7 +10,7 @@
     "@babel/core": "^7.16.12",
     "@babel/preset-env": "^7.16.11",
     "@tauri-apps/cli": "^1.0.0-rc.5",
-    "angular-mocks": "^1.8.2",
+    "angular-mocks": "^1.8.3",
     "babel-loader": "^8.2.3",
     "copy-webpack-plugin": "^10.2.1",
     "electron-packager": "^15.4.0",
@@ -46,10 +46,10 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "angular": "^1.8.2",
-    "angular-route": "^1.8.2",
-    "angular-sanitize": "^1.8.2",
-    "angular-touch": "^1.8.2",
+    "angular": "^1.8.3",
+    "angular-route": "^1.8.3",
+    "angular-sanitize": "^1.8.3",
+    "angular-touch": "^1.8.3",
     "bootstrap": "^3.4.1",
     "emojione": "^4.5.0",
     "favico.js": "^0.3.10",
