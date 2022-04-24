@@ -29,7 +29,12 @@ export const connectionFactory = ['$rootScope', '$log', 'handlers', 'models', 's
         $rootScope.oldWeechatError = false;
         $rootScope.hashAlgorithmDisagree = false;
         connectionData = [host, port, path, passwd, ssl, noCompression];
-        var proto = ssl ? 'wss' : 'ws';
+        
+        // https://github.com/glowing-bear/glowing-bear/issues/1157
+        var isSecureContext = window.isSecureContext;
+        var weechatPre2_9 = settings.compatibilityWeechat28;
+
+        var proto = ssl ? 'wss' : 'ws'; 
         // If host is an IPv6 literal wrap it in brackets
         if (host.indexOf(":") !== -1 && host[0] !== "[" && host[host.length-1] !== "]") {
             host = "[" + host + "]";
@@ -37,38 +42,45 @@ export const connectionFactory = ['$rootScope', '$log', 'handlers', 'models', 's
         var url = proto + "://" + host + ":" + port + "/" + path;
         $log.debug('Connecting to URL: ', url);
 
-
-        var weechatAssumedPre2_9 = false;
         var onopen = function () {
             var _performHandshake = function() {
                 return new Promise(function(resolve) {
-                    // First a handshake is sent to determine authentication method
-                    // This is only supported for weechat >= 2.9
-                    // If after 'a while' weechat does not respond
-                    // stop waiting for the handshake and assume it's an old version
-                    // This time is debatable, high latency connections may wrongfully
-                    // think weechat is an older version. This time is purposfully set
-                    // too high, this time should be reduced if determined the weechat
-                    // is lower than 2.9
-                    // This time also includes the time it takes to generate the hash
-                    var WAIT_TIME_OLD_WEECHAT = 2000; //ms
+                    // 1. Compatability for Weechat 2.8 was activated by the user - skip handshake
+                    // 2. If SecureContext use pbkdf2+sha512 hash
+                    // 3. If !SecureContext use plain text
+                    // If handshake times out we do no longer make the assumption it is Pre 2.9 but just inform the user
 
-                    // Wait long enough to assume we are on a version < 2.9
-                    var handShakeTimeout = setTimeout(function () {
-                        weechatAssumedPre2_9 = true;
-                        console.log('Weechat\'s version is assumed to be < 2.9');
+                    if (weechatPre2_9) {
                         resolve();
-                    }, WAIT_TIME_OLD_WEECHAT);
+                    } else {
+                        var WAIT_TIME_OLD_WEECHAT = 2000; //ms
+                        var handShakeTimeout = setTimeout(function () {
+                            $rootScope.oldWeechatError = true;
+                            $rootScope.$emit('relayDisconnect');
+                            $rootScope.$digest(); // Have to do this otherwise change detection doesn't see the error.
+                            throw new Error('Handshake timed out. Verify Weechat Version.');
+                        }, WAIT_TIME_OLD_WEECHAT);
 
-                    // Or wait for a response from the handshake
-                    ngWebsockets.send(
-                        weeChat.Protocol.formatHandshake({
-                            password_hash_algo: "pbkdf2+sha512", compression: noCompression ? 'off' : 'zlib'
-                        })
-                    ).then(function (message){
-                        clearTimeout(handShakeTimeout);
-                        resolve(message);
-                    });
+                        if (isSecureContext) {
+                            ngWebsockets.send(
+                                weeChat.Protocol.formatHandshake({
+                                    password_hash_algo: "pbkdf2+sha512", compression: noCompression ? 'off' : 'zlib'
+                                })
+                            ).then(function (message){
+                                clearTimeout(handShakeTimeout);
+                                resolve(message);
+                            });
+                        } else {
+                            ngWebsockets.send(
+                                weeChat.Protocol.formatHandshake({
+                                    password_hash_algo: "plain", compression: noCompression ? 'off' : 'zlib'
+                                })
+                            ).then(function (message){
+                                clearTimeout(handShakeTimeout);
+                                resolve(message);
+                            });
+                        }
+                    }
                 });
             };
 
@@ -88,18 +100,8 @@ export const connectionFactory = ['$rootScope', '$log', 'handlers', 'models', 's
             };
 
             // Helper methods for initialization commands
-            // This method is used to initialize weechat < 2.9
+            // This method is used to initialize weechat < 2.9 but only if the User has picked compatibility mode explicitly
             var _initializeConnectionPre29 = function(passwd, totp) {
-                // This is not secure, this has to be specifically allowed with a setting
-                // Otherwise an attacker could persuade the client to send it's password
-                // Or due to latency the client could think weechat was an older version
-                if (!settings.compatibilityWeechat28) {
-                    $rootScope.oldWeechatError = true;
-                    $rootScope.$emit('relayDisconnect');
-                    $rootScope.$digest(); // Have to do this otherwise change detection doesn't see the error.
-                    throw new Error('Plaintext authentication not allowed.');
-                }
-
                 // Escape comma in password (#937)
                 passwd = passwd.replace(',', '\\,');
 
@@ -290,7 +292,7 @@ export const connectionFactory = ['$rootScope', '$log', 'handlers', 'models', 's
                     // Do nothing if the handshake was received
                     // after concluding weechat was an old version
                     // TODO maybe warn the user here
-                    if (weechatAssumedPre2_9) {
+                    if (weechatPre2_9) {
                         return;
                     }
 
@@ -300,15 +302,16 @@ export const connectionFactory = ['$rootScope', '$log', 'handlers', 'models', 's
                     nonce = utils.hexStringToByte(content.nonce);
                     iterations = content.password_hash_iterations;
 
-                    if (passwordMethod != "pbkdf2+sha512") {
+                    if (isSecureContext && passwordMethod != "pbkdf2+sha512" ||
+                        !isSecureContext && passwordMethod != "plain") {
                         $rootScope.hashAlgorithmDisagree = true;
                         $rootScope.$emit('relayDisconnect');
                         $rootScope.$digest(); // Have to do this otherwise change detection doesn't see the error.
-                        throw new Error('No supported password hash algorithm returned.');
+                        throw new Error('No supported password hash algorithm returned (secure context only pbkdf2+sha512 / insecure only plain).');
                     }
                 }
             ).then(function() {
-                if (weechatAssumedPre2_9) {
+                if (weechatPre2_9) {
                     // Ask the user for the TOTP token if this is enabled
                     return _askTotp(useTotp)
                     .then(function (totp) {
@@ -318,7 +321,11 @@ export const connectionFactory = ['$rootScope', '$log', 'handlers', 'models', 's
                     // Weechat version >= 2.9
                     return _askTotp(totpRequested)
                     .then(function(totp) {
-                        return _initializeConnection29(passwd, nonce, iterations, totp);
+                        if (passwordMethod == "pbkdf2+sha512") {
+                            return _initializeConnection29(passwd, nonce, iterations, totp);
+                        } else if (passwordMethod == "plain") {
+                            return _initializeConnectionPre29(passwd, totp);
+                        }
                     });
                 }
             }).then(function(){
