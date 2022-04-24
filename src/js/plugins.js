@@ -230,6 +230,46 @@ plugins.factory('userPlugins', function() {
             return element.prop('outerHTML');
         }
     });
+    
+    /*
+     * Twitch Embedded Player
+     *
+     * See: https://dev.twitch.tv/docs/embed/video-and-clips/#non-interactive-iframes-for-clips
+     */
+	
+    var twitchPlugin = new UrlPlugin('Twitch video', function(url) {
+        var regex = /(?:https?:\/\/)?clips\.twitch\.tv\/([^\?\&\/\s]+)/i,
+            match = url.match(regex);
+
+        if (match){
+            var clipId = match[1];
+            var embedurl = "https://clips.twitch.tv/embed?clip=" + clipId + "&parent=" + window.location.hostname;
+
+            var element = angular.element('<iframe></iframe>')
+                    .attr('src', embedurl)
+                    .attr('width', '560')
+                    .attr('height', '315')
+                    .attr('allowfullscreen', 'true');
+            return element.prop('outerHTML');
+        }
+		
+		var regex = /(?:https?:(?:\/\/www\.)?)?twitch\.tv\/(?:videos\/(\d+)|(\w+))/i,
+            match = url.match(regex);
+        if (match) {
+			var mediaType = "video";
+			if(match[1] === undefined) {
+				mediaType = "channel";
+			}
+			var mediaId = match[1] === undefined ? match[2] : match[1];
+			var embedurl = "https://player.twitch.tv/?" + mediaType + "=" + mediaId + "&parent=" + window.location.hostname + "&autoplay=false&muted=true";
+            var element = angular.element('<iframe></iframe>')
+                    .attr('src', embedurl)
+                    .attr('width', '560')
+                    .attr('height', '315')
+                    .attr('allowfullscreen', 'true');
+            return element.prop('outerHTML');
+        }
+    });
 
     /*
      * Dailymotion Embedded Player
@@ -590,7 +630,7 @@ plugins.factory('userPlugins', function() {
     });
 
     return {
-        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, audioPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, pastebinPlugin, giphyPlugin, tweetPlugin, streamablePlugin, tikTokPlugin]
+        plugins: [youtubePlugin, twitchPlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, audioPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, pastebinPlugin, giphyPlugin, tweetPlugin, streamablePlugin, tikTokPlugin]
     };
 
 
