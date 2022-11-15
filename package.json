@@ -13,7 +13,7 @@
     "angular-mocks": "^1.8.3",
     "babel-loader": "^8.2.3",
     "copy-webpack-plugin": "^10.2.1",
-    "electron-packager": "^15.4.0",
+    "electron-packager": "^15.5.1",
     "html-webpack-plugin": "^5.5.0",
     "jasmine-core": "^3.99.0",
     "jshint": "^2.13.3",
