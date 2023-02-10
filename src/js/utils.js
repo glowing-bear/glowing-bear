@@ -28,6 +28,10 @@ weechat.factory('utils', function() {
         return window.cordova !== undefined;
     };
 
+    const _isTauri = window.__TAURI__ !== undefined;
+    var isTauri = function() {
+        return _isTauri;
+    }
 
     // Inject a javascript (used by KaTeX)
     var inject_script = function(script_url) {
@@ -87,6 +91,7 @@ weechat.factory('utils', function() {
     	getClassStyle: getClassStyle,
         isMobileUi: isMobileUi,
         isCordova: isCordova,
+        isTauri: isTauri,
         inject_script: inject_script,
         inject_css: inject_css,
         hexStringToByte: hexStringToByte,
