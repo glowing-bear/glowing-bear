@@ -563,7 +563,9 @@ weechat.directive('inputBar', function() {
 
                 // Alt+< -> switch to previous buffer
                 // https://w3c.github.io/uievents-code/#code-IntlBackslash
-                if ($event.altKey && (code === 60 || code === 226 || key === "IntlBackslash")) {
+                // Support both backquote and intlbackslash for this action, since macos is weird
+                // https://github.com/microsoft/vscode/issues/65082
+                if ($event.altKey && (code === 60 || code === 226 || key === "IntlBackslash" || key === "Backquote"))  {
                     var previousBuffer = models.getPreviousBuffer();
                     if (previousBuffer) {
                         models.setActiveBuffer(previousBuffer.id);
