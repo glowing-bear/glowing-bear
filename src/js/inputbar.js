@@ -491,7 +491,7 @@ weechat.directive('inputBar', function() {
                     bufferNumber = code - 48 - 1 ;
 
                     // quick select filtered entries
-                    if (($scope.$parent.search.length || $scope.$parent.onlyUnread) && $scope.$parent.filteredBuffers.length) {
+                    if (($scope.$parent.search.length || settings.onlyUnread) && $scope.$parent.filteredBuffers.length) {
                         filteredBufferNum = $scope.$parent.filteredBuffers[bufferNumber];
                         if (filteredBufferNum !== undefined) {
                             activeBufferId = [filteredBufferNum.number, filteredBufferNum.id];
