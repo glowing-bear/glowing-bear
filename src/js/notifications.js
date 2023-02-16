@@ -25,7 +25,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', 'u
         }
 
         // Check for serviceWorker support, and also disable serviceWorker if we're running in electron process, since that's just problematic and not necessary, since gb then already is in a separate process
-        if ('serviceWorker' in navigator && window.is_electron !== 1) {
+        if ('serviceWorker' in navigator && window.is_electron !== 1 && !utils.isTauri()) {
             $log.info('Service Worker is supported');
             navigator.serviceWorker.register('serviceworker.js').then(function(reg) {
                 $log.info('Service Worker install:', reg);
@@ -52,6 +52,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', 'u
     };
 
     var showNotification = function(buffer, title, body) {
+        $log.info('Showing notification', title);
         if (serviceworker) {
             navigator.serviceWorker.ready.then(function(registration) {
                 registration.showNotification(title, {
@@ -87,13 +88,14 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', 'u
                 body: body,
                 icon: 'assets/img/favicon.png'
             });
+            $log.info('Using Web API Notification', notification);
 
             // Save notification, so we can close all outstanding ones when disconnecting
             notification.id = notifications.length;
             notifications.push(notification);
 
             // Cancel notification automatically
-            var timeout = 15*1000;
+            var timeout = 15*1000; // 15 seconds
             notification.onshow = function() {
                 setTimeout(function() {
                     notification.close();
@@ -101,7 +103,8 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', 'u
             };
 
             // Click takes the user to the buffer
-            notification.onclick = function() {
+            notification.onclick = function(event) {
+                event.preventDefault();
                 models.setActiveBuffer(buffer.id);
                 window.focus();
                 notification.close();
@@ -161,7 +164,13 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', 'u
 
         var activeBuffer = models.getActiveBuffer();
         if (activeBuffer) {
-            $rootScope.pageTitle = activeBuffer.shortName + ' | ' + activeBuffer.rtitle;
+            let title = activeBuffer.shortName + ' | ' + activeBuffer.rtitle;
+            $rootScope.pageTitle = title;
+            // If running in Tauri, use platform code to update its window title
+            if (utils.isTauri()) {
+                __TAURI__.window.appWindow.setTitle(title);
+            }
+            
         }
     };
 

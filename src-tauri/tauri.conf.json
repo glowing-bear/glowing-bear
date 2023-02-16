@@ -1,68 +1,65 @@
 {
+  "build": {
+    "beforeBuildCommand": "npm run build",
+    "beforeDevCommand": "npm run start",
+    "devPath": " http://localhost:8080/",
+    "distDir": "../build",
+    "withGlobalTauri": true
+  },
   "package": {
     "productName": "glowing-bear",
-    "version": "0.1.0"
-  },
-  "build": {
-    "distDir": "../build",
-    "devPath": "http://localhost:8000",
-    "beforeDevCommand": "",
-    "beforeBuildCommand": ""
+    "version": "0.10.0"
   },
   "tauri": {
+    "allowlist": {
+      "all": true
+    },
     "bundle": {
       "active": true,
-      "targets": "all",
-      "identifier": "org.glowing-bear",
+      "category": "SocialNetworking",
+      "copyright": "Glowing Bear developers",
+      "deb": {
+        "depends": []
+      },
+      "externalBin": [],
       "icon": [
         "../src/assets/img/favicon.png",
         "../src/assets/img/glowing_bear_128x128.png",
         "../src/assets/img/glowing-bear.png",
         "../src/assets/img/glowing-bear.icns"
       ],
-      "resources": [],
-      "externalBin": [],
-      "copyright": "",
-      "category": "Chat",
-      "shortDescription": "",
-      "longDescription": "",
-      "deb": {
-        "depends": [],
-        "useBootstrapper": false
-      },
+      "identifier": "org.glowing-bear",
+      "longDescription": "Glowing Bear is a web frontend for the WeeChat IRC client",
       "macOS": {
-        "frameworks": [],
-        "minimumSystemVersion": "",
-        "useBootstrapper": false,
+        "entitlements": null,
         "exceptionDomain": "",
-        "signingIdentity": null,
+        "frameworks": [],
         "providerShortName": null,
-        "entitlements": null
+        "signingIdentity": null
       },
+      "resources": [],
+      "shortDescription": "",
+      "targets": "all",
       "windows": {
         "certificateThumbprint": null,
         "digestAlgorithm": "sha256",
         "timestampUrl": ""
       }
     },
+    "security": {
+      "csp": null
+    },
     "updater": {
       "active": false
     },
-    "allowlist": {
-      "all": true
-    },
     "windows": [
       {
-        "title": "Glowing Bear",
-        "center": true,
-        "width": 800,
+        "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "fullscreen": false
+        "title": "Glowing Bear",
+        "width": 800
       }
-    ],
-    "security": {
-      "csp": null
-    }
+    ]
   }
 }
