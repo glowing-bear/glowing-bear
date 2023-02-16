@@ -10,6 +10,10 @@ module.exports = {
     context: path.resolve(__dirname, 'src'),
     entry: './main.js',
     mode: 'production',
+    performance: {
+        maxEntrypointSize: 600000,
+        maxAssetSize: 600000
+    },
     output: {
         path: path.resolve(__dirname, 'build'),
     },
@@ -27,6 +31,8 @@ module.exports = {
         new CopyWebpackPlugin({
             patterns: [
                 "**/*.css",
+                "**/*.mp3",
+                "**/*.ogg",
                 "**/*.svg",
                 "**/*.png",
                 "directives/*.html",
