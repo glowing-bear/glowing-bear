@@ -1,6 +1,6 @@
 'use strict';
 
-import * as _ from "underscore";
+
 
 var weechat = angular.module('weechat');
 
@@ -314,7 +314,7 @@ weechat.directive('inputBar', function() {
                     ab.addToHistory($scope.command);
 
                     // Split the command into multiple commands based on line breaks
-                    _.each($scope.command.split(/\r?\n/), function(line) {
+                    $scope.command.split(/\r?\n/).forEach(function(line) {
                         // Ask before a /quit
                         if (line === '/quit' || line.indexOf('/quit ') === 0) {
                             if (!window.confirm("Are you sure you want to quit WeeChat? This will prevent you from connecting with Glowing Bear until you restart WeeChat on the command line!")) {
@@ -500,7 +500,7 @@ weechat.directive('inputBar', function() {
                         // Map the buffers to only their numbers and IDs so we don't have to
                         // copy the entire (possibly very large) buffer object, and then sort
                         // the buffers according to their WeeChat number
-                        sortedBuffers = _.map(models.getBuffers(), function(buffer) {
+                        sortedBuffers = Object.entries(models.getBuffers()).map(function([key, buffer], index) {
                             return [buffer.number, buffer.id];
                         }).sort(function(left, right) {
                             // By default, Array.prototype.sort() sorts alphabetically.
@@ -610,12 +610,12 @@ weechat.directive('inputBar', function() {
                 // Alt-h -> Toggle all as read
                 if ($event.altKey && !$event.ctrlKey && code === 72) {
                     var buffers = models.getBuffers();
-                    _.each(buffers, function(buffer) {
+                    Object.entries(buffers).forEach(function([key, buffer], index) {
                         buffer.unread = 0;
                         buffer.notification = 0;
                     });
                     var servers = models.getServers();
-                    _.each(servers, function(server) {
+                    Object.entries(servers).forEach(function([key, server], index) {
                         server.unread = 0;
                     });
                     connection.sendHotlistClearAll();

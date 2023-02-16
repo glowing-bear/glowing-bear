@@ -1,7 +1,7 @@
 
 'use strict';
 
-import * as _ from "underscore";
+
 
 var weechat = angular.module('weechat');
 
@@ -164,13 +164,14 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
 
             if (!manually && (!buffer.active || !$rootScope.isWindowFocused())) {
                 var server = models.getServerForBuffer(buffer);
-                if (buffer.notify > 1 && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
+
+                if (buffer.notify > 1 && message.tags.includes('notify_message') && !message.tags.includes('notify_none')) {
                     buffer.unread++;
                     server.unread++;
                     $rootScope.$emit('notificationChanged');
                 }
 
-                if ((buffer.notify !== 0) && (message.highlight || _.contains(message.tags, 'notify_private'))) {
+                if ((buffer.notify !== 0) && (message.highlight || message.tags.includes('notify_private'))) {
                     buffer.notification++;
                     server.unread++;
                     notifications.createHighlight(buffer, message);
@@ -304,7 +305,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         var old_number = old.number;
         var new_number = obj.number;
 
-        _.each(models.getBuffers(), function(buffer) {
+        Object.entries(models.getBuffers()).forEach(function([key, buffer]) {
             if (buffer.number > old_number && buffer.number <= new_number) {
                 buffer.number -= 1;
             }
@@ -389,11 +390,11 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
     var handleHotlistInfo = function(message) {
         // Hotlist includes only buffers with unread counts so first we
         // iterate all our buffers and resets the counts.
-        _.each(models.getBuffers(), function(buffer) {
+        Object.entries(models.getBuffers()).forEach(function([key, buffer]) {
             buffer.unread = 0;
             buffer.notification = 0;
         });
-        _.each(models.getServers(), function(server) {
+        Object.entries(models.getServers()).forEach(function([key, server]) {
             server.unread = 0;
         });
         if (message.objects.length > 0) {
@@ -417,7 +418,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
                 /* Since there is unread messages, we can guess
                 * what the last read line is and update it accordingly
                 */
-                var unreadSum = _.reduce(l.count, function(memo, num) { return memo + num; }, 0);
+                var unreadSum = l.count.reduce(function(memo, num) { return memo + num; }, 0);
                 buffer.lastSeen = buffer.lines.length - 1 - unreadSum;
 
                 // update server buffer. Don't incude index 0 -> not unreadSum
@@ -517,7 +518,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
     };
 
     $rootScope.$on('onMessage', function(event, message) {
-        if (_.has(eventHandlers, message.id)) {
+        if (message.id in eventHandlers) {
             eventHandlers[message.id](message);
         } else {
             $log.debug('Unhandled event received: ' + message.id);
@@ -525,7 +526,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
     });
 
     var handleEvent = function(event) {
-        if (_.has(eventHandlers, event.id)) {
+        if (event.id in eventHandlers) {
             eventHandlers[event.id](event);
         }
     };

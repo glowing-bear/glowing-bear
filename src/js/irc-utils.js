@@ -3,8 +3,6 @@
  */
 'use strict';
 
-import {sortBy, pluck} from "underscore";
-
 
 var IrcUtils = angular.module('IrcUtils', []);
 
@@ -19,17 +17,14 @@ IrcUtils.service('IrcUtils', [function() {
      };
 
     /**
-     * Get a new version of a nick list, sorted by last speaker
+     * Get a new version of a nick list
      *
      * @param nickList Original nick list
-     * @return Sorted nick list
+     * @return list of nick names
      */
     var _ciNickList = function(nickList) {
 
-        var newList = sortBy(nickList, function(nickObj) {
-            return -nickObj.spokeAt;
-        });
-        newList = pluck(newList, 'name');
+        let newList = nickList.map((el) => el.name);
 
         return newList;
     };

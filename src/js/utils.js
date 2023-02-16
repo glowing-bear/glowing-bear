@@ -1,18 +1,18 @@
 
-import * as _ from "underscore";
+
 
 var weechat = angular.module('weechat');
 
 weechat.factory('utils', function() {
 	// Helper to change style of a class
 	var changeClassStyle = function(classSelector, attr, value) {
-	    _.each(document.getElementsByClassName(classSelector), function(e) {
+	    Array.from(document.getElementsByClassName(classSelector)).forEach(function(e) {
 	        e.style[attr] = value;
 	    });
 	};
 	// Helper to get style from a class
 	var getClassStyle = function(classSelector, attr) {
-	    _.each(document.getElementsByClassName(classSelector), function(e) {
+	    Array.from(document.getElementsByClassName(classSelector)).forEach(function(e) {
 	        return e.style[attr];
 	    });
 	};
