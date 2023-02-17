@@ -35,6 +35,13 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
             }
         }
     };
+    const handleBufferCleared = function(message) {
+        var bufferMessage = message.objects[0].content[0];
+        var bufferId = bufferMessage.pointers[0];
+        let buffer = models.getBuffer(bufferId);
+        $log.debug('Handle buffer cleared: ' + buffer.fullName);
+        buffer.clear();
+    };
 
     var handleBufferClosing = function(message) {
         var bufferMessage = message.objects[0].content[0];
@@ -500,6 +507,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
     };
 
     var eventHandlers = {
+        _buffer_cleared: handleBufferCleared,
         _buffer_closing: handleBufferClosing,
         _buffer_line_added: handleBufferLineAdded,
         _buffer_localvar_added: handleBufferLocalvarChanged,
