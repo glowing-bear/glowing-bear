@@ -16,7 +16,6 @@ Now point your browser to the [Glowing Bear](https://www.glowing-bear.org)! If y
 You can run Glowing Bear in many ways:
 
  * like any other webpage
- * Electron app for Windows, Linux and macOS. ```npm install; npm install electron-packager; npm run build-electron-{windows, darwin, linux}``` (choose your platform from the list, e.g. `build-electron-darwin` for macOS)
  * Chrome app ("Tools", then "Create application shortcuts")
  * Android Chrome app, a full-screen experience ("Add to homescreen").
 

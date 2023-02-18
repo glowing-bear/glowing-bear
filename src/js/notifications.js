@@ -24,8 +24,8 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', 'u
             }
         }
 
-        // Check for serviceWorker support, and also disable serviceWorker if we're running in electron process, since that's just problematic and not necessary, since gb then already is in a separate process
-        if ('serviceWorker' in navigator && window.is_electron !== 1 && !utils.isTauri()) {
+        // Check for serviceWorker support, and also disable serviceWorker if we're running in tauri process, since that's just problematic and not necessary, since gb then already is in a separate process
+        if ('serviceWorker' in navigator && !utils.isTauri()) {
             $log.info('Service Worker is supported');
             navigator.serviceWorker.register('serviceworker.js').then(function(reg) {
                 $log.info('Service Worker install:', reg);
@@ -167,15 +167,9 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', 'u
         }
     };
 
-    // Update app badge (electron only)
+    // Update app badge (tauri? only)
     var updateBadge = function(value) {
-
-        // Send new value to preloaded global function
-        // if it exists
-        if (typeof setElectronBadge === 'function') {
-            setElectronBadge(value);
-        }
-
+        // leaving this a placeholder for future tauri badge operations
     };
 
     /* Function gets called from bufferLineAdded code if user should be notified */
