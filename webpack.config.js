@@ -37,7 +37,6 @@ module.exports = {
                 "**/*.png",
                 "directives/*.html",
                 "serviceworker.js",
-                "electron-*.js",
                 "../package.json",
                 "manifest.json",
                 "manifest.webapp",

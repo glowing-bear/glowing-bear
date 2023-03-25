@@ -4,7 +4,6 @@
   "version": "0.10.0",
   "description": "A web client for Weechat",
   "repository": "https://github.com/glowing-bear/glowing-bear",
-  "main": "electron-main.js",
   "license": "GPLv3",
   "devDependencies": {
     "@babel/core": "^7.16.12",
@@ -13,7 +12,6 @@
     "angular-mocks": "^1.8.3",
     "babel-loader": "^8.2.3",
     "copy-webpack-plugin": "^10.2.1",
-    "electron-packager": "^17.1.1",
     "html-webpack-plugin": "^5.5.0",
     "jasmine-core": "^3.99.0",
     "jshint": "^2.13.3",
@@ -40,9 +38,6 @@
     "update-webdriver": "webdriver-manager update",
     "preprotractor": "npm run update-webdriver",
     "protractor": "protractor test/protractor-conf.js",
-    "build-electron-windows": "make -f electron.makefile build-electron-windows",
-    "build-electron-darwin": "make -f electron.makefile build-electron-darwin",
-    "build-electron-linux": "make -f electron.makefile build-electron-linux",
     "tauri": "tauri"
   },
   "dependencies": {
