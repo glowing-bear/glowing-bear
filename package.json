@@ -49,7 +49,6 @@
     "emojione": "^4.5.0",
     "favico.js": "^0.3.10",
     "jquery-linkify": "^2.2.1",
-    "underscore": "^1.13.2",
     "zlibjs": "^0.3.1"
   }
 }

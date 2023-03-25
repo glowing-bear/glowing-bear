@@ -4,7 +4,7 @@
  */
 'use strict';
 
-import * as _ from "underscore";
+
 
 import * as weeChat from './weechat';
 
@@ -156,15 +156,12 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             if (group === undefined) {
                 return;
             }
-            group.nicks = _.filter(group.nicks, function(n) { return n.name !== nick.name;});
-            /*
             for (i in group.nicks) {
                 if (group.nicks[i].name == nick.name) {
                     delete group.nicks[i];
                     break;
                 }
             }
-            */
         };
         /*
          * Clear the nicklist
@@ -219,15 +216,14 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             else if (nick === "" || nick === "=!=") {
                 return;
             }
-            _.each(nicklist, function(nickGroup) {
-                _.each(nickGroup.nicks, function(nickObj) {
-                    if (nickObj.name === nick) {
-                        // Use the order the line arrive in for simplicity
-                        // instead of using weechat's own timestamp
-                        nickObj.spokeAt = Date.now();
+            for (let groupIdx in nicklist) {
+                let nicks = nicklist[groupIdx].nicks;
+                for (let nickIdx in nicks) {
+                    if (nicks[nickIdx].name === nick) {
+                        nicks[nickIdx].spokeAt = Date.now();
                     }
-                });
-            });
+                }
+            }
         };
 
         /*
@@ -237,11 +233,12 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
          */
         var getNicklistByTime = function() {
             var newlist = [];
-            _.each(nicklist, function(nickGroup) {
-                _.each(nickGroup.nicks, function(nickObj) {
-                    newlist.push(nickObj);
-                });
-            });
+            for (let groupIdx in nicklist) {
+                let nicks = nicklist[groupIdx].nicks;
+                for (let nickIdx in nicks) {
+                    newlist.push(nicks[nickIdx]);
+                }
+            }
 
             newlist.sort(function(a, b) {
                 return a.spokeAt < b.spokeAt;
@@ -601,11 +598,12 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             activeBuffer = this.model.buffers[bufferId];
         }
         else {
-            activeBuffer = _.find(this.model.buffers, function(buffer) {
-                if (buffer[key] === bufferId) {
-                    return buffer;
-                }
+            activeBuffer = Object.entries(this.model.buffers).find(([id, buffer]) => {
+                return buffer[key] === bufferId;
             });
+            if (activeBuffer !== undefined) {
+                activeBuffer = activeBuffer[1]; // value not key
+            }
         }
 
         if (activeBuffer === undefined) {
@@ -703,7 +701,7 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             return;
         }
         if (buffer.active) {
-            var firstBuffer = _.keys(this.model.buffers)[0];
+            var firstBuffer = Object.keys(this.model.buffers)[0];
             this.setActiveBuffer(firstBuffer);
         }
         // Can't use `buffer` here, needs to be deleted from the list

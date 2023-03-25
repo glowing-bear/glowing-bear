@@ -1,6 +1,6 @@
 'use strict';
 
-import * as _ from "underscore";
+
 
 var weechat = angular.module('weechat');
 
@@ -169,7 +169,7 @@ weechat.filter('getBufferQuickKeys', function () {
                 buf.$quickKey = idx < 10 ? (idx + 1) % 10 : '';
             });
         } else {
-            _.map(obj, function(buffer, idx) {
+            obj.map(function(buffer, idx) {
                 return [buffer.number, buffer.$idx, idx];
             }).sort(function(left, right) {
                 // By default, Array.prototype.sort() sorts alphabetically.

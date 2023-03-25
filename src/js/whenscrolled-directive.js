@@ -1,7 +1,7 @@
 
 'use strict';
 
-import * as _ from "underscore";
+
 
 var weechat = angular.module('weechat');
 
@@ -16,7 +16,7 @@ weechat.directive('whenScrolled', function() {
         };
 
         elm.bind('scroll', function() {
-            _.debounce(fun, 200)();
+            setTimeout(fun, 200);
         });
     };
 });
