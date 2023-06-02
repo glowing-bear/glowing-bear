@@ -73,6 +73,7 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
         // weechat properties
         var fullName = parseRichText(message.full_name)[0].text;
         var shortName = parseRichText(message.short_name)[0].text;
+        var classes = parseRichText(message.short_name)[0].classes;
         var hidden = message.hidden;
         // If it's a channel, trim away the prefix (#, &, or +). If that is empty and the buffer
         // has a short name, use a space (because the prefix will be displayed separately, and we don't want
@@ -344,6 +345,7 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             shortName: shortName,
             hidden: hidden,
             trimmedName: trimmedName,
+            nameClasses: classes,
             prefix: prefix,
             number: number,
             title: title,

@@ -229,6 +229,8 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         // weechat properties -- short name can be changed
         buffer.shortName = message.short_name;
         buffer.trimmedName = buffer.shortName.replace(/^[#&+]/, '');
+        // Use color from short name
+        buffer.nameClasses = models.parseRichText(message.short_name)[0].classes;
         buffer.title = message.title;
         buffer.number = message.number;
         buffer.hidden = message.hidden;
@@ -288,6 +290,8 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         var old = models.getBuffer(buffer);
         old.fullName = obj.full_name;
         old.shortName = obj.short_name;
+        // Use color from short name
+        old.nameClasses = models.parseRichText(obj.short_name)[0].classes;
         // If it's a channel, trim away the prefix (#, &, or +). If that is empty and the buffer
         // has a short name, use a space (because the prefix will be displayed separately, and we don't want
         // prefix + fullname, which would happen otherwise). Else, use null so that full_name is used
@@ -457,8 +461,8 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
         //fill the nicklist
         nicklist.forEach(function(n) {
             var buffer = models.getBuffer(n.pointers[0]);
-            
-            //buffer nicklist 
+
+            //buffer nicklist
             if (n.group === 1) {
                 var g = new models.NickGroup(n);
                 group = g.name;
