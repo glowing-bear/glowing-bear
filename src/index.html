@@ -373,7 +373,7 @@ chown -R <strong>username</strong>:<strong>username</strong> ~<strong>username</
               <span class="badge pull-right" ng-class="{'danger': buffer.notification}" ng-bind="buffer.notification || buffer.unread"></span>
               <span class="buffer-quick-key">{{ buffer.$quickKey }}</span>
               <span class="buffer-jump-key">{{ ("0" + buffer.$jumpKey).slice(-2) }}</span>
-              <span class="buffername">{{ buffer.trimmedName || buffer.fullName }}</span>
+              <span class="buffername" ng-class="::buffer.nameClasses">{{ buffer.trimmedName || buffer.fullName }}</span>
             </a>
           </li>
         </ul>
