@@ -1,0 +1,16 @@
+/**
+ * @license AngularJS v1.8.3
+ * (c) 2010-2020 Google LLC. http://angularjs.org
+ * License: MIT
+ */
+
+/**
+ * @license MIT
+ * @fileOverview Favico animations
+ * @author Miroslav Magda, http://blog.ejci.net
+ * @version 0.3.10
+ */
+
+/** @license zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License */
+
+/*@cc_on!@*/
