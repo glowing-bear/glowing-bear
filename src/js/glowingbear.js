@@ -131,7 +131,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     // Show a TLS warning if GB was loaded over an unencrypted connection,
     // except for local instances (local files, testing)
     $scope.show_tls_warning = (["https:", "file:"].indexOf(window.location.protocol) === -1) &&
-        (["localhost", "127.0.0.1", "::1"].indexOf(window.location.hostname) === -1)
+        (["localhost", "127.0.0.1", "::1"].indexOf(window.location.hostname) === -1);
 
     $rootScope.isWindowFocused = function() {
         if (typeof $scope.documentHidden === "undefined") {

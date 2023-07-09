@@ -6,3 +6,5 @@ build/
 
 # IntelliJ / WebStorm
 .idea/
+
+src-tauri/target
