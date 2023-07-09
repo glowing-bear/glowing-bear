@@ -4,6 +4,7 @@ import * as Favico from "favico.js";
 
 
 import { connectionFactory } from './connection';
+import { sortBy } from './misc';
 
 /* debounce helper so we dont have to use underscore.js */
 const debounce = function (func, wait, immediate) {
@@ -17,10 +18,6 @@ const debounce = function (func, wait, immediate) {
         }, wait);
         if (immediate && !timeout) func.apply(context, args);
     };
-};
-
-const sortBy = (key) => {
-    return (a, b) => (a[key] > b[key]) ? 1 : ((b[key] > a[key]) ? -1 : 0);
 };
 
 var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'bufferResume', 'plugins', 'IrcUtils', 'ngSanitize', 'ngWebsockets', 'ngTouch'], ['$compileProvider', function($compileProvider) {

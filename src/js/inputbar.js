@@ -104,7 +104,7 @@ weechat.directive('inputBar', function() {
                 var completion_suffix = models.wconfig['weechat.completion.nick_completer'];
                 var add_space = models.wconfig['weechat.completion.nick_add_space'];
                 var nickComp = IrcUtils.completeNick(input, caretPos, $scope.iterCandidate,
-                                                     activeBuffer.getNicklistByTime(),
+                                                     activeBuffer.getNicklistByTime().reverse(),
                                                      completion_suffix, add_space);
 
                 // remember iteration candidate
