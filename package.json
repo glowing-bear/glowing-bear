@@ -21,6 +21,7 @@
     "karma-junit-reporter": "^2.0.1",
     "karma-webpack": "^5.0.0",
     "linkifyjs": "^4.1.1",
+    "linkify-string": "^4.1.1",
     "protractor": "^7.0.0",
     "webpack": "^5.88.1",
     "webpack-cli": "^5.1.4",

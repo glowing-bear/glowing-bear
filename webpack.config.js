@@ -51,7 +51,7 @@ module.exports = {
                 },
                 { from: "../node_modules/emojione/lib/js/emojione.min.js" },
                 { from: "../node_modules/linkifyjs/dist/linkify.min.js" },
-                { from: "../node_modules/linkifyjs/dist/linkify-string.min.js" },
+                { from: "../node_modules/linkify-string/dist/linkify-string.min.js" },
             ]
         }),
     ],

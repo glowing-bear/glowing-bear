@@ -7,7 +7,7 @@ module.exports = function (config) {
 
     files: [
       'node_modules/linkifyjs/dist/linkify.js',
-      'node_modules/linkifyjs/dist/linkify-string.js',
+      'node_modules/linkify-string/dist/linkify-string.js',
       'test/unit/main.test.js'
     ],
 
