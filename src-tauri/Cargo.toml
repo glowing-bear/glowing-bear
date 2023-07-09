@@ -1,6 +1,6 @@
 [package]
 name = "glowing-bear"
-version = "0.10.0" #sync to ../package.json
+version = "0.11.0" #sync to ../package.json
 description = "A web client for WeeChat"
 authors = ["glowing-bear-contributors"]
 license = "GPL-3.0"
