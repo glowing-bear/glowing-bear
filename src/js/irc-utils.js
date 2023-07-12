@@ -17,19 +17,6 @@ IrcUtils.service('IrcUtils', [function() {
      };
 
     /**
-     * Get a new version of a nick list
-     *
-     * @param nickList Original nick list
-     * @return list of nick names
-     */
-    var _ciNickList = function(nickList) {
-
-        let newList = nickList.map((el) => el.name);
-
-        return newList;
-    };
-
-    /**
      * Completes a single nick.
      *
      * @param candidate What to search for
@@ -118,7 +105,7 @@ IrcUtils.service('IrcUtils', [function() {
         var addSpaceChar = (addSpace === undefined || addSpace === 'on') ? ' ' : '';
 
         // new nick list to search in
-        var searchNickList = _ciNickList(nickList);
+        var searchNickList = nickList.map((el) => el.name);
 
         // text before and after caret
         var beforeCaret = text.substring(0, caretPos);

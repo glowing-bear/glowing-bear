@@ -7,6 +7,7 @@
 
 
 import * as weeChat from './weechat';
+import { sortBy } from './misc';
 
 var models = angular.module('weechatModels', []);
 
@@ -219,9 +220,10 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             }
             for (let groupIdx in nicklist) {
                 let nicks = nicklist[groupIdx].nicks;
-                for (let nickIdx in nicks) {
-                    if (nicks[nickIdx].name === nick) {
-                        nicks[nickIdx].spokeAt = Date.now();
+                for (let curr_nick of nicks) {
+                    if (curr_nick.name === nick) {
+                        curr_nick.spokeAt = Date.now();
+                        return;
                     }
                 }
             }
@@ -235,15 +237,10 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
         var getNicklistByTime = function() {
             var newlist = [];
             for (let groupIdx in nicklist) {
-                let nicks = nicklist[groupIdx].nicks;
-                for (let nickIdx in nicks) {
-                    newlist.push(nicks[nickIdx]);
-                }
+                newlist = newlist.concat(nicklist[groupIdx].nicks);
             }
 
-            newlist.sort(function(a, b) {
-                return a.spokeAt < b.spokeAt;
-            });
+            newlist.sort(sortBy('spokeAt'));
 
             return newlist;
         };
