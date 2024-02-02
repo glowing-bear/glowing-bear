@@ -160,7 +160,7 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             }
             for (i in group.nicks) {
                 if (group.nicks[i].name == nick.name) {
-                    delete group.nicks[i];
+                    group.nicks.splice(i, 1);
                     break;
                 }
             }
