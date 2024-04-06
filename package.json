@@ -20,8 +20,8 @@
     "karma-jasmine": "^5.1.0",
     "karma-junit-reporter": "^2.0.1",
     "karma-webpack": "^5.0.0",
-    "linkifyjs": "^4.1.1",
     "linkify-string": "^4.1.1",
+    "linkifyjs": "^4.1.1",
     "protractor": "^7.0.0",
     "webpack": "^5.88.1",
     "webpack-cli": "^5.1.4",
@@ -47,6 +47,7 @@
     "angular-sanitize": "^1.8.3",
     "angular-touch": "^1.8.3",
     "bootstrap": "^3.4.1",
+    "emoji-regex": "8.0.0",
     "emojione": "^4.5.0",
     "favico.js": "^0.3.10",
     "zlibjs": "^0.3.1"
