@@ -30,6 +30,14 @@ describe('Filters', function() {
                 result = $filter('conditionalLinkify')(url);
             expect(result).toEqual(link);        
         }));
+
+        it('convert the entire words to links', angular.mock.inject(function($filter) {
+            var text = 'weechat.network.connection_timeout',
+                link = 'weechat.network.connection_timeout',
+                result = $filter('conditionalLinkify')(text);
+            expect(result).toEqual(link);
+        }));
+
     });
 
     describe('irclinky', function() {
