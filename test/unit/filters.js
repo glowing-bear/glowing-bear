@@ -38,6 +38,13 @@ describe('Filters', function() {
             expect(result).toEqual(link);
         }));
 
+        it('convert the entire words to links', angular.mock.inject(function($filter) {
+            var text = 'http://test.com/(test)',
+                link = '<a href="http://test.com/(test)" target="_blank" rel="noopener noreferrer">http://test.com/(test)</a>',
+                result = $filter('conditionalLinkify')(text);
+            expect(result).toEqual(link);
+        }));
+
     });
 
     describe('irclinky', function() {
