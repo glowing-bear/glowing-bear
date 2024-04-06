@@ -47,7 +47,7 @@
     "angular-sanitize": "^1.8.3",
     "angular-touch": "^1.8.3",
     "bootstrap": "^3.4.1",
-    "emoji-regex": "8.0.0",
+    "emoji-regex": "^10.3.0",
     "emojione": "^4.5.0",
     "favico.js": "^0.3.10",
     "zlibjs": "^0.3.1"
