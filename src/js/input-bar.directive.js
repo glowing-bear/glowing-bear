@@ -1,10 +1,9 @@
+
 'use strict';
 
 
 
-var weechat = angular.module('weechat');
-
-weechat.directive('inputBar', function() {
+export function inputBarDirective() {
 
     return {
 
@@ -808,4 +807,4 @@ weechat.directive('inputBar', function() {
             };
         }]
     };
-});
+}

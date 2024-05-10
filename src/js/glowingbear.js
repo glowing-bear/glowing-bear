@@ -3,7 +3,19 @@
 import * as Favico from "favico.js";
 
 
-import { connectionFactory } from './connection';
+import { connectionFactory } from './connection.factory';
+import { toArrayFilter } from './to-array.filter';
+import { irclinkyFilter } from './irclinky.filter'; 
+import { inlinecolourFilter } from './inlinecolour.filter';
+import { codifyFilter } from './codify.filter';
+import { prefixlimitFilter } from './prefixlimit.filter';
+import { latexmathFilter } from './latexmath.filter';
+import { bufferResumeService } from './buffer-resume.service';
+import { fileChangeDirective } from './file-change.directive';
+import { handlersFactory } from './handlers.factory';
+import { imgurDropDirective } from './imgur-drop.directive';
+import { imgurFactory } from './imgur.factory';
+import { inputBarDirective } from './input-bar.directive';
 import { sortBy } from './misc';
 
 /* debounce helper so we dont have to use underscore.js */
@@ -20,10 +32,24 @@ const debounce = function (func, wait, immediate) {
     };
 };
 
-var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'bufferResume', 'plugins', 'IrcUtils', 'ngSanitize', 'ngWebsockets', 'ngTouch'], ['$compileProvider', function($compileProvider) {
+var weechat = angular.module('weechat', ['ngRoute', 'localStorage', 'weechatModels', 'plugins', 'IrcUtils', 'ngSanitize', 'ngWebsockets', 'ngTouch'], ['$compileProvider', function($compileProvider) {
     // hacky way to be able to find out if we're in debug mode
     weechat.compileProvider = $compileProvider;
 }]);
+
+weechat.filter('toArray', toArrayFilter)
+    .filter('irclinky', irclinkyFilter)
+    .filter('inlinecolour', inlinecolourFilter)
+    .filter('codify', codifyFilter)
+    .filter('prefixlimit', prefixlimitFilter)
+    .filter('latexmath', latexmathFilter)
+    .service('bufferResume', bufferResumeService)
+    .directive('fileChange', fileChangeDirective)
+    .factory('handlers', handlersFactory)
+    .directive('imgurDrop', imgurDropDirective)
+    .factory('imgur', imgurFactory)
+    .directive('inputBar', inputBarDirective);
+
 weechat.config(['$compileProvider', function ($compileProvider) {
     // hack to determine whether we're executing the tests
     if (typeof(it) === "undefined" && typeof(describe) === "undefined") {
