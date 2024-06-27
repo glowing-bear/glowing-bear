@@ -6,8 +6,8 @@
 
 
 
-import * as weeChat from './weechat';
 import { sortBy } from './misc';
+import * as weeChat from './weechat';
 
 var models = angular.module('weechatModels', []);
 
@@ -25,6 +25,9 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
         if(!text) {
             return [{'text': text}];
         }
+
+        // FIXME xss. replace all occurences of & with &amp; , < with &lt; and > with &gt;
+        text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
         var textElements = weeChat.Protocol.rawText2Rich(text),
             typeToClassPrefixFg = {
@@ -393,7 +396,10 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
         var tags_array = message.tags_array;
         var displayed = message.displayed;
         var highlight = message.highlight;
+
+
         var content = parseRichText(message.message);
+
 
         // only put invisible angle brackets around nicks in normal messages
         // (for copying/pasting)
