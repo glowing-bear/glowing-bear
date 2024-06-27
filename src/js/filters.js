@@ -68,30 +68,20 @@ weechat.filter('conditionalLinkify', ['$filter', function($filter) {
             return text;
         }
 
-
-        return text.replaceAll(/\S+/g, function (match, p2) {
-            const result = linkifyStr(match, {
-                className: '',
-                attributes: {
-                    rel: 'noopener noreferrer'
-                },
-                target: {
-                    url: '_blank'
-                },
-                validate: {
-                    email: function () {
-                        return false; //Do not linkify emails
-                    }
+        return linkifyStr(text, {
+            className: '',
+            attributes: {
+                rel: 'noopener noreferrer'
+            },
+            target: {
+                url: '_blank'
+            },
+            validate: {
+                email: function () {
+                    return false; //Do not linkify emails
                 }
-            });
-
-            if (result.endsWith("</a>")) {
-                return result;
-            } else {
-                return match
             }
-
-        });
+          });
     };
 }]);
 
