@@ -2,64 +2,61 @@
   "build": {
     "beforeBuildCommand": "npm run build",
     "beforeDevCommand": "npm run start",
-    "devPath": " http://localhost:8080/",
-    "distDir": "../build",
-    "withGlobalTauri": true
+    "frontendDist": "../build",
+    "devUrl": " http://localhost:8080/"
   },
-  "package": {
-    "productName": "glowing-bear",
-    "version": "0.10.0"
-  },
-  "tauri": {
-    "allowlist": {
-      "all": true
+  "bundle": {
+    "active": true,
+    "category": "SocialNetworking",
+    "copyright": "Glowing Bear developers",
+    "targets": "all",
+    "externalBin": [],
+    "icon": [
+      "../src/assets/img/favicon.png",
+      "../src/assets/img/glowing_bear_128x128.png",
+      "../src/assets/img/glowing-bear.png",
+      "../src/assets/img/glowing-bear.icns"
+    ],
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": ""
     },
-    "bundle": {
-      "active": true,
-      "category": "SocialNetworking",
-      "copyright": "Glowing Bear developers",
+    "longDescription": "Glowing Bear is a web frontend for the WeeChat IRC client",
+    "macOS": {
+      "entitlements": null,
+      "exceptionDomain": "",
+      "frameworks": [],
+      "providerShortName": null,
+      "signingIdentity": null
+    },
+    "resources": [],
+    "shortDescription": "",
+    "linux": {
       "deb": {
         "depends": []
-      },
-      "externalBin": [],
-      "icon": [
-        "../src/assets/img/favicon.png",
-        "../src/assets/img/glowing_bear_128x128.png",
-        "../src/assets/img/glowing-bear.png",
-        "../src/assets/img/glowing-bear.icns"
-      ],
-      "identifier": "org.glowing-bear",
-      "longDescription": "Glowing Bear is a web frontend for the WeeChat IRC client",
-      "macOS": {
-        "entitlements": null,
-        "exceptionDomain": "",
-        "frameworks": [],
-        "providerShortName": null,
-        "signingIdentity": null
-      },
-      "resources": [],
-      "shortDescription": "",
-      "targets": "all",
-      "windows": {
-        "certificateThumbprint": null,
-        "digestAlgorithm": "sha256",
-        "timestampUrl": ""
       }
-    },
-    "security": {
-      "csp": null
-    },
-    "updater": {
-      "active": false
-    },
+    }
+  },
+  "productName": "glowing-bear",
+  "mainBinaryName": "glowing-bear",
+  "version": "0.10.0",
+  "identifier": "org.glowing-bear",
+  "plugins": {},
+  "app": {
+    "withGlobalTauri": true,
     "windows": [
       {
         "fullscreen": false,
         "height": 600,
         "resizable": true,
         "title": "Glowing Bear",
-        "width": 800
+        "width": 800,
+        "useHttpsScheme": true
       }
-    ]
+    ],
+    "security": {
+      "csp": null
+    }
   }
 }
