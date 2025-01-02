@@ -24,17 +24,17 @@ export const connectionFactory = ['$rootScope', '$log', 'handlers', 'models', 's
     var locked = false;
 
     // Takes care of the connection and websocket hooks
-    var connect = function (host, port, path, passwd, ssl, useTotp, totp, noCompression, successCallback, failCallback) {
+    var connect = function (host, port, path, passwd, tls, useTotp, totp, noCompression, successCallback, failCallback) {
         $rootScope.passwordError = false;
         $rootScope.oldWeechatError = false;
         $rootScope.hashAlgorithmDisagree = false;
-        connectionData = [host, port, path, passwd, ssl, noCompression];
-        
+        connectionData = [host, port, path, passwd, tls, noCompression];
+
         // https://github.com/glowing-bear/glowing-bear/issues/1157
         var isSecureContext = window.isSecureContext;
         var weechatPre2_9 = settings.compatibilityWeechat28;
 
-        var proto = ssl ? 'wss' : 'ws'; 
+        var proto = tls ? 'wss' : 'ws';
         // If host is an IPv6 literal wrap it in brackets
         if (host.indexOf(":") !== -1 && host[0] !== "[" && host[host.length-1] !== "]") {
             host = "[" + host + "]";
@@ -387,7 +387,7 @@ export const connectionFactory = ['$rootScope', '$log', 'handlers', 'models', 's
                 }
 
             },
-            
+
             //Sending version failed
             function() {
                 handleWrongPassword();
@@ -411,11 +411,11 @@ export const connectionFactory = ['$rootScope', '$log', 'handlers', 'models', 's
         };
 
         handleClose = function (evt) {
-            if (ssl && evt && evt.code === 1006) {
+            if (tls && evt && evt.code === 1006) {
                 // A password error doesn't trigger onerror, but certificate issues do. Check time of last error.
                 if (typeof $rootScope.lastError !== "undefined" && (Date.now() - $rootScope.lastError) < 1000) {
-                    // abnormal disconnect by client, most likely ssl error
-                    $rootScope.sslError = true;
+                    // abnormal disconnect by client, most likely tls error
+                    $rootScope.tlsError = true;
                     $rootScope.$apply();
                 }
             }
