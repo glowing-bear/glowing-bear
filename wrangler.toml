@@ -1,0 +1,7 @@
+# Top-level configuration
+name = "glowing-bear"
+main = "src/main.js"
+compatibility_date = "2022-07-12"
+
+workers_dev = false
+route = { pattern = "bear.ecmp.network", custom_domain = true }
