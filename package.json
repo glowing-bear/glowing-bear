@@ -25,7 +25,7 @@
     "protractor": "^7.0.0",
     "webpack": "^5.94.0",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.1"
+    "webpack-dev-server": "^5.2.1"
   },
   "scripts": {
     "build": "webpack",
@@ -46,7 +46,7 @@
     "angular-route": "^1.8.3",
     "angular-sanitize": "^1.8.3",
     "angular-touch": "^1.8.3",
-    "bootstrap": "^3.4.1",
+    "bootstrap": "^5.0.0",
     "emojione": "^4.5.0",
     "favico.js": "^0.3.10",
     "zlibjs": "^0.3.1"
