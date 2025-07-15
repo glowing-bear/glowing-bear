@@ -56,7 +56,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'hostField': 'localhost',
         'port': 9001,
         'path': 'weechat',
-        'ssl': (window.location.protocol === "https:"),
+        'tls': (window.location.protocol === "https:"),
         'compatibilityWeechat28': false,
         'useTotp': false,
         'savepassword': false,
@@ -85,7 +85,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     //For upgrade reasons because we changed the name of host to hostField
     //check if the value might still be in the host key instead of the hostField key
     if (!settings.hostField && settings.host) {
-        settings.hostField = settings.host; 
+        settings.hostField = settings.host;
     }
 
     $rootScope.countWatchers = function () {
@@ -261,7 +261,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     });
 
     $rootScope.favico = new Favico({animation: 'none'});
-    
+
     $scope.notifications = notifications.unreadCount('notification');
     $scope.unread = notifications.unreadCount('unread');
 
@@ -402,7 +402,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     settings.addCallback('autoconnect', function(autoconnect) {
-        if (autoconnect && !$rootScope.connected && !$rootScope.sslError && !$rootScope.securityError && !$rootScope.errorMessage) {
+        if (autoconnect && !$rootScope.connected && !$rootScope.tlsError && !$rootScope.securityError && !$rootScope.errorMessage) {
             $scope.connect();
         }
     });
@@ -672,9 +672,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if ((parts = regexProto.exec(settings.hostField)) !== null) {
             settings.hostField = parts[2];
             if (parts[1] === "http" || parts[1] === "ws") {
-                settings.ssl = false;
+                settings.tls = false;
             } else if (parts[1] === "https" || parts[1] === "wss") {
-                settings.ssl = true;
+                settings.tls = true;
             }
         }
 
@@ -738,13 +738,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     $scope.connect = function() {
         document.getElementById('audioNotificationInitializer').play(); // Plays some silence, this will enable autoplay for notifications
         notifications.requestNotificationPermission();
-        $rootScope.sslError = false;
+        $rootScope.tlsError = false;
         $rootScope.securityError = false;
         $rootScope.errorMessage = false;
         $rootScope.bufferBottom = true;
         $scope.connectbutton = 'Connecting';
         $scope.connectbuttonicon = 'glyphicon-refresh glyphicon-spin';
-        connection.connect(settings.host, settings.port, settings.path, $scope.password, settings.ssl, settings.useTotp, $scope.totp);
+        connection.connect(settings.host, settings.port, settings.path, $scope.password, settings.tls, settings.useTotp, $scope.totp);
         $scope.totp = ""; // Clear for next time
     };
 
@@ -754,7 +754,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         bufferResume.reset();
         connection.disconnect();
     };
-    
+
     $scope.reconnect = function() {
         var bufferId = models.getActiveBuffer().id;
         connection.attemptReconnect(bufferId, 3000);
