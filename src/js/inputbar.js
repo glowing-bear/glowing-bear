@@ -1,6 +1,7 @@
 'use strict';
 
-
+import emojiRegexFunction from "emoji-regex"
+const emojiRegex = emojiRegexFunction()
 
 var weechat = angular.module('weechat');
 
@@ -36,8 +37,7 @@ weechat.directive('inputBar', function() {
                 // Cancel any command completion that was still ongoing
                 commandCompletionInputChanged = true;
 
-                var emojiRegex = /^(?:[\uD800-\uDBFF][\uDC00-\uDFFF])+$/, // *only* emoji
-                    changed = false,  // whether a segment was modified
+                var changed = false,  // whether a segment was modified
                     inputNode = $scope.getInputNode(),
                     caretPos = inputNode.selectionStart,
                     position = 0;  // current position in text
