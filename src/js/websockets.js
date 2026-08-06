@@ -121,6 +121,9 @@ function($rootScope, $q) {
                            properties) {
 
         if (ws !== null && ws.readyState !== WebSocket.CLOSED) {
+            ws.onclose = null;
+            ws.onerror = null;
+            ws.onmessage = null;
             ws.close();
         }
         ws = new WebSocket(url);
