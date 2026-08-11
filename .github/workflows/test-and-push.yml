@@ -1,0 +1,53 @@
+name: Create and publish a Docker image
+
+on: [push]
+
+env:
+  REGISTRY: ghcr.io
+  TAGGED_IMAGE_NAME: ${{ github.repository }}:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
+  # if you're a fork and trying to self publish, add ENABLE_PUSH to your fork's action environment variables.
+  # centralize this logic here, but due to GH, this means the result is a string.  So consumers must do a `== 'true'` check.  Blame GH.
+  ENABLE_PUSH: ${{ (vars.ENABLE_PUSH || github.repository == 'glowing-bear/glowing-bear') && ((github.ref_type == 'tag' && startswith(github.ref_name, 'v')) || github.ref_name == 'master' ) }}
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install Xvfb
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+
+      - name: npm install
+        run: npm install --include=dev
+
+      - name: run test
+        run: xvfb-run ./run_tests.sh
+
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    needs: [tests]
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v5
+
+      - name: GHCR login
+        uses: docker/login-action@v3
+        if: env.ENABLE_PUSH == 'true'
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: ${{ env.ENABLE_PUSH }}
+          tags: ${{ env.REGISTRY }}/${{ env.TAGGED_IMAGE_NAME }}

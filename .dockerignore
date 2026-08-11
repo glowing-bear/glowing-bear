@@ -1,0 +1,16 @@
+bower_components/
+node_modules/
+
+# Electron stuff
+fonts/
+Glowing\ Bear-*/
+
+# local build products
+build/ 
+
+# IntelliJ / WebStorm
+.idea/
+
+# don't transfer in things not used, but easily invalidating cache.
+Dockerfile
+.git/
