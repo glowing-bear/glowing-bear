@@ -129,15 +129,27 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', 'u
             $rootScope.notificationStatus = '';
         }
 
-        var activeBuffer = models.getActiveBuffer();
+        let activeBuffer = models.getActiveBuffer();
         if (activeBuffer) {
-            let title = activeBuffer.shortName + ' | ' + activeBuffer.rtitle;
-            $rootScope.pageTitle = title;
-            // If running in Tauri, use platform code to update its window title
-            if (utils.isTauri()) {
-                __TAURI__.window.appWindow.setTitle(title);
+            let titleparts = [];
+            if (activeBuffer.shortName && activeBuffer.shortName !== "") {
+              titleparts.push(activeBuffer.shortName);
+            } else {
+              titleparts.push(activeBuffer.fullName);
             }
-            
+            titleparts.push(activeBuffer.rtitle);
+            titleparts = titleparts.filter(n => n); // Remove empty parts
+            let title = titleparts.join(' | ');
+            $rootScope.pageTitle = title;
+            // TODO: until code is ready to remove the topic and move it into
+            // window title instead this will just duplicate the topic into
+            // the window title which just looks silly, so disable this for now
+            //
+            // If running in Tauri, use platform code to update its window title
+            // if (utils.isTauri()) {
+            //     __TAURI__.window.getCurrentWindow().setTitle(title);
+            // }
+
         }
     };
 
