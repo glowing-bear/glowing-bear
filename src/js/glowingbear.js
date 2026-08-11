@@ -41,7 +41,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.command = '';
-    $scope.themes = ['dark', 'light', 'black', 'dark-spacious', 'blue', 'base16-default', 'base16-light', 'base16-mocha', 'base16-ocean-dark', 'base16-solarized-dark', 'base16-solarized-light'];
+    $scope.themes = ['dark', 'light', 'black', 'dark-spacious', 'blue', 'blue-modern', 'base16-default', 'base16-light', 'base16-mocha', 'base16-ocean-dark', 'base16-solarized-dark', 'base16-solarized-light'];
 
     // Current swipe status. Values:
     // +1: bufferlist open, nicklist closed

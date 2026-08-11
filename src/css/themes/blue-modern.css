@@ -1,0 +1,625 @@
+@import "dark.css";
+
+:root {
+  color-scheme: dark;
+
+  --bg: oklch(0.22 0.01 260);
+  --surface: oklch(0.27 0.015 260);
+  --surface-raised: oklch(0.32 0.018 260);
+  --border: oklch(0.35 0.02 260);
+  --accent: oklch(0.55 0.2 255);
+  --accent-hover: oklch(0.62 0.18 255);
+  --text: oklch(0.82 0.008 260);
+  --text-secondary: oklch(0.50 0.015 260);
+  --text-muted: oklch(0.4 0.015 260);
+  --red: oklch(0.6 0.18 30);
+  --green: oklch(0.62 0.16 145);
+  --yellow: oklch(0.72 0.14 85);
+  --cyan: oklch(0.7 0.12 200);
+  --magenta: oklch(0.6 0.15 320);
+  --orange: oklch(0.65 0.16 65);
+  --pink: oklch(0.65 0.14 350);
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro", "Helvetica Neue", sans-serif;
+}
+
+.favorite-font {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro", "Helvetica Neue", sans-serif;
+  font-size: 17px;
+}
+
+a {
+  color: var(--accent);
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: var(--accent-hover);
+}
+
+.form-control {
+  color: var(--text);
+  background: oklch(0.19 0.006 260);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-control:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.form-control[disabled] {
+  background: oklch(0.25 0.01 260);
+}
+
+.form-control option {
+  color: var(--text);
+  background: var(--surface);
+}
+
+.form-control::placeholder {
+  color: var(--text-muted);
+  opacity: 1;
+}
+
+#bufferFilter {
+  border-radius: 6px;
+}
+
+#bufferFilter::placeholder {
+  color: oklch(0.38 0.012 260);
+}
+
+.nav-pills > li > a {
+  border: 1px solid transparent;
+  border-radius: 6px;
+  margin: 2px 6px;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.nav-pills > li.active > a {
+  background: color-mix(in oklch, var(--accent) 25%, transparent);
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.nav-pills > li > a:hover,
+.nav-pills > li > a:hover span {
+  background: color-mix(in oklch, var(--accent) 15%, transparent);
+  border-color: color-mix(in oklch, var(--accent) 40%, transparent);
+  color: var(--accent-hover);
+}
+
+.nav-pills > li > a:active,
+.nav-pills > li > a:active span,
+.nav-pills > li.active > a:hover {
+  background: color-mix(in oklch, var(--accent) 20%, transparent);
+  color: var(--accent-hover);
+}
+
+.nav-pills > li.highlight > a,
+.nav-pills > li.highlight > a span {
+  color: #fff;
+  background: var(--accent);
+}
+
+tr.bufferline:hover {
+  background: var(--surface-raised);
+}
+
+.btn-default {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-default:hover {
+  background: var(--surface-raised);
+  border-color: var(--border);
+}
+
+.btn-primary {
+  background: linear-gradient(oklch(0.58 0.2 255), var(--accent));
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  transition: opacity 0.15s ease;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.danger,
+.alert-danger,
+.badge .alert-danger,
+.badge.danger {
+  background: var(--red);
+  color: var(--text);
+}
+
+.alert-danger {
+  border-color: transparent;
+  color: #fff;
+}
+
+#topbar,
+#sidebar,
+.panel,
+.modal-content {
+  background: var(--surface);
+  border: none;
+}
+
+#topbar .actions {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+#topbar .actions > a {
+  color: var(--text-secondary);
+  transition: color 0.15s ease;
+}
+
+#topbar .actions > a:hover {
+  color: var(--text);
+}
+
+.dropdown-menu {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  backdrop-filter: blur(20px);
+}
+
+.modal-content {
+  border-radius: 8px;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 24px 64px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header,
+.modal-footer {
+  border-color: transparent;
+  box-shadow: inset 0 -1px 0 color-mix(in oklch, var(--border) 30%, transparent);
+}
+
+.modal-footer {
+  box-shadow: inset 0 1px 0 color-mix(in oklch, var(--border) 30%, transparent);
+}
+
+#nicklist a {
+  border: 1px solid transparent;
+  border-radius: 6px;
+  transition: background 0.12s ease;
+}
+
+#nicklist a:hover {
+  background: var(--surface-raised);
+  border-color: var(--border);
+}
+
+.bufferfilter {
+  margin: 2px 6px;
+}
+
+#readmarker {
+  border: none;
+  box-shadow: 0 1px 0 color-mix(in oklch, var(--accent) 20%, transparent);
+  height: 0;
+}
+
+#sendMessage:focus,
+#sendMessage:active {
+  border-color: oklch(0.48 0.15 255);
+}
+
+.badge {
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+#sidebar .buffer.unread .badge,
+#sidebar .buffer.notification .badge {
+  border-radius: 6px;
+}
+
+input[type="text"],
+input[type="password"],
+#sendMessage {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: oklch(0.19 0.006 260);
+  color: var(--text);
+  box-shadow: none;
+  transition: border-color 0.15s ease;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+#sendMessage:focus {
+  border-color: oklch(0.48 0.15 255);
+  outline: none;
+}
+
+input[type="text"].is-invalid {
+  box-shadow: inset 0 0 0 1px var(--red);
+}
+
+.btn-send,
+.btn-send-image,
+.btn-complete-nick {
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+  border-radius: 6px;
+  transition: color 0.15s ease;
+}
+
+.btn-send:hover,
+.btn-send-image:hover,
+.btn-complete-nick:hover {
+  color: var(--text);
+}
+
+#connection-infos {
+  color: var(--text-secondary);
+}
+
+.nav-pills li:nth-child(2n) {
+  background: transparent;
+}
+
+.footer {
+  height: 45px;
+  background: var(--surface);
+  box-shadow: inset 0 1px 0 var(--border);
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+#bufferlines {
+  bottom: 45px;
+}
+
+.footer .input-group {
+  height: 100%;
+}
+
+.footer .form-control {
+  height: 33px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+.footer .input-group-btn .btn {
+  min-height: 33px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+.horizontal-line,
+.vertical-line,
+.vertical-line-left {
+  border: none;
+  box-shadow: none;
+}
+
+.panel-group .panel-heading + .panel-collapse .panel-body {
+  border: none;
+  box-shadow: 0 -1px 0 color-mix(in oklch, var(--border) 50%, transparent);
+}
+
+button.close {
+  color: var(--text-secondary);
+  opacity: 1;
+  transition: color 0.15s ease;
+}
+
+button.close:hover {
+  color: var(--text);
+}
+
+::-webkit-scrollbar-track-piece {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb:vertical {
+  background: var(--text-muted);
+  border-radius: 8px;
+}
+
+.gb-modal .backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.toast {
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.color-light-green {
+  color: var(--green);
+}
+
+.color-27 {
+  color: var(--cyan);
+}
+
+/* WeeChat style options — blue palette overrides */
+.cof-chat_time_delimiters {
+  color: var(--orange);
+}
+
+.cof-chat_prefix_network {
+  color: var(--magenta);
+}
+
+.cof-chat_prefix_join {
+  color: var(--green);
+}
+
+.cof-chat_prefix_quit {
+  color: var(--red);
+}
+
+.cof-chat_prefix_more {
+  color: var(--magenta);
+}
+
+.cof-chat_prefix_suffix {
+  color: var(--green);
+}
+
+.cof-chat_buffer {
+  color: var(--text);
+}
+
+.cof-chat_server {
+  color: var(--orange);
+}
+
+.cof-chat_channel {
+  color: var(--text);
+}
+
+.cof-chat_nick {
+  color: var(--cyan);
+}
+
+.cof-chat_nick_self {
+  color: #fff;
+  font-weight: 600;
+}
+
+.cof-chat_nick_other {
+  color: var(--cyan);
+}
+
+.cof-chat_host {
+  color: var(--cyan);
+}
+
+.cof-chat_delimiters {
+  color: var(--green);
+}
+
+.cof-chat_highlight {
+  color: var(--yellow);
+  background-color: color-mix(in oklch, var(--yellow) 15%, transparent);
+}
+
+.cof-chat_read_marker {
+  color: var(--magenta);
+}
+
+.cof-chat_text_found {
+  color: var(--yellow);
+}
+
+.cof-chat_value {
+  color: var(--cyan);
+}
+
+.cof-chat_prefix_buffer {
+  color: var(--orange);
+}
+
+.cof-chat_tags {
+  color: var(--red);
+}
+
+.cof-chat_inactive_window,
+.cof-chat_inactive_buffer,
+.cof-chat_prefix_buffer_inactive_buffer,
+.cof-chat_nick_offline {
+  color: var(--text-muted);
+}
+
+.cof-chat_nick_offline_highlight {
+  color: var(--text);
+  background-color: var(--text-muted);
+}
+
+.cof-chat_nick_prefix {
+  color: var(--green);
+}
+
+.cof-chat_nick_suffix {
+  color: var(--green);
+}
+
+.cof-emphasis {
+  color: var(--yellow);
+  background-color: color-mix(in oklch, var(--yellow) 15%, transparent);
+}
+
+.cof-chat_day_change {
+  color: var(--cyan);
+}
+
+.cof-separator {
+  color: var(--accent);
+}
+
+.cob-chat_time {
+  color: var(--text-secondary);
+}
+
+.cob-chat_highlight {
+  background-color: color-mix(in oklch, var(--yellow) 15%, transparent);
+}
+
+.cob-chat_nick_offline_highlight {
+  background-color: var(--text-muted);
+}
+
+.cob-emphasis {
+  background-color: color-mix(in oklch, var(--yellow) 15%, transparent);
+}
+
+/* WeeChat foreground colors */
+.cwf-default {
+  color: oklch(0.85 0.01 260);
+}
+
+.cwf-red {
+  color: var(--red);
+}
+
+.cwf-lightred {
+  color: oklch(0.7 0.14 30);
+}
+
+.cwf-green {
+  color: var(--green);
+}
+
+.cwf-lightgreen {
+  color: oklch(0.72 0.14 145);
+}
+
+.cwf-brown {
+  color: var(--orange);
+}
+
+.cwf-yellow {
+  color: var(--yellow);
+}
+
+.cwf-blue {
+  color: oklch(0.65 0.15 255);
+}
+
+.cwf-lightblue {
+  color: oklch(0.75 0.12 255);
+}
+
+.cwf-magenta {
+  color: var(--magenta);
+}
+
+.cwf-lightmagenta {
+  color: oklch(0.7 0.14 320);
+}
+
+.cwf-cyan {
+  color: var(--cyan);
+}
+
+.cwf-lightcyan {
+  color: oklch(0.8 0.1 200);
+}
+
+.cwf-darkgray {
+  color: var(--text-muted);
+}
+
+.cwf-gray {
+  color: var(--text-secondary);
+}
+
+.cwf-white {
+  color: var(--text);
+}
+
+/* WeeChat background colors */
+.cwb-default {
+  background-color: transparent;
+}
+
+.cwb-red {
+  background-color: var(--red);
+}
+
+.cwb-lightred {
+  background-color: oklch(0.7 0.14 30);
+}
+
+.cwb-green {
+  background-color: var(--green);
+}
+
+.cwb-lightgreen {
+  background-color: oklch(0.72 0.14 145);
+}
+
+.cwb-brown {
+  background-color: var(--orange);
+}
+
+.cwb-yellow {
+  background-color: var(--yellow);
+}
+
+.cwb-blue {
+  background-color: oklch(0.65 0.15 255);
+}
+
+.cwb-lightblue {
+  background-color: oklch(0.75 0.12 255);
+}
+
+.cwb-magenta {
+  background-color: var(--magenta);
+}
+
+.cwb-lightmagenta {
+  background-color: oklch(0.7 0.14 320);
+}
+
+.cwb-cyan {
+  background-color: var(--cyan);
+}
+
+.cwb-lightcyan {
+  background-color: oklch(0.8 0.1 200);
+}
+
+.cwb-darkgray {
+  background-color: var(--text-muted);
+}
+
+.cwb-gray {
+  background-color: var(--text-secondary);
+}
+
+.cwb-white {
+  background-color: var(--text);
+}
